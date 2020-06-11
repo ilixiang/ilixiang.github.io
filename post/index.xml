@@ -14,10 +14,10 @@
     
     <item>
       <title>awk学习笔记</title>
-      <link>/post/awk-study-note/</link>
+      <link>/post/awk/</link>
       <pubDate>Tue, 09 Jun 2020 23:48:30 +0800</pubDate>
       
-      <guid>/post/awk-study-note/</guid>
+      <guid>/post/awk/</guid>
       <description>awk、sed以及grep是linux下用于操作文本的3大上古神器，它们操纵文本的侧重点各有不同，但都对正则表达式有着十分完整的支持，因此经常出现在同一场合。 初学乍练 awk在shell中同时作为一个命令和一种脚本语言存在，能够使用它进行操纵的文本格式十分接近表格，即拥有的明确的分</description>
       
     </item>

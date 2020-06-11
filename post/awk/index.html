@@ -1,0 +1,264 @@
+<!DOCTYPE html>
+<html lang="en"><meta charset="utf-8"><meta name="generator" content="Hugo 0.68.3" /><meta name="viewport" content="width=device-width,initial-scale=1,viewport-fit=cover">
+<meta name="color-scheme" content="light dark">
+<meta name="supported-color-schemes" content="light dark"><title>awk学习笔记&nbsp;&ndash;&nbsp;三斜求积术</title><link rel="stylesheet" href="/css/core.min.802aa67397694ca5d7cacc2140e5e8fcb52d3add493941c161a3c4d2d5da57e3ca230e49da9cc38312e9698b71ef4c3a.css" integrity="sha384-gCqmc5dpTKXXyswhQOXo/LUtOt1JOUHBYaPE0tXaV&#43;PKIw5J2pzDgxLpaYtx70w6"><meta name="twitter:card" content="summary" />
+<meta name="twitter:title" content="awk学习笔记" /><body><section id="header">
+    <div class="header wrap"><span class="header left-side"><a class="site home" href="/"><span class="site name">三斜求积术</span></a></span>
+        <span class="header right-side"><div class="nav wrap"><nav class="nav"><a class="nav item" href="/categories/">Categories</a><a class="nav item" href="/tags/">Tags</a><a class="nav item" href="https://gohugo%2eio/"target="_blank">Hugo</a></nav></div></span></div><div class="site slogan"><span class="title">Slow is Fast. Less is More. Code for Fun.</span></div></section><section id="content"><div class="article-container"><section class="article header">
+    <h1 class="article title">awk学习笔记</h1><p class="article date">Tuesday, June 9, 2020</p></section><article class="article markdown-body"><p><img  src="/img/awk.png"
+        alt="awk"/></p>
+<p><code>awk</code>、<code>sed</code>以及<code>grep</code>是linux下用于操作文本的3大上古神器，它们操纵文本的侧重点各有不同，但都对正则表达式有着十分完整的支持，因此经常出现在同一场合。</p>
+<h2 id="初学乍练-">初学乍练</h2>
+<p><code>awk</code>在shell中同时作为一个命令和一种脚本语言存在，能够使用它进行操纵的文本格式十分接近<strong>表格</strong>，即拥有的明确的<strong>分界符</strong>将单行数据分为多个有独立意义的字段。举个例子</p>
+<div class="highlight"><pre class="chroma"><code class="language-shell" data-lang="shell">$ netstat -ant
+Active Internet connections <span class="o">(</span>servers and established<span class="o">)</span>
+Proto Recv-Q Send-Q Local Address           Foreign Address         State      
+tcp        <span class="m">0</span>      <span class="m">0</span> 127.0.0.1:6379          0.0.0.0:*               LISTEN     
+tcp        <span class="m">0</span>      <span class="m">0</span> 0.0.0.0:22              0.0.0.0:*               LISTEN     
+tcp        <span class="m">0</span>      <span class="m">0</span> 10.0.2.15:22            10.0.2.2:46030          ESTABLISHED
+tcp6       <span class="m">0</span>      <span class="m">0</span> :::33060                :::*                    LISTEN     
+tcp6       <span class="m">0</span>      <span class="m">0</span> :::3306                 :::*                    LISTEN     
+tcp6       <span class="m">0</span>      <span class="m">0</span> :::22                   :::*                    LISTEN    
+</code></pre></div><p><code>awk</code>最常用的功能就是通过指定分界符将文本分割，然后从中提取自己想要的字段，比如对上述内容，我们只想要地址和端口字段，也就是<strong>第4字段</strong>：</p>
+<div class="highlight"><pre class="chroma"><code class="language-shell" data-lang="shell">$ netstat -ant <span class="p">|</span> awk <span class="s1">&#39;{print $4}&#39;</span>
+<span class="o">(</span>servers
+Local
+127.0.0.1:6379
+0.0.0.0:22
+10.0.2.15:22
+:::33060
+:::3306
+:::22
+</code></pre></div><p>上述命令中，涉及到了3部分内容：</p>
+<ol>
+<li>
+<p>在未指定分界符时，<code>awk</code>使用空白作为默认的分界符</p>
+</li>
+<li>
+<p>我们想要操纵的为第4字段，使用<code>$4</code>代替</p>
+</li>
+<li>
+<p>对该字段的操作方式为<code>print</code>，即直接输出</p>
+</li>
+</ol>
+<h2 id="初窥门径-">初窥门径</h2>
+<p>有了上面的基础，接下来我们就可以根据自己的要求拓展<code>awk</code>命令的使用了。这次我们使用的是<code>/etc/passwd</code>中存储的用户信息，文本内容具体如下：</p>
+<div class="highlight"><pre class="chroma"><code class="language-shell" data-lang="shell">$ cat /etc/passwd
+root:x:0:0:root:/root:/bin/bash
+backup:x:34:34:backup:/var/backups:/usr/sbin/nologin
+list:x:38:38:Mailing List Manager:/var/list:/usr/sbin/nologin
+irc:x:39:39:ircd:/var/run/ircd:/usr/sbin/nologin
+syslog:x:104:108::/home/syslog:/bin/false
+richard:x:1000:1000:richard,,,:/home/richard:/bin/bash
+mysql:x:111:117:MySQL Server,,,:/var/lib/mysql:/bin/false
+redis:x:112:118::/var/lib/redis:/bin/false
+</code></pre></div><p>这次的分界符变为了<code>:</code>，并且我们想要的是用户名以及该用户所使用的shell，即第1字段和第7字段，并输出为指定格式的语句</p>
+<blockquote>
+<p><em>user</em> use <em>shell</em> as default shell</p>
+</blockquote>
+<p>命令如下：</p>
+<div class="highlight"><pre class="chroma"><code class="language-shell" data-lang="shell">$ cat /etc/passwd <span class="p">|</span> awk -F <span class="s1">&#39;:&#39;</span> <span class="s1">&#39;{printf(&#34;%s use %s as default shell\n&#34;, $1, $7)}&#39;</span>
+root use /bin/bash as default shell
+backup use /usr/sbin/nologin as default shell
+list use /usr/sbin/nologin as default shell
+irc use /usr/sbin/nologin as default shell
+syslog use /bin/false as default shell
+richard use /bin/bash as default shell
+mysql use /bin/false as default shell
+redis use /bin/false as default shell
+</code></pre></div><p>与上一节的语句不同，这次我们使用了<code>-F</code>参数指定了分界符并通过<code>printf</code>对输出字段进行了格式化。其中<code>printf</code>函数的使用和C语言当中的<code>printf</code>差不多一样。</p>
+<h2 id="登堂入室-">登堂入室</h2>
+<p>这次我们使用不同的<code>awk</code>操作语句去得到上面我们想要的输出：</p>
+<div class="highlight"><pre class="chroma"><code class="language-shell" data-lang="shell">$ cat /etc/passwd <span class="p">|</span> awk <span class="s1">&#39;BEGIN{FS=&#34;:&#34;}{printf(&#34;%s use %s as default shell\n&#34;, $1, $NF)}&#39;</span>
+</code></pre></div><p>这条命令感兴趣的小伙伴可以去试一下，和前一小节的命令得到的结果是一致的。它修改了2处地方：</p>
+<ol>
+<li>没有使用<code>-F</code>参数，而是改为<code>BEGIN{FS=&quot;:&quot;}</code>去指定分界符</li>
+<li>没有使用<code>$7</code>去指定第7字段，而是使用<code>$NF</code>指定最后字段</li>
+</ol>
+<p>这就涉及到了<code>awk</code>作为一门脚本语言拥有的一样东西 - - - <strong>内建变量</strong>，以及<code>awk</code>操纵文本的一般形式<code>condition {action}</code>。</p>
+<h3 id="内建变量-">内建变量</h3>
+<p>内建变量就是<code>awk</code>已经建立的变量，我们通过指定该变量的值就能够去改变该命令的行为。</p>
+<p>常见的内建变量有：</p>
+<table>
+<thead>
+<tr>
+<th>变量名</th>
+<th>全称</th>
+<th>作用</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td>$0</td>
+<td>-</td>
+<td>当前处理的记录本身</td>
+</tr>
+<tr>
+<td>$<em>n</em></td>
+<td>-</td>
+<td>当前记录的第<em>n</em>字段</td>
+</tr>
+<tr>
+<td>FS</td>
+<td>Field Separator</td>
+<td>字段分界符</td>
+</tr>
+<tr>
+<td>NR</td>
+<td>Number of Records</td>
+<td>当前处理的记录总数</td>
+</tr>
+<tr>
+<td>NF</td>
+<td>Number of Fields</td>
+<td>当前记录的字段总数</td>
+</tr>
+<tr>
+<td>OFS</td>
+<td>Output Field Separator</td>
+<td>输出字段分界符</td>
+</tr>
+<tr>
+<td>ORS</td>
+<td>Output Record Separator</td>
+<td>输出记录分界符</td>
+</tr>
+</tbody>
+</table>
+<p>如果想要了解全部的内建变量，可以使用<code>man awk</code>自行查看</p>
+<h3 id="文本操作一般形式-">文本操作一般形式</h3>
+<p><code>awk</code>进行文本操作的语句可以十分复杂，但一般形式都是<code>condition {action}</code>，即首先使用<code>condition</code>对该条记录进行判断，如果判断结果为<code>true</code>就使用<code>action</code>对该条记录进行处理。</p>
+<p>上面我们见到的<code>condition</code>都是空的，这就代表对所有记录进行处理。并且，为了能够先于所有记录做一些预处理，例如内建变量的处理等操作，可以使用<code>BEGIN</code>作为相应的条件，与之对应的可以使用<code>END</code>作为所有记录处理完后的后续处理条件。综上，一条完整的<code>awk</code>命令形式应该为：</p>
+<div class="highlight"><pre class="chroma"><code class="language-shell" data-lang="shell">$ awk <span class="s1">&#39;BEGIN{pre-action} condition1{action1} condition2{action2} ... END{post-action}&#39;</span>
+</code></pre></div><h2 id="渐入佳境-">渐入佳境</h2>
+<p>了解了内建变量和一般操作形式之后，就处理条件和处理方式就有更多的变化了。</p>
+<p>首先，<code>condition</code>的存在是为了让我们能够选择自己想要处理的记录，基本可以从记录数和字段内容进行筛选，下面给出几个比较典型的例子：</p>
+<ol>
+<li>从第n条记录开始进行处理</li>
+<li>仅处理奇/偶数条记录</li>
+<li>当某个字段的值为某定值时处理</li>
+<li>当某个字段匹配某个正则表达式时处理</li>
+</ol>
+<p>而对于<code>action</code>而言也能够作除了打印之外的其他处理，几个常见的应用场景：</p>
+<ol>
+<li>对某个数字字段进行累加、求平均等</li>
+<li>统计某个字段在指定范围中出现的次数</li>
+</ol>
+<h3 id="等值匹配和条件逻辑运算-">等值匹配和条件逻辑运算</h3>
+<p>等值匹配多用内建变量进行，我们看一看原始本文：</p>
+<div class="highlight"><pre class="chroma"><code class="language-shell" data-lang="shell">$ netstat -antu 
+Active Internet connections <span class="o">(</span>servers and established<span class="o">)</span>
+Proto Recv-Q Send-Q Local Address           Foreign Address         State      
+tcp        <span class="m">0</span>      <span class="m">0</span> 127.0.0.1:6379          0.0.0.0:*               LISTEN     
+tcp        <span class="m">0</span>      <span class="m">0</span> 0.0.0.0:22              0.0.0.0:*               LISTEN     
+tcp        <span class="m">0</span>      <span class="m">0</span> 10.0.2.15:22            10.0.2.2:46030          ESTABLISHED
+tcp6       <span class="m">0</span>      <span class="m">0</span> :::33060                :::*                    LISTEN     
+tcp6       <span class="m">0</span>      <span class="m">0</span> :::3306                 :::*                    LISTEN     
+tcp6       <span class="m">0</span>      <span class="m">0</span> :::22                   :::*                    LISTEN     
+udp        <span class="m">0</span>      <span class="m">0</span> 0.0.0.0:68              0.0.0.0:*        
+</code></pre></div><p>首先，我们只需要从第3行记录开始的数据</p>
+<div class="highlight"><pre class="chroma"><code class="language-shell" data-lang="shell">$ netstat -antu <span class="p">|</span> awk <span class="s1">&#39;NR&gt;2{print $0}&#39;</span>
+tcp        <span class="m">0</span>      <span class="m">0</span> 127.0.0.1:6379          0.0.0.0:*               LISTEN     
+tcp        <span class="m">0</span>      <span class="m">0</span> 0.0.0.0:22              0.0.0.0:*               LISTEN     
+tcp        <span class="m">0</span>      <span class="m">0</span> 10.0.2.15:22            10.0.2.2:46030          ESTABLISHED
+tcp6       <span class="m">0</span>      <span class="m">0</span> :::33060                :::*                    LISTEN     
+tcp6       <span class="m">0</span>      <span class="m">0</span> :::3306                 :::*                    LISTEN     
+tcp6       <span class="m">0</span>      <span class="m">0</span> :::22                   :::*                    LISTEN     
+udp        <span class="m">0</span>      <span class="m">0</span> 0.0.0.0:68              0.0.0.0:*  
+</code></pre></div><p>其次，在上面的基础上我们仅需要在LISTEN状态下的连接记录</p>
+<div class="highlight"><pre class="chroma"><code class="language-shell" data-lang="shell">$ netstat -antu <span class="p">|</span> awk <span class="s1">&#39;NR&gt;2 &amp;&amp; $NF==&#34;LISTEN&#34;{print $0}&#39;</span>
+tcp        <span class="m">0</span>      <span class="m">0</span> 127.0.0.1:6379          0.0.0.0:*               LISTEN     
+tcp        <span class="m">0</span>      <span class="m">0</span> 0.0.0.0:22              0.0.0.0:*               LISTEN     
+tcp6       <span class="m">0</span>      <span class="m">0</span> :::33060                :::*                    LISTEN     
+tcp6       <span class="m">0</span>      <span class="m">0</span> :::3306                 :::*                    LISTEN     
+tcp6       <span class="m">0</span>      <span class="m">0</span> :::22                   :::*                    LISTEN  
+</code></pre></div><h3 id="正则表达式匹配--">正则表达式匹配 </h3>
+<p>正则表达式进行字段匹配难的不是<code>awk</code>的语法，而是正则表达式本身，<code>awk</code>的正则表达式匹配使用<code>~</code>作为关系运算符，当不匹配时使用<code>!~</code>，运算符左边为变量，右边为<code>/Eregex/</code>，其中Eregex为正则表达式。举个栗子：</p>
+<div class="highlight"><pre class="chroma"><code class="language-shell" data-lang="shell">netstat -antu <span class="p">|</span> awk <span class="s1">&#39;NR&gt;2 &amp;&amp; $1 ~ /tcp/ {print $0}&#39;</span>
+tcp        <span class="m">0</span>      <span class="m">0</span> 127.0.0.1:6379          0.0.0.0:*               LISTEN     
+tcp        <span class="m">0</span>      <span class="m">0</span> 0.0.0.0:22              0.0.0.0:*               LISTEN     
+tcp        <span class="m">0</span>      <span class="m">0</span> 10.0.2.15:22            10.0.2.2:46030          ESTABLISHED
+tcp6       <span class="m">0</span>      <span class="m">0</span> :::33060                :::*                    LISTEN     
+tcp6       <span class="m">0</span>      <span class="m">0</span> :::3306                 :::*                    LISTEN     
+tcp6       <span class="m">0</span>      <span class="m">0</span> :::22                   :::*                    LISTEN     
+</code></pre></div><p>这个例子中匹配了所有使用tcp协议的连接信息，如果仅需要使用了ipv4的tcp连接，则需要将表达式改为如下：</p>
+<div class="highlight"><pre class="chroma"><code class="language-shell" data-lang="shell">$ netstat -antu <span class="p">|</span> awk <span class="s1">&#39;NR&gt;2 &amp;&amp; $1 ~ /^tcp$/ {print $0}&#39;</span>
+tcp        <span class="m">0</span>      <span class="m">0</span> 127.0.0.1:6379          0.0.0.0:*               LISTEN     
+tcp        <span class="m">0</span>      <span class="m">0</span> 0.0.0.0:22              0.0.0.0:*               LISTEN     
+tcp        <span class="m">0</span>      <span class="m">0</span> 10.0.2.15:22            10.0.2.2:46030          ESTABLISHED
+</code></pre></div><h3 id="字段统计-">字段统计</h3>
+<p>这次使用的原始文本为一个班级的成绩单：</p>
+<div class="highlight"><pre class="chroma"><code class="language-shell" data-lang="shell">		chinese		math		english
+jin		83			93			<span class="m">75</span>
+mu		67			95			<span class="m">77</span>
+shui	76			94			<span class="m">60</span>
+huo		88			75			<span class="m">89</span>
+tu		76			68			<span class="m">81</span>
+</code></pre></div><p>首先我们想要得到班级单科的平均分，命令如下：</p>
+<div class="highlight"><pre class="chroma"><code class="language-shell" data-lang="shell">$ cat scores  <span class="p">|</span> awk <span class="s1">&#39;BEGIN{chineseSum = 0; mathSum = 0; englishSum = 0} NR&gt;1{chineseSum += $2; mathSum += $3; englishSum += $4} END{print chineseSum/(NR-1), mathSum/(NR-1), englishSum/(NR-1)}&#39;</span>
+<span class="m">78</span> <span class="m">85</span> 76.4
+</code></pre></div><p>其次，我们想得到每位同学的全科平均分，最直接了当的命令如下：</p>
+<div class="highlight"><pre class="chroma"><code class="language-shell" data-lang="shell">cat scores <span class="p">|</span> awk <span class="s1">&#39;NR&gt;1{score[$1]=$2; score[$1]+=$3; score[$1]+=$4; score[$1]/=(NF-1)}END{for(name in score){printf(&#34;%s\t%d\n&#34;, name, score[name])}}&#39;</span>
+shui 	<span class="m">76</span>
+jin 	<span class="m">83</span>
+mu 	 	<span class="m">79</span>
+huo 	<span class="m">84</span>
+tu 	 	<span class="m">75</span>
+</code></pre></div><h3 id="awk独立脚本文件-">awk独立脚本文件</h3>
+<p>上述代码都有一个十分致命的问题，那就是可读性十分差，这是由于大量逻辑混为一行所致，而解决这个问题的方法就是将<code>awk</code>中的逻辑写为一个单独的脚本，上述的命令写为脚本后分别如下：</p>
+<div class="highlight"><pre class="chroma"><code class="language-shell" data-lang="shell">$ cat subject-average.awk 
+<span class="c1">#!/usr/bin/awk -f</span>
+<span class="c1"># 单科平均分</span>
+BEGIN <span class="o">{</span>
+	<span class="nv">chineseSum</span> <span class="o">=</span> <span class="m">0</span>
+	<span class="nv">mathSum</span> <span class="o">=</span> <span class="m">0</span>
+	<span class="nv">englishSum</span> <span class="o">=</span> <span class="m">0</span>
+<span class="o">}</span>
+NR &gt; <span class="m">1</span> <span class="o">{</span>
+	<span class="nv">chineseSum</span> <span class="o">+=</span> <span class="nv">$2</span>
+	<span class="nv">mathSum</span> <span class="o">+=</span> <span class="nv">$3</span>
+	<span class="nv">englishSum</span> <span class="o">+=</span> <span class="nv">$4</span>
+<span class="o">}</span>
+END <span class="o">{</span>
+	print chineseSum/<span class="o">(</span>NR-1<span class="o">)</span>, mathSum/<span class="o">(</span>NR-1<span class="o">)</span>, englishSum/<span class="o">(</span>NR-1<span class="o">)</span>
+<span class="o">}</span>
+</code></pre></div><div class="highlight"><pre class="chroma"><code class="language-shell" data-lang="shell">$ cat ./student-average.awk 
+<span class="c1">#!/usr/bin/awk -f</span>
+<span class="c1"># 单人全科平均分</span>
+
+NR &gt; <span class="m">1</span> <span class="o">{</span>
+	score<span class="o">[</span><span class="nv">$1</span><span class="o">]</span> <span class="o">=</span> <span class="nv">$2</span>
+	score<span class="o">[</span><span class="nv">$1</span><span class="o">]</span> +<span class="o">=</span> <span class="nv">$3</span>
+	score<span class="o">[</span><span class="nv">$1</span><span class="o">]</span> +<span class="o">=</span> <span class="nv">$4</span>
+	score<span class="o">[</span><span class="nv">$1</span><span class="o">]</span> /<span class="o">=</span> <span class="o">(</span>NF-1<span class="o">)</span>
+<span class="o">}</span>
+END <span class="o">{</span>
+	<span class="k">for</span><span class="o">(</span>name in score<span class="o">)</span> <span class="o">{</span>
+		printf<span class="o">(</span><span class="s2">&#34;%s\t%d\n&#34;</span>, name, score<span class="o">[</span>name<span class="o">])</span>
+	<span class="o">}</span>
+<span class="o">}</span>
+</code></pre></div><p>修改完成后的代码可读性大大提升，并且作为脚本独立存在的好处就是以后不用反复写相同的代码进行统计操作了。脚本的运行方式有两种：</p>
+<div class="highlight"><pre class="chroma"><code class="language-shell" data-lang="shell">$ chmod +x subject-average.awk
+$ cat scores <span class="p">|</span> ./subject-average.awk
+<span class="m">78</span> <span class="m">85</span> 76.4
+$ cat scores <span class="p">|</span> awk -f subject-average.awk 
+<span class="m">78</span> <span class="m">85</span> 76.4
+</code></pre></div><h3 id="关联数组-">关联数组</h3>
+<p>数组这个概念相信大家都不陌生吧，对于存储一堆拥有这相同属性和作用的信息时，数组往往是极为有用的。<code>awk</code>中的数组是一种名为关联数组的结构，它的实际作用更加接近于python当中的字典而非Java或者C中的数组。其特性包括：</p>
+<ol>
+<li>无须定义，直接使用，自动扩容</li>
+<li>数组索引可以为字符串也可以是数值类型</li>
+</ol>
+<p>上述脚本中，<code>score</code>便是使用了第1字段，也就是学生的姓名作为数组索引，并存储了该名学生的平均分，最后再取出并打印。</p>
+<h2 id="总结-">总结</h2>
+<p><code>awk</code>为我们提供了一系列按行划分字段，对每行记录进行筛选、匹配，并对字段进行运算、输出的文本操作。通过这些操作，我们能够完成逻辑十分复杂的文本处理脚本。</p>
+<p><code>awk</code>的功能远不止如此，其中包含了大量的内建变量和内建函数，感兴趣的小伙伴可以自行翻阅<a href="https://www.gnu.org/software/gawk/manual/gawk.html"target="_blank">GUN awk用户引导手册</a>或查阅相关资料进行学习。</p>
+</article><section class="article labels"><a class="category" href=/categories/shell/>shell</a><a class="tag" href=/tags/shell/>shell</a><a class="tag" href=/tags/awk/>awk</a></section></div>
+<div class="article bottom"></div></section><section id="footer"><div class="footer-wrap">
+    <p class="copyright">©2019 Notepadium.</p>
+    <p class="powerby"><span>Powered by </span><a href="https://gohugo.io" 
+        target="_blank">Hugo</a><span> and the </span><a href="https://themes.gohugo.io/hugo-notepadium/" 
+        target="_blank">Notepadium</a></p>
+</div></section></body>
+
+</html>
