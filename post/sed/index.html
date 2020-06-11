@@ -60,9 +60,9 @@ Flat is worse than nested.Sparse is better than dense.
 <li><code>s</code>命令可以通过更换<em>flag</em>控制替换的深度</li>
 <li><code>sed</code>可以通过<code>;</code>连接多条命令</li>
 </ol>
-<p>通过以上3个功能的组合，我们可以灵活的控制我们想要替换的内容。而<code>sed</code>替换命令的一般形式也就出来了，即<code>[address[,address]][!]s/regex/replacement/[flag]</code>，其中，<em>address</em>表示进行处理的行，*!*表示不使用命令进行处理都是可选参数。而如果去掉<code>s</code>命令的限制，就是<code>sed</code>命令的一般形式<code>[address[,address]][!]command</code>。</p>
+<p>通过以上3个功能的组合，我们可以灵活的控制我们想要替换的内容。而<code>sed</code>替换命令的一般形式也就出来了，即<code>[address1[,address2]][!]s/regex/replacement/[flag]</code>，其中，<em>address</em>表示进行处理的行，!表示不使用命令进行处理都是可选参数。而如果去掉<code>s</code>命令的限制，就是<code>sed</code>命令的一般形式<code>[address1[,address2]][!]command</code>。</p>
 <h2 id="再加一点点限制的替换-">再加一点点限制的替换</h2>
-<p>通过上面的例子，我们了解了<code>sed</code>命令的一般形式，即<code>[address[,address]][!]command</code>。而在上面的例子里面，我们通过指定<em>address</em>的数值去控制替换的行，但如果我们没有具体的行号怎么办？为了解决这个问题，<code>sed</code>提供了基于正则匹配去选择<em>address</em>以及通过给定<em>address</em>选择相对行的方法。</p>
+<p>通过上面的例子，我们了解了<code>sed</code>命令的一般形式，即<code>[address1[,address2]][!]command</code>。而在上面的例子里面，我们通过指定<em>address</em>的数值去控制替换的行，但如果我们没有具体的行号怎么办？为了解决这个问题，<code>sed</code>提供了基于正则匹配去选择<em>address</em>以及通过给定<em>address</em>选择相对行的方法。</p>
 <p>仍然是最开始的文本，这次我们的要求是当前行存在<em>complex</em>出现时，将当前行中所有的<em>better</em>进行替换：</p>
 <div class="highlight"><pre class="chroma"><code class="language-shell" data-lang="shell">$ cat python.txt <span class="p">|</span> sed <span class="s1">&#39;/complex/s/better/worse/g&#39;</span>
 Beautiful is better than ugly.Explicit is better than implicit.
