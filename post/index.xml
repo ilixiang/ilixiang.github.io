@@ -7,10 +7,20 @@
     <generator>Hugo -- gohugo.io</generator>
     <language>zh-cn</language>
     <copyright>©2019 Notepadium.</copyright>
-    <lastBuildDate>Wed, 10 Jun 2020 23:15:17 +0800</lastBuildDate>
+    <lastBuildDate>Fri, 12 Jun 2020 14:58:07 +0800</lastBuildDate>
     
         <atom:link href="/post/index.xml" rel="self" type="application/rss+xml" />
     
+    
+    <item>
+      <title>bash---变量及变量操作</title>
+      <link>/post/bash-variable/</link>
+      <pubDate>Fri, 12 Jun 2020 14:58:07 +0800</pubDate>
+      
+      <guid>/post/bash-variable/</guid>
+      <description>基本变量操作 变量声明 bash中的变量有2个特点： 变量不存在类型 变量的作用域默认为全局 这两个特点决定了bash中的变量可以在你想要的任何时候定义，并且不会因为定义在循环或者条件分支中而失效。比较特殊的例子就是数组类型： #!/bin/bash # test.sh arr[0]=&amp;#34;hello&amp;#34; arr[1]=&amp;#34;world&amp;#34; echo ${arr[0]} echo ${arr[1]} #------------------------ $ ./test.sh hello world 你可以不用声明这是一个数组，然后直接</description>
+      
+    </item>
     
     <item>
       <title>sed学习笔记</title>

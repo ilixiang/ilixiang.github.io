@@ -101,7 +101,7 @@ redis use /bin/false as default shell
 <tr>
 <td>FS</td>
 <td>Field Separator</td>
-<td>字段分界符</td>
+<td>字段分界符（正则表达式）</td>
 </tr>
 <tr>
 <td>NR</td>
@@ -123,8 +123,14 @@ redis use /bin/false as default shell
 <td>Output Record Separator</td>
 <td>输出记录分界符</td>
 </tr>
+<tr>
+<td>RS</td>
+<td>Record Separator</td>
+<td>记录分界符（正则表达式）</td>
+</tr>
 </tbody>
 </table>
+<p>比较有趣的是<code>FS</code>和<code>RS</code>可以使用正则表达式，这也意味着可以使用字符集去分割相应的记录，灵活使用可以做很多其他的事情。</p>
 <p>如果想要了解全部的内建变量，可以使用<code>man awk</code>自行查看</p>
 <h3 id="文本操作一般形式-">文本操作一般形式</h3>
 <p><code>awk</code>进行文本操作的语句可以十分复杂，但一般形式都是<code>condition {action}</code>，即首先使用<code>condition</code>对该条记录进行判断，如果判断结果为<code>true</code>就使用<code>action</code>对该条记录进行处理。</p>

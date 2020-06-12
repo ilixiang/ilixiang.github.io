@@ -1,0 +1,310 @@
+<!DOCTYPE html>
+<html lang="en"><meta charset="utf-8"><meta name="generator" content="Hugo 0.68.3" /><meta name="viewport" content="width=device-width,initial-scale=1,viewport-fit=cover">
+<meta name="color-scheme" content="light dark">
+<meta name="supported-color-schemes" content="light dark"><title>bash---变量及变量操作&nbsp;&ndash;&nbsp;三斜求积术</title><link rel="stylesheet" href="/css/core.min.802aa67397694ca5d7cacc2140e5e8fcb52d3add493941c161a3c4d2d5da57e3ca230e49da9cc38312e9698b71ef4c3a.css" integrity="sha384-gCqmc5dpTKXXyswhQOXo/LUtOt1JOUHBYaPE0tXaV&#43;PKIw5J2pzDgxLpaYtx70w6"><meta name="twitter:card" content="summary" />
+<meta name="twitter:title" content="bash---变量及变量操作" /><body><section id="header">
+    <div class="header wrap"><span class="header left-side"><a class="site home" href="/"><span class="site name">三斜求积术</span></a></span>
+        <span class="header right-side"><div class="nav wrap"><nav class="nav"><a class="nav item" href="/categories/">Categories</a><a class="nav item" href="/tags/">Tags</a><a class="nav item" href="https://gohugo%2eio/"target="_blank">Hugo</a></nav></div></span></div><div class="site slogan"><span class="title">Slow is Fast. Less is More. Code for Fun.</span></div></section><section id="content"><div class="article-container"><section class="article header">
+    <h1 class="article title">bash---变量及变量操作</h1><p class="article date">Friday, June 12, 2020</p></section><article class="article markdown-body"><p><img  src="/img/bash.jpeg"
+        alt="bash"/></p>
+<h2 id="基本变量操作-">基本变量操作</h2>
+<h3 id="变量声明-">变量声明</h3>
+<p>bash中的变量有2个特点：</p>
+<ol>
+<li>变量不存在类型</li>
+<li>变量的作用域默认为全局</li>
+</ol>
+<p>这两个特点决定了bash中的变量可以在你想要的任何时候定义，并且不会因为定义在循环或者条件分支中而失效。比较特殊的例子就是数组类型：</p>
+<div class="highlight"><pre class="chroma"><code class="language-shell" data-lang="shell"><span class="cp">#!/bin/bash
+</span><span class="cp"></span><span class="c1"># test.sh</span>
+
+arr<span class="o">[</span>0<span class="o">]=</span><span class="s2">&#34;hello&#34;</span>
+arr<span class="o">[</span>1<span class="o">]=</span><span class="s2">&#34;world&#34;</span>
+
+<span class="nb">echo</span> <span class="si">${</span><span class="nv">arr</span><span class="p">[0]</span><span class="si">}</span>
+<span class="nb">echo</span> <span class="si">${</span><span class="nv">arr</span><span class="p">[1]</span><span class="si">}</span>
+
+<span class="c1">#------------------------</span>
+$ ./test.sh
+hello
+world
+</code></pre></div><p>你可以不用声明这是一个数组，然后直接往里面塞东西，十分方便。</p>
+<p>即使如此，bash依然提供<code>declare</code>和<code>typeset</code>两个内建命令去声明变量的类型，当你声明了变量的类型之后，对这个变量的赋值就会被限制，举个栗子：</p>
+<div class="highlight"><pre class="chroma"><code class="language-shell" data-lang="shell"><span class="cp">#!/bin/bash
+</span><span class="cp"></span><span class="c1"># test.sh</span>
+
+<span class="c1"># declare an integer variable</span>
+<span class="nb">declare</span> -i <span class="nv">arr</span><span class="o">=</span><span class="m">3</span>
+
+<span class="c1"># assign string to varialbe</span>
+<span class="nv">arr</span><span class="o">=</span><span class="s2">&#34;hello&#34;</span>
+
+<span class="nb">echo</span> <span class="nv">$arr</span>
+
+<span class="c1">#-------------------</span>
+$ ./test.sh
+<span class="m">0</span>
+</code></pre></div><p>由此可见赋值失败了，比较失望的是没有报错。</p>
+<p>对于变量的声明<code>declare</code>和<code>typeset</code>几乎拥有一样的参数，以下列举几个比较常用的参数：</p>
+<ol>
+<li><code>-i</code>整型变量</li>
+<li><code>-a</code>数组变量</li>
+<li><code>-r</code>只读变量</li>
+<li><code>-x</code>环境变量，等同于<code>export</code></li>
+<li><code>-p</code>查看变量声明的属性</li>
+</ol>
+<h3 id="数组操作-">数组操作</h3>
+<p>数组操作主要是如何在循环中遍历数组，主要有3个办法：</p>
+<ol>
+<li>使用<code>${arr[@]}</code>获取数组中的变量，但由于<code>IFS</code>默认为空白，所以当数组元素的字符串中含有空格时会被分割为2个字符串变量，通过修改<code>IFS='\n'</code>可以修正，但单个元素的字符串中就不能出现\n换行</li>
+<li>使用<code>${#arr[@]}</code>获取数组长度进行遍历，但bash的数组可能存在元素为空的位置</li>
+<li>使用<code>${!arr[@]}</code>获取数组索引序列，不会遇到以上问题，推荐</li>
+</ol>
+<div class="highlight"><pre class="chroma"><code class="language-shell" data-lang="shell"><span class="cp">#!/bin/bash
+</span><span class="cp"></span><span class="c1"># test.sh</span>
+
+<span class="k">for</span> i in <span class="k">$(</span>seq 6<span class="k">)</span><span class="p">;</span> <span class="k">do</span>
+	arr<span class="o">[</span><span class="k">$((</span> i <span class="o">-</span> <span class="m">1</span> <span class="k">))</span><span class="o">]=</span><span class="nv">$i</span>
+<span class="k">done</span>
+
+<span class="nb">echo</span> <span class="s2">&#34;----------\${arr[@]}--------&#34;</span>
+<span class="k">for</span> str in <span class="si">${</span><span class="nv">arr</span><span class="p">[@]</span><span class="si">}</span><span class="p">;</span> <span class="k">do</span>
+	<span class="nb">echo</span> <span class="nv">$str</span>
+<span class="k">done</span>
+
+<span class="nb">echo</span> <span class="s2">&#34;----------\${#arr[@]}--------&#34;</span>
+<span class="nv">i</span><span class="o">=</span><span class="m">0</span>
+<span class="k">while</span> <span class="o">[[</span> <span class="nv">$i</span> &lt; <span class="si">${#</span><span class="nv">arr</span><span class="p">[@]</span><span class="si">}</span> <span class="o">]]</span><span class="p">;</span> <span class="k">do</span>
+	<span class="nb">echo</span> <span class="si">${</span><span class="nv">arr</span><span class="p">[</span><span class="nv">$i</span><span class="p">]</span><span class="si">}</span>
+	<span class="o">((</span> ++i <span class="o">))</span>
+<span class="k">done</span>
+
+<span class="nb">echo</span> <span class="s2">&#34;----------\${!arr[@]}--------&#34;</span>
+<span class="k">for</span> i in <span class="si">${</span><span class="p">!arr[@]</span><span class="si">}</span><span class="p">;</span> <span class="k">do</span>
+	<span class="nb">echo</span> <span class="si">${</span><span class="nv">arr</span><span class="p">[</span><span class="nv">$i</span><span class="p">]</span><span class="si">}</span>
+<span class="k">done</span>
+
+<span class="c1"># -----------------------------------------------</span>
+$ ./test.sh 
+----------<span class="si">${</span><span class="nv">arr</span><span class="p">[@]</span><span class="si">}</span>--------
+<span class="m">1</span>
+<span class="m">2</span>
+<span class="m">3</span>
+<span class="m">4</span>
+<span class="m">5</span>
+<span class="m">6</span>
+----------<span class="si">${#</span><span class="nv">arr</span><span class="p">[@]</span><span class="si">}</span>--------
+<span class="m">1</span>
+<span class="m">2</span>
+<span class="m">3</span>
+<span class="m">4</span>
+<span class="m">5</span>
+<span class="m">6</span>
+----------<span class="si">${</span><span class="p">!arr[@]</span><span class="si">}</span>--------
+<span class="m">1</span>
+<span class="m">2</span>
+<span class="m">3</span>
+<span class="m">4</span>
+<span class="m">5</span>
+<span class="m">6</span>
+</code></pre></div><h3 id="算数运算-">算数运算</h3>
+<p>bash中的变量在大多数情况下是无法和C语言一样直接进行运算的，无论是算数运算还是逻辑运算都要使用相应的语法或者内建命令。</p>
+<p>bash中变量在大多数情况下是无法和C语言一样直接进行运算的，无论是算数运算还是逻辑运算都要使用相应的语法或者内建命令。</p>
+<p>常见的执行算数运算的方法有<code>expr</code>、<code>let</code>、<code>$((expression))</code>、<code>$[expression]</code>这4种，<code>expr</code>属于外部命令，<code>let</code>、<code>$((expression))</code>和<code>$[expression]</code>属于内建的算数拓展，其中<code>$[expression]</code>这种已被声明后续版本会移除而不建议使用。举个栗子：</p>
+<div class="highlight"><pre class="chroma"><code class="language-shell" data-lang="shell"><span class="cp">#!/bin/bash
+</span><span class="cp"></span><span class="c1"># test.sh</span>
+
+<span class="nv">a</span><span class="o">=</span><span class="m">5</span>
+<span class="nv">b</span><span class="o">=</span><span class="m">4</span>
+
+<span class="nv">str</span><span class="o">=</span><span class="s2">&#34;</span><span class="nv">$a</span><span class="s2"> + </span><span class="nv">$b</span><span class="s2">&#34;</span>
+
+<span class="nb">echo</span> <span class="s2">&#34;-----------expr----------&#34;</span>
+<span class="nb">echo</span> <span class="s2">&#34;</span><span class="nv">$a</span><span class="s2"> * </span><span class="nv">$b</span><span class="s2"> = </span><span class="k">$(</span>expr <span class="nv">$a</span> <span class="se">\*</span> <span class="nv">$b</span><span class="k">)</span><span class="s2">&#34;</span>
+<span class="nb">echo</span> <span class="s2">&#34;</span><span class="nv">$a</span><span class="s2"> % </span><span class="nv">$b</span><span class="s2"> = </span><span class="k">$(</span>expr <span class="nv">$a</span> % <span class="nv">$b</span><span class="k">)</span><span class="s2">&#34;</span>
+<span class="nb">echo</span> <span class="s2">&#34;</span><span class="nv">$a</span><span class="s2"> + </span><span class="nv">$b</span><span class="s2"> = </span><span class="k">$(</span>expr <span class="nv">$a</span> + <span class="nv">$b</span><span class="k">)</span><span class="s2">&#34;</span>
+<span class="nb">echo</span> <span class="s2">&#34;</span><span class="nv">$a</span><span class="s2"> + </span><span class="nv">$b</span><span class="s2"> = </span><span class="k">$(</span>expr <span class="nv">$str</span><span class="k">)</span><span class="s2">&#34;</span>
+
+<span class="nb">echo</span> <span class="s2">&#34;-----------let-----------&#34;</span>
+<span class="nb">let</span> <span class="nv">c</span><span class="o">=</span>a*b <span class="nv">d</span><span class="o">=</span>a%b <span class="nv">f</span><span class="o">=</span>a+b <span class="nv">g</span><span class="o">=</span>str
+<span class="nb">echo</span> <span class="s2">&#34;</span><span class="nv">$a</span><span class="s2"> * </span><span class="nv">$b</span><span class="s2"> = </span><span class="nv">$c</span><span class="s2">&#34;</span>
+<span class="nb">echo</span> <span class="s2">&#34;</span><span class="nv">$a</span><span class="s2"> % </span><span class="nv">$b</span><span class="s2"> = </span><span class="nv">$d</span><span class="s2">&#34;</span>
+<span class="nb">echo</span> <span class="s2">&#34;</span><span class="nv">$a</span><span class="s2"> + </span><span class="nv">$b</span><span class="s2"> = </span><span class="nv">$f</span><span class="s2">&#34;</span>
+<span class="nb">echo</span> <span class="s2">&#34;</span><span class="nv">$a</span><span class="s2"> + </span><span class="nv">$b</span><span class="s2"> = </span><span class="nv">$g</span><span class="s2">&#34;</span>
+
+<span class="nb">echo</span> <span class="s2">&#34;----------\$(())---------&#34;</span>
+<span class="nb">echo</span> <span class="s2">&#34;</span><span class="nv">$a</span><span class="s2"> * </span><span class="nv">$b</span><span class="s2"> = </span><span class="k">$((</span>a*b<span class="k">))</span><span class="s2">&#34;</span>
+<span class="nb">echo</span> <span class="s2">&#34;</span><span class="nv">$a</span><span class="s2"> % </span><span class="nv">$b</span><span class="s2"> = </span><span class="k">$((</span>a%b<span class="k">))</span><span class="s2">&#34;</span>
+<span class="nb">echo</span> <span class="s2">&#34;</span><span class="nv">$a</span><span class="s2"> + </span><span class="nv">$b</span><span class="s2"> = </span><span class="k">$((</span>a+b<span class="k">))</span><span class="s2">&#34;</span>
+<span class="nb">echo</span> <span class="s2">&#34;</span><span class="nv">$a</span><span class="s2"> + </span><span class="nv">$b</span><span class="s2"> = </span><span class="k">$((</span>str<span class="k">))</span><span class="s2">&#34;</span>
+
+<span class="nb">echo</span> <span class="s2">&#34;----------(())-----------&#34;</span>
+<span class="o">((</span><span class="nv">c</span><span class="o">=</span>a-b,d<span class="o">=</span>a/b,f<span class="o">=</span>a**b,g<span class="o">=</span>str<span class="o">))</span>
+<span class="nb">echo</span> <span class="s2">&#34;</span><span class="nv">$a</span><span class="s2"> - </span><span class="nv">$b</span><span class="s2"> = </span><span class="nv">$c</span><span class="s2">&#34;</span>
+<span class="nb">echo</span> <span class="s2">&#34;</span><span class="nv">$a</span><span class="s2"> / </span><span class="nv">$b</span><span class="s2"> = </span><span class="nv">$d</span><span class="s2">&#34;</span>
+<span class="nb">echo</span> <span class="s2">&#34;</span><span class="nv">$a</span><span class="s2"> ** </span><span class="nv">$b</span><span class="s2"> = </span><span class="nv">$f</span><span class="s2">&#34;</span>
+<span class="nb">echo</span> <span class="s2">&#34;</span><span class="nv">$a</span><span class="s2"> + </span><span class="nv">$b</span><span class="s2"> = </span><span class="nv">$g</span><span class="s2">&#34;</span>
+
+<span class="c1">#------------------------------</span>
+-----------expr----------
+<span class="m">5</span> * <span class="nv">4</span> <span class="o">=</span> <span class="m">20</span>
+<span class="m">5</span> % <span class="nv">4</span> <span class="o">=</span> <span class="m">1</span>
+<span class="m">5</span> + <span class="nv">4</span> <span class="o">=</span> <span class="m">9</span>
+<span class="m">5</span> + <span class="nv">4</span> <span class="o">=</span> <span class="m">9</span>
+-----------let-----------
+<span class="m">5</span> * <span class="nv">4</span> <span class="o">=</span> <span class="m">20</span>
+<span class="m">5</span> % <span class="nv">4</span> <span class="o">=</span> <span class="m">1</span>
+<span class="m">5</span> + <span class="nv">4</span> <span class="o">=</span> <span class="m">9</span>
+<span class="m">5</span> + <span class="nv">4</span> <span class="o">=</span> <span class="m">9</span>
+----------<span class="k">$(())</span>---------
+<span class="m">5</span> * <span class="nv">4</span> <span class="o">=</span> <span class="m">20</span>
+<span class="m">5</span> % <span class="nv">4</span> <span class="o">=</span> <span class="m">1</span>
+<span class="m">5</span> + <span class="nv">4</span> <span class="o">=</span> <span class="m">9</span>
+<span class="m">5</span> + <span class="nv">4</span> <span class="o">=</span> <span class="m">9</span>
+----------<span class="o">(())</span>-----------
+<span class="m">5</span> - <span class="nv">4</span> <span class="o">=</span> <span class="m">1</span>
+<span class="m">5</span> / <span class="nv">4</span> <span class="o">=</span> <span class="m">1</span>
+<span class="m">5</span> ** <span class="nv">4</span> <span class="o">=</span> <span class="m">625</span>
+<span class="m">5</span> + <span class="nv">4</span> <span class="o">=</span> <span class="m">9</span>
+</code></pre></div><p>就以上的例子而言，我觉得最好用的算数计算方法是<code>$(())</code></p>
+<ol>
+<li><code>expr</code>的缺点在于构造表达式的时候必须读取变量，并且在运算符和变量之间必须有空白，并且它支持的运算是最少的，且使用乘法需要对<code>*</code>进行转义</li>
+<li><code>let</code>相当于<code>(())</code>，他执行的表达式大多需要进行赋值操作，并且它能做到的<code>$(())</code>都能做到</li>
+<li><code>$(())</code>功能上几乎无可挑剔，拥有前面两者的全部功能，并且<a href="https://stackoverflow.com/questions/22389570/let-vs-expr-vs-double-parenthesis-arithmetic-in-shell"target="_blank">定义在POSIX标准中，可移植性最好</a></li>
+</ol>
+<h3 id="逻辑运算-">逻辑运算</h3>
+<p>bash中提供的逻辑运算方法有<code>test</code>、<code>[ expression ]</code>以及<code>[[ expression ]]</code>三种。前两者属于内建方式，定义在POSIX标准当中，而第三种是bash中的关键字，可移植性较低，但却是最安全的。</p>
+<div class="highlight"><pre class="chroma"><code class="language-shell" data-lang="shell">$ <span class="nv">str1</span><span class="o">=</span><span class="s2">&#34;a&#34;</span>
+$ <span class="nv">str2</span><span class="o">=</span><span class="s2">&#34;b&#34;</span>
+$ <span class="o">[</span> <span class="nv">$str1</span> <span class="o">=</span> <span class="nv">$str2</span> <span class="o">]</span> <span class="o">||</span> <span class="nb">echo</span> <span class="s2">&#34;false&#34;</span>
+<span class="nb">false</span>
+$ <span class="nb">unset</span> str1
+$ <span class="o">[</span> <span class="nv">$str1</span> <span class="o">=</span> <span class="nv">$str2</span> <span class="o">]</span> <span class="o">||</span> <span class="nb">echo</span> <span class="s2">&#34;false&#34;</span>
+-bash: <span class="o">[</span>: <span class="o">=</span>: unary operator expected
+<span class="nb">false</span>
+$ <span class="o">[[</span> <span class="nv">$str1</span> <span class="o">=</span> <span class="nv">$str2</span> <span class="o">]]</span> <span class="o">||</span> <span class="nb">echo</span> <span class="s2">&#34;false&#34;</span>
+<span class="nb">false</span>
+$ <span class="nv">str1</span><span class="o">=</span><span class="s2">&#34;a bcd&#34;</span>
+$ <span class="o">[</span> <span class="nv">$str1</span> <span class="o">=</span> <span class="nv">$str2</span> <span class="o">]</span> <span class="o">||</span> <span class="nb">echo</span> <span class="s2">&#34;false&#34;</span>
+-bash: <span class="o">[</span>: too many arguments
+<span class="nb">false</span>
+$ <span class="o">[</span> <span class="s2">&#34;</span><span class="nv">$str1</span><span class="s2">&#34;</span> <span class="o">=</span> <span class="s2">&#34;</span><span class="nv">$str2</span><span class="s2">&#34;</span> <span class="o">]</span> <span class="o">||</span> <span class="nb">echo</span> <span class="s2">&#34;false&#34;</span>
+<span class="nb">false</span>
+$ <span class="o">[[</span> <span class="nv">$str1</span> <span class="o">=</span> <span class="nv">$str2</span> <span class="o">]]</span> <span class="o">||</span> <span class="nb">echo</span> <span class="s2">&#34;false&#34;</span>
+<span class="nb">false</span>
+</code></pre></div><p>上述示例说明了为什么使用<code>[ expression ]</code>是不安全的：</p>
+<ol>
+<li>当变量不存在时，会报错</li>
+<li>当字符串中含有空白时，必须使用双引号抱住才能保证正常运行</li>
+</ol>
+<p>除此之外，<code>[[ expression ]]</code>还有支持<code>=</code>使用通配符，<code>&lt;</code>和<code>&gt;</code>字典顺序的大小比较以及<code>=~</code>正则表达式匹配</p>
+<div class="highlight"><pre class="chroma"><code class="language-shell" data-lang="shell">$ <span class="o">[[</span> <span class="nv">abc</span> <span class="o">=</span> a* <span class="o">]]</span> <span class="o">&amp;&amp;</span> <span class="nb">echo</span> <span class="s2">&#34;true&#34;</span>
+<span class="nb">true</span>
+$ <span class="o">[[</span> abc &lt; bc <span class="o">]]</span> <span class="o">&amp;&amp;</span> <span class="nb">echo</span> <span class="s2">&#34;true&#34;</span>
+<span class="nb">true</span>
+$ <span class="o">[[</span> <span class="nv">abc</span> <span class="o">=</span>~ a.* <span class="o">]]</span> <span class="o">&amp;&amp;</span> <span class="nb">echo</span> <span class="s2">&#34;true&#34;</span>
+<span class="nb">true</span>
+</code></pre></div><p>因此，在bash环境下建议使用<code>[[ expression ]]</code>的方式进行逻辑运算</p>
+<h2 id="字符串操作-">字符串操作</h2>
+<p>bash的字符串操作方法大致分为2种：</p>
+<ol>
+<li>使用内建的字符串操作语法</li>
+<li>使用<code>expr</code>命令进行操作</li>
+<li>使用其他命令进行字符串操作，比如<code>awk</code>的内建函数或者<code>sed</code>的<code>s</code>命令等</li>
+</ol>
+<p>而内建的字符串操作必须将字符串存储于变量中才能够使用，因而不适合在交互式的命令行下直接使用。而<code>expr</code>没有这个限制，但能够进行的操作少一些。其次，内建的字符串操作不支持正则表达式，而<code>expr</code>是支持的。</p>
+<h3 id="内建字符串操作-">内建字符串操作</h3>
+<p><code>${#str}</code> 获取<code>$str</code>的长度</p>
+<div class="highlight"><pre class="chroma"><code class="language-shell" data-lang="shell">$ <span class="nv">str</span><span class="o">=</span><span class="s2">&#34;0123456789&#34;</span>
+$ <span class="nb">echo</span> <span class="si">${#</span><span class="nv">str</span><span class="si">}</span>
+<span class="m">10</span>
+</code></pre></div><p><code>${str:index}</code> 从<code>index</code>开始截取<code>$str</code>中的子串至最后。</p>
+<p><code>${str:index:length}</code> 从<code>index</code>开始截取<code>$str</code>中长度为<code>length</code>的字串</p>
+<p>上面的两条语句<code>index</code>皆可以是<strong>负数</strong>，用于表示字符串从后向前的索引</p>
+<div class="highlight"><pre class="chroma"><code class="language-shell" data-lang="shell">$ <span class="nv">str</span><span class="o">=</span><span class="s2">&#34;0123456789&#34;</span>
+$ <span class="nb">echo</span> <span class="si">${</span><span class="nv">str</span><span class="p">:</span><span class="nv">4</span><span class="si">}</span>
+<span class="m">456789</span>
+$ <span class="nb">echo</span> <span class="si">${</span><span class="nv">str</span><span class="p">:</span><span class="nv">4</span><span class="p">:</span><span class="nv">3</span><span class="si">}</span>
+<span class="m">456</span>
+$ <span class="nb">echo</span> <span class="si">${</span><span class="nv">str</span><span class="p">: -2</span><span class="si">}</span> <span class="c1"># 负数这里:和-之间必须有一个空格</span>
+<span class="m">89</span>
+$ <span class="nb">echo</span> <span class="si">${</span><span class="nv">str</span><span class="p">:(-2)</span><span class="si">}</span> <span class="c1"># 也可以用()将这个数括起来</span>
+<span class="m">89</span>
+$ <span class="nb">echo</span> <span class="si">${</span><span class="nv">str</span><span class="p">: -2:</span><span class="nv">1</span><span class="si">}</span>
+<span class="m">8</span>
+</code></pre></div><p><code>${str#$substr}</code>从<code>$str</code>中从左向右移除匹配<code>$substr</code>的最短的部分</p>
+<p><code>${str##$substr}</code>从<code>$str</code>中从左向右移除匹配<code>$substr</code>的最长的部分</p>
+<p><code>${str%$substr}</code>从<code>$str</code>中从右向左移除匹配<code>$substr</code>的最短的部分</p>
+<p><code>${str%%$substr}</code>从<code>$str</code>中从右向左移除匹配<code>$substr</code>的最长的部分</p>
+<p>有点绕，要点有四：</p>
+<ol>
+<li>移除方向。<code>#</code>代表从左向右移除，<code>%</code>代表从右向左移除</li>
+<li>移除长度。<code>#</code>代表能少则少，<code>##</code> 代表能多则多；<code>%</code>代表能少则少，<code>%%</code>代表能多则多</li>
+<li>移除什么。<code>$substr</code>部分可以直接换成字符串，比如从左至右移除字符串<code>0123</code>，可以写成<code>${str#0123}</code>；移除的部分可以使用<strong>通配符</strong>，这也是为什么有最长和最短匹配的原因</li>
+<li>移除起点。必须从第一个字符开始移除，否则不移除</li>
+</ol>
+<div class="highlight"><pre class="chroma"><code class="language-shell" data-lang="shell">$ <span class="nv">str</span><span class="o">=</span><span class="s2">&#34;abcABC123ABCabc&#34;</span>
+$ <span class="nb">echo</span> <span class="si">${</span><span class="nv">str</span><span class="p">#a*c</span><span class="si">}</span>
+ABC123ABCabc
+$ <span class="nb">echo</span> <span class="si">${</span><span class="nv">str</span><span class="p">#a*A</span><span class="si">}</span>
+BC123ABCabc
+$ <span class="nb">echo</span> <span class="si">${</span><span class="nv">str</span><span class="p">##a*A</span><span class="si">}</span>
+BCabc
+$ <span class="nb">echo</span> <span class="si">${</span><span class="nv">str</span><span class="p">%A*c</span><span class="si">}</span>
+abcABC123
+$ <span class="nb">echo</span> <span class="si">${</span><span class="nv">str</span><span class="p">%%A*c</span><span class="si">}</span>
+abc
+$ <span class="nb">echo</span> <span class="si">${</span><span class="nv">str</span><span class="p">#b</span><span class="si">}</span> <span class="c1"># 第一个字符不匹配，不移除</span>
+abcABC123ABCabc
+</code></pre></div><p><code>${str/$substr/$replacement}</code>替换第1个与<code>$substr</code>匹配的部分为<code>$replacement</code></p>
+<p><code>${str//$substr/$replacement}</code>替换所有与<code>$substr</code>匹配的部分为<code>$replacement</code></p>
+<p><code>${str/#$substr/$replacement}</code>如果<code>$substr</code>能从<strong>头</strong>开始匹配<code>$str</code>的一个字串，则将之替换为<code>$replacement</code></p>
+<p><code>${str/%$substr/$replacement}</code>如果<code>$substr</code>能从<strong>尾</strong>开始匹配<code>$str</code>的一个字串，则将之替换为<code>$replacement</code></p>
+<p>同样，这部分的<code>$substr</code>也支持使用通配符，并且能将<code>$substr</code>和<code>$replacement</code>部分直接使用字符串替换</p>
+<div class="highlight"><pre class="chroma"><code class="language-shell" data-lang="shell">$ <span class="nv">str</span><span class="o">=</span><span class="s2">&#34;abcABC123ABCabc&#34;</span>
+$ <span class="nb">echo</span> <span class="si">${</span><span class="nv">str</span><span class="p">/abc/xyz</span><span class="si">}</span>
+xyzABC123ABCabc
+$ <span class="nb">echo</span> <span class="si">${</span><span class="nv">str</span><span class="p">//abc/xyz</span><span class="si">}</span>
+xyzABC123ABCxyz
+$ <span class="nb">echo</span> <span class="si">${</span><span class="nv">str</span><span class="p">/#abc/xyz</span><span class="si">}</span>
+xyzABC123ABCabc
+$ <span class="nb">echo</span> <span class="si">${</span><span class="nv">str</span><span class="p">/#ABC/XYZ</span><span class="si">}</span> <span class="c1"># 无法从头匹配，不替换</span>
+abcABC123ABCabc
+$ <span class="nb">echo</span> <span class="si">${</span><span class="nv">str</span><span class="p">/%abc/xyz</span><span class="si">}</span>
+abcABC123ABCxyz
+$ <span class="nb">echo</span> <span class="si">${</span><span class="nv">str</span><span class="p">/%ABC/XYZ</span><span class="si">}</span> <span class="c1"># 无法从尾匹配，不替换</span>
+abcABC123ABCabc
+</code></pre></div><h3 id="expr字符串操作-"><code>expr</code>字符串操作</h3>
+<p><code>expr length $str</code> 获取<code>$str</code>的长度</p>
+<div class="highlight"><pre class="chroma"><code class="language-shell" data-lang="shell">$ <span class="nv">str</span><span class="o">=</span><span class="s2">&#34;abcABC123ABCabc&#34;</span>
+$ expr length <span class="nv">$str</span>
+<span class="m">15</span>
+</code></pre></div><p><code>expr $str : $regex</code> 获取<code>$str</code>中匹配正则表达式<code>$regex</code>的长度</p>
+<p><code>expr match $str $regex</code> 获取<code>$str</code>中匹配正则表达式<code>$regex</code>的长度</p>
+<div class="highlight"><pre class="chroma"><code class="language-shell" data-lang="shell">$ <span class="nv">str</span><span class="o">=</span><span class="s2">&#34;abcABC123ABCabc&#34;</span>
+$ expr <span class="nv">$str</span> : a.*A
+<span class="m">10</span>
+$ expr match <span class="nv">$str</span> a.*A
+<span class="m">10</span>
+</code></pre></div><p><code>expr substr $str $position $length</code> 获取<code>$str</code>中从<code>$position</code>开始长度为<code>$length</code>的字串，<code>$str</code>中的第一个字符对应的<code>$position</code>为1而不是0</p>
+<div class="highlight"><pre class="chroma"><code class="language-shell" data-lang="shell">$ <span class="nv">str</span><span class="o">=</span><span class="s2">&#34;abcABC123ABCabc&#34;</span>
+$ expr substr <span class="nv">$str</span> <span class="m">4</span> <span class="m">6</span>
+ABC123
+</code></pre></div><p><code>expr index $str $chars</code> 获取<code>$str</code>中首次匹配字符集<code>$chars</code>中任意字符的位置索引</p>
+<div class="highlight"><pre class="chroma"><code class="language-shell" data-lang="shell">$ <span class="nv">str</span><span class="o">=</span><span class="s2">&#34;abcABC123ABCabc&#34;</span>
+$ expr index <span class="nv">$str</span> kaib
+<span class="m">1</span>
+$ expr index <span class="nv">$str</span> kib
+<span class="m">2</span>
+</code></pre></div><p>字符串操作基本能够满足日常使用，但无论是内建表达式或者<code>expr</code>都没有能够支持正则表达式的字符串替换功能，想要做到这点可以使用<code>sed</code>的<code>s</code>命令去做，感兴趣的小伙伴可以查阅相关文档去了解一波。</p>
+<h2 id="总结-">总结</h2>
+<p>bash基础部分其实还有比较多的内容，包括基础语法等部分，但我只写了我不太熟悉的部分，平时直接敲命令敲的比较多，很少写脚本干些啥，今天也算理清了以前比较模糊的一些知识。</p>
+</article><section class="article labels"><a class="category" href=/categories/shell/>shell</a><a class="tag" href=/tags/shell/>shell</a><a class="tag" href=/tags/bash/>bash</a></section></div>
+<div class="article bottom"><section class="article navigation"><p><a class="link" href="/post/sed/"><span class="iconfont icon-article"></span>sed学习笔记</a></p></section></div></section><section id="footer"><div class="footer-wrap">
+    <p class="copyright">©2019 Notepadium.</p>
+    <p class="powerby"><span>Powered by </span><a href="https://gohugo.io" 
+        target="_blank">Hugo</a><span> and the </span><a href="https://themes.gohugo.io/hugo-notepadium/" 
+        target="_blank">Notepadium</a></p>
+</div></section></body>
+
+</html>
