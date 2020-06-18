@@ -7,10 +7,40 @@
     <generator>Hugo -- gohugo.io</generator>
     <language>zh-cn</language>
     <copyright>©2019 Notepadium.</copyright>
-    <lastBuildDate>Fri, 12 Jun 2020 14:58:07 +0800</lastBuildDate>
+    <lastBuildDate>Sat, 13 Jun 2020 10:33:25 +0800</lastBuildDate>
     
         <atom:link href="/tags/index.xml" rel="self" type="application/rss+xml" />
     
+    
+    <item>
+      <title>ComparisonChain</title>
+      <link>/tags/ComparisonChain/</link>
+      <pubDate>Sat, 13 Jun 2020 10:33:25 +0800</pubDate>
+      
+      <guid>/tags/ComparisonChain/</guid>
+      <description></description>
+      
+    </item>
+    
+    <item>
+      <title>Guava</title>
+      <link>/tags/Guava/</link>
+      <pubDate>Sat, 13 Jun 2020 10:33:25 +0800</pubDate>
+      
+      <guid>/tags/Guava/</guid>
+      <description></description>
+      
+    </item>
+    
+    <item>
+      <title>Java</title>
+      <link>/tags/Java/</link>
+      <pubDate>Sat, 13 Jun 2020 10:33:25 +0800</pubDate>
+      
+      <guid>/tags/Java/</guid>
+      <description></description>
+      
+    </item>
     
     <item>
       <title>bash</title>

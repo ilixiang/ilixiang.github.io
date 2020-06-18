@@ -1,0 +1,69 @@
+<!DOCTYPE html>
+<html lang="en"><meta charset="utf-8"><meta name="generator" content="Hugo 0.68.3" /><meta name="viewport" content="width=device-width,initial-scale=1,viewport-fit=cover">
+<meta name="color-scheme" content="light dark">
+<meta name="supported-color-schemes" content="light dark"><title>Guava杂谈 - ComparisonChain&nbsp;&ndash;&nbsp;三斜求积术</title><link rel="stylesheet" href="/css/core.min.802aa67397694ca5d7cacc2140e5e8fcb52d3add493941c161a3c4d2d5da57e3ca230e49da9cc38312e9698b71ef4c3a.css" integrity="sha384-gCqmc5dpTKXXyswhQOXo/LUtOt1JOUHBYaPE0tXaV&#43;PKIw5J2pzDgxLpaYtx70w6"><meta name="twitter:card" content="summary" />
+<meta name="twitter:title" content="Guava杂谈 - ComparisonChain" /><body><section id="header">
+    <div class="header wrap"><span class="header left-side"><a class="site home" href="/"><span class="site name">三斜求积术</span></a></span>
+        <span class="header right-side"><div class="nav wrap"><nav class="nav"><a class="nav item" href="/categories/">Categories</a><a class="nav item" href="/tags/">Tags</a><a class="nav item" href="https://gohugo%2eio/"target="_blank">Hugo</a></nav></div></span></div><div class="site slogan"><span class="title">Slow is Fast. Less is More. Code for Fun.</span></div></section><section id="content"><div class="article-container"><section class="article header">
+    <h1 class="article title">Guava杂谈 - ComparisonChain</h1><p class="article date">Saturday, June 13, 2020</p></section><article class="article markdown-body"><p><img  src="/img/guava.jpeg"
+        alt="guava"/></p>
+<h2 id="comparisonchain-----单例模式状态对象与链式编程"><code>ComparisonChain</code> &mdash; 单例模式、状态对象与链式编程</h2>
+<p><code>ComparisonChain</code>这个类的作用是辅助我们去实现<code>compareTo()</code>方法的，使用方法极为简单</p>
+<div class="highlight"><pre class="chroma"><code class="language-java" data-lang="java"><span class="nd">@Data</span>
+<span class="nd">@AllArgsConstructor</span>
+<span class="kd">public</span> <span class="kd">class</span> <span class="nc">Person</span> <span class="kd">implements</span> <span class="n">Comparable</span><span class="o">&lt;</span><span class="n">Person</span><span class="o">&gt;</span> <span class="o">{</span>
+    <span class="kd">private</span> <span class="n">String</span> <span class="n">name</span><span class="o">;</span>
+    <span class="kd">private</span> <span class="n">Integer</span> <span class="n">age</span><span class="o">;</span>
+
+    <span class="nd">@Override</span>
+    <span class="kd">public</span> <span class="kt">int</span> <span class="nf">compareTo</span><span class="o">(</span><span class="n">Person</span> <span class="n">person</span><span class="o">)</span> <span class="o">{</span>
+        <span class="k">return</span> <span class="n">ComparisonChain</span><span class="o">.</span><span class="na">start</span><span class="o">()</span>
+                <span class="o">.</span><span class="na">compare</span><span class="o">(</span><span class="k">this</span><span class="o">.</span><span class="na">name</span><span class="o">,</span> <span class="n">person</span><span class="o">.</span><span class="na">name</span><span class="o">)</span>
+                <span class="o">.</span><span class="na">compare</span><span class="o">(</span><span class="k">this</span><span class="o">.</span><span class="na">age</span><span class="o">,</span> <span class="n">person</span><span class="o">.</span><span class="na">age</span><span class="o">)</span>
+                <span class="o">.</span><span class="na">result</span><span class="o">();</span>
+    <span class="o">}</span>
+<span class="o">}</span>
+</code></pre></div><p>它的作用是避免了自己手写<code>compareTo()</code>时，为了按一定优先级比较多个成员变量会出现多个重复的<code>if...else...</code>，并且需要在成员为<code>null</code>进行特殊处理。而<code>ComparisonChain</code>被设计为可一条语句写完全部比较逻辑，十分简练，配合JDK原生的<code>Comparator</code>或者Guava的<code>Ordering</code>便能够轻松完成比较的工作。</p>
+<p>以上述代码为例，比较有意思的地方是，我们的需求是希望当对比<code>Person.name</code>不相等时，后面的比较就是无效的，当这些逻辑由我们自己去完成时，我们理所当然会在不等时得到结果并且<code>return</code>。但在<code>ComparisonChain</code>中，显然不可能，因为我们还调用了下一个<code>compare(this.age, person.age)</code>的方法去比较<code>Person.age</code>，那么<code>ComparisonChain</code>是如何做到即使我们调用了但什么事情都没有发生的呢？</p>
+<h3 id="跟踪调查-">跟踪调查</h3>
+<p>我们从<code>start()</code>方法入手，看看它返回了什么东西</p>
+<div class="highlight"><pre class="chroma"><code class="language-java" data-lang="java"><span class="c1">// ComparisonChain::start()
+</span><span class="c1"></span><span class="kd">public</span> <span class="kd">static</span> <span class="n">ComparisonChain</span> <span class="nf">start</span><span class="o">()</span> <span class="o">{</span>
+    <span class="k">return</span> <span class="n">ACTIVE</span><span class="o">;</span>
+<span class="o">}</span>
+</code></pre></div><p>返回了一个名为<code>ACTIVE</code>的<code>ComparisonChain</code>实例，我们看一看这个子类的<code>compare()</code>方法实现</p>
+<div class="highlight"><pre class="chroma"><code class="language-java" data-lang="java"><span class="kd">private</span> <span class="kd">static</span> <span class="kd">final</span> <span class="n">ComparisonChain</span> <span class="n">ACTIVE</span> <span class="o">=</span> <span class="k">new</span> <span class="n">ComparisonChain</span><span class="o">()</span> <span class="o">{</span>
+    <span class="n">ComparisonChain</span> <span class="nf">classify</span><span class="o">(</span><span class="kt">int</span> <span class="n">result</span><span class="o">)</span> <span class="o">{</span>
+        <span class="k">return</span> <span class="n">result</span> <span class="o">&lt;</span> <span class="n">0</span> <span class="o">?</span> <span class="n">ComparisonChain</span><span class="o">.</span><span class="na">LESS</span> <span class="o">:</span> <span class="o">(</span><span class="n">result</span> <span class="o">&gt;</span> <span class="n">0</span> <span class="o">?</span> <span class="n">ComparisonChain</span><span class="o">.</span><span class="na">GREATER</span> <span class="o">:</span> <span class="n">ComparisonChain</span><span class="o">.</span><span class="na">ACTIVE</span><span class="o">);</span>
+    <span class="o">}</span>
+<span class="o">}</span>
+</code></pre></div><p>上述的<code>classify()</code>方法是所有的<code>compare()</code>重载最终调用的一个方法，在本次比较相等时，它返回自己进行下次比较，而当不用进行下次比较时，它根据比较结果返回<code>LESS</code>和<code>GREATER</code>两个对象，最后我们来看一看这两个对象的<code>compare()</code>方法实现吧</p>
+<div class="highlight"><pre class="chroma"><code class="language-java" data-lang="java"><span class="c1">// LESS和GREATER都继承自InactiveComparisonChain
+</span><span class="c1"></span><span class="kd">private</span> <span class="kd">static</span> <span class="kd">final</span> <span class="kd">class</span> <span class="nc">InactiveComparisonChain</span> <span class="kd">extends</span> <span class="n">ComparisonChain</span> <span class="o">{</span>
+    <span class="kd">public</span> <span class="n">ComparisonChain</span> <span class="nf">compare</span><span class="o">(</span><span class="nd">@Nullable</span> <span class="n">Comparable</span> <span class="n">left</span><span class="o">,</span> <span class="nd">@Nullable</span> <span class="n">Comparable</span> <span class="n">right</span><span class="o">)</span> <span class="o">{</span>
+        <span class="k">return</span> <span class="k">this</span><span class="o">;</span>
+    <span class="o">}</span>
+<span class="o">}</span>
+</code></pre></div><p>这下，谜底揭晓了，<code>LESS</code>和<code>GREATER</code>这两个对象在后续的<code>compare()</code>调用中，啥也不干，直接返回自己，从而保证了最后调用<code>result()</code>结果永远不会变。</p>
+<h3 id="整体梳理-">整体梳理</h3>
+<p>我们至上而下重新整理一遍，首先是<code>ComparisonChain</code>的继承结构</p>
+<p><img  src="/img/ComparisonChain.svg"
+        alt="ComparisonChain"/></p>
+<p>继承结构十分简单，总体有以下几点：</p>
+<ol>
+<li><code>ComparisonChain</code>是抽象类</li>
+<li><code>ACTIVE</code>是使用匿名内部类的方式实例化了<code>ComparisonChain</code>，因而在UML中没有相关子类</li>
+<li><code>ACTIVE</code>、<code>LESS</code>以及<code>GREATER</code>都是隶属<code>ComparisonChain</code>的<code>static</code>变量，因而都是单例的</li>
+</ol>
+<p>其次，对于<code>ACTIVE</code>、<code>LESS</code>以及<code>GREATER</code>而言，它们除了是<code>ComparisonChain</code>的实例之外，也同时代表了<code>compare()</code>方法调用结果的<strong>状态</strong>，这也是这个链式设计简洁的关键。</p>
+<p>一般而言，设置相应的状态变量，并将每次调用的结果逐一向下传递，然后调用<code>compare()</code>方法时根据这个状态变量调整行为，这是我最开始认为的实现。这样确实可以实现功能，但这样的实现就要在每次传递状态的时候新建<code>ComparisonChain</code>对象导致复用性减低，而且根据状态变量在<code>compare()</code>中进行<code>if...else...</code> 的判断并不美观，也没有Guava的实现符合“单一职责原则”。</p>
+<p>最后，就是单例模式。单例模式的使用考量，我认为一定程度上会改善对类结构和抽象的设计，为了在多线程之间共享实例，很多时候就必须保证它本身所有的方法是无状态的。</p>
+</article><section class="article labels"><a class="category" href=/categories/Java/>Java</a><a class="tag" href=/tags/Java/>Java</a><a class="tag" href=/tags/Guava/>Guava</a><a class="tag" href=/tags/ComparisonChain/>ComparisonChain</a></section></div>
+<div class="article bottom"><section class="article navigation"><p><a class="link" href="/post/bash-variable/"><span class="iconfont icon-article"></span>bash - 变量及变量操作</a></p></section></div></section><section id="footer"><div class="footer-wrap">
+    <p class="copyright">©2019 Notepadium.</p>
+    <p class="powerby"><span>Powered by </span><a href="https://gohugo.io" 
+        target="_blank">Hugo</a><span> and the </span><a href="https://themes.gohugo.io/hugo-notepadium/" 
+        target="_blank">Notepadium</a></p>
+</div></section></body>
+
+</html>

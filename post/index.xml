@@ -7,13 +7,23 @@
     <generator>Hugo -- gohugo.io</generator>
     <language>zh-cn</language>
     <copyright>©2019 Notepadium.</copyright>
-    <lastBuildDate>Fri, 12 Jun 2020 14:58:07 +0800</lastBuildDate>
+    <lastBuildDate>Sat, 13 Jun 2020 10:33:25 +0800</lastBuildDate>
     
         <atom:link href="/post/index.xml" rel="self" type="application/rss+xml" />
     
     
     <item>
-      <title>bash---变量及变量操作</title>
+      <title>Guava杂谈 - ComparisonChain</title>
+      <link>/post/guava-talk-1/</link>
+      <pubDate>Sat, 13 Jun 2020 10:33:25 +0800</pubDate>
+      
+      <guid>/post/guava-talk-1/</guid>
+      <description>ComparisonChain &amp;mdash; 单例模式、状态对象与链式编程 ComparisonChain这个类的作用是辅助我们去实现compareTo()方法的，使用方法极为简单 @Data @AllArgsConstructor public class Person implements Comparable&amp;lt;Person&amp;gt; { private String name; private Integer age; @Override public int compareTo(Person person) { return ComparisonChain.start() .compare(this.name, person.name) .compare(this.age, person.age) .result(); } } 它的作用是避免了自己手写compareTo()时，为了按一定优先级比较多个成员变量会出</description>
+      
+    </item>
+    
+    <item>
+      <title>bash - 变量及变量操作</title>
       <link>/post/bash-variable/</link>
       <pubDate>Fri, 12 Jun 2020 14:58:07 +0800</pubDate>
       
