@@ -1,0 +1,217 @@
+<!DOCTYPE html>
+<html lang="en"><meta charset="utf-8"><meta name="generator" content="Hugo 0.68.3" /><meta name="viewport" content="width=device-width,initial-scale=1,viewport-fit=cover">
+<meta name="color-scheme" content="light dark">
+<meta name="supported-color-schemes" content="light dark"><title>Guava杂谈 - EventBus&nbsp;&ndash;&nbsp;三斜求积术</title><link rel="stylesheet" href="/css/core.min.802aa67397694ca5d7cacc2140e5e8fcb52d3add493941c161a3c4d2d5da57e3ca230e49da9cc38312e9698b71ef4c3a.css" integrity="sha384-gCqmc5dpTKXXyswhQOXo/LUtOt1JOUHBYaPE0tXaV&#43;PKIw5J2pzDgxLpaYtx70w6"><meta name="twitter:card" content="summary" />
+<meta name="twitter:title" content="Guava杂谈 - EventBus" /><body><section id="header">
+    <div class="header wrap"><span class="header left-side"><a class="site home" href="/"><span class="site name">三斜求积术</span></a></span>
+        <span class="header right-side"><div class="nav wrap"><nav class="nav"><a class="nav item" href="/categories/">Categories</a><a class="nav item" href="/tags/">Tags</a><a class="nav item" href="/about">About</a><a class="nav item" href="https://gohugo%2eio/"target="_blank">Hugo</a></nav></div></span></div><div class="site slogan"><span class="title">Slow is Fast. Less is More. Code for Fun.</span></div></section><section id="content"><div class="article-container"><section class="article header">
+    <h1 class="article title">Guava杂谈 - EventBus</h1><p class="article date">Tuesday, June 23, 2020</p></section><article class="article markdown-body"><p><img  src="/img/guava-event-bus.png"
+        alt="guava-event-bus"/></p>
+<p><code>EventBus</code>俗称“事件总线”。它的作用方式就如上图所示，能够将数据推送到所有需要它的人订阅者手上。它的行为总共分为4步：</p>
+<ol>
+<li><code>Subscriber</code>向<code>EventBus</code>订阅某种<code>Event</code></li>
+<li><code>Publisher</code>向<code>EventBus</code>发送某种<code>Event</code></li>
+<li><code>EventBus</code>将<code>Event</code>送到订阅了它的<code>Subscriber</code>手上</li>
+<li><code>Subscriber</code>执行相应操作</li>
+</ol>
+<p>而在这简单的行为模式中，<code>EventBus</code>又干了多少我们不知道的事呢？</p>
+<h2 id="从观察者模式开始-">从观察者模式开始</h2>
+<p>基于一个对象的动作而引起与之关联的所有对象都做出各自的反应，这个时候我们就会使用到<strong>观察者模式</strong>。</p>
+<p>如果我们将上述<code>EventBus</code>中的事件类型删掉，假定所有的事件就是同一类型，我们就能够很轻松的用观察者模式实现这一功能。</p>
+<div class="highlight"><pre class="chroma"><code class="language-java" data-lang="java"><span class="c1">// CustomEventBus.java
+</span><span class="c1"></span><span class="kd">public</span> <span class="kd">class</span> <span class="nc">CustomEventBus</span> <span class="o">{</span>
+    <span class="kd">private</span> <span class="n">List</span><span class="o">&lt;</span><span class="n">Subscriber</span><span class="o">&gt;</span> <span class="n">subscriberList</span><span class="o">;</span>
+
+    <span class="kd">public</span> <span class="kt">void</span> <span class="nf">subscribe</span><span class="o">(</span><span class="n">Subscriber</span> <span class="n">subscriber</span><span class="o">)</span> <span class="o">{</span>
+        <span class="k">if</span><span class="o">(</span><span class="n">Objects</span><span class="o">.</span><span class="na">isNull</span><span class="o">(</span><span class="n">subscriberList</span><span class="o">))</span> <span class="o">{</span>
+            <span class="n">subscriberList</span> <span class="o">=</span> <span class="n">Lists</span><span class="o">.</span><span class="na">newArrayList</span><span class="o">();</span>
+        <span class="o">}</span>
+        <span class="n">subscriberList</span><span class="o">.</span><span class="na">add</span><span class="o">(</span><span class="n">subscriber</span><span class="o">);</span>
+    <span class="o">}</span>
+
+    <span class="kd">public</span> <span class="kt">void</span> <span class="nf">post</span><span class="o">()</span> <span class="o">{</span>
+        <span class="k">if</span><span class="o">(</span><span class="n">Objects</span><span class="o">.</span><span class="na">isNull</span><span class="o">(</span><span class="n">subscriberList</span><span class="o">))</span> <span class="k">return</span><span class="o">;</span>
+        <span class="n">subscriberList</span><span class="o">.</span><span class="na">forEach</span><span class="o">(</span><span class="n">Subscriber</span><span class="o">::</span><span class="n">update</span><span class="o">);</span>
+    <span class="o">}</span>
+
+<span class="o">}</span>
+<span class="c1">// Subscriber.java
+</span><span class="c1"></span><span class="kd">public</span> <span class="kd">interface</span> <span class="nc">Subscriber</span> <span class="o">{</span>
+    <span class="kd">public</span> <span class="kt">void</span> <span class="nf">update</span><span class="o">();</span>
+<span class="o">}</span>
+<span class="c1">// SubscriberA.java
+</span><span class="c1"></span><span class="kd">public</span> <span class="kd">class</span> <span class="nc">SubscriberA</span> <span class="kd">implements</span> <span class="n">Subscriber</span> <span class="o">{</span>
+    <span class="nd">@Override</span>
+    <span class="kd">public</span> <span class="kt">void</span> <span class="nf">update</span><span class="o">()</span> <span class="o">{</span>
+        <span class="n">System</span><span class="o">.</span><span class="na">out</span><span class="o">.</span><span class="na">println</span><span class="o">(</span><span class="s">&#34;This is subscriber a&#34;</span><span class="o">);</span>
+    <span class="o">}</span>
+<span class="o">}</span>
+<span class="c1">// SubscriberB.java
+</span><span class="c1"></span><span class="kd">public</span> <span class="kd">class</span> <span class="nc">SubscriberB</span> <span class="kd">implements</span> <span class="n">Subscriber</span> <span class="o">{</span>
+    <span class="nd">@Override</span>
+    <span class="kd">public</span> <span class="kt">void</span> <span class="nf">update</span><span class="o">()</span> <span class="o">{</span>
+        <span class="n">System</span><span class="o">.</span><span class="na">out</span><span class="o">.</span><span class="na">println</span><span class="o">(</span><span class="s">&#34;This is subscriber b&#34;</span><span class="o">);</span>
+    <span class="o">}</span>
+<span class="o">}</span>
+<span class="c1">// CustomEventBusTest.java
+</span><span class="c1"></span><span class="kd">public</span> <span class="kd">class</span> <span class="nc">CustomEventBusTest</span> <span class="o">{</span>
+    <span class="nd">@Test</span>
+    <span class="kd">public</span> <span class="kt">void</span> <span class="nf">postTest</span><span class="o">()</span> <span class="o">{</span>
+        <span class="n">CustomEventBus</span> <span class="n">eventBus</span> <span class="o">=</span> <span class="k">new</span> <span class="n">CustomEventBus</span><span class="o">();</span>
+        <span class="n">Subscriber</span> <span class="n">a</span> <span class="o">=</span> <span class="k">new</span> <span class="n">SubscriberA</span><span class="o">();</span>
+        <span class="n">Subscriber</span> <span class="n">b</span> <span class="o">=</span> <span class="k">new</span> <span class="n">SubscriberB</span><span class="o">();</span>
+        <span class="n">eventBus</span><span class="o">.</span><span class="na">subscribe</span><span class="o">(</span><span class="n">a</span><span class="o">);</span>
+        <span class="n">eventBus</span><span class="o">.</span><span class="na">subscribe</span><span class="o">(</span><span class="n">b</span><span class="o">);</span>
+        <span class="n">eventBus</span><span class="o">.</span><span class="na">post</span><span class="o">();</span>
+    <span class="o">}</span>
+<span class="o">}</span>
+<span class="c1">// 输出结果
+</span><span class="c1"></span><span class="n">This</span> <span class="n">is</span> <span class="n">subscriber</span> <span class="n">a</span>
+<span class="n">This</span> <span class="n">is</span> <span class="n">subscriber</span> <span class="n">b</span>
+</code></pre></div><p>以上的实现十分的简单，但从功能上而言没有事件类型的支持而显得没有那么实用，因此，接下来我们尝试让上述代码支持不同的事件类型。</p>
+<h2 id="泛型和反射">泛型和反射</h2>
+<p>如果单纯从整体的功能而言，事件类型的支持有两种方式：</p>
+<ol>
+<li><code>EventBus</code>无差别将所有事件传递给所有<code>Subscriber</code>，<code>Subscriber</code>自身进行类型筛选</li>
+<li><code>EventBus</code>只传递<code>Subscriber</code>订阅的事件类型</li>
+</ol>
+<p>但从实际职责划分来看，筛选<code>Event</code>这件事情不应该在“处理事件”逻辑里，而应该在“分发事件”里。并且，如果<code>Subscriber</code>接收所有类型的事件，毫无疑问会导致整体的处理能力下降。因此，只能选择方法2。</p>
+<p>那么，如何让<code>Subscriber</code>在订阅的时候告知<code>EventBus</code>它所需要的类型并且在<code>Subscriber</code>的<code>update()</code>方法中也要传递不同类型的<code>Event</code>呢？答案就是使用泛型。</p>
+<div class="highlight"><pre class="chroma"><code class="language-java" data-lang="java"><span class="c1">// Subscriber.java
+</span><span class="c1"></span><span class="kd">public</span> <span class="kd">interface</span> <span class="nc">Subscriber</span><span class="o">&lt;</span><span class="n">T</span><span class="o">&gt;</span> <span class="o">{</span>
+    <span class="kd">public</span> <span class="kt">void</span> <span class="nf">update</span><span class="o">(</span><span class="n">T</span> <span class="n">event</span><span class="o">);</span>
+<span class="o">}</span>
+</code></pre></div><p>而在接口使用泛型的前提下，<code>EventBus</code>需要做到三点：</p>
+<ol>
+<li>通过<code>Subscriber</code>子类的实例，获取它所使用的具体类型</li>
+<li>关联<code>Event</code>类型和<code>Subscriber</code>实例</li>
+<li><code>post()</code>方法使用的参数必须能够传递给<code>Subscriber.update()</code>方法</li>
+</ol>
+<div class="highlight"><pre class="chroma"><code class="language-java" data-lang="java"><span class="kd">public</span> <span class="kd">class</span> <span class="nc">CustomEventBus</span> <span class="o">{</span>
+    <span class="c1">// 通过Map管理类和相应Subscriber
+</span><span class="c1"></span>    <span class="kd">private</span> <span class="n">Map</span><span class="o">&lt;</span><span class="n">Class</span><span class="o">&lt;?&gt;,</span> <span class="n">Set</span><span class="o">&lt;</span><span class="n">Subscriber</span><span class="o">&lt;?&gt;&gt;&gt;</span> <span class="n">subscriberMap</span><span class="o">;</span>
+
+    <span class="kd">public</span> <span class="kt">void</span> <span class="nf">subscribe</span><span class="o">(</span><span class="n">Subscriber</span><span class="o">&lt;?&gt;</span> <span class="n">subscriber</span><span class="o">)</span> <span class="o">{</span>
+        <span class="k">if</span><span class="o">(</span><span class="n">Objects</span><span class="o">.</span><span class="na">isNull</span><span class="o">(</span><span class="n">subscriber</span><span class="o">))</span> <span class="k">return</span><span class="o">;</span>
+        <span class="k">if</span><span class="o">(</span><span class="n">Objects</span><span class="o">.</span><span class="na">isNull</span><span class="o">(</span><span class="n">subscriberMap</span><span class="o">))</span> <span class="o">{</span>
+            <span class="n">subscriberMap</span> <span class="o">=</span> <span class="n">Maps</span><span class="o">.</span><span class="na">newHashMap</span><span class="o">();</span>
+        <span class="o">}</span>
+        <span class="c1">// 获取接口所使用的泛型
+</span><span class="c1"></span>        <span class="n">ParameterizedType</span> <span class="n">parameterizedType</span> <span class="o">=</span> <span class="o">(</span><span class="n">ParameterizedType</span><span class="o">)</span><span class="n">subscriber</span><span class="o">.</span><span class="na">getClass</span><span class="o">().</span><span class="na">getGenericInterfaces</span><span class="o">()[</span><span class="n">0</span><span class="o">];</span>
+        <span class="n">Class</span><span class="o">&lt;?&gt;</span> <span class="n">eventClazz</span> <span class="o">=</span> <span class="o">(</span><span class="n">Class</span><span class="o">&lt;?&gt;)</span><span class="n">parameterizedType</span><span class="o">.</span><span class="na">getActualTypeArguments</span><span class="o">()[</span><span class="n">0</span><span class="o">];</span>
+
+        <span class="n">subscriberMap</span><span class="o">.</span><span class="na">putIfAbsent</span><span class="o">(</span><span class="n">eventClazz</span><span class="o">,</span> <span class="n">Sets</span><span class="o">.</span><span class="na">newHashSet</span><span class="o">());</span>
+        <span class="n">subscriberMap</span><span class="o">.</span><span class="na">get</span><span class="o">(</span><span class="n">eventClazz</span><span class="o">).</span><span class="na">add</span><span class="o">(</span><span class="n">subscriber</span><span class="o">);</span>
+    <span class="o">}</span>
+
+    <span class="kd">public</span> <span class="kt">void</span> <span class="nf">post</span><span class="o">(</span><span class="n">Object</span> <span class="n">event</span><span class="o">)</span> <span class="o">{</span>
+        <span class="k">if</span><span class="o">(</span><span class="n">Objects</span><span class="o">.</span><span class="na">isNull</span><span class="o">(</span><span class="n">subscriberMap</span><span class="o">)</span>
+                <span class="o">||</span> <span class="n">Objects</span><span class="o">.</span><span class="na">isNull</span><span class="o">(</span><span class="n">event</span><span class="o">)</span>
+                <span class="o">||</span> <span class="n">Objects</span><span class="o">.</span><span class="na">isNull</span><span class="o">(</span><span class="n">subscriberMap</span><span class="o">.</span><span class="na">get</span><span class="o">(</span><span class="n">event</span><span class="o">.</span><span class="na">getClass</span><span class="o">())))</span>
+            <span class="k">return</span><span class="o">;</span>
+        <span class="n">Set</span><span class="o">&lt;</span><span class="n">Subscriber</span><span class="o">&lt;?&gt;&gt;</span> <span class="n">subscriberSet</span> <span class="o">=</span> <span class="n">subscriberMap</span><span class="o">.</span><span class="na">get</span><span class="o">(</span><span class="n">event</span><span class="o">.</span><span class="na">getClass</span><span class="o">());</span>
+        <span class="k">for</span><span class="o">(</span><span class="n">Subscriber</span><span class="o">&lt;?&gt;</span> <span class="n">subscriber</span> <span class="o">:</span> <span class="n">subscriberSet</span><span class="o">)</span> <span class="o">{</span>
+            <span class="k">try</span> <span class="o">{</span>
+                <span class="c1">// 使用反射调用update方法
+</span><span class="c1"></span>                <span class="n">Method</span> <span class="n">updateMethod</span> <span class="o">=</span> <span class="n">subscriber</span><span class="o">.</span><span class="na">getClass</span><span class="o">().</span><span class="na">getMethod</span><span class="o">(</span><span class="s">&#34;update&#34;</span><span class="o">,</span> <span class="n">event</span><span class="o">.</span><span class="na">getClass</span><span class="o">());</span>
+                <span class="n">updateMethod</span><span class="o">.</span><span class="na">invoke</span><span class="o">(</span><span class="n">subscriber</span><span class="o">,</span> <span class="n">event</span><span class="o">);</span>
+            <span class="o">}</span> <span class="k">catch</span> <span class="o">(</span><span class="n">Exception</span> <span class="n">e</span><span class="o">)</span> <span class="o">{</span>
+                <span class="n">e</span><span class="o">.</span><span class="na">printStackTrace</span><span class="o">();</span>
+            <span class="o">}</span>
+        <span class="o">}</span>
+    <span class="o">}</span>
+<span class="o">}</span>
+</code></pre></div><p>上述代码相较于前一版修改了以下几点：</p>
+<ol>
+<li>存储<code>Subscriber</code>的容器由<code>List</code>改为<code>Map</code></li>
+<li>存储同一类型事件的<code>Subscriber</code>使用了<code>Set</code>，保证一个<code>Subscriber</code>实例仅调用一次<code>upate()</code></li>
+<li>使用反射获取子类具体所选择的泛型，建立事件和<code>Subscriber</code>的关联</li>
+<li>使用反射调用<code>update()</code>方法，使得传入<code>post()</code>的事件能够正确向下转型</li>
+</ol>
+<p>Java的反射的强大之处就体现了出来，它能够是你在很多时候在实现时一定程度上打破类型带来的限制，更加灵活的去进行抽象和统一操作。</p>
+<h2 id="接口和注解-">接口和注解</h2>
+<p>接口是什么？它代表的是一类操作的统一抽象。并且，接口的定义本身也是一种元信息的表示，它能够表示的是实现（子类）是抽象（接口）的一种，这也是多态的来源。但在java中，元信息的表示不仅仅只有继承接口这一种，还有一种方式是通过<strong>注解</strong>去标识某个类、方法、变量的元信息。</p>
+<p>从上述例子上来看，接口作为抽象有时候会显得有些“臃肿”，定义一个接口仅仅就是为了一个方法的抽象，在<code>Subscriber</code>很多的时候需要很多的实现类。与此相类似的例子还有SpringMVC中的<code>Controller</code>接口，固定类型的参数和返回值、一个类映射一个url，而取代这一方式的就是如今的基于注解的<code>Controller</code>映射，不仅能够使url的映射变为方法级，连参数和返回值相较之前也变得更为灵活。因此，<code>EventBus</code>也同样能够通过注解的方式去解决这一问题。</p>
+<div class="highlight"><pre class="chroma"><code class="language-java" data-lang="java"><span class="c1">// Listen.java
+</span><span class="c1"></span><span class="nd">@Retention</span><span class="o">(</span><span class="n">RetentionPolicy</span><span class="o">.</span><span class="na">RUNTIME</span><span class="o">)</span>
+<span class="nd">@Target</span><span class="o">(</span><span class="n">ElementType</span><span class="o">.</span><span class="na">METHOD</span><span class="o">)</span>
+<span class="kd">public</span> <span class="nd">@interface</span> <span class="n">Listener</span> <span class="o">{</span>
+<span class="o">}</span>
+</code></pre></div><p>首先，定义一个用于修饰方法的注解，如果方法使用了这个注解，那么将会在该方法的参数类型的时间传递时被调用。</p>
+<div class="highlight"><pre class="chroma"><code class="language-java" data-lang="java"><span class="kd">public</span> <span class="kd">class</span> <span class="nc">Subscriber</span> <span class="o">{</span>
+
+    <span class="kd">private</span> <span class="n">Object</span> <span class="n">targetObject</span><span class="o">;</span>
+    <span class="kd">private</span> <span class="n">Method</span> <span class="n">updateMethod</span><span class="o">;</span>
+
+    <span class="kd">public</span> <span class="kt">void</span> <span class="nf">setTargetObject</span><span class="o">(</span><span class="n">Object</span> <span class="n">o</span><span class="o">)</span> <span class="o">{</span>
+        <span class="k">this</span><span class="o">.</span><span class="na">targetObject</span> <span class="o">=</span> <span class="n">o</span><span class="o">;</span>
+    <span class="o">}</span>
+
+    <span class="kd">public</span> <span class="kt">void</span> <span class="nf">setUpdateMethod</span><span class="o">(</span><span class="n">Method</span> <span class="n">method</span><span class="o">)</span> <span class="o">{</span>
+        <span class="k">this</span><span class="o">.</span><span class="na">updateMethod</span> <span class="o">=</span> <span class="n">method</span><span class="o">;</span>
+    <span class="o">}</span>
+
+    <span class="kd">public</span> <span class="kt">void</span> <span class="nf">update</span><span class="o">(</span><span class="n">Object</span> <span class="n">event</span><span class="o">)</span> <span class="o">{</span>
+        <span class="k">try</span><span class="o">{</span>
+            <span class="n">updateMethod</span><span class="o">.</span><span class="na">invoke</span><span class="o">(</span><span class="n">targetObject</span><span class="o">,</span> <span class="n">event</span><span class="o">);</span>
+        <span class="o">}</span> <span class="k">catch</span> <span class="o">(</span><span class="n">IllegalAccessException</span> <span class="o">|</span> <span class="n">InvocationTargetException</span> <span class="n">e</span><span class="o">)</span> <span class="o">{</span>
+            <span class="n">e</span><span class="o">.</span><span class="na">printStackTrace</span><span class="o">();</span>
+        <span class="o">}</span>
+    <span class="o">}</span>
+<span class="o">}</span>
+</code></pre></div><p>其次，是方法抽取为单独的类，由于Java的最小单位是类，方法无法脱离类而存在，而<code>Method</code>的调用除了方法对象本身之外，还需要目标对象。通过抽取这个类，我们就能够在每识别到一个符合要求的方法之后，将之抽取为单独的<code>Subscriber</code>对象，最后保存在<code>Map</code>当中。</p>
+<div class="highlight"><pre class="chroma"><code class="language-java" data-lang="java"><span class="c1">// CustomEventBus.java
+</span><span class="c1"></span><span class="kd">public</span> <span class="kd">class</span> <span class="nc">CustomEventBus</span> <span class="o">{</span>
+    <span class="c1">// 通过Map管理类和相应Subscriber
+</span><span class="c1"></span>    <span class="kd">private</span> <span class="n">Map</span><span class="o">&lt;</span><span class="n">Class</span><span class="o">&lt;?&gt;,</span> <span class="n">Set</span><span class="o">&lt;</span><span class="n">Subscriber</span><span class="o">&gt;&gt;</span> <span class="n">subscriberMap</span><span class="o">;</span>
+
+    <span class="kd">public</span> <span class="kt">void</span> <span class="nf">subscribe</span><span class="o">(</span><span class="n">Object</span> <span class="n">subscriber</span><span class="o">)</span> <span class="o">{</span>
+        <span class="k">if</span><span class="o">(</span><span class="n">Objects</span><span class="o">.</span><span class="na">isNull</span><span class="o">(</span><span class="n">subscriber</span><span class="o">))</span> <span class="k">return</span><span class="o">;</span>
+        <span class="k">if</span><span class="o">(</span><span class="n">Objects</span><span class="o">.</span><span class="na">isNull</span><span class="o">(</span><span class="n">subscriberMap</span><span class="o">))</span> <span class="o">{</span>
+            <span class="n">subscriberMap</span> <span class="o">=</span> <span class="n">Maps</span><span class="o">.</span><span class="na">newHashMap</span><span class="o">();</span>
+        <span class="o">}</span>
+        <span class="n">Method</span><span class="o">[]</span> <span class="n">methodArray</span> <span class="o">=</span> <span class="n">subscriber</span><span class="o">.</span><span class="na">getClass</span><span class="o">().</span><span class="na">getMethods</span><span class="o">();</span>
+        <span class="k">for</span><span class="o">(</span><span class="n">Method</span> <span class="n">method</span><span class="o">:</span> <span class="n">methodArray</span><span class="o">)</span> <span class="o">{</span>
+            <span class="c1">// 判断方法是否被@Listener修饰
+</span><span class="c1"></span>            <span class="k">if</span><span class="o">(</span><span class="n">method</span><span class="o">.</span><span class="na">isAnnotationPresent</span><span class="o">(</span><span class="n">Listener</span><span class="o">.</span><span class="na">class</span><span class="o">))</span> <span class="o">{</span>
+                <span class="n">Subscriber</span> <span class="n">sub</span> <span class="o">=</span> <span class="k">new</span> <span class="n">Subscriber</span><span class="o">();</span>
+                <span class="n">sub</span><span class="o">.</span><span class="na">setTargetObject</span><span class="o">(</span><span class="n">subscriber</span><span class="o">);</span>
+                <span class="n">sub</span><span class="o">.</span><span class="na">setUpdateMethod</span><span class="o">(</span><span class="n">method</span><span class="o">);</span>
+                <span class="c1">// 通过方法参数获取事件类型
+</span><span class="c1"></span>                <span class="n">Class</span><span class="o">&lt;?&gt;</span> <span class="n">eventClazz</span> <span class="o">=</span> <span class="n">method</span><span class="o">.</span><span class="na">getParameterTypes</span><span class="o">()[</span><span class="n">0</span><span class="o">];</span>
+                <span class="n">subscriberMap</span><span class="o">.</span><span class="na">putIfAbsent</span><span class="o">(</span><span class="n">eventClazz</span><span class="o">,</span> <span class="n">Sets</span><span class="o">.</span><span class="na">newHashSet</span><span class="o">());</span>
+                <span class="n">subscriberMap</span><span class="o">.</span><span class="na">get</span><span class="o">(</span><span class="n">eventClazz</span><span class="o">).</span><span class="na">add</span><span class="o">(</span><span class="n">sub</span><span class="o">);</span>
+            <span class="o">}</span>
+        <span class="o">}</span>
+    <span class="o">}</span>
+
+    <span class="kd">public</span> <span class="kt">void</span> <span class="nf">post</span><span class="o">(</span><span class="n">Object</span> <span class="n">event</span><span class="o">)</span> <span class="o">{</span>
+        <span class="k">if</span><span class="o">(</span><span class="n">Objects</span><span class="o">.</span><span class="na">isNull</span><span class="o">(</span><span class="n">subscriberMap</span><span class="o">)</span>
+                <span class="o">||</span> <span class="n">Objects</span><span class="o">.</span><span class="na">isNull</span><span class="o">(</span><span class="n">event</span><span class="o">)</span>
+                <span class="o">||</span> <span class="n">Objects</span><span class="o">.</span><span class="na">isNull</span><span class="o">(</span><span class="n">subscriberMap</span><span class="o">.</span><span class="na">get</span><span class="o">(</span><span class="n">event</span><span class="o">.</span><span class="na">getClass</span><span class="o">())))</span>
+            <span class="k">return</span><span class="o">;</span>
+        <span class="n">Set</span><span class="o">&lt;</span><span class="n">Subscriber</span><span class="o">&gt;</span> <span class="n">subscriberSet</span> <span class="o">=</span> <span class="n">subscriberMap</span><span class="o">.</span><span class="na">get</span><span class="o">(</span><span class="n">event</span><span class="o">.</span><span class="na">getClass</span><span class="o">());</span>
+        <span class="k">for</span><span class="o">(</span><span class="n">Subscriber</span> <span class="n">subscriber</span> <span class="o">:</span> <span class="n">subscriberSet</span><span class="o">)</span> <span class="o">{</span>
+            <span class="c1">// 使用反射调用update方法
+</span><span class="c1"></span>            <span class="n">subscriber</span><span class="o">.</span><span class="na">update</span><span class="o">(</span><span class="n">event</span><span class="o">);</span>
+        <span class="o">}</span>
+    <span class="o">}</span>
+<span class="o">}</span>
+</code></pre></div><p>上述的<code>CustomEventBus</code>和前一版的实现不同在于：</p>
+<ol>
+<li>不再使用泛型表示事件类型，使用<code>@Listener</code>注解了的方法，其参数作为其监听的对象类型</li>
+<li>调用<code>update()</code>方法不再使用反射，所有反射操作在构建<code>Subscriber</code>对象时完成</li>
+</ol>
+<p>注解的使用是Java的又一大杀器，它能够让你突破面向对象编程的限制去进行元信息的添加，使用得当可以大幅度提高框架的灵活性。</p>
+<h2 id="总结-">总结</h2>
+<p>今天讨论的大部分内容其实是反射和注解在Java中扮演的角色。注解和反射作为Java区别于其他语言的两大特性，能够很好的帮助框架设计者做出更灵活的框架，但它们的使用远比上面所写的要复杂，并且反射也是一种比较“危险”的操作，在实际使用时需要慎重考虑并处理好相应的异常，否则很容易发生灾难。</p>
+<p>上述的代码仅仅作为理解<code>EventBus</code>的一部分原理而存在，实际的实现更为复杂和精密，后续还会讨论。</p>
+</article><section class="article labels"><a class="category" href=/categories/Java/>Java</a><a class="tag" href=/tags/Java/>Java</a><a class="tag" href=/tags/Guava/>Guava</a><a class="tag" href=/tags/EventBus/>EventBus</a></section></div>
+<div class="article bottom"><section class="article navigation"><p><a class="link" href="/post/guava-talk-1/"><span class="iconfont icon-article"></span>Guava杂谈 - ComparisonChain</a></p></section></div></section><section id="footer"><div class="footer-wrap">
+    <p class="copyright">©2019 Notepadium.</p>
+    <p class="powerby"><span>Powered by </span><a href="https://gohugo.io" 
+        target="_blank">Hugo</a><span> and the </span><a href="https://themes.gohugo.io/hugo-notepadium/" 
+        target="_blank">Notepadium</a></p>
+</div></section></body>
+
+</html>

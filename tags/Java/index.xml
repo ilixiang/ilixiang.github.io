@@ -7,10 +7,20 @@
     <generator>Hugo -- gohugo.io</generator>
     <language>zh-cn</language>
     <copyright>©2019 Notepadium.</copyright>
-    <lastBuildDate>Sat, 13 Jun 2020 10:33:25 +0800</lastBuildDate>
+    <lastBuildDate>Tue, 23 Jun 2020 13:28:12 +0800</lastBuildDate>
     
         <atom:link href="/tags/Java/index.xml" rel="self" type="application/rss+xml" />
     
+    
+    <item>
+      <title>Guava杂谈 - EventBus</title>
+      <link>/post/guava-talk-2/</link>
+      <pubDate>Tue, 23 Jun 2020 13:28:12 +0800</pubDate>
+      
+      <guid>/post/guava-talk-2/</guid>
+      <description>EventBus俗称“事件总线”。它的作用方式就如上图所示，能够将数据推送到所有需要它的人订阅者手上。它的行为总共分为4步： Subscriber向EventBus订阅某种Event Publisher向EventBus发送某种Event EventBus将Event送到订阅了它的Su</description>
+      
+    </item>
     
     <item>
       <title>Guava杂谈 - ComparisonChain</title>

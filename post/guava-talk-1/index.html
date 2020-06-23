@@ -59,7 +59,7 @@
 <p>一般而言，设置相应的状态变量，并将每次调用的结果逐一向下传递，然后调用<code>compare()</code>方法时根据这个状态变量调整行为，这是我最开始认为的实现。这样确实可以实现功能，但这样的实现就要在每次传递状态的时候新建<code>ComparisonChain</code>对象导致复用性减低，而且根据状态变量在<code>compare()</code>中进行<code>if...else...</code> 的判断并不美观，也没有Guava的实现符合“单一职责原则”。</p>
 <p>最后，就是单例模式。单例模式的使用考量，我认为一定程度上会改善对类结构和抽象的设计，为了在多线程之间共享实例，很多时候就必须保证它本身所有的方法是无状态的。</p>
 </article><section class="article labels"><a class="category" href=/categories/Java/>Java</a><a class="tag" href=/tags/Java/>Java</a><a class="tag" href=/tags/Guava/>Guava</a><a class="tag" href=/tags/ComparisonChain/>ComparisonChain</a></section></div>
-<div class="article bottom"><section class="article navigation"><p><a class="link" href="/post/bash-variable/"><span class="iconfont icon-article"></span>bash - 变量及变量操作</a></p></section></div></section><section id="footer"><div class="footer-wrap">
+<div class="article bottom"><section class="article navigation"><p><a class="link" href="/post/guava-talk-2/"><span class="iconfont icon-article"></span>Guava杂谈 - EventBus</a></p><p><a class="link" href="/post/bash-variable/"><span class="iconfont icon-article"></span>bash - 变量及变量操作</a></p></section></div></section><section id="footer"><div class="footer-wrap">
     <p class="copyright">©2019 Notepadium.</p>
     <p class="powerby"><span>Powered by </span><a href="https://gohugo.io" 
         target="_blank">Hugo</a><span> and the </span><a href="https://themes.gohugo.io/hugo-notepadium/" 
