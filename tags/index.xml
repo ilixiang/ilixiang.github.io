@@ -7,15 +7,25 @@
     <generator>Hugo -- gohugo.io</generator>
     <language>zh-cn</language>
     <copyright>©2019 Notepadium.</copyright>
-    <lastBuildDate>Wed, 01 Jul 2020 14:26:00 +0800</lastBuildDate>
+    <lastBuildDate>Fri, 03 Jul 2020 10:36:09 +0800</lastBuildDate>
     
         <atom:link href="/tags/index.xml" rel="self" type="application/rss+xml" />
     
     
     <item>
+      <title>Collection</title>
+      <link>/tags/Collection/</link>
+      <pubDate>Fri, 03 Jul 2020 10:36:09 +0800</pubDate>
+      
+      <guid>/tags/Collection/</guid>
+      <description></description>
+      
+    </item>
+    
+    <item>
       <title>Guava</title>
       <link>/tags/Guava/</link>
-      <pubDate>Wed, 01 Jul 2020 14:26:00 +0800</pubDate>
+      <pubDate>Fri, 03 Jul 2020 10:36:09 +0800</pubDate>
       
       <guid>/tags/Guava/</guid>
       <description></description>
@@ -23,9 +33,19 @@
     </item>
     
     <item>
+      <title>ImmutableCollection</title>
+      <link>/tags/ImmutableCollection/</link>
+      <pubDate>Fri, 03 Jul 2020 10:36:09 +0800</pubDate>
+      
+      <guid>/tags/ImmutableCollection/</guid>
+      <description></description>
+      
+    </item>
+    
+    <item>
       <title>Java</title>
       <link>/tags/Java/</link>
-      <pubDate>Wed, 01 Jul 2020 14:26:00 +0800</pubDate>
+      <pubDate>Fri, 03 Jul 2020 10:36:09 +0800</pubDate>
       
       <guid>/tags/Java/</guid>
       <description></description>

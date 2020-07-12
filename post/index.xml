@@ -7,10 +7,20 @@
     <generator>Hugo -- gohugo.io</generator>
     <language>zh-cn</language>
     <copyright>©2019 Notepadium.</copyright>
-    <lastBuildDate>Wed, 01 Jul 2020 14:26:00 +0800</lastBuildDate>
+    <lastBuildDate>Fri, 03 Jul 2020 10:36:09 +0800</lastBuildDate>
     
         <atom:link href="/post/index.xml" rel="self" type="application/rss+xml" />
     
+    
+    <item>
+      <title>Guava杂谈 - ImmutableCollections</title>
+      <link>/post/guava-talk-4/</link>
+      <pubDate>Fri, 03 Jul 2020 10:36:09 +0800</pubDate>
+      
+      <guid>/post/guava-talk-4/</guid>
+      <description>Guava的ImmutableCollection意为不可变集合框架，它的存在弥补了JDK的UnmodifiableCollection的2个缺陷： UnmodifiableCollection在持有原生集合引用时可以修改集合内容，不安全 UnmodifiableCollection</description>
+      
+    </item>
     
     <item>
       <title>Guava杂谈 - LoadingCache</title>

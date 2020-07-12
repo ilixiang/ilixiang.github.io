@@ -1,0 +1,107 @@
+<!DOCTYPE html>
+<html lang="en"><meta charset="utf-8"><meta name="generator" content="Hugo 0.68.3" /><meta name="viewport" content="width=device-width,initial-scale=1,viewport-fit=cover">
+<meta name="color-scheme" content="light dark">
+<meta name="supported-color-schemes" content="light dark"><title>Guava杂谈 - ImmutableCollections&nbsp;&ndash;&nbsp;三斜求积术</title><link rel="stylesheet" href="/css/core.min.802aa67397694ca5d7cacc2140e5e8fcb52d3add493941c161a3c4d2d5da57e3ca230e49da9cc38312e9698b71ef4c3a.css" integrity="sha384-gCqmc5dpTKXXyswhQOXo/LUtOt1JOUHBYaPE0tXaV&#43;PKIw5J2pzDgxLpaYtx70w6"><meta name="twitter:card" content="summary" />
+<meta name="twitter:title" content="Guava杂谈 - ImmutableCollections" /><body><section id="header">
+    <div class="header wrap"><span class="header left-side"><a class="site home" href="/"><span class="site name">三斜求积术</span></a></span>
+        <span class="header right-side"><div class="nav wrap"><nav class="nav"><a class="nav item" href="/categories/">Categories</a><a class="nav item" href="/tags/">Tags</a><a class="nav item" href="/about">About</a><a class="nav item" href="https://gohugo%2eio/"target="_blank">Hugo</a></nav></div></span></div><div class="site slogan"><span class="title">Slow is Fast. Less is More. Code for Fun.</span></div></section><section id="content"><div class="article-container"><section class="article header">
+    <h1 class="article title">Guava杂谈 - ImmutableCollections</h1><p class="article date">Friday, July 3, 2020</p></section><article class="article markdown-body"><p><img  src="/img/immutable-collections.png"
+        alt="immutable-collections"/></p>
+<p>Guava的<code>ImmutableCollection</code>意为不可变集合框架，它的存在弥补了JDK的<code>UnmodifiableCollection</code>的2个缺陷：</p>
+<ul>
+<li><code>UnmodifiableCollection</code>在持有原生集合引用时可以修改集合内容，不安全</li>
+<li><code>UnmodifiableCollection</code>实际使用的是可变集合的数据结构的包装类，没有使用<strong>不可变</strong>的特性做优化</li>
+</ul>
+<p>Guava的<code>ImmutableCollection</code>实现中，5种和JDK原生集合类型对应，8种和Guava的拓展集合类型对应，本文至涉及前面6种。</p>
+<table>
+<thead>
+<tr>
+<th>JDK类型</th>
+<th>Immutable类型</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td><code>List</code></td>
+<td><code>ImmutableList</code></td>
+</tr>
+<tr>
+<td><code>Set</code></td>
+<td><code>ImmutableSet</code></td>
+</tr>
+<tr>
+<td><code>SortedSet</code></td>
+<td><code>ImmutableSortedSet</code></td>
+</tr>
+<tr>
+<td><code>Map</code></td>
+<td><code>ImmutableMap</code></td>
+</tr>
+<tr>
+<td><code>SortedMap</code></td>
+<td><code>ImmutableSortedMap</code></td>
+</tr>
+</tbody>
+</table>
+<h2 id="基本使用-">基本使用</h2>
+<p>不可变集合的使用方式和可变集合几乎一致，比较有差异的地方在于创建，上述的5种不可变集合的创建基本都包含以下几种：</p>
+<ul>
+<li><code>of()</code>。通过给予的元素直接创建</li>
+<li><code>copyOf()</code>。通过给定集合创建其不可变的拷贝</li>
+<li><code>builder().build()</code>。使用<code>Builder</code>作为中间桥梁添加元素，最终调用<code>build()</code>生成不可变集合</li>
+</ul>
+<p>以<code>ImmutableList</code>为例</p>
+<div class="highlight"><pre class="chroma"><code class="language-java" data-lang="java"><span class="nd">@Test</span>
+<span class="kd">public</span> <span class="kt">void</span> <span class="nf">testImmutableList</span><span class="o">()</span> <span class="o">{</span>
+    <span class="c1">// 通过of一口气塞入元素
+</span><span class="c1"></span>    <span class="n">ImmutableList</span><span class="o">&lt;</span><span class="n">Integer</span><span class="o">&gt;</span> <span class="n">ofList</span> <span class="o">=</span> <span class="n">ImmutableList</span><span class="o">.</span><span class="na">of</span><span class="o">(</span><span class="n">1</span><span class="o">,</span> <span class="n">2</span><span class="o">,</span> <span class="n">3</span><span class="o">);</span>
+    <span class="c1">// 通过copyOf复制给定集合的元素
+</span><span class="c1"></span>    <span class="n">ImmutableList</span><span class="o">&lt;</span><span class="n">Integer</span><span class="o">&gt;</span> <span class="n">copyOfList</span> <span class="o">=</span> <span class="n">ImmutableList</span><span class="o">.</span><span class="na">copyOf</span><span class="o">(</span><span class="n">ofList</span><span class="o">);</span>
+    <span class="c1">// 通过Builder中间类创建
+</span><span class="c1"></span>    <span class="n">ImmutableList</span><span class="o">&lt;</span><span class="n">Integer</span><span class="o">&gt;</span> <span class="n">buildList</span> <span class="o">=</span> <span class="n">ImmutableList</span><span class="o">.&lt;</span><span class="n">Integer</span><span class="o">&gt;</span><span class="n">builder</span><span class="o">().</span><span class="na">add</span><span class="o">(</span><span class="n">1</span><span class="o">).</span><span class="na">add</span><span class="o">(</span><span class="n">2</span><span class="o">).</span><span class="na">add</span><span class="o">(</span><span class="n">3</span><span class="o">).</span><span class="na">build</span><span class="o">();</span>
+<span class="o">}</span>
+</code></pre></div><p>比较有意思的是不可变集合可以使用<code>asList()</code>获取其内容的<code>ImmutableList</code>视图，因此很多时候可以通过序数获取相应的元素</p>
+<div class="highlight"><pre class="chroma"><code class="language-java" data-lang="java"><span class="nd">@Test</span>
+<span class="kd">public</span> <span class="kt">void</span> <span class="nf">testAsList</span><span class="o">()</span> <span class="o">{</span>
+    <span class="n">ImmutableSortedSet</span><span class="o">&lt;</span><span class="n">Integer</span><span class="o">&gt;</span> <span class="n">sortedSet</span> <span class="o">=</span> <span class="n">ImmutableSortedSet</span><span class="o">.</span><span class="na">of</span><span class="o">(</span><span class="n">3</span><span class="o">,</span> <span class="n">2</span><span class="o">,</span> <span class="n">1</span><span class="o">);</span>
+    <span class="n">ImmutableSortedMap</span><span class="o">&lt;</span><span class="n">Integer</span><span class="o">,</span> <span class="n">String</span><span class="o">&gt;</span> <span class="n">sortedMap</span> <span class="o">=</span> <span class="n">ImmutableSortedMap</span><span class="o">.&lt;</span><span class="n">Integer</span><span class="o">,</span> <span class="n">String</span><span class="o">&gt;</span><span class="n">naturalOrder</span><span class="o">()</span>
+            <span class="o">.</span><span class="na">put</span><span class="o">(</span><span class="n">1</span><span class="o">,</span> <span class="s">&#34;1&#34;</span><span class="o">).</span><span class="na">put</span><span class="o">(</span><span class="n">2</span><span class="o">,</span> <span class="s">&#34;2&#34;</span><span class="o">).</span><span class="na">put</span><span class="o">(</span><span class="n">3</span><span class="o">,</span> <span class="s">&#34;3&#34;</span><span class="o">).</span><span class="na">build</span><span class="o">();</span>
+    <span class="c1">// 获取索引为1的元素
+</span><span class="c1"></span>    <span class="n">System</span><span class="o">.</span><span class="na">out</span><span class="o">.</span><span class="na">println</span><span class="o">(</span><span class="n">sortedMap</span><span class="o">.</span><span class="na">entrySet</span><span class="o">().</span><span class="na">asList</span><span class="o">().</span><span class="na">get</span><span class="o">(</span><span class="n">1</span><span class="o">));</span>
+    <span class="c1">// 获取索引为2的元素
+</span><span class="c1"></span>    <span class="n">System</span><span class="o">.</span><span class="na">out</span><span class="o">.</span><span class="na">println</span><span class="o">(</span><span class="n">sortedSet</span><span class="o">.</span><span class="na">asList</span><span class="o">().</span><span class="na">get</span><span class="o">(</span><span class="n">2</span><span class="o">));</span>
+<span class="o">}</span>
+<span class="c1">// ----- 输出 -----
+</span><span class="c1"></span><span class="n">2</span><span class="o">=</span><span class="n">2</span>
+<span class="n">3</span>
+</code></pre></div><p>这一特性在操纵排序集合类型时十分有用，因为获取<code>ImmutableList</code>视图并不会复制整个集合，这也是由于不可变所带来的一个好处。也因为可以使用<code>asList()</code>的原因，<code>ImmutableList.copyOf()</code>在其内容是不可变集合时，往往不会复制其内容，而是直接调用<code>asList()</code>返回<code>ImmutableList</code>视图。</p>
+<h2 id="内部结构-">内部结构</h2>
+<p>前面说过，Guava的不可变集合和可变集合相比，做了一定的数据结构优化。而其中变化最大的是<code>ImmutableSortedSet</code> 和<code>ImmutableSortedMap</code>。</p>
+<p>我们都知道，在JDK的实现中，<code>SortedSet</code>和<code>SortedMap</code>最常用的实现为<code>TreeSet</code>和<code>TreeMap</code>，它们的底层实现为红黑数。使用链式结构的树进行存储的优势是添加/删除元素，但如果不需要添加/删除元素呢？能不能放弃链式结构？</p>
+<p>当然是可以的</p>
+<div class="highlight"><pre class="chroma"><code class="language-java" data-lang="java"><span class="c1">// ImmutableSortedSet实现
+</span><span class="c1"></span><span class="kd">final</span> <span class="kd">class</span> <span class="nc">RegularImmutableSortedSet</span><span class="o">&lt;</span><span class="n">E</span><span class="o">&gt;</span> <span class="kd">extends</span> <span class="n">ImmutableSortedSet</span><span class="o">&lt;</span><span class="n">E</span><span class="o">&gt;</span> <span class="o">{</span>
+    <span class="c1">// 使用ImmutableList存储数据
+</span><span class="c1"></span>	<span class="kd">private</span> <span class="kd">final</span> <span class="kd">transient</span> <span class="n">ImmutableList</span><span class="o">&lt;</span><span class="n">E</span><span class="o">&gt;</span> <span class="n">elements</span><span class="o">;</span>
+<span class="o">}</span>
+<span class="c1">// ImmutableSortedMap实现
+</span><span class="c1"></span><span class="kd">public</span> <span class="kd">final</span> <span class="kd">class</span> <span class="nc">ImmutableSortedMap</span><span class="o">&lt;</span><span class="n">K</span><span class="o">,</span> <span class="n">V</span><span class="o">&gt;</span> <span class="kd">extends</span> <span class="n">ImmutableSortedMapFauxverideShim</span><span class="o">&lt;</span><span class="n">K</span><span class="o">,</span> <span class="n">V</span><span class="o">&gt;</span>
+    <span class="kd">implements</span> <span class="n">NavigableMap</span><span class="o">&lt;</span><span class="n">K</span><span class="o">,</span> <span class="n">V</span><span class="o">&gt;</span> <span class="o">{</span>
+    <span class="c1">// 使用ImmutableSortedSet存储key
+</span><span class="c1"></span>	<span class="kd">private</span> <span class="kd">final</span> <span class="kd">transient</span> <span class="n">RegularImmutableSortedSet</span><span class="o">&lt;</span><span class="n">K</span><span class="o">&gt;</span> <span class="n">keySet</span><span class="o">;</span>
+    <span class="c1">// 使用ImmutableList存储value
+</span><span class="c1"></span>	<span class="kd">private</span> <span class="kd">final</span> <span class="kd">transient</span> <span class="n">ImmutableList</span><span class="o">&lt;</span><span class="n">V</span><span class="o">&gt;</span> <span class="n">valueList</span><span class="o">;</span>
+<span class="o">}</span>
+</code></pre></div><p>那问题在于使用<code>SortedSet</code>和<code>SortedMap</code>查询的复杂度均为对数复杂度，那么底层使用数组的<code>ImmutableList</code>如何做到这点呢？</p>
+<p>答案就是二分查找，由于存储结构是数组，且排列有序，因此可以使用二分查找代替平衡二叉树的查找。因此，数组是最合适<code>ImmutableSortedSet</code>和<code>ImmutableSortedMap</code>的数据结构。</p>
+<h2 id="总结-">总结</h2>
+<p>这部分内容大抵了解了有关不可变集合相关的使用和存储结构等内容，在不可变的前提下，存储结构可以产生巨大变化，这也是这部分内容有趣所在。</p>
+</article><section class="article labels"><a class="category" href=/categories/Java/>Java</a><a class="tag" href=/tags/Java/>Java</a><a class="tag" href=/tags/Guava/>Guava</a><a class="tag" href=/tags/Collection/>Collection</a><a class="tag" href=/tags/ImmutableCollection/>ImmutableCollection</a></section></div>
+<div class="article bottom"><section class="article navigation"><p><a class="link" href="/post/guava-talk-3/"><span class="iconfont icon-article"></span>Guava杂谈 - LoadingCache</a></p></section></div></section><section id="footer"><div class="footer-wrap">
+    <p class="copyright">©2019 Notepadium.</p>
+    <p class="powerby"><span>Powered by </span><a href="https://gohugo.io" 
+        target="_blank">Hugo</a><span> and the </span><a href="https://themes.gohugo.io/hugo-notepadium/" 
+        target="_blank">Notepadium</a></p>
+</div></section></body>
+
+</html>
