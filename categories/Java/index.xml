@@ -7,10 +7,20 @@
     <generator>Hugo -- gohugo.io</generator>
     <language>zh-cn</language>
     <copyright>©2019 Notepadium.</copyright>
-    <lastBuildDate>Tue, 23 Jun 2020 13:28:12 +0800</lastBuildDate>
+    <lastBuildDate>Wed, 01 Jul 2020 14:26:00 +0800</lastBuildDate>
     
         <atom:link href="/categories/Java/index.xml" rel="self" type="application/rss+xml" />
     
+    
+    <item>
+      <title>Guava杂谈 - LoadingCache</title>
+      <link>/post/guava-talk-3/</link>
+      <pubDate>Wed, 01 Jul 2020 14:26:00 +0800</pubDate>
+      
+      <guid>/post/guava-talk-3/</guid>
+      <description>我与Cache这个词第一次相遇是在本科的《计算机组成原理》这门课上，这门课当时上起来那是满头问号。Cache是用于存储数据的一种组件，它存在的目的是让获取数据的速度更快。在集成Web服务时，使用比较广泛的Cache服务器应该是redis了，它作为跨进程甚至跨网络的缓存系统提供了十</description>
+      
+    </item>
     
     <item>
       <title>Guava杂谈 - EventBus</title>

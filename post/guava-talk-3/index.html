@@ -1,0 +1,422 @@
+<!DOCTYPE html>
+<html lang="en"><meta charset="utf-8"><meta name="generator" content="Hugo 0.68.3" /><meta name="viewport" content="width=device-width,initial-scale=1,viewport-fit=cover">
+<meta name="color-scheme" content="light dark">
+<meta name="supported-color-schemes" content="light dark"><title>Guava杂谈 - LoadingCache&nbsp;&ndash;&nbsp;三斜求积术</title><link rel="stylesheet" href="/css/core.min.802aa67397694ca5d7cacc2140e5e8fcb52d3add493941c161a3c4d2d5da57e3ca230e49da9cc38312e9698b71ef4c3a.css" integrity="sha384-gCqmc5dpTKXXyswhQOXo/LUtOt1JOUHBYaPE0tXaV&#43;PKIw5J2pzDgxLpaYtx70w6"><meta name="twitter:card" content="summary" />
+<meta name="twitter:title" content="Guava杂谈 - LoadingCache" /><body><section id="header">
+    <div class="header wrap"><span class="header left-side"><a class="site home" href="/"><span class="site name">三斜求积术</span></a></span>
+        <span class="header right-side"><div class="nav wrap"><nav class="nav"><a class="nav item" href="/categories/">Categories</a><a class="nav item" href="/tags/">Tags</a><a class="nav item" href="/about">About</a><a class="nav item" href="https://gohugo%2eio/"target="_blank">Hugo</a></nav></div></span></div><div class="site slogan"><span class="title">Slow is Fast. Less is More. Code for Fun.</span></div></section><section id="content"><div class="article-container"><section class="article header">
+    <h1 class="article title">Guava杂谈 - LoadingCache</h1><p class="article date">Wednesday, July 1, 2020</p></section><article class="article markdown-body"><p><img  src="/img/cache.jpg"
+        alt="cache"/></p>
+<p>我与<code>Cache</code>这个词第一次相遇是在本科的《计算机组成原理》这门课上，这门课当时上起来那是满头问号。<code>Cache</code>是用于存储数据的一种组件，它存在的目的是让获取数据的速度更快。在集成Web服务时，使用比较广泛的<code>Cache</code>服务器应该是redis了，它作为跨进程甚至跨网络的缓存系统提供了十分丰富的功能。而今天谈论的Guava中的<code>LoadingCache</code>是仅在单个JVM实例中使用的缓存，而作为本地<code>Cache</code>，当存储数据量十分小并且没有持久化需求时可以在不增加整个应用复杂性的前提下进行使用。</p>
+<h2 id="cache和concurrentmap-"><code>Cache</code>和<code>ConcurrentMap</code></h2>
+<p>单纯从存储结构而言，<code>Cache</code>的一部分就是<code>ConcurrentMap</code>，这是由于后者提供了前者所需要的几个功能：</p>
+<ul>
+<li>快速查找。<code>Cache</code>的目的就是为了能够减少计算/读取所带来的时间开销，因而存储结构必须拥有快速查找的能力</li>
+<li>并发读写。<code>Cache</code>必须能够对并发有着很好的支持，不能单纯以加锁为手段将读写串行化，这样就没有意义</li>
+</ul>
+<p>也因此在锁的设计上，<code>Cache</code>和<code>ConcurrentHashMap</code>一样使用了<code>ReentrantLock</code>和分段锁的设计增强了整体的并发能力。</p>
+<p>但<code>Cache</code>所需要提供的功能却比<code>ConcurrentMap</code>要多，主要的差别是<code>Cache</code>中的内容会被<strong>淘汰</strong>。因此，为了满足使用，就必须提供比较灵活的淘汰策略，Guava所提供的淘汰策略有以下几种：</p>
+<ul>
+<li>时间淘汰策略
+<ul>
+<li><code>expireAfterAccess()</code>。访问后经过一定时间将<code>ReferenceEntry</code>淘汰</li>
+<li><code>expireAfterWrite()</code>。写入后经过一定时间将<code>ReferenceEntry</code>淘汰</li>
+</ul>
+</li>
+<li>容量淘汰策略
+<ul>
+<li><code>maximunSize()</code>。设定<code>Cache</code>的最大容量，当容纳的数据将要超过最大容量时，通过LRU机制将之淘汰</li>
+</ul>
+</li>
+<li>重量淘汰策略
+<ul>
+<li><code>maximumWeight()</code>。设定<code>Cache</code>能够承受的最大重量，当要超过最大重量时，通过LRU淘汰数据</li>
+<li><code>weigher()</code>。给出计算数据重量的<code>Weigher</code>实现</li>
+</ul>
+</li>
+<li>引用淘汰策略
+<ul>
+<li><code>weakKeys()</code>。当没有key的强引用时，回收整个<code>ReferenceEntry</code></li>
+<li><code>weakValues()</code>。当没有value的强引用时，回收整个<code>ReferenceEntry</code></li>
+<li><code>softValues()</code>。当内存不足，且没有value的强引用时，回收整个<code>ReferenceEntry</code></li>
+</ul>
+</li>
+</ul>
+<p>除此之外，Guava的<code>Cache</code>还拥有统计和刷新功能，用于观察<code>Cache</code>的缓存命中率等统计信息以及手动刷新数据。</p>
+<h2 id="cache的基本使用-"><code>Cache</code>的基本使用</h2>
+<p>Guava的<code>Cache</code>实现中最常使用的是<code>LoadingCache</code>，意为可以自动load数据的缓存。</p>
+<h3 id="载入数据-">载入数据</h3>
+<div class="highlight"><pre class="chroma"><code class="language-java" data-lang="java"><span class="nd">@Test</span>
+<span class="kd">public</span> <span class="kt">void</span> <span class="nf">testLoad</span><span class="o">()</span> <span class="kd">throws</span> <span class="n">Exception</span><span class="o">{</span>
+    <span class="n">LoadingCache</span><span class="o">&lt;</span><span class="n">Integer</span><span class="o">,</span> <span class="n">String</span><span class="o">&gt;</span> <span class="n">loadingCache</span> <span class="o">=</span> <span class="n">CacheBuilder</span><span class="o">.</span><span class="na">newBuilder</span><span class="o">()</span>
+            <span class="o">.</span><span class="na">build</span><span class="o">(</span><span class="k">new</span> <span class="n">CacheLoader</span><span class="o">&lt;</span><span class="n">Integer</span><span class="o">,</span> <span class="n">String</span><span class="o">&gt;()</span> <span class="o">{</span>
+                <span class="nd">@Override</span>
+                <span class="kd">public</span> <span class="n">String</span> <span class="nf">load</span><span class="o">(</span><span class="n">Integer</span> <span class="n">key</span><span class="o">)</span> <span class="kd">throws</span> <span class="n">Exception</span> <span class="o">{</span>
+                    <span class="k">return</span> <span class="n">System</span><span class="o">.</span><span class="na">currentTimeMillis</span><span class="o">()</span> <span class="o">+</span> <span class="s">&#34; Value &#34;</span> <span class="o">+</span> <span class="n">key</span><span class="o">;</span>
+                <span class="o">}</span>
+            <span class="o">});</span>
+    <span class="c1">// manually put
+</span><span class="c1"></span>    <span class="n">System</span><span class="o">.</span><span class="na">out</span><span class="o">.</span><span class="na">println</span><span class="o">(</span><span class="s">&#34;-------------- 手动载入数据 ------------&#34;</span><span class="o">);</span>
+    <span class="n">loadingCache</span><span class="o">.</span><span class="na">put</span><span class="o">(</span><span class="n">1</span><span class="o">,</span> <span class="s">&#34;Manual Value 1&#34;</span><span class="o">);</span>
+    <span class="n">System</span><span class="o">.</span><span class="na">out</span><span class="o">.</span><span class="na">println</span><span class="o">(</span><span class="n">String</span><span class="o">.</span><span class="na">format</span><span class="o">(</span><span class="s">&#34;The value of key %d is %s&#34;</span><span class="o">,</span> <span class="n">1</span><span class="o">,</span> <span class="n">loadingCache</span><span class="o">.</span><span class="na">get</span><span class="o">(</span><span class="n">1</span><span class="o">)));</span>
+    <span class="n">System</span><span class="o">.</span><span class="na">out</span><span class="o">.</span><span class="na">println</span><span class="o">(</span><span class="s">&#34;-------------- 自动载入数据 ------------&#34;</span><span class="o">);</span>
+    <span class="n">System</span><span class="o">.</span><span class="na">out</span><span class="o">.</span><span class="na">println</span><span class="o">(</span><span class="n">String</span><span class="o">.</span><span class="na">format</span><span class="o">(</span><span class="s">&#34;The value of key %d is %s&#34;</span><span class="o">,</span> <span class="n">2</span><span class="o">,</span> <span class="n">loadingCache</span><span class="o">.</span><span class="na">get</span><span class="o">(</span><span class="n">2</span><span class="o">)));</span>
+<span class="o">}</span>
+<span class="c1">// ----- 输出 -----
+</span><span class="c1"></span><span class="o">--------------</span> <span class="n">手动载入数据</span> <span class="o">------------</span>
+<span class="n">The</span> <span class="n">value</span> <span class="n">of</span> <span class="n">key</span> <span class="n">1</span> <span class="n">is</span> <span class="n">Manual</span> <span class="n">Value</span> <span class="n">1</span>
+<span class="o">--------------</span> <span class="n">自动载入数据</span> <span class="o">------------</span>
+<span class="n">The</span> <span class="n">value</span> <span class="n">of</span> <span class="n">key</span> <span class="n">2</span> <span class="n">is</span> <span class="n">1594513825523</span> <span class="n">Value</span> <span class="n">2</span>
+</code></pre></div><p>如上述代码输出所示，<code>LoadingCache</code>插入数据的方式有两种：：</p>
+<ul>
+<li>通过调用<code>put()</code>方法手动插入数据</li>
+<li>通过调用<code>get()</code>方法没有数据自动载入</li>
+</ul>
+<p>如果不想要自动载入数据，则可以通过调用<code>getIfPresent()</code>获取</p>
+<h3 id="最大容量-">最大容量</h3>
+<div class="highlight"><pre class="chroma"><code class="language-java" data-lang="java"><span class="nd">@Test</span>
+<span class="kd">public</span> <span class="kt">void</span> <span class="nf">testMaximumSize</span><span class="o">()</span> <span class="kd">throws</span> <span class="n">Exception</span><span class="o">{</span>
+    <span class="n">LoadingCache</span><span class="o">&lt;</span><span class="n">Integer</span><span class="o">,</span> <span class="n">String</span><span class="o">&gt;</span> <span class="n">loadingCache</span> <span class="o">=</span> <span class="n">CacheBuilder</span><span class="o">.</span><span class="na">newBuilder</span><span class="o">()</span>
+            <span class="o">.</span><span class="na">maximumSize</span><span class="o">(</span><span class="n">2</span><span class="o">)</span>
+            <span class="o">.</span><span class="na">build</span><span class="o">(</span><span class="k">new</span> <span class="n">CacheLoader</span><span class="o">&lt;</span><span class="n">Integer</span><span class="o">,</span> <span class="n">String</span><span class="o">&gt;()</span> <span class="o">{</span>
+                <span class="nd">@Override</span>
+                <span class="kd">public</span> <span class="n">String</span> <span class="nf">load</span><span class="o">(</span><span class="n">Integer</span> <span class="n">key</span><span class="o">)</span> <span class="kd">throws</span> <span class="n">Exception</span> <span class="o">{</span>
+                    <span class="k">return</span> <span class="n">System</span><span class="o">.</span><span class="na">currentTimeMillis</span><span class="o">()</span> <span class="o">+</span> <span class="s">&#34; Value &#34;</span> <span class="o">+</span> <span class="n">key</span><span class="o">;</span>
+                <span class="o">}</span>
+            <span class="o">});</span>
+    <span class="c1">// manually put
+</span><span class="c1"></span>    <span class="n">loadingCache</span><span class="o">.</span><span class="na">put</span><span class="o">(</span><span class="n">1</span><span class="o">,</span> <span class="s">&#34;Manual Value 1&#34;</span><span class="o">);</span>
+    <span class="n">loadingCache</span><span class="o">.</span><span class="na">put</span><span class="o">(</span><span class="n">2</span><span class="o">,</span> <span class="s">&#34;Manual Value 2&#34;</span><span class="o">);</span>
+    <span class="n">loadingCache</span><span class="o">.</span><span class="na">get</span><span class="o">(</span><span class="n">1</span><span class="o">);</span>
+    <span class="n">loadingCache</span><span class="o">.</span><span class="na">put</span><span class="o">(</span><span class="n">3</span><span class="o">,</span> <span class="s">&#34;Manual Value 3&#34;</span><span class="o">);</span>
+    <span class="n">System</span><span class="o">.</span><span class="na">out</span><span class="o">.</span><span class="na">println</span><span class="o">(</span><span class="n">String</span><span class="o">.</span><span class="na">format</span><span class="o">(</span><span class="s">&#34;The value of key %d is %s&#34;</span><span class="o">,</span> <span class="n">2</span><span class="o">,</span> <span class="n">loadingCache</span><span class="o">.</span><span class="na">getIfPresent</span><span class="o">(</span><span class="n">2</span><span class="o">)));</span>
+<span class="o">}</span>
+<span class="c1">// ----- 输出 -----
+</span><span class="c1"></span><span class="n">The</span> <span class="n">value</span> <span class="n">of</span> <span class="n">key</span> <span class="n">2</span> <span class="n">is</span> <span class="kc">null</span>
+</code></pre></div><p>上述代码的输出说明了：</p>
+<ul>
+<li>当插入的数据超过最大容量时条时，之前的数据会被淘汰</li>
+<li>淘汰策略为LRU，即由于<code>1</code>在最近被访问了，所以淘汰<code>2</code></li>
+</ul>
+<h3 id="时间淘汰策略-">时间淘汰策略</h3>
+<div class="highlight"><pre class="chroma"><code class="language-java" data-lang="java"><span class="nd">@Test</span>
+<span class="kd">public</span> <span class="kt">void</span> <span class="nf">testExpireAfterAccess</span><span class="o">()</span> <span class="kd">throws</span> <span class="n">Exception</span><span class="o">{</span>
+    <span class="n">LoadingCache</span><span class="o">&lt;</span><span class="n">Integer</span><span class="o">,</span> <span class="n">String</span><span class="o">&gt;</span> <span class="n">loadingCache</span> <span class="o">=</span> <span class="n">CacheBuilder</span><span class="o">.</span><span class="na">newBuilder</span><span class="o">()</span>
+            <span class="o">.</span><span class="na">expireAfterAccess</span><span class="o">(</span><span class="n">1</span><span class="o">,</span> <span class="n">TimeUnit</span><span class="o">.</span><span class="na">SECONDS</span><span class="o">)</span>
+            <span class="o">.</span><span class="na">build</span><span class="o">(</span><span class="k">new</span> <span class="n">CacheLoader</span><span class="o">&lt;</span><span class="n">Integer</span><span class="o">,</span> <span class="n">String</span><span class="o">&gt;()</span> <span class="o">{</span>
+                <span class="nd">@Override</span>
+                <span class="kd">public</span> <span class="n">String</span> <span class="nf">load</span><span class="o">(</span><span class="n">Integer</span> <span class="n">key</span><span class="o">)</span> <span class="kd">throws</span> <span class="n">Exception</span> <span class="o">{</span>
+                    <span class="k">return</span> <span class="n">System</span><span class="o">.</span><span class="na">currentTimeMillis</span><span class="o">()</span> <span class="o">+</span> <span class="s">&#34; Value &#34;</span> <span class="o">+</span> <span class="n">key</span><span class="o">;</span>
+                <span class="o">}</span>
+            <span class="o">});</span>
+    <span class="c1">// manually put
+</span><span class="c1"></span>    <span class="n">loadingCache</span><span class="o">.</span><span class="na">put</span><span class="o">(</span><span class="n">1</span><span class="o">,</span> <span class="s">&#34;Manual Value 1&#34;</span><span class="o">);</span>
+    <span class="n">System</span><span class="o">.</span><span class="na">out</span><span class="o">.</span><span class="na">println</span><span class="o">(</span><span class="s">&#34;------- 1秒前 --------&#34;</span><span class="o">);</span>
+    <span class="n">System</span><span class="o">.</span><span class="na">out</span><span class="o">.</span><span class="na">println</span><span class="o">(</span><span class="n">String</span><span class="o">.</span><span class="na">format</span><span class="o">(</span><span class="s">&#34;The value of key %d is %s&#34;</span><span class="o">,</span> <span class="n">1</span><span class="o">,</span> <span class="n">loadingCache</span><span class="o">.</span><span class="na">getIfPresent</span><span class="o">(</span><span class="n">1</span><span class="o">)));</span>
+    <span class="n">Thread</span><span class="o">.</span><span class="na">sleep</span><span class="o">(</span><span class="n">1000</span><span class="o">);</span>
+    <span class="n">System</span><span class="o">.</span><span class="na">out</span><span class="o">.</span><span class="na">println</span><span class="o">(</span><span class="s">&#34;------- 1秒后 --------&#34;</span><span class="o">);</span>
+    <span class="n">System</span><span class="o">.</span><span class="na">out</span><span class="o">.</span><span class="na">println</span><span class="o">(</span><span class="n">String</span><span class="o">.</span><span class="na">format</span><span class="o">(</span><span class="s">&#34;The value of key %d is %s&#34;</span><span class="o">,</span> <span class="n">1</span><span class="o">,</span> <span class="n">loadingCache</span><span class="o">.</span><span class="na">getIfPresent</span><span class="o">(</span><span class="n">1</span><span class="o">)));</span>
+<span class="o">}</span>
+<span class="c1">// ----- 输出 -----
+</span><span class="c1"></span><span class="o">-------</span> <span class="n">1秒前</span> <span class="o">--------</span>
+<span class="n">The</span> <span class="n">value</span> <span class="n">of</span> <span class="n">key</span> <span class="n">1</span> <span class="n">is</span> <span class="n">Manual</span> <span class="n">Value</span> <span class="n">1</span>
+<span class="o">-------</span> <span class="n">1秒后</span> <span class="o">--------</span>
+<span class="n">The</span> <span class="n">value</span> <span class="n">of</span> <span class="n">key</span> <span class="n">1</span> <span class="n">is</span> <span class="kc">null</span>
+</code></pre></div><p>如上述代码输出结果，在经过1s后，存入<code>Cache</code>的数据被淘汰了。</p>
+<p>这里需要注意，Guava并没有通过使用额外的<code>Cache</code>维护线程去淘汰过期数据，而是在访问时检查该数据是否过期。这样做的原因是为了保证<code>Cache</code>的性能以及设计的简单性，不引入过度复杂的机制。</p>
+<h3 id="引用淘汰策略-">引用淘汰策略</h3>
+<div class="highlight"><pre class="chroma"><code class="language-java" data-lang="java"><span class="nd">@Test</span>
+<span class="kd">public</span> <span class="kt">void</span> <span class="nf">testValueReferenceEvict</span><span class="o">()</span> <span class="kd">throws</span> <span class="n">Exception</span><span class="o">{</span>
+    <span class="n">LoadingCache</span><span class="o">&lt;</span><span class="n">Integer</span><span class="o">,</span> <span class="n">String</span><span class="o">&gt;</span> <span class="n">loadingCache</span> <span class="o">=</span> <span class="n">CacheBuilder</span><span class="o">.</span><span class="na">newBuilder</span><span class="o">()</span>
+            <span class="o">.</span><span class="na">weakValues</span><span class="o">()</span>
+            <span class="o">.</span><span class="na">build</span><span class="o">(</span><span class="k">new</span> <span class="n">CacheLoader</span><span class="o">&lt;</span><span class="n">Integer</span><span class="o">,</span> <span class="n">String</span><span class="o">&gt;()</span> <span class="o">{</span>
+                <span class="nd">@Override</span>
+                <span class="kd">public</span> <span class="n">String</span> <span class="nf">load</span><span class="o">(</span><span class="n">Integer</span> <span class="n">key</span><span class="o">)</span> <span class="kd">throws</span> <span class="n">Exception</span> <span class="o">{</span>
+                    <span class="k">return</span> <span class="n">System</span><span class="o">.</span><span class="na">currentTimeMillis</span><span class="o">()</span> <span class="o">+</span> <span class="s">&#34; Value &#34;</span> <span class="o">+</span> <span class="n">key</span><span class="o">;</span>
+                <span class="o">}</span>
+            <span class="o">});</span>
+    <span class="c1">// manually put
+</span><span class="c1"></span>    <span class="n">loadingCache</span><span class="o">.</span><span class="na">put</span><span class="o">(</span><span class="n">128</span><span class="o">,</span> <span class="k">new</span> <span class="n">String</span><span class="o">(</span><span class="s">&#34;Manual Value 128&#34;</span><span class="o">));</span>
+    <span class="n">System</span><span class="o">.</span><span class="na">out</span><span class="o">.</span><span class="na">println</span><span class="o">(</span><span class="s">&#34;------- GC前 --------&#34;</span><span class="o">);</span>
+    <span class="n">System</span><span class="o">.</span><span class="na">out</span><span class="o">.</span><span class="na">println</span><span class="o">(</span><span class="n">String</span><span class="o">.</span><span class="na">format</span><span class="o">(</span><span class="s">&#34;The value of key %d is %s&#34;</span><span class="o">,</span> <span class="n">128</span><span class="o">,</span> <span class="n">loadingCache</span><span class="o">.</span><span class="na">getIfPresent</span><span class="o">(</span><span class="n">128</span><span class="o">)));</span>
+    <span class="n">System</span><span class="o">.</span><span class="na">gc</span><span class="o">();</span>
+    <span class="n">System</span><span class="o">.</span><span class="na">out</span><span class="o">.</span><span class="na">println</span><span class="o">(</span><span class="s">&#34;------- GC后 --------&#34;</span><span class="o">);</span>
+    <span class="n">System</span><span class="o">.</span><span class="na">out</span><span class="o">.</span><span class="na">println</span><span class="o">(</span><span class="n">String</span><span class="o">.</span><span class="na">format</span><span class="o">(</span><span class="s">&#34;The value of key %d is %s&#34;</span><span class="o">,</span> <span class="n">128</span><span class="o">,</span> <span class="n">loadingCache</span><span class="o">.</span><span class="na">getIfPresent</span><span class="o">(</span><span class="n">128</span><span class="o">)));</span>
+<span class="o">}</span>
+<span class="c1">// ----- 输出 -----
+</span><span class="c1"></span><span class="o">-------</span> <span class="n">GC前</span> <span class="o">--------</span>
+<span class="n">The</span> <span class="n">value</span> <span class="n">of</span> <span class="n">key</span> <span class="n">128</span> <span class="n">is</span> <span class="n">Manual</span> <span class="n">Value</span> <span class="n">128</span>
+<span class="o">-------</span> <span class="n">GC后</span> <span class="o">--------</span>
+<span class="n">The</span> <span class="n">value</span> <span class="n">of</span> <span class="n">key</span> <span class="n">128</span> <span class="n">is</span> <span class="kc">null</span>
+</code></pre></div><p>上述代码是使用<code>weakValues()</code>将值引用设置为弱引用，因此在GC前能够正常获取，而在GC后值会被回收，而整个<code>ReferenceEntry</code>会被<code>Cache</code>回收。</p>
+<p>上面的代码使用<code>new String()</code>而不是直接使用字符串的原因是为了防止字符串常量池一直持有引用对结果的影响。同样，如果使用基本类型的包装类，需要防止包装类缓存了一定范围的数值，比如<code>Integer</code>缓存了<code>-128</code>至<code>127</code>的<code>Integer</code>对象，这样的对象是一直被强引用的。</p>
+<div class="highlight"><pre class="chroma"><code class="language-java" data-lang="java"><span class="nd">@Test</span>
+<span class="kd">public</span> <span class="kt">void</span> <span class="nf">testKeyReferenceEvict</span><span class="o">()</span> <span class="kd">throws</span> <span class="n">Exception</span><span class="o">{</span>
+    <span class="n">LoadingCache</span><span class="o">&lt;</span><span class="n">Integer</span><span class="o">,</span> <span class="n">String</span><span class="o">&gt;</span> <span class="n">loadingCache</span> <span class="o">=</span> <span class="n">CacheBuilder</span><span class="o">.</span><span class="na">newBuilder</span><span class="o">()</span>
+            <span class="o">.</span><span class="na">weakKeys</span><span class="o">()</span>
+            <span class="o">.</span><span class="na">build</span><span class="o">(</span><span class="k">new</span> <span class="n">CacheLoader</span><span class="o">&lt;</span><span class="n">Integer</span><span class="o">,</span> <span class="n">String</span><span class="o">&gt;()</span> <span class="o">{</span>
+                <span class="nd">@Override</span>
+                <span class="kd">public</span> <span class="n">String</span> <span class="nf">load</span><span class="o">(</span><span class="n">Integer</span> <span class="n">key</span><span class="o">)</span> <span class="kd">throws</span> <span class="n">Exception</span> <span class="o">{</span>
+                    <span class="k">return</span> <span class="n">System</span><span class="o">.</span><span class="na">currentTimeMillis</span><span class="o">()</span> <span class="o">+</span> <span class="s">&#34; Value &#34;</span> <span class="o">+</span> <span class="n">key</span><span class="o">;</span>
+                <span class="o">}</span>
+            <span class="o">});</span>
+    <span class="c1">// manually put
+</span><span class="c1"></span>    <span class="n">Integer</span> <span class="n">key</span> <span class="o">=</span> <span class="n">128</span><span class="o">;</span>
+    <span class="n">loadingCache</span><span class="o">.</span><span class="na">put</span><span class="o">(</span><span class="n">key</span><span class="o">,</span> <span class="s">&#34;Manual Value 128&#34;</span><span class="o">);</span>
+    <span class="n">System</span><span class="o">.</span><span class="na">out</span><span class="o">.</span><span class="na">println</span><span class="o">(</span><span class="s">&#34;------- 持有引用 --------&#34;</span><span class="o">);</span>
+    <span class="n">System</span><span class="o">.</span><span class="na">out</span><span class="o">.</span><span class="na">println</span><span class="o">(</span><span class="n">String</span><span class="o">.</span><span class="na">format</span><span class="o">(</span><span class="s">&#34;The value of key %d is %s&#34;</span><span class="o">,</span> <span class="n">key</span><span class="o">,</span> <span class="n">loadingCache</span><span class="o">.</span><span class="na">getIfPresent</span><span class="o">(</span><span class="n">key</span><span class="o">)));</span>
+    <span class="n">key</span> <span class="o">=</span> <span class="n">128</span><span class="o">;</span>
+    <span class="n">System</span><span class="o">.</span><span class="na">out</span><span class="o">.</span><span class="na">println</span><span class="o">(</span><span class="s">&#34;------- 不持有引用 --------&#34;</span><span class="o">);</span>
+    <span class="n">System</span><span class="o">.</span><span class="na">out</span><span class="o">.</span><span class="na">println</span><span class="o">(</span><span class="n">String</span><span class="o">.</span><span class="na">format</span><span class="o">(</span><span class="s">&#34;The value of key %d is %s&#34;</span><span class="o">,</span> <span class="n">key</span><span class="o">,</span> <span class="n">loadingCache</span><span class="o">.</span><span class="na">getIfPresent</span><span class="o">(</span><span class="n">key</span><span class="o">)));</span>
+<span class="o">}</span>
+<span class="c1">// ----- 输出 -----
+</span><span class="c1"></span><span class="o">-------</span> <span class="n">持有引用</span> <span class="o">--------</span>
+<span class="n">The</span> <span class="n">value</span> <span class="n">of</span> <span class="n">key</span> <span class="n">128</span> <span class="n">is</span> <span class="n">Manual</span> <span class="n">Value</span> <span class="n">128</span>
+<span class="o">-------</span> <span class="n">不持有引用</span> <span class="o">--------</span>
+<span class="n">The</span> <span class="n">value</span> <span class="n">of</span> <span class="n">key</span> <span class="n">128</span> <span class="n">is</span> <span class="kc">null</span>
+</code></pre></div><p>这里的代码输出结果比较有意思，因为我没有调用<code>System.gc()</code>进行垃圾回收key，但得到的结果依然是<code>null</code>。这是由于Guava的<code>Cache</code>对非强引用的key和value使用的是<code>==</code>比较，而不是<code>equals()</code>。我们获取value通过传递key进行查找，因此单单使用<code>weakValues()</code>我们不会感觉到这点不同，但当我们使用<code>weakKeys()</code>时，由于使用了<code>key = 128</code>替换了对象导致引用不同，所以得到的结果为<code>null</code>。</p>
+<p>因此，如果使用了<code>weakKeys()</code>，切记<strong>使用原本的对象进行查询操作</strong></p>
+<h2 id="引用淘汰设计-">引用淘汰设计</h2>
+<p>上述提及的<code>Cache</code>功能当中，最为有意思的就是通过引用强度的使用去回收缓存数据了，首先就存在一下几个问题：</p>
+<ul>
+<li>如何根据key和value的引用强度不同去创建不同的<code>ReferenceEntry</code></li>
+<li>回收key或者value的是GC，那么如何回收整个<code>ReferenceEntry</code></li>
+<li>如何和其他缓存淘汰机制产生影响</li>
+</ul>
+<h3 id="strength和entryfactory-"><code>Strength</code>和<code>EntryFactory</code></h3>
+<p>首先，我们解决第1个问题，如何根据key和value的强度去创建不同的<code>ReferenceEntry</code>。</p>
+<p>我们通过调用<code>CacheBuilder</code>的<code>weakKeys()</code>、<code>weakValues()</code>以及<code>build()</code>3个方法决定引用强度以及<code>Cache</code>的创建，因此首先从这里下手。</p>
+<div class="highlight"><pre class="chroma"><code class="language-java" data-lang="java"><span class="c1">// value强度设置
+</span><span class="c1"></span><span class="kd">public</span> <span class="n">CacheBuilder</span><span class="o">&lt;</span><span class="n">K</span><span class="o">,</span> <span class="n">V</span><span class="o">&gt;</span> <span class="nf">weakValues</span><span class="o">()</span> <span class="o">{</span>
+    <span class="k">return</span> <span class="n">setValueStrength</span><span class="o">(</span><span class="n">Strength</span><span class="o">.</span><span class="na">WEAK</span><span class="o">);</span>
+<span class="o">}</span>
+<span class="c1">// key强度设置
+</span><span class="c1"></span><span class="kd">public</span> <span class="n">CacheBuilder</span><span class="o">&lt;</span><span class="n">K</span><span class="o">,</span> <span class="n">V</span><span class="o">&gt;</span> <span class="nf">weakKeys</span><span class="o">()</span> <span class="o">{</span>
+    <span class="k">return</span> <span class="n">setKeyStrength</span><span class="o">(</span><span class="n">Strength</span><span class="o">.</span><span class="na">WEAK</span><span class="o">);</span>
+<span class="o">}</span>
+<span class="c1">// Cache创建，最终调用了LocalCache的构造方法
+</span><span class="c1"></span><span class="n">LocalCache</span><span class="o">(</span><span class="n">CacheBuilder</span><span class="o">&lt;?</span> <span class="kd">super</span> <span class="n">K</span><span class="o">,</span> <span class="o">?</span> <span class="kd">super</span> <span class="n">V</span><span class="o">&gt;</span> <span class="n">builder</span><span class="o">,</span> <span class="nd">@Nullable</span> <span class="n">CacheLoader</span><span class="o">&lt;?</span> <span class="kd">super</span> <span class="n">K</span><span class="o">,</span> <span class="n">V</span><span class="o">&gt;</span> <span class="n">loader</span><span class="o">)</span> <span class="o">{</span>
+    <span class="o">...</span>
+    <span class="c1">// key和value强度设置
+</span><span class="c1"></span>    <span class="n">keyStrength</span> <span class="o">=</span> <span class="n">builder</span><span class="o">.</span><span class="na">getKeyStrength</span><span class="o">();</span>
+    <span class="n">valueStrength</span> <span class="o">=</span> <span class="n">builder</span><span class="o">.</span><span class="na">getValueStrength</span><span class="o">();</span>
+
+    <span class="c1">// key和value的比较器
+</span><span class="c1"></span>    <span class="n">keyEquivalence</span> <span class="o">=</span> <span class="n">builder</span><span class="o">.</span><span class="na">getKeyEquivalence</span><span class="o">();</span>
+    <span class="n">valueEquivalence</span> <span class="o">=</span> <span class="n">builder</span><span class="o">.</span><span class="na">getValueEquivalence</span><span class="o">();</span>
+
+    <span class="c1">// Entry工厂
+</span><span class="c1"></span>    <span class="n">entryFactory</span> <span class="o">=</span> <span class="n">EntryFactory</span><span class="o">.</span><span class="na">getFactory</span><span class="o">(</span><span class="n">keyStrength</span><span class="o">,</span> <span class="n">usesAccessEntries</span><span class="o">(),</span> <span class="n">usesWriteEntries</span><span class="o">());</span>
+    <span class="o">...</span>
+<span class="o">}</span>
+</code></pre></div><p>上述源码中得出的信息有：</p>
+<ul>
+<li>key和value的强度通过<code>Strength</code>进行描述</li>
+<li>强度对key和value的对比影响通过<code>Equivalence</code>进行区别</li>
+<li>创建<code>ReferenceEntry</code>的方式是通过<code>EntryFactory</code>获取相应的工厂对象</li>
+</ul>
+<p>那么，我们先看看<code>Strength</code>这个枚举</p>
+<div class="highlight"><pre class="chroma"><code class="language-java" data-lang="java"><span class="kd">enum</span> <span class="n">Strength</span> <span class="o">{</span>
+	<span class="c1">// 强引用
+</span><span class="c1"></span>	<span class="n">STRONG</span> <span class="o">{</span>
+	    <span class="nd">@Override</span>
+	    <span class="o">&lt;</span><span class="n">K</span><span class="o">,</span> <span class="n">V</span><span class="o">&gt;</span> <span class="n">ValueReference</span><span class="o">&lt;</span><span class="n">K</span><span class="o">,</span> <span class="n">V</span><span class="o">&gt;</span> <span class="nf">referenceValue</span><span class="o">(...)</span> <span class="o">{...}</span>
+	    <span class="nd">@Override</span>
+	    <span class="n">Equivalence</span><span class="o">&lt;</span><span class="n">Object</span><span class="o">&gt;</span> <span class="nf">defaultEquivalence</span><span class="o">()</span> <span class="o">{...}</span>
+	<span class="o">},</span>
+	<span class="c1">// 软引用
+</span><span class="c1"></span>	<span class="n">SOFT</span> <span class="o">{</span>
+	    <span class="nd">@Override</span>
+	    <span class="o">&lt;</span><span class="n">K</span><span class="o">,</span> <span class="n">V</span><span class="o">&gt;</span> <span class="n">ValueReference</span><span class="o">&lt;</span><span class="n">K</span><span class="o">,</span> <span class="n">V</span><span class="o">&gt;</span> <span class="nf">referenceValue</span><span class="o">(...)</span> <span class="o">{...}</span>
+	    <span class="nd">@Override</span>
+	    <span class="n">Equivalence</span><span class="o">&lt;</span><span class="n">Object</span><span class="o">&gt;</span> <span class="nf">defaultEquivalence</span><span class="o">()</span> <span class="o">{...}</span>
+	<span class="o">},</span>
+	<span class="c1">// 弱引用
+</span><span class="c1"></span>	<span class="n">WEAK</span> <span class="o">{</span>
+	    <span class="nd">@Override</span>
+	    <span class="o">&lt;</span><span class="n">K</span><span class="o">,</span> <span class="n">V</span><span class="o">&gt;</span> <span class="n">ValueReference</span><span class="o">&lt;</span><span class="n">K</span><span class="o">,</span> <span class="n">V</span><span class="o">&gt;</span> <span class="nf">referenceValue</span><span class="o">(...)</span> <span class="o">{...}</span>
+	    <span class="nd">@Override</span>
+	    <span class="n">Equivalence</span><span class="o">&lt;</span><span class="n">Object</span><span class="o">&gt;</span> <span class="nf">defaultEquivalence</span><span class="o">()</span> <span class="o">{...}</span>
+	<span class="o">};</span>
+
+	<span class="c1">// 通过强度决定value所使用的引用类型
+</span><span class="c1"></span>	<span class="kd">abstract</span> <span class="o">&lt;</span><span class="n">K</span><span class="o">,</span> <span class="n">V</span><span class="o">&gt;</span> <span class="n">ValueReference</span><span class="o">&lt;</span><span class="n">K</span><span class="o">,</span> <span class="n">V</span><span class="o">&gt;</span> <span class="nf">referenceValue</span><span class="o">(</span>
+		<span class="n">Segment</span><span class="o">&lt;</span><span class="n">K</span><span class="o">,</span> <span class="n">V</span><span class="o">&gt;</span> <span class="n">segment</span><span class="o">,</span> <span class="n">ReferenceEntry</span><span class="o">&lt;</span><span class="n">K</span><span class="o">,</span> <span class="n">V</span><span class="o">&gt;</span> <span class="n">entry</span><span class="o">,</span> <span class="n">V</span> <span class="n">value</span><span class="o">,</span> <span class="kt">int</span> <span class="n">weight</span><span class="o">);</span>
+
+	<span class="c1">// 强度所决定的对比器
+</span><span class="c1"></span>	<span class="kd">abstract</span> <span class="n">Equivalence</span><span class="o">&lt;</span><span class="n">Object</span><span class="o">&gt;</span> <span class="nf">defaultEquivalence</span><span class="o">();</span>
+<span class="o">}</span>
+</code></pre></div><p>上面的枚举提供了两个抽象方法，根据强度有各自的实现</p>
+<ul>
+<li><code>valueReference()</code>能够根据强度决定<strong>value</strong>所使用的引用类型</li>
+<li><code>defaultEquivalence()</code>获取强度对应的对比器</li>
+</ul>
+<p>因此，这部分的美剧仅仅只能决定value的引用使用了<code>ValueReference</code>，并且根据强度所使用的具体实现不同（上面的代码省略了），一共有6种：</p>
+<ul>
+<li><code>StrongValueReference</code>和<code>WeightedStrongValueReference</code>强引用下的2种value引用。</li>
+<li><code>SoftValueReference</code>和<code>WeightedSoftValueReference</code>软引用下的2种value引用。继承<code>SoftReference</code></li>
+<li><code>WeakValueReference</code>和<code>WeightedWeakValueReference</code>弱引用下的2种value引用。继承<code>WeakRefercent</code></li>
+</ul>
+<p>value的引用类型受到<code>Cache</code>是否设置了最大重量淘汰的影响，当设置了该淘汰策略后，会在<code>WeightedxxxValueReference</code>中记录相应的重量信息。</p>
+<p>得到了value的存储方法后，我们回头看一看如何区别key的引用类型。这一部分我们需要从<code>EntryFactory.getFactory()</code>下手，源码如下：</p>
+<div class="highlight"><pre class="chroma"><code class="language-java" data-lang="java"><span class="c1">// EntryFactory查找表
+</span><span class="c1"></span><span class="kd">static</span> <span class="kd">final</span> <span class="n">EntryFactory</span><span class="o">[]</span> <span class="n">factories</span> <span class="o">=</span> <span class="o">{</span>
+    <span class="n">STRONG</span><span class="o">,</span>
+    <span class="n">STRONG_ACCESS</span><span class="o">,</span>
+    <span class="n">STRONG_WRITE</span><span class="o">,</span>
+    <span class="n">STRONG_ACCESS_WRITE</span><span class="o">,</span>
+    <span class="n">WEAK</span><span class="o">,</span>
+    <span class="n">WEAK_ACCESS</span><span class="o">,</span>
+    <span class="n">WEAK_WRITE</span><span class="o">,</span>
+    <span class="n">WEAK_ACCESS_WRITE</span><span class="o">,</span>
+<span class="o">}</span>
+<span class="c1">// 通过key的强度和后面两个属性决定使用的EntryFactory
+</span><span class="c1"></span><span class="kd">static</span> <span class="n">EntryFactory</span> <span class="nf">getFactory</span><span class="o">(</span>
+	<span class="n">Strength</span> <span class="n">keyStrength</span><span class="o">,</span> <span class="kt">boolean</span> <span class="n">usesAccessQueue</span><span class="o">,</span> <span class="kt">boolean</span> <span class="n">usesWriteQueue</span><span class="o">)</span> <span class="o">{</span>
+	<span class="kt">int</span> <span class="n">flags</span> <span class="o">=</span>
+		<span class="o">((</span><span class="n">keyStrength</span> <span class="o">==</span> <span class="n">Strength</span><span class="o">.</span><span class="na">WEAK</span><span class="o">)</span> <span class="o">?</span> <span class="n">WEAK_MASK</span> <span class="o">:</span> <span class="n">0</span><span class="o">)</span>
+		    <span class="o">|</span> <span class="o">(</span><span class="n">usesAccessQueue</span> <span class="o">?</span> <span class="n">ACCESS_MASK</span> <span class="o">:</span> <span class="n">0</span><span class="o">)</span>
+		    <span class="o">|</span> <span class="o">(</span><span class="n">usesWriteQueue</span> <span class="o">?</span> <span class="n">WRITE_MASK</span> <span class="o">:</span> <span class="n">0</span><span class="o">);</span>
+	<span class="k">return</span> <span class="n">factories</span><span class="o">[</span><span class="n">flags</span><span class="o">];</span>
+<span class="o">}</span>
+</code></pre></div><p>上面代码的逻辑十分清晰，就是通过key强度、<code>usesAccessQueue</code>以及<code>usesWriteQueue</code>3个属性从表中查出对应的<code>EntryFactory</code>对象。问题在于我们明白key强度所表示的信息，却不明白后面2个属性所代表的含义，这也包含了同一引用强度下工厂对象产生的<code>EntryReference</code>有什么区别，因此看一看传递过来的相关源码：</p>
+<div class="highlight"><pre class="chroma"><code class="language-java" data-lang="java">  <span class="kt">boolean</span> <span class="nf">usesAccessEntries</span><span class="o">()</span> <span class="o">{</span>
+    <span class="k">return</span> <span class="n">usesAccessQueue</span><span class="o">()</span> <span class="o">||</span> <span class="n">recordsAccess</span><span class="o">();</span>
+  <span class="o">}</span>
+  <span class="c1">// 是否使用访问队列
+</span><span class="c1"></span>  <span class="kt">boolean</span> <span class="nf">usesAccessQueue</span><span class="o">()</span> <span class="o">{</span>
+    <span class="k">return</span> <span class="n">expiresAfterAccess</span><span class="o">()</span> <span class="o">||</span> <span class="n">evictsBySize</span><span class="o">();</span>
+  <span class="o">}</span>
+  <span class="c1">// 是否记录访问相关信息
+</span><span class="c1"></span>  <span class="kt">boolean</span> <span class="nf">recordsAccess</span><span class="o">()</span> <span class="o">{</span>
+    <span class="k">return</span> <span class="n">expiresAfterAccess</span><span class="o">();</span>
+  <span class="o">}</span>
+  <span class="c1">// 是否设置访问时间淘汰
+</span><span class="c1"></span>  <span class="kt">boolean</span> <span class="nf">expiresAfterAccess</span><span class="o">()</span> <span class="o">{</span>
+    <span class="k">return</span> <span class="n">expireAfterAccessNanos</span> <span class="o">&gt;</span> <span class="n">0</span><span class="o">;</span>
+  <span class="o">}</span>
+  <span class="c1">// 是否设置根据大小淘汰
+</span><span class="c1"></span>  <span class="kt">boolean</span> <span class="nf">evictsBySize</span><span class="o">()</span> <span class="o">{</span>
+    <span class="k">return</span> <span class="n">maxWeight</span> <span class="o">&gt;=</span> <span class="n">0</span><span class="o">;</span>
+  <span class="o">}</span>
+<span class="c1">// 所有散装方法结合起来就是下面这个
+</span><span class="c1"></span><span class="kt">boolean</span> <span class="nf">usersAccessEntries</span><span class="o">()</span> <span class="o">{</span>
+    <span class="k">return</span> <span class="o">(</span><span class="n">expireAfterAccessNanos</span> <span class="o">&gt;</span> <span class="n">0</span> <span class="o">||</span> <span class="n">maxWeight</span> <span class="o">&gt;=</span> <span class="n">0</span><span class="o">)</span> <span class="o">||</span> <span class="n">expireAfterAccessNanos</span> <span class="o">&gt;</span> <span class="n">0</span><span class="o">;</span>
+<span class="o">}</span>
+</code></pre></div><p>这就是<code>usesAccessQueue</code>的决策过程，可以很明显的看出，影响所使用的<code>EntryFactory</code>的是是否设置了访问时间淘汰（<code>expireAfterAccess()</code>）以及重量/容量淘汰策略（<code>maximumSize()</code>或<code>maximumWeight()</code>），这是由于这两种淘汰策略都涉及了LRU，因此访问队列会决定哪个缓存数据会被淘汰。</p>
+<p>相应的<code>usesWriteQueue</code>属性取决于是否设置了写入时间淘汰（<code>expireAfterWrite()</code>）以及写入后自动刷新（<code>refreshAfterWrite()</code>）。</p>
+<h3 id="referenceentry结构-"><code>ReferenceEntry</code>结构</h3>
+<p>大概了解了<code>EntryFactory</code>所产生的<code>ReferenceEntry</code>是针对什么变化而作出的区分后，我们就能够去了解相应的<code>ReferenceEntry</code>的结构差别了。</p>
+<p>我们以<code>WEAK_ACCESS_WRITE</code>这个<code>EntryFactory</code>实例为引，来看看它所生产的<code>WeakAccessWriteEntry</code>构成是什么样子</p>
+<div class="highlight"><pre class="chroma"><code class="language-java" data-lang="java">  <span class="c1">// WeakEntry继承自WeakReference，表示key的强度
+</span><span class="c1"></span>  <span class="kd">static</span> <span class="kd">class</span> <span class="nc">WeakEntry</span><span class="o">&lt;</span><span class="n">K</span><span class="o">,</span> <span class="n">V</span><span class="o">&gt;</span> <span class="kd">extends</span> <span class="n">WeakReference</span><span class="o">&lt;</span><span class="n">K</span><span class="o">&gt;</span> <span class="kd">implements</span> <span class="n">ReferenceEntry</span><span class="o">&lt;</span><span class="n">K</span><span class="o">,</span> <span class="n">V</span><span class="o">&gt;</span> <span class="o">{</span>
+  <span class="o">}</span>
+
+  <span class="kd">static</span> <span class="kd">final</span> <span class="kd">class</span> <span class="nc">WeakAccessWriteEntry</span><span class="o">&lt;</span><span class="n">K</span><span class="o">,</span> <span class="n">V</span><span class="o">&gt;</span> <span class="kd">extends</span> <span class="n">WeakEntry</span><span class="o">&lt;</span><span class="n">K</span><span class="o">,</span> <span class="n">V</span><span class="o">&gt;</span> <span class="o">{</span>
+    <span class="c1">// 访问时间，volatile保证多线程的读取一致
+</span><span class="c1"></span>    <span class="kd">volatile</span> <span class="kt">long</span> <span class="n">accessTime</span> <span class="o">=</span> <span class="n">Long</span><span class="o">.</span><span class="na">MAX_VALUE</span><span class="o">;</span>
+    <span class="c1">// 访问时间队列双向链表，下一个Entrys
+</span><span class="c1"></span>    <span class="n">ReferenceEntry</span><span class="o">&lt;</span><span class="n">K</span><span class="o">,</span> <span class="n">V</span><span class="o">&gt;</span> <span class="n">nextAccess</span> <span class="o">=</span> <span class="n">nullEntry</span><span class="o">();</span>
+    <span class="c1">// 访问时间队列双向链表，上一个Entry
+</span><span class="c1"></span>    <span class="n">ReferenceEntry</span><span class="o">&lt;</span><span class="n">K</span><span class="o">,</span> <span class="n">V</span><span class="o">&gt;</span> <span class="n">previousAccess</span> <span class="o">=</span> <span class="n">nullEntry</span><span class="o">();</span>
+
+    <span class="c1">// 写入时间，volatile保证多线程的读取一致
+</span><span class="c1"></span>    <span class="kd">volatile</span> <span class="kt">long</span> <span class="n">writeTime</span> <span class="o">=</span> <span class="n">Long</span><span class="o">.</span><span class="na">MAX_VALUE</span><span class="o">;</span>
+    <span class="c1">// 写入时间队列双向链表，下一个Entrys
+</span><span class="c1"></span>    <span class="n">ReferenceEntry</span><span class="o">&lt;</span><span class="n">K</span><span class="o">,</span> <span class="n">V</span><span class="o">&gt;</span> <span class="n">nextWrite</span> <span class="o">=</span> <span class="n">nullEntry</span><span class="o">();</span>
+    <span class="c1">// 写入时间队列双向链表，上一个Entry
+</span><span class="c1"></span>    <span class="n">ReferenceEntry</span><span class="o">&lt;</span><span class="n">K</span><span class="o">,</span> <span class="n">V</span><span class="o">&gt;</span> <span class="n">previousWrite</span> <span class="o">=</span> <span class="n">nullEntry</span><span class="o">();</span>
+  <span class="o">}</span>
+</code></pre></div><p>上述代码就表明了<code>WeakAccessWriteEntry</code>对应的结构</p>
+<ul>
+<li>key的强度决定了<code>ReferenceEntry</code>的强度</li>
+<li>根据是否需要访问队列决定<code>ReferenceEntry</code>是否是双向链表</li>
+</ul>
+<p>综上，我们基本解决了第一个和第三个问题：</p>
+<ul>
+<li>如何根据key和value的引用强度不同去创建不同的<code>ReferenceEntry</code>
+<ul>
+<li>key和value的引用强度分别决定了<code>ReferenceEntry</code>的实现以及<code>ValueReference</code>的实现，而这两者通过继承不同的引用而产生了不同的回收效果</li>
+</ul>
+</li>
+<li>如何和其他缓存淘汰机制产生影响
+<ul>
+<li>所有的淘汰机制都是通过<code>EntryReference</code>和<code>ValueReference</code>决定的，不同的淘汰机制会使用不同的实现进行组合</li>
+</ul>
+</li>
+</ul>
+<h3 id="weakreference和referencequeue"><code>WeakReference</code>和<code>ReferenceQueue</code></h3>
+<p>上面还留下了最后一个问题</p>
+<ul>
+<li>回收key或者value的是GC，那么如何回收整个<code>ReferenceEntry</code></li>
+</ul>
+<p>之前说过，Guava的<code>Cache</code>并没有使用额外的线程去进行维护。因此，判断缓存数据是否可用是从<code>get()</code>方法中进行的，由于使用了和<code>ConcurrentHashMap</code>相同的分段锁机制，因此最终的调用是<code>Segment.get()</code>中。</p>
+<div class="highlight"><pre class="chroma"><code class="language-java" data-lang="java"><span class="n">V</span> <span class="nf">get</span><span class="o">(</span><span class="n">K</span> <span class="n">key</span><span class="o">,</span> <span class="kt">int</span> <span class="n">hash</span><span class="o">,</span> <span class="n">CacheLoader</span><span class="o">&lt;?</span> <span class="kd">super</span> <span class="n">K</span><span class="o">,</span> <span class="n">V</span><span class="o">&gt;</span> <span class="n">loader</span><span class="o">)</span> <span class="kd">throws</span> <span class="n">ExecutionException</span> <span class="o">{</span>
+	<span class="n">checkNotNull</span><span class="o">(</span><span class="n">key</span><span class="o">);</span>
+	<span class="n">checkNotNull</span><span class="o">(</span><span class="n">loader</span><span class="o">);</span>
+	<span class="k">try</span> <span class="o">{</span>
+		<span class="c1">// 检查Segment中存在的EntryReference数量
+</span><span class="c1"></span>		<span class="k">if</span> <span class="o">(</span><span class="n">count</span> <span class="o">!=</span> <span class="n">0</span><span class="o">)</span> <span class="o">{</span> <span class="c1">// read-volatile
+</span><span class="c1"></span>			<span class="c1">// 获取ReferenceEntry
+</span><span class="c1"></span>			<span class="n">ReferenceEntry</span><span class="o">&lt;</span><span class="n">K</span><span class="o">,</span> <span class="n">V</span><span class="o">&gt;</span> <span class="n">e</span> <span class="o">=</span> <span class="n">getEntry</span><span class="o">(</span><span class="n">key</span><span class="o">,</span> <span class="n">hash</span><span class="o">);</span>
+			<span class="k">if</span> <span class="o">(</span><span class="n">e</span> <span class="o">!=</span> <span class="kc">null</span><span class="o">)</span> <span class="o">{</span>
+				<span class="kt">long</span> <span class="n">now</span> <span class="o">=</span> <span class="n">map</span><span class="o">.</span><span class="na">ticker</span><span class="o">.</span><span class="na">read</span><span class="o">();</span>
+				<span class="c1">// 获取“活的”Value
+</span><span class="c1"></span>				<span class="n">V</span> <span class="n">value</span> <span class="o">=</span> <span class="n">getLiveValue</span><span class="o">(</span><span class="n">e</span><span class="o">,</span> <span class="n">now</span><span class="o">);</span>
+				<span class="k">if</span> <span class="o">(</span><span class="n">value</span> <span class="o">!=</span> <span class="kc">null</span><span class="o">)</span> <span class="o">{</span>
+					<span class="n">recordRead</span><span class="o">(</span><span class="n">e</span><span class="o">,</span> <span class="n">now</span><span class="o">);</span>
+					<span class="n">statsCounter</span><span class="o">.</span><span class="na">recordHits</span><span class="o">(</span><span class="n">1</span><span class="o">);</span>
+					<span class="k">return</span> <span class="n">scheduleRefresh</span><span class="o">(</span><span class="n">e</span><span class="o">,</span> <span class="n">key</span><span class="o">,</span> <span class="n">hash</span><span class="o">,</span> <span class="n">value</span><span class="o">,</span> <span class="n">now</span><span class="o">,</span> <span class="n">loader</span><span class="o">);</span>
+				<span class="o">}</span>
+				<span class="n">ValueReference</span><span class="o">&lt;</span><span class="n">K</span><span class="o">,</span> <span class="n">V</span><span class="o">&gt;</span> <span class="n">valueReference</span> <span class="o">=</span> <span class="n">e</span><span class="o">.</span><span class="na">getValueReference</span><span class="o">();</span>
+				<span class="k">if</span> <span class="o">(</span><span class="n">valueReference</span><span class="o">.</span><span class="na">isLoading</span><span class="o">())</span> <span class="o">{</span>
+					<span class="k">return</span> <span class="n">waitForLoadingValue</span><span class="o">(</span><span class="n">e</span><span class="o">,</span> <span class="n">key</span><span class="o">,</span> <span class="n">valueReference</span><span class="o">);</span>
+				<span class="o">}</span>
+			<span class="o">}</span>
+		<span class="o">}</span>
+	<span class="o">}</span>
+<span class="o">}</span>
+</code></pre></div><p>因此，如果存在key或者value已经被回收，需要回收<code>ReferenceEntry</code>，实现逻辑应该在<code>getEntry()</code>和<code>getLiveValue()</code>中，通过追踪代码，最后得到相应的方法所在：</p>
+<div class="highlight"><pre class="chroma"><code class="language-java" data-lang="java"><span class="nd">@GuardedBy</span><span class="o">(</span><span class="s">&#34;this&#34;</span><span class="o">)</span>
+<span class="c1">// 清理keyReferenceQueue
+</span><span class="c1"></span><span class="kt">void</span> <span class="nf">drainKeyReferenceQueue</span><span class="o">()</span> <span class="o">{</span>
+	<span class="n">Reference</span><span class="o">&lt;?</span> <span class="kd">extends</span> <span class="n">K</span><span class="o">&gt;</span> <span class="n">ref</span><span class="o">;</span>
+	<span class="kt">int</span> <span class="n">i</span> <span class="o">=</span> <span class="n">0</span><span class="o">;</span>
+	<span class="k">while</span> <span class="o">((</span><span class="n">ref</span> <span class="o">=</span> <span class="n">keyReferenceQueue</span><span class="o">.</span><span class="na">poll</span><span class="o">())</span> <span class="o">!=</span> <span class="kc">null</span><span class="o">)</span> <span class="o">{</span>
+		<span class="nd">@SuppressWarnings</span><span class="o">(</span><span class="s">&#34;unchecked&#34;</span><span class="o">)</span>
+			<span class="n">ReferenceEntry</span><span class="o">&lt;</span><span class="n">K</span><span class="o">,</span> <span class="n">V</span><span class="o">&gt;</span> <span class="n">entry</span> <span class="o">=</span> <span class="o">(</span><span class="n">ReferenceEntry</span><span class="o">&lt;</span><span class="n">K</span><span class="o">,</span> <span class="n">V</span><span class="o">&gt;)</span> <span class="n">ref</span><span class="o">;</span>
+		<span class="n">map</span><span class="o">.</span><span class="na">reclaimKey</span><span class="o">(</span><span class="n">entry</span><span class="o">);</span>
+		<span class="k">if</span> <span class="o">(++</span><span class="n">i</span> <span class="o">==</span> <span class="n">DRAIN_MAX</span><span class="o">)</span> <span class="o">{</span>
+			<span class="k">break</span><span class="o">;</span>
+		<span class="o">}</span>
+	<span class="o">}</span>
+<span class="o">}</span>
+
+<span class="nd">@GuardedBy</span><span class="o">(</span><span class="s">&#34;this&#34;</span><span class="o">)</span>
+<span class="c1">// 清理keyReferenceQueue
+</span><span class="c1"></span><span class="kt">void</span> <span class="nf">drainValueReferenceQueue</span><span class="o">()</span> <span class="o">{</span>
+	<span class="n">Reference</span><span class="o">&lt;?</span> <span class="kd">extends</span> <span class="n">V</span><span class="o">&gt;</span> <span class="n">ref</span><span class="o">;</span>
+	<span class="kt">int</span> <span class="n">i</span> <span class="o">=</span> <span class="n">0</span><span class="o">;</span>
+	<span class="k">while</span> <span class="o">((</span><span class="n">ref</span> <span class="o">=</span> <span class="n">valueReferenceQueue</span><span class="o">.</span><span class="na">poll</span><span class="o">())</span> <span class="o">!=</span> <span class="kc">null</span><span class="o">)</span> <span class="o">{</span>
+		<span class="nd">@SuppressWarnings</span><span class="o">(</span><span class="s">&#34;unchecked&#34;</span><span class="o">)</span>
+			<span class="n">ValueReference</span><span class="o">&lt;</span><span class="n">K</span><span class="o">,</span> <span class="n">V</span><span class="o">&gt;</span> <span class="n">valueReference</span> <span class="o">=</span> <span class="o">(</span><span class="n">ValueReference</span><span class="o">&lt;</span><span class="n">K</span><span class="o">,</span> <span class="n">V</span><span class="o">&gt;)</span> <span class="n">ref</span><span class="o">;</span>
+		<span class="n">map</span><span class="o">.</span><span class="na">reclaimValue</span><span class="o">(</span><span class="n">valueReference</span><span class="o">);</span>
+		<span class="k">if</span> <span class="o">(++</span><span class="n">i</span> <span class="o">==</span> <span class="n">DRAIN_MAX</span><span class="o">)</span> <span class="o">{</span>
+			<span class="k">break</span><span class="o">;</span>
+		<span class="o">}</span>
+	<span class="o">}</span>
+<span class="o">}</span>
+</code></pre></div><p>这两部分的代码逻辑十分简单，问题在于它是什么时候将无效的<code>EntryReference</code>或者<code>ValueReference</code>加入相应的队列的呢，最终通过查看构造方法，发现这两个队列是交给<code>WeakReference</code>进行使用的。因此，它们是在<code>WeakReference</code>在其引用的内容被GC回收后自动追加到队列中的。</p>
+<p>由此，我们就解决了第2个问题。Guava通过向<code>WeakReference</code>或者<code>SoftReference</code>注册<code>ReferenceQueue</code>实例，当发生GC导致对象被回收后，通过队列后去相应的<code>ReferenceEntry</code>，最后将之从<code>Cache</code>中移除。</p>
+<h2 id="总结-">总结</h2>
+<p><code>Cache</code>的实现灵活使用了Java的<code>enum</code>和<code>Reference</code>相关的内容。Java的<code>enum</code>其实相当灵活，不仅仅能够拥有各自的数据，还能够拥有各自的实现。<code>enum</code>中的对象就如同继承了同一个接口的类的单例，实际开发中可以结合<code>EnumSet</code>和<code>EnumMap</code>进行各种灵活使用。其次是Java中的引用，软、弱、虚3种引用我在以前的使用中并没有太多的接触，不知道能够通过<code>ReferenceQueue</code>去接收被回收的引用以及相应的实际应用场景，今天算补上了一点。</p>
+<p>Guava的<code>Cache</code>实现提供了相当丰富的功能，其源码内容除了上述之外还涉及很多多线程的内容，感兴趣的可以自行学习。</p>
+</article><section class="article labels"><a class="category" href=/categories/Java/>Java</a><a class="tag" href=/tags/Java/>Java</a><a class="tag" href=/tags/Guava/>Guava</a><a class="tag" href=/tags/LoadingCache/>LoadingCache</a></section></div>
+<div class="article bottom"><section class="article navigation"><p><a class="link" href="/post/guava-talk-2/"><span class="iconfont icon-article"></span>Guava杂谈 - EventBus</a></p></section></div></section><section id="footer"><div class="footer-wrap">
+    <p class="copyright">©2019 Notepadium.</p>
+    <p class="powerby"><span>Powered by </span><a href="https://gohugo.io" 
+        target="_blank">Hugo</a><span> and the </span><a href="https://themes.gohugo.io/hugo-notepadium/" 
+        target="_blank">Notepadium</a></p>
+</div></section></body>
+
+</html>
