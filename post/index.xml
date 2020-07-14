@@ -7,10 +7,20 @@
     <generator>Hugo -- gohugo.io</generator>
     <language>zh-cn</language>
     <copyright>©2019 Notepadium.</copyright>
-    <lastBuildDate>Fri, 03 Jul 2020 10:36:09 +0800</lastBuildDate>
+    <lastBuildDate>Fri, 03 Jul 2020 13:29:04 +0800</lastBuildDate>
     
         <atom:link href="/post/index.xml" rel="self" type="application/rss+xml" />
     
+    
+    <item>
+      <title>Java - 反射</title>
+      <link>/post/java-reflection/</link>
+      <pubDate>Fri, 03 Jul 2020 13:29:04 +0800</pubDate>
+      
+      <guid>/post/java-reflection/</guid>
+      <description>反射是Java的一大特点，能够在运行时获取类的全部信息，因此，在许多的框架中都有其应用。其中我们最熟悉的当属spring了，它的核心两大功能ioc和aop都有使用反射机制，今天我们就来聊一聊反射机制。 简单使用 反射是通过获取Class对象，进而在运行时获取类的全部成员、方法、注解、</description>
+      
+    </item>
     
     <item>
       <title>Guava杂谈 - ImmutableCollections</title>
