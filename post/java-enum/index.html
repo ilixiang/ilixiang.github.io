@@ -1,0 +1,262 @@
+<!DOCTYPE html>
+<html lang="en"><meta charset="utf-8"><meta name="generator" content="Hugo 0.68.3" /><meta name="viewport" content="width=device-width,initial-scale=1,viewport-fit=cover">
+<meta name="color-scheme" content="light dark">
+<meta name="supported-color-schemes" content="light dark"><title>Java - 枚举&nbsp;&ndash;&nbsp;三斜求积术</title><link rel="stylesheet" href="/css/core.min.802aa67397694ca5d7cacc2140e5e8fcb52d3add493941c161a3c4d2d5da57e3ca230e49da9cc38312e9698b71ef4c3a.css" integrity="sha384-gCqmc5dpTKXXyswhQOXo/LUtOt1JOUHBYaPE0tXaV&#43;PKIw5J2pzDgxLpaYtx70w6"><meta name="twitter:card" content="summary" />
+<meta name="twitter:title" content="Java - 枚举" /><body><section id="header">
+    <div class="header wrap"><span class="header left-side"><a class="site home" href="/"><span class="site name">三斜求积术</span></a></span>
+        <span class="header right-side"><div class="nav wrap"><nav class="nav"><a class="nav item" href="/categories/">Categories</a><a class="nav item" href="/tags/">Tags</a><a class="nav item" href="/about">About</a><a class="nav item" href="https://gohugo%2eio/"target="_blank">Hugo</a></nav></div></span></div><div class="site slogan"><span class="title">Slow is Fast. Less is More. Code for Fun.</span></div></section><section id="content"><div class="article-container"><section class="article header">
+    <h1 class="article title">Java - 枚举</h1><p class="article date">Tuesday, July 14, 2020</p></section><article class="article markdown-body"><p><img  src="/img/java-enum.png"
+        alt="java-enum"/></p>
+<p>枚举，是Java中一中比较特殊的类型。我个人而言，它是一种有穷集合，因而它的成员都是它自己的某一个元素。枚举的关键字是<code>enum</code>，并且在各种语言中枚举的行为并不相同。在C中，枚举的元素对应一个整型数字，虽然其变量能够作为左值，但却并不安全，能够被任意的其他枚举元素以及整型赋值。</p>
+<div class="highlight"><pre class="chroma"><code class="language-c" data-lang="c"><span class="cp">#include</span> <span class="cpf">&lt;stdio.h&gt;</span><span class="cp">
+</span><span class="cp"></span>
+<span class="c1">// 季节枚举
+</span><span class="c1"></span><span class="k">typedef</span> <span class="k">enum</span> <span class="p">{</span>
+	<span class="n">SPRING</span><span class="p">,</span>
+	<span class="n">SUMMER</span><span class="p">,</span>
+	<span class="n">AUTUMN</span><span class="p">,</span>
+	<span class="n">WINTER</span>
+<span class="p">}</span> <span class="n">EnumSeason</span><span class="p">;</span>
+
+<span class="c1">// 颜色枚举
+</span><span class="c1"></span><span class="k">typedef</span> <span class="k">enum</span> <span class="p">{</span>
+	<span class="n">RED</span><span class="p">,</span>
+	<span class="n">BLUE</span>
+<span class="p">}</span> <span class="n">EnumColor</span><span class="p">;</span>
+
+<span class="kt">int</span> <span class="nf">main</span><span class="p">()</span> <span class="p">{</span>
+    <span class="n">EnumSeason</span> <span class="n">known_season</span> <span class="o">=</span> <span class="n">SPRING</span><span class="p">;</span>
+    <span class="c1">// 使用100赋值
+</span><span class="c1"></span>	<span class="n">EnumSeason</span> <span class="n">unknown_season</span> <span class="o">=</span> <span class="mi">100</span><span class="p">;</span>
+    <span class="c1">// 使用color_enum的元素赋值
+</span><span class="c1"></span>	<span class="n">EnumSeason</span> <span class="n">color_season</span> <span class="o">=</span> <span class="n">BLUE</span><span class="p">;</span> 
+	<span class="n">printf</span><span class="p">(</span><span class="s">&#34;%d</span><span class="se">\n</span><span class="s">%d</span><span class="se">\n</span><span class="s">%d</span><span class="se">\n</span><span class="s">&#34;</span><span class="p">,</span> <span class="n">known_season</span><span class="p">,</span> <span class="n">unknown_season</span><span class="p">,</span> <span class="n">color_season</span><span class="p">);</span>
+	<span class="k">return</span> <span class="mi">0</span><span class="p">;</span>
+<span class="p">}</span>
+<span class="c1">// ----- 输出 ------
+</span><span class="c1"></span><span class="mi">0</span>
+<span class="mi">100</span>
+<span class="mi">1</span>
+</code></pre></div><p>Java中的枚举类型与C不同，Java为其提供了几个比较方便的特性：</p>
+<ul>
+<li>编译时检查。能够避免上述的安全性问题，不同的<code>enum</code>之间无法赋值，整型和<code>enum</code>之间无法赋值</li>
+<li>特殊的<code>toString()</code>。<code>enum</code>类型的<code>toString()</code>方法的结果默认为该枚举的元素名称，而并非整型数字</li>
+<li><code>values()</code>获取元素数组。通过调用枚举类型的<code>values()</code>方法能够获取该枚举的全部元素构成的数组，方便迭代操作</li>
+</ul>
+<div class="highlight"><pre class="chroma"><code class="language-java" data-lang="java">    <span class="nd">@Test</span>
+    <span class="kd">public</span> <span class="kt">void</span> <span class="nf">testEnum</span><span class="o">()</span> <span class="o">{</span>
+        <span class="n">ColorEnum</span> <span class="n">color</span> <span class="o">=</span> <span class="n">ColorEnum</span><span class="o">.</span><span class="na">BLUE</span><span class="o">;</span>
+        <span class="c1">// 编译器报错 incompatible types: se.SeasonEnum cannot be converted to se.ColorEnum
+</span><span class="c1"></span>        <span class="c1">// color = SeasonEnum.AUTUMN;
+</span><span class="c1"></span>        <span class="c1">// 获取元素名称
+</span><span class="c1"></span>        <span class="n">System</span><span class="o">.</span><span class="na">out</span><span class="o">.</span><span class="na">println</span><span class="o">(</span><span class="n">color</span><span class="o">);</span>
+        <span class="c1">// 通过values()迭代操作全部元素
+</span><span class="c1"></span>        <span class="k">for</span><span class="o">(</span><span class="n">ColorEnum</span> <span class="n">element</span><span class="o">:</span> <span class="n">ColorEnum</span><span class="o">.</span><span class="na">values</span><span class="o">())</span> <span class="o">{</span>
+            <span class="n">System</span><span class="o">.</span><span class="na">out</span><span class="o">.</span><span class="na">println</span><span class="o">(</span><span class="n">element</span><span class="o">);</span>
+        <span class="o">}</span>
+    <span class="o">}</span>
+<span class="c1">// ----- 输出 -----
+</span><span class="c1"></span><span class="n">BLUE</span>
+<span class="n">RED</span>
+<span class="n">BLUE</span>
+</code></pre></div><h2 id="枚举的本质-">枚举的本质</h2>
+<p>Java中的枚举本质上还是类和其对象，这通过反编译就能够得到答案</p>
+<div class="highlight"><pre class="chroma"><code class="language-java" data-lang="java"><span class="c1">// 源文件SeasonEnum.java
+</span><span class="c1"></span><span class="kd">public</span> <span class="kd">enum</span> <span class="n">SeasonEnum</span> <span class="o">{</span>
+    <span class="n">SPRING</span><span class="o">,</span> <span class="n">SUMMER</span><span class="o">,</span> <span class="n">AUTUMN</span><span class="o">,</span> <span class="n">WINTER</span><span class="o">;</span>
+<span class="o">}</span>
+<span class="c1">// 反编译SeasonEnum.class
+</span><span class="c1"></span><span class="kd">public</span> <span class="kd">final</span> <span class="kd">class</span> <span class="nc">se</span><span class="o">.</span><span class="na">SeasonEnum</span> <span class="kd">extends</span> <span class="n">java</span><span class="o">.</span><span class="na">lang</span><span class="o">.</span><span class="na">Enum</span><span class="o">&lt;</span><span class="n">se</span><span class="o">.</span><span class="na">SeasonEnum</span><span class="o">&gt;</span> <span class="o">{</span>
+  <span class="kd">public</span> <span class="kd">static</span> <span class="kd">final</span> <span class="n">se</span><span class="o">.</span><span class="na">SeasonEnum</span> <span class="n">SPRING</span><span class="o">;</span>
+  <span class="kd">public</span> <span class="kd">static</span> <span class="kd">final</span> <span class="n">se</span><span class="o">.</span><span class="na">SeasonEnum</span> <span class="n">SUMMER</span><span class="o">;</span>
+  <span class="kd">public</span> <span class="kd">static</span> <span class="kd">final</span> <span class="n">se</span><span class="o">.</span><span class="na">SeasonEnum</span> <span class="n">AUTUMN</span><span class="o">;</span>
+  <span class="kd">public</span> <span class="kd">static</span> <span class="kd">final</span> <span class="n">se</span><span class="o">.</span><span class="na">SeasonEnum</span> <span class="n">WINTER</span><span class="o">;</span>
+  <span class="kd">private</span> <span class="kd">static</span> <span class="kd">final</span> <span class="n">se</span><span class="o">.</span><span class="na">SeasonEnum</span><span class="o">[]</span> <span class="n">$VALUES</span><span class="o">;</span>
+  <span class="kd">public</span> <span class="kd">static</span> <span class="n">se</span><span class="o">.</span><span class="na">SeasonEnum</span><span class="o">[]</span> <span class="nf">values</span><span class="o">();</span>
+  <span class="kd">public</span> <span class="kd">static</span> <span class="n">se</span><span class="o">.</span><span class="na">SeasonEnum</span> <span class="nf">valueOf</span><span class="o">(</span><span class="n">java</span><span class="o">.</span><span class="na">lang</span><span class="o">.</span><span class="na">String</span><span class="o">);</span>
+  <span class="kd">private</span> <span class="n">se</span><span class="o">.</span><span class="na">SeasonEnum</span><span class="o">();</span>
+  <span class="kd">static</span> <span class="o">{};</span>
+<span class="o">}</span>
+</code></pre></div><p>我们仔细瞧一瞧反编译的内容：</p>
+<ul>
+<li>该类通过<code>final</code>修饰，因而无法被继承</li>
+<li>该类继承自<code>Enum</code>，因此无法继承其他的类</li>
+<li>构造方法为<code>private</code>修饰，因此无发构造其对象</li>
+<li>所有在源文件中定义的元素都会使用构造一个同名的静态对象</li>
+</ul>
+<p>所以，为什么说<code>enum</code>是Java提供的语法糖，因为它是通过编译器进行了类似代码生成的操作，其本质依然是类。</p>
+<p>通过了解它是使用类来进行枚举，下面的一些特性就十分好理解了。</p>
+<h2 id="枚举和成员-">枚举和成员</h2>
+<p>这大概是使用最多的特性了吧，一般使用<code>enum</code>都会在其中包含一些该元素的详细信息，比如实在开发中比较常用的错误枚举，通常就会在定义枚举的时候其错误码以及该错误的具体描述这2个成员。</p>
+<p>例如，上述的<code>Season</code>，我希望相应枚举包含对应季节的农历月份以及中文描述。</p>
+<div class="highlight"><pre class="chroma"><code class="language-java" data-lang="java"><span class="c1">// Season.java
+</span><span class="c1"></span><span class="kd">public</span> <span class="kd">enum</span> <span class="n">SeasonEnum</span> <span class="o">{</span>
+    <span class="n">SPRING</span><span class="o">(</span><span class="n">1</span><span class="o">,</span> <span class="n">3</span><span class="o">,</span> <span class="s">&#34;春&#34;</span><span class="o">),</span>
+    <span class="n">SUMMER</span><span class="o">(</span><span class="n">4</span><span class="o">,</span> <span class="n">6</span><span class="o">,</span> <span class="s">&#34;夏&#34;</span><span class="o">),</span>
+    <span class="n">AUTUMN</span><span class="o">(</span><span class="n">7</span><span class="o">,</span> <span class="n">9</span><span class="o">,</span> <span class="s">&#34;秋&#34;</span><span class="o">),</span>
+    <span class="n">WINTER</span><span class="o">(</span><span class="n">10</span><span class="o">,</span> <span class="n">12</span><span class="o">,</span> <span class="s">&#34;冬&#34;</span><span class="o">);</span>
+
+    <span class="kd">private</span> <span class="kd">final</span> <span class="kt">int</span> <span class="n">fromMonth</span><span class="o">;</span>
+    <span class="kd">private</span> <span class="kd">final</span> <span class="kt">int</span> <span class="n">toMonth</span><span class="o">;</span>
+    <span class="kd">private</span> <span class="kd">final</span> <span class="n">String</span> <span class="n">desc</span><span class="o">;</span>
+
+    <span class="n">SeasonEnum</span><span class="o">(</span><span class="kt">int</span> <span class="n">fromMonth</span><span class="o">,</span> <span class="kt">int</span> <span class="n">toMonth</span><span class="o">,</span> <span class="n">String</span> <span class="n">desc</span><span class="o">)</span> <span class="o">{</span>
+        <span class="k">this</span><span class="o">.</span><span class="na">fromMonth</span> <span class="o">=</span> <span class="n">fromMonth</span><span class="o">;</span>
+        <span class="k">this</span><span class="o">.</span><span class="na">toMonth</span> <span class="o">=</span> <span class="n">toMonth</span><span class="o">;</span>
+        <span class="k">this</span><span class="o">.</span><span class="na">desc</span> <span class="o">=</span> <span class="n">desc</span><span class="o">;</span>
+    <span class="o">}</span>
+
+    <span class="kd">public</span> <span class="kt">int</span> <span class="nf">getFromMonth</span><span class="o">()</span> <span class="o">{</span>
+        <span class="k">return</span> <span class="n">fromMonth</span><span class="o">;</span>
+    <span class="o">}</span>
+
+    <span class="kd">public</span> <span class="kt">int</span> <span class="nf">getToMonth</span><span class="o">()</span> <span class="o">{</span>
+        <span class="k">return</span> <span class="n">toMonth</span><span class="o">;</span>
+    <span class="o">}</span>
+
+    <span class="kd">public</span> <span class="n">String</span> <span class="nf">getDesc</span><span class="o">()</span> <span class="o">{</span>
+        <span class="k">return</span> <span class="n">desc</span><span class="o">;</span>
+    <span class="o">}</span>
+<span class="o">}</span>
+</code></pre></div><p>之后，就很明了了：</p>
+<ul>
+<li>4个枚举元素相当与使用了全参构造方法进行构造</li>
+<li>因为枚举元素是该类的实例，因此可以调用相应的方法获取成员变量</li>
+</ul>
+<h2 id="枚举和抽象方法-">枚举和抽象方法</h2>
+<p>如果从“枚举是一个类”来看，这个特性确实并不怎么让人吃惊。它的使用场景是当你需要通过枚举的元素不同进行不同的逻辑分支时使用的，相比使用抽象方法更加朴实和笨拙的方式是使用<code>switch...case...</code>。但这样的代码并不优雅，而且也并不利于拓展。</p>
+<p>举一个Effective Java中的例子，四则运算。</p>
+<div class="highlight"><pre class="chroma"><code class="language-java" data-lang="java"><span class="kd">public</span> <span class="kd">enum</span> <span class="n">BasicOperation</span> <span class="o">{</span>
+    <span class="n">PLUS</span><span class="o">(</span><span class="s">&#34;+&#34;</span><span class="o">)</span> <span class="o">{</span><span class="c1">// 加法
+</span><span class="c1"></span>        <span class="nd">@Override</span>
+        <span class="kd">public</span> <span class="kt">int</span> <span class="nf">apply</span><span class="o">(</span><span class="kt">int</span> <span class="n">left</span><span class="o">,</span> <span class="kt">int</span> <span class="n">right</span><span class="o">)</span> <span class="o">{</span>
+            <span class="k">return</span> <span class="n">left</span> <span class="o">+</span> <span class="n">right</span><span class="o">;</span>
+        <span class="o">}</span>
+    <span class="o">},</span>
+    <span class="n">MINUS</span><span class="o">(</span><span class="s">&#34;-&#34;</span><span class="o">)</span> <span class="o">{</span><span class="c1">// 减法
+</span><span class="c1"></span>        <span class="nd">@Override</span>
+        <span class="kd">public</span> <span class="kt">int</span> <span class="nf">apply</span><span class="o">(</span><span class="kt">int</span> <span class="n">left</span><span class="o">,</span> <span class="kt">int</span> <span class="n">right</span><span class="o">)</span> <span class="o">{</span>
+            <span class="k">return</span> <span class="n">left</span> <span class="o">-</span> <span class="n">right</span><span class="o">;</span>
+        <span class="o">}</span>
+    <span class="o">},</span>
+    <span class="n">MULTIPLY</span><span class="o">(</span><span class="s">&#34;*&#34;</span><span class="o">)</span> <span class="o">{</span><span class="c1">// 乘法
+</span><span class="c1"></span>        <span class="nd">@Override</span>
+        <span class="kd">public</span> <span class="kt">int</span> <span class="nf">apply</span><span class="o">(</span><span class="kt">int</span> <span class="n">left</span><span class="o">,</span> <span class="kt">int</span> <span class="n">right</span><span class="o">)</span> <span class="o">{</span>
+            <span class="k">return</span> <span class="n">left</span> <span class="o">*</span> <span class="n">right</span><span class="o">;</span>
+        <span class="o">}</span>
+    <span class="o">},</span>
+    <span class="n">DIVIDE</span><span class="o">(</span><span class="s">&#34;/&#34;</span><span class="o">)</span> <span class="o">{</span><span class="c1">// 除法
+</span><span class="c1"></span>        <span class="nd">@Override</span>
+        <span class="kd">public</span> <span class="kt">int</span> <span class="nf">apply</span><span class="o">(</span><span class="kt">int</span> <span class="n">left</span><span class="o">,</span> <span class="kt">int</span> <span class="n">right</span><span class="o">)</span> <span class="o">{</span>
+            <span class="k">return</span> <span class="n">left</span> <span class="o">/</span> <span class="n">right</span><span class="o">;</span>
+        <span class="o">}</span>
+    <span class="o">};</span>
+
+    <span class="kd">private</span> <span class="kd">final</span> <span class="n">String</span> <span class="n">symbol</span><span class="o">;</span>
+
+    <span class="n">Operation</span><span class="o">(</span><span class="n">String</span> <span class="n">symbol</span><span class="o">)</span> <span class="o">{</span>
+        <span class="k">this</span><span class="o">.</span><span class="na">symbol</span> <span class="o">=</span> <span class="n">symbol</span><span class="o">;</span>
+    <span class="o">}</span>
+
+    <span class="kd">public</span> <span class="kd">abstract</span> <span class="kt">int</span> <span class="nf">apply</span><span class="o">(</span><span class="kt">int</span> <span class="n">left</span><span class="o">,</span> <span class="kt">int</span> <span class="n">right</span><span class="o">);</span>
+<span class="o">}</span>
+</code></pre></div><p>使用抽象方法能够让枚举在方法层面进行抽象，但它的拓展却是封闭的，由于枚举最终是<code>final</code>类，因此它无法通过继承的方式进行拓展，只能够增加新的枚举元素进行拓展。</p>
+<p>与此想对应的，直接编写抽象类，通过该抽象类统筹其实现子类也能达到<code>enum</code>的效果，这在实际的源码中使用的更加频繁。这种情况下，往往抽象类会做以下几件事：</p>
+<ul>
+<li>
+<p>给出相应的工厂方法，通过工厂方法名返回不同的实现</p>
+</li>
+<li>
+<p>工厂方法内部决定是返回单例对象还是新的实例，使用者无需关心</p>
+</li>
+</ul>
+<p>抽象类统筹实现的好处在于你能够通过抽象类提供的工厂方法，得到所有你可以使用的子类实例，而不需要去了解复杂的继承关系。</p>
+<h2 id="枚举和接口-">枚举和接口</h2>
+<p>由于<code>enum</code>是默认继承了<code>Enum</code>的，因此无法继承其他类，但依然可以继承接口。</p>
+<div class="highlight"><pre class="chroma"><code class="language-java" data-lang="java"><span class="c1">// Operation接口只有一个apply()方法
+</span><span class="c1"></span><span class="kd">public</span> <span class="kd">enum</span> <span class="n">BasicOperation</span> <span class="kd">implements</span> <span class="n">Operation</span> <span class="o">{</span>
+    <span class="n">PLUS</span><span class="o">(</span><span class="s">&#34;+&#34;</span><span class="o">)</span> <span class="o">{</span>
+        <span class="nd">@Override</span>
+        <span class="kd">public</span> <span class="kt">int</span> <span class="nf">apply</span><span class="o">(</span><span class="kt">int</span> <span class="n">left</span><span class="o">,</span> <span class="kt">int</span> <span class="n">right</span><span class="o">)</span> <span class="o">{</span>
+            <span class="k">return</span> <span class="n">left</span> <span class="o">+</span> <span class="n">right</span><span class="o">;</span>
+        <span class="o">}</span>
+    <span class="o">},</span>
+    <span class="n">MINUS</span><span class="o">(</span><span class="s">&#34;-&#34;</span><span class="o">)</span> <span class="o">{</span>
+        <span class="nd">@Override</span>
+        <span class="kd">public</span> <span class="kt">int</span> <span class="nf">apply</span><span class="o">(</span><span class="kt">int</span> <span class="n">left</span><span class="o">,</span> <span class="kt">int</span> <span class="n">right</span><span class="o">)</span> <span class="o">{</span>
+            <span class="k">return</span> <span class="n">left</span> <span class="o">-</span> <span class="n">right</span><span class="o">;</span>
+        <span class="o">}</span>
+    <span class="o">},</span>
+    <span class="n">MULTIPLY</span><span class="o">(</span><span class="s">&#34;*&#34;</span><span class="o">)</span> <span class="o">{</span>
+        <span class="nd">@Override</span>
+        <span class="kd">public</span> <span class="kt">int</span> <span class="nf">apply</span><span class="o">(</span><span class="kt">int</span> <span class="n">left</span><span class="o">,</span> <span class="kt">int</span> <span class="n">right</span><span class="o">)</span> <span class="o">{</span>
+            <span class="k">return</span> <span class="n">left</span> <span class="o">*</span> <span class="n">right</span><span class="o">;</span>
+        <span class="o">}</span>
+    <span class="o">},</span>
+    <span class="n">DIVIDE</span><span class="o">(</span><span class="s">&#34;/&#34;</span><span class="o">)</span> <span class="o">{</span>
+        <span class="nd">@Override</span>
+        <span class="kd">public</span> <span class="kt">int</span> <span class="nf">apply</span><span class="o">(</span><span class="kt">int</span> <span class="n">left</span><span class="o">,</span> <span class="kt">int</span> <span class="n">right</span><span class="o">)</span> <span class="o">{</span>
+            <span class="k">return</span> <span class="n">left</span> <span class="o">/</span> <span class="n">right</span><span class="o">;</span>
+        <span class="o">}</span>
+    <span class="o">};</span>
+
+    <span class="kd">private</span> <span class="kd">final</span> <span class="n">String</span> <span class="n">symbol</span><span class="o">;</span>
+
+    <span class="n">BasicOperation</span><span class="o">(</span><span class="n">String</span> <span class="n">symbol</span><span class="o">)</span> <span class="o">{</span>
+        <span class="k">this</span><span class="o">.</span><span class="na">symbol</span> <span class="o">=</span> <span class="n">symbol</span><span class="o">;</span>
+    <span class="o">}</span>
+<span class="o">}</span>
+</code></pre></div><p>使用接口的好处是你虽然不能拓展<code>BasicOperation</code>，但能够拓展<code>Operation</code>。由于<code>BasicOperation</code>的所有元素是该类的实例之外，也是<code>Operation</code>的实例。因此，当你仅仅需要使用<code>apply()</code>方法时，能够使用<code>Operation</code>作为类型传递枚举对象。这样，你就能定义第2个枚举拓展实现该接口进行拓展了。</p>
+<p>我个人感觉，这其实是接口的应用，和枚举关系并不大。如果<code>Operation</code>的拓展能力十分强，那么或许不使用枚举是最好的方式。</p>
+<h2 id="枚举和集合-">枚举和集合</h2>
+<p>Java提供了2种专门为<code>enum</code>设计的集合类型，<code>EnumSet</code>和<code>EnumMap</code>。其中<code>EnumMap</code>是将<code>enum</code>类型作为key进行存储的<code>Map</code>。</p>
+<p>这两种集合对<code>enum</code>进行了特殊的优化，通常的<code>HashSet</code>和<code>HashMap</code>存储内容是通过数组和<code>hashCode()</code>获取散列值确定存储位置的，这是因为冲突的存在无法单纯通过<code>hashCode()</code>直接判断2个元素相等。</p>
+<p>然而，<code>enum</code>的元素有着天生独有的哈希值，那就是通过<code>ordinal()</code>获取的<strong>序数</strong>，序数是绝对不会冲突的哈希值，因为进需要使用位操作和一个数便能够完成通常情况数组才能完成的事。</p>
+<div class="highlight"><pre class="chroma"><code class="language-java" data-lang="java">	<span class="c1">// RegularEnumSet
+</span><span class="c1"></span>    <span class="kd">public</span> <span class="kt">boolean</span> <span class="nf">contains</span><span class="o">(</span><span class="n">Object</span> <span class="n">var1</span><span class="o">)</span> <span class="o">{</span>
+        <span class="k">if</span> <span class="o">(</span><span class="n">var1</span> <span class="o">==</span> <span class="kc">null</span><span class="o">)</span> <span class="o">{</span>
+            <span class="k">return</span> <span class="kc">false</span><span class="o">;</span>
+        <span class="o">}</span> <span class="k">else</span> <span class="o">{</span>
+            <span class="c1">// 类型判断
+</span><span class="c1"></span>            <span class="n">Class</span> <span class="n">var2</span> <span class="o">=</span> <span class="n">var1</span><span class="o">.</span><span class="na">getClass</span><span class="o">();</span>
+            <span class="k">if</span> <span class="o">(</span><span class="n">var2</span> <span class="o">!=</span> <span class="k">this</span><span class="o">.</span><span class="na">elementType</span> <span class="o">&amp;&amp;</span> <span class="n">var2</span><span class="o">.</span><span class="na">getSuperclass</span><span class="o">()</span> <span class="o">!=</span> <span class="k">this</span><span class="o">.</span><span class="na">elementType</span><span class="o">)</span> <span class="o">{</span>
+                <span class="k">return</span> <span class="kc">false</span><span class="o">;</span>
+            <span class="o">}</span> <span class="k">else</span> <span class="o">{</span>
+                <span class="c1">// 通用位操作检查是否存在该元素
+</span><span class="c1"></span>                <span class="k">return</span> <span class="o">(</span><span class="k">this</span><span class="o">.</span><span class="na">elements</span> <span class="o">&amp;</span> <span class="n">1L</span> <span class="o">&lt;&lt;</span> <span class="o">((</span><span class="n">Enum</span><span class="o">)</span><span class="n">var1</span><span class="o">).</span><span class="na">ordinal</span><span class="o">())</span> <span class="o">!=</span> <span class="n">0L</span><span class="o">;</span>
+            <span class="o">}</span>
+        <span class="o">}</span>
+    <span class="o">}</span>
+    <span class="kd">public</span> <span class="kt">boolean</span> <span class="nf">add</span><span class="o">(</span><span class="n">E</span> <span class="n">var1</span><span class="o">)</span> <span class="o">{</span>
+        <span class="c1">// 类型检查
+</span><span class="c1"></span>        <span class="k">this</span><span class="o">.</span><span class="na">typeCheck</span><span class="o">(</span><span class="n">var1</span><span class="o">);</span>
+        <span class="kt">long</span> <span class="n">var2</span> <span class="o">=</span> <span class="k">this</span><span class="o">.</span><span class="na">elements</span><span class="o">;</span>
+        <span class="c1">// 调用ordinal()获取序数并使用位操作存储该序数元素的存在状态
+</span><span class="c1"></span>        <span class="k">this</span><span class="o">.</span><span class="na">elements</span> <span class="o">|=</span> <span class="n">1L</span> <span class="o">&lt;&lt;</span> <span class="n">var1</span><span class="o">.</span><span class="na">ordinal</span><span class="o">();</span>
+        <span class="c1">// 通过判断操作前后的数是否相同判断是否添加成功
+</span><span class="c1"></span>        <span class="k">return</span> <span class="k">this</span><span class="o">.</span><span class="na">elements</span> <span class="o">!=</span> <span class="n">var2</span><span class="o">;</span>
+    <span class="o">}</span>
+</code></pre></div><p>类型检查的原因是<code>contains()</code>的参数类型是<code>Object</code>，因此必须使用类型判断，否则会产生不同的<code>enum</code>类型传入返回<code>true</code>的情况。</p>
+<div class="highlight"><pre class="chroma"><code class="language-java" data-lang="java">    <span class="nd">@Test</span>
+    <span class="kd">public</span> <span class="kt">void</span> <span class="nf">testEnumConversion</span><span class="o">()</span> <span class="o">{</span>        
+        <span class="n">BasicOperation</span> <span class="n">op</span> <span class="o">=</span> <span class="n">BasicOperation</span><span class="o">.</span><span class="na">PLUS</span><span class="o">;</span>
+        <span class="n">Enum</span> <span class="n">e</span> <span class="o">=</span> <span class="n">op</span><span class="o">;</span>
+        <span class="n">EnumSet</span><span class="o">&lt;</span><span class="n">SeasonEnum</span><span class="o">&gt;</span> <span class="n">set</span> <span class="o">=</span> <span class="n">EnumSet</span><span class="o">.</span><span class="na">of</span><span class="o">(</span><span class="n">SeasonEnum</span><span class="o">.</span><span class="na">SPRING</span><span class="o">,</span> <span class="n">SeasonEnum</span><span class="o">.</span><span class="na">SUMMER</span><span class="o">);</span>
+        <span class="n">System</span><span class="o">.</span><span class="na">out</span><span class="o">.</span><span class="na">println</span><span class="o">(</span><span class="n">set</span><span class="o">.</span><span class="na">contains</span><span class="o">(</span><span class="n">e</span><span class="o">));</span>
+    <span class="o">}</span>
+<span class="c1">// ----- 输出 -----
+</span><span class="c1"></span><span class="kc">false</span>
+</code></pre></div><p>因此，使用<code>EnumSet</code>和<code>EnumMap</code>不仅仅能够加速查询，并且能够节约内存空间并省去有关负载因子及扩容的大量代码。</p>
+<h2 id="总结-">总结</h2>
+<p>Java中的枚举并没有C中那么简单，其本质是类这一特点就决定了它能够胜任一些其他方面的工作，但同时也代表了它比C当中的枚举更加消耗资源。</p>
+<p>枚举的虽然能够使用抽象方法进行一定程度的抽象，但无法被继承这一特点也使得它只能够通过修改源码进行拓展。所以，枚举的使用仅在元素可枚举的前提下进行是最佳的。</p>
+<p>最后，尽量使用<code>EnumSet</code>和<code>EnumMap</code>。</p>
+</article><section class="article labels"><a class="category" href=/categories/Java/>Java</a><a class="tag" href=/tags/Java/>Java</a><a class="tag" href=/tags/enum/>enum</a></section></div>
+<div class="article bottom"><section class="article navigation"><p><a class="link" href="/post/java-reflection/"><span class="iconfont icon-article"></span>Java - 反射</a></p></section></div></section><section id="footer"><div class="footer-wrap">
+    <p class="copyright">©2019 Notepadium.</p>
+    <p class="powerby"><span>Powered by </span><a href="https://gohugo.io" 
+        target="_blank">Hugo</a><span> and the </span><a href="https://themes.gohugo.io/hugo-notepadium/" 
+        target="_blank">Notepadium</a></p>
+</div></section></body>
+
+</html>

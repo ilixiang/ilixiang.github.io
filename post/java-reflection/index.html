@@ -151,6 +151,7 @@
     <span class="o">}</span>
 </code></pre></div><p>在通常情况下，用户是无法访问类的私有成员和方法的，但在反射下这一限制形同虚设。</p>
 <p><code>private</code>关键字的作用并非单纯的阻止用户访问私有成员。在我看来，<code>public</code>和<code>private</code>的区别在于前者是这个类所应该提供的功能，而后者是这些功能隐藏之下的细节。因此，对于这个类的开发者而言，<code>private</code>修饰的成员和方法相比与<code>public</code>而言能够去随意的删除和增加。因而对于这个类的使用者而言，当你使用反射访问<code>private</code>成员的同时，也增加了你自己代码的风险，或许类库升级一个版本，你的代码就不可用了。</p>
+<p>还有一种情况是针对单例模式的类使用反射。大家都知道，单例模式通常都提供相应的工厂方法获取实例，但如果使用反射就会导致整个应用存在2个或多个实例，这也是由于反射破坏了类的封装性，访问了原本无法访问的构造方法。</p>
 <h2 id="反射的应用-">反射的应用</h2>
 <h3 id="接口和实现分离-">接口和实现分离</h3>
 <p>比较常见的一个例子就是日志类slf4j，它定义了日志接口<code>Logger</code>，但没有定义任何实现。这原本是极为常见的，但我们获取日志实现的方式却并非创建<code>Logger</code>的实现类对象，并将之赋值给<code>Logger</code>引用，而是通过以下方式。</p>
@@ -259,7 +260,7 @@
 <p>首先，反射作为使用Java解决问题的一个可选方案，不应该在任何需要解决问题的时候第一时间想到它，它所带来巨大灵活性的前提是需要考虑更多的细节以及付出相应的性能代价。因此，在能够使用其他不太复杂的方法解决问题的情况下应当避免使用反射。</p>
 <p>其次，如果需要使用反射也需要避免直接使用。Java有着许多底层使用反射的上层方案，它们的存在能保证你在解决问题的同时不需要思考底层可能出现的问题，并且代码简洁和可读，把脏活累活交给别人，何乐而不为。</p>
 </article><section class="article labels"><a class="category" href=/categories/Java/>Java</a><a class="tag" href=/tags/Java/>Java</a><a class="tag" href=/tags/reflection/>reflection</a></section></div>
-<div class="article bottom"><section class="article navigation"><p><a class="link" href="/post/guava-talk-4/"><span class="iconfont icon-article"></span>Guava杂谈 - ImmutableCollections</a></p></section></div></section><section id="footer"><div class="footer-wrap">
+<div class="article bottom"><section class="article navigation"><p><a class="link" href="/post/java-enum/"><span class="iconfont icon-article"></span>Java - 枚举</a></p><p><a class="link" href="/post/guava-talk-4/"><span class="iconfont icon-article"></span>Guava杂谈 - ImmutableCollections</a></p></section></div></section><section id="footer"><div class="footer-wrap">
     <p class="copyright">©2019 Notepadium.</p>
     <p class="powerby"><span>Powered by </span><a href="https://gohugo.io" 
         target="_blank">Hugo</a><span> and the </span><a href="https://themes.gohugo.io/hugo-notepadium/" 
