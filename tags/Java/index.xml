@@ -23,6 +23,16 @@
     </item>
     
     <item>
+      <title>Apache Shiro - 基本使用和概念</title>
+      <link>/post/shiro-1/</link>
+      <pubDate>Wed, 08 Jul 2020 15:49:38 +0800</pubDate>
+      
+      <guid>/post/shiro-1/</guid>
+      <description>提到安全，我的第一反应其实是加密传输，所以在第一次遇到安全框架这个词的时候，我其实并不了解它所真正扮演的角色。 安全框架的主要功能包括4点： 用户认证。这一点是对匿名用户和认证用户进行区分，简单来说就是是否登录 用户授权。这一点是通过权限对认证用户的进一步细分，以此来判别用户是否能够进</description>
+      
+    </item>
+    
+    <item>
       <title>Java - 反射</title>
       <link>/post/java-reflection/</link>
       <pubDate>Fri, 03 Jul 2020 13:29:04 +0800</pubDate>

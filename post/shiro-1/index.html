@@ -1,0 +1,103 @@
+<!DOCTYPE html>
+<html lang="en"><meta charset="utf-8"><meta name="generator" content="Hugo 0.68.3" /><meta name="viewport" content="width=device-width,initial-scale=1,viewport-fit=cover">
+<meta name="color-scheme" content="light dark">
+<meta name="supported-color-schemes" content="light dark"><title>Apache Shiro - 基本使用和概念&nbsp;&ndash;&nbsp;三斜求积术</title><link rel="stylesheet" href="/css/core.min.802aa67397694ca5d7cacc2140e5e8fcb52d3add493941c161a3c4d2d5da57e3ca230e49da9cc38312e9698b71ef4c3a.css" integrity="sha384-gCqmc5dpTKXXyswhQOXo/LUtOt1JOUHBYaPE0tXaV&#43;PKIw5J2pzDgxLpaYtx70w6"><meta name="twitter:card" content="summary" />
+<meta name="twitter:title" content="Apache Shiro - 基本使用和概念" /><body><section id="header">
+    <div class="header wrap"><span class="header left-side"><a class="site home" href="/"><span class="site name">三斜求积术</span></a></span>
+        <span class="header right-side"><div class="nav wrap"><nav class="nav"><a class="nav item" href="/categories/">Categories</a><a class="nav item" href="/tags/">Tags</a><a class="nav item" href="/about">About</a><a class="nav item" href="https://gohugo%2eio/"target="_blank">Hugo</a></nav></div></span></div><div class="site slogan"><span class="title">Slow is Fast. Less is More. Code for Fun.</span></div></section><section id="content"><div class="article-container"><section class="article header">
+    <h1 class="article title">Apache Shiro - 基本使用和概念</h1><p class="article date">Wednesday, July 8, 2020</p></section><article class="article markdown-body"><p><img  src="/img/apache-shiro.png"
+        alt="apache shiro"/></p>
+<p>提到安全，我的第一反应其实是加密传输，所以在第一次遇到<strong>安全框架</strong>这个词的时候，我其实并不了解它所真正扮演的角色。</p>
+<p>安全框架的主要功能包括4点：</p>
+<ul>
+<li>用户认证。这一点是对匿名用户和认证用户进行区分，简单来说就是是否登录</li>
+<li>用户授权。这一点是通过权限对认证用户的进一步细分，以此来判别用户是否能够进行某项操作</li>
+<li>会话管理。为什么多数应用在你登录一次之后一定时间进行后续的操作不需要再次登录？这就是会话的作用。会话用于保存用户的认证状态以及一些交互数据，会话管理就是管理会话的生命周期</li>
+<li>加密。提供基本的加密方法，比如md5+salt对密码进行加密等</li>
+</ul>
+<p>Shiro是Apache的一个开源安全框架，我暂时没有了解过其他安全框架的使用，因而无法与其他安全框架进行对比。Shiro所提供的特性如下图所示：</p>
+<p><img  src="/img/shiro-features.png"
+        alt="shiro features"/></p>
+<p>接下来就结合代码去了解shiro提供的安全特性是如何使用的。</p>
+<h2 id="基本使用">基本使用</h2>
+<p>首先，来观察一下使用Shiro的代码示例</p>
+<div class="highlight"><pre class="chroma"><code class="language-ini" data-lang="ini"><span class="k">[users]</span>
+<span class="c1"># 用户名 = 密码， 角色</span>
+<span class="na">root</span> <span class="o">=</span> <span class="s">secret, admin</span>
+<span class="na">guest</span> <span class="o">=</span> <span class="s">guest, guest</span>
+<span class="na">presidentskroob</span> <span class="o">=</span> <span class="s">12345, president</span>
+<span class="na">darkhelmet</span> <span class="o">=</span> <span class="s">ludicrousspeed, darklord, schwartz</span>
+<span class="na">lonestarr</span> <span class="o">=</span> <span class="s">vespa, goodguy, schwartz</span>
+
+<span class="k">[roles]</span>
+<span class="c1"># 角色 = 权限</span>
+<span class="na">admin</span> <span class="o">=</span> <span class="s">*</span>
+<span class="na">schwartz</span> <span class="o">=</span> <span class="s">lightsaber:*</span>
+<span class="na">goodguy</span> <span class="o">=</span> <span class="s">winnebago:drive:eagle5</span>
+</code></pre></div><div class="highlight"><pre class="chroma"><code class="language-java" data-lang="java"><span class="c1">// Tutorial.java
+</span><span class="c1"></span><span class="kd">public</span> <span class="kd">class</span> <span class="nc">Tutorial</span> <span class="o">{</span>
+    <span class="kd">public</span> <span class="kd">static</span> <span class="kt">void</span> <span class="nf">main</span><span class="o">(</span><span class="n">String</span><span class="o">[]</span> <span class="n">args</span><span class="o">)</span> <span class="o">{</span>
+        <span class="n">Realm</span> <span class="n">realm</span> <span class="o">=</span> <span class="k">new</span> <span class="n">IniRealm</span><span class="o">(</span><span class="s">&#34;classpath:shiro.ini&#34;</span><span class="o">);</span>
+        <span class="n">SecurityManager</span> <span class="n">securityManager</span> <span class="o">=</span> <span class="k">new</span> <span class="n">DefaultSecurityManager</span><span class="o">(</span><span class="n">realm</span><span class="o">);</span>
+        <span class="c1">// 使用SecurityUtils设置SecurityManager
+</span><span class="c1"></span>        <span class="n">SecurityUtils</span><span class="o">.</span><span class="na">setSecurityManager</span><span class="o">(</span><span class="n">securityManager</span><span class="o">);</span>
+
+        <span class="c1">// 获取当前主体
+</span><span class="c1"></span>        <span class="n">Subject</span> <span class="n">subject</span> <span class="o">=</span> <span class="n">SecurityUtils</span><span class="o">.</span><span class="na">getSubject</span><span class="o">();</span>
+        <span class="n">Session</span> <span class="n">session</span> <span class="o">=</span> <span class="n">subject</span><span class="o">.</span><span class="na">getSession</span><span class="o">();</span>
+        <span class="n">log</span><span class="o">.</span><span class="na">info</span><span class="o">(</span><span class="s">&#34;Before login, current user is {}&#34;</span><span class="o">,</span> <span class="n">subject</span><span class="o">.</span><span class="na">getPrincipal</span><span class="o">());</span>
+        <span class="n">session</span><span class="o">.</span><span class="na">setAttribute</span><span class="o">(</span><span class="s">&#34;key&#34;</span><span class="o">,</span> <span class="s">&#34;value&#34;</span><span class="o">);</span>
+        <span class="n">subject</span><span class="o">.</span><span class="na">login</span><span class="o">(</span><span class="k">new</span> <span class="n">UsernamePasswordToken</span><span class="o">(</span><span class="s">&#34;root&#34;</span><span class="o">,</span> <span class="s">&#34;secret&#34;</span><span class="o">));</span>
+        <span class="n">log</span><span class="o">.</span><span class="na">info</span><span class="o">(</span><span class="s">&#34;After login, current user is {}&#34;</span><span class="o">,</span> <span class="n">subject</span><span class="o">.</span><span class="na">getPrincipal</span><span class="o">());</span>
+        <span class="n">log</span><span class="o">.</span><span class="na">info</span><span class="o">(</span><span class="n">String</span><span class="o">.</span><span class="na">valueOf</span><span class="o">(</span><span class="n">subject</span><span class="o">.</span><span class="na">isAuthenticated</span><span class="o">()));</span>
+    <span class="o">}</span>
+<span class="o">}</span>
+<span class="c1">// ----- 输出 -----
+</span><span class="c1"></span><span class="o">[</span><span class="n">main</span><span class="o">]</span> <span class="n">INFO</span> <span class="n">Tutorial</span> <span class="o">-</span> <span class="n">Before</span> <span class="n">login</span><span class="o">,</span> <span class="n">current</span> <span class="n">user</span> <span class="n">is</span> <span class="kc">null</span>
+<span class="o">[</span><span class="n">main</span><span class="o">]</span> <span class="n">INFO</span> <span class="n">Tutorial</span> <span class="o">-</span> <span class="n">After</span> <span class="n">login</span><span class="o">,</span> <span class="n">current</span> <span class="n">user</span> <span class="n">is</span> <span class="n">root</span>
+<span class="o">[</span><span class="n">main</span><span class="o">]</span> <span class="n">INFO</span> <span class="n">Tutorial</span> <span class="o">-</span> <span class="kc">true</span>
+</code></pre></div><p>上述两个文件就构成了shiro的最基本使用。</p>
+<h2 id="基础概念和组件">基础概念和组件</h2>
+<p><strong>shiro.ini</strong>是shiro的配置文件，几乎所有的配置都能够在里面进行，灵活性极高。但如果集成springboot，相对而言就比较少用，因为springboot中一般通过配置Bean来配置shiro。在示例当中，我们配置了<code>[users]</code>和<code>[roles]</code>两节内容，分别用于表示<strong>用户</strong>和<strong>角色</strong>。这就牵扯到了shiro当中用于认证和授权的几个概念：</p>
+<ol>
+<li><strong>权限（Permission）</strong>，权限用于表示是否有资格对某种资源进行某种操作。在<code>[roles]</code>小节的参数中，位于等号后面的就是权限，而实际上权限需要作用除了声明用户所拥有的权限之外还需要规定某个资源的某种操作所需要的权限。比较实际的一个例子就是URL的访问</li>
+<li><strong>角色（Role）</strong>，权限的划分粒度其实是很细的，如果将权限单纯的赋予给用户，就会出现很多用户拥有很多相同的权限，当需要同时增加/删除他们对某一个资源的操作时，就会变得十分麻烦。因此，通过角色的定义，我们就能够将一堆权限定义为一个角色，将角色赋予用户，而当修改用户的权限时，只需要修改这个角色对应的权限即可</li>
+</ol>
+<p>权限和角色都是用于鉴权的概念，因此shiro的鉴权相关api都是围绕这2个概念进行的。</p>
+<p>Tutorial.java中我们能够看到一些实际使用的一些 shiro相关类：</p>
+<ol>
+<li>
+<p><code>Realm</code>. 中文翻译为<strong>领域</strong>，但其实不太好理解。它所具有的功能是访问和获取shiro提供认证和鉴权所需要的安全相关数据。例如，上面的例子中shiro.ini定义了<code>[user]</code>和<code>[roles]</code>安全相关数据，因此通过<code>IniRealm</code>来访问和获取这些数据。更实际的例子当中，安全相关数据是存放与数据库当中，因此使用shiro一般都是从重写<code>Realm</code>开始的</p>
+</li>
+<li>
+<p><code>Subject</code>.  中文翻译为<strong>主体</strong>，它代表的是现在正在操纵资源的用户，我们开发时也是通过获取<code>Subject</code>从而进行各种<strong>登录</strong>、<strong>认证</strong>、<strong>鉴权</strong>等操作的。<code>Subject</code>可以获取很多我们想要的信息，比如在web应用开发时，假如一个接口的功能是修改了数据库的某条记录，这条记录有一个<code>modifier</code>字段，当你调用这个接口修改记录时要求它会自动更新，我们必不可能让前端把用户名传给我们，而通过<code>Subject</code>就能够轻松获取当前操作资源用户的信息</p>
+</li>
+<li>
+<p><code>Token</code>. 中文翻译为<strong>口令</strong>，这个毫无疑问使用来登录的，上述代码中使用的是<code>UsernamePasswordToken</code>，比较直观和常用。但实际上进行web开发时，往往会有通过cookie或者token的认证方式，这个时候就需要我们自己进行<code>Token</code>实现</p>
+</li>
+<li>
+<p><code>SecurityManager</code>. 真正进行<strong>认证</strong>、<strong>授权</strong>、<strong>会话管理</strong>的类。上连<code>Subject</code>，下通<code>Realm</code>，它的接口定义如下：</p>
+<div class="highlight"><pre class="chroma"><code class="language-java" data-lang="java"><span class="kd">public</span> <span class="kd">interface</span> <span class="nc">SecurityManager</span> <span class="kd">extends</span> <span class="n">Authenticator</span><span class="o">,</span> <span class="n">Authorizer</span><span class="o">,</span> <span class="n">SessionManager</span>
+</code></pre></div><p>是不是十分直观，<code>Authenticator</code>、<code>Authorizer</code>和<code>SessionManager</code>分别代表了认证器、授权器、会话管理器</p>
+</li>
+<li>
+<p><code>Session</code>. <strong>会话</strong>，这个在http相关的面试题当中经常出现。<code>Session</code>是一个与当前用户相关的<code>Map</code>，能够通过它暂存/获取用户的数据，在web中它的最大优点就是能够保存用户的状态，并且用它能够保存的数据能够跨越request</p>
+</li>
+<li>
+<p><code>SecurityUtils</code>. 这是一个<code>Static</code>工具类，它为我们开发获取相应的shiro对象提供了十分友好的接口，可以通过它获取<code>Subject</code>、获取<code>Session</code>或绑定<code>SecurityManager</code>等操作。</p>
+</li>
+</ol>
+<p><img  src="/img/shiro-basic-arch.png"
+        alt="shiro-basic-arch"/></p>
+<p>这张图就表现了整体的调用过程，以<code>Subject</code>为入口，通过<code>SecurityManager</code>协调和控制，最终通过<code>Realm</code>逻辑获得认证和授权数据。</p>
+<h2 id="总结">总结</h2>
+<p>shiro的使用简单且直观。而从设计上来看，在上述代码中，如果你点进去看看源码，你就会发现这些全部都是接口。通过接口定义组件，然后通过这些组件的不同实现进行组合，从而获得丰富的功能，我认为这就是优秀的源码设计。</p>
+</article><section class="article labels"><a class="category" href=/categories/Java/>Java</a><a class="tag" href=/tags/Java/>Java</a><a class="tag" href=/tags/Security/>Security</a><a class="tag" href=/tags/Shiro/>Shiro</a></section></div>
+<div class="article bottom"><section class="article navigation"><p><a class="link" href="/post/java-enum/"><span class="iconfont icon-article"></span>Java - 枚举</a></p><p><a class="link" href="/post/java-reflection/"><span class="iconfont icon-article"></span>Java - 反射</a></p></section></div></section><section id="footer"><div class="footer-wrap">
+    <p class="copyright">©2019 Notepadium.</p>
+    <p class="powerby"><span>Powered by </span><a href="https://gohugo.io" 
+        target="_blank">Hugo</a><span> and the </span><a href="https://themes.gohugo.io/hugo-notepadium/" 
+        target="_blank">Notepadium</a></p>
+</div></section></body>
+
+</html>

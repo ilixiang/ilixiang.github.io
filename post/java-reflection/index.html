@@ -94,7 +94,7 @@
 </span><span class="c1"></span><span class="n">680</span>
 <span class="n">137</span>
 <span class="n">4</span>
-</code></pre></div><p>上述代码通过3种方式调用<code>sayHello()</code>方法，最终在我的机器上得到的结果。<code>Class.forName()</code>的代价极高，在实际使用时反复调用会极大的影响程序的性能。而即使使用<code>HelloWorld.class</code>直接获取方法，与直接调用相比依然相差的30倍以上。</p>
+</code></pre></div><p>上述代码通过3种方式调用<code>sayHello()</code>方法，最终在我的机器上得到的结果。<code>Class.forName()</code>的代价极高，在实际使用时反复调用会极大的影响程序的性能。而即使使用<code>HelloWorld.class</code>直接获取方法，与直接调用相比依然相差的30倍以上（实际上这个差距并不是固定的，可能换一个类或者换一个环境就会有所变化)。</p>
 <p>对于需要反复调用的方法而言，这是无法接受的，因此，比较好的优化方案是通过保存<code>Method</code>对象，这样就不需要从<code>Class</code>对象中获取了。</p>
 <div class="highlight"><pre class="chroma"><code class="language-java" data-lang="java">    <span class="nd">@Test</span>
     <span class="kd">public</span> <span class="kt">void</span> <span class="nf">methodPerformanceTest</span><span class="o">()</span> <span class="kd">throws</span> <span class="n">ClassNotFoundException</span><span class="o">,</span> <span class="n">NoSuchMethodException</span><span class="o">,</span> <span class="n">InvocationTargetException</span><span class="o">,</span> <span class="n">IllegalAccessException</span> <span class="o">{</span>
@@ -260,7 +260,7 @@
 <p>首先，反射作为使用Java解决问题的一个可选方案，不应该在任何需要解决问题的时候第一时间想到它，它所带来巨大灵活性的前提是需要考虑更多的细节以及付出相应的性能代价。因此，在能够使用其他不太复杂的方法解决问题的情况下应当避免使用反射。</p>
 <p>其次，如果需要使用反射也需要避免直接使用。Java有着许多底层使用反射的上层方案，它们的存在能保证你在解决问题的同时不需要思考底层可能出现的问题，并且代码简洁和可读，把脏活累活交给别人，何乐而不为。</p>
 </article><section class="article labels"><a class="category" href=/categories/Java/>Java</a><a class="tag" href=/tags/Java/>Java</a><a class="tag" href=/tags/reflection/>reflection</a></section></div>
-<div class="article bottom"><section class="article navigation"><p><a class="link" href="/post/java-enum/"><span class="iconfont icon-article"></span>Java - 枚举</a></p><p><a class="link" href="/post/guava-talk-4/"><span class="iconfont icon-article"></span>Guava杂谈 - ImmutableCollections</a></p></section></div></section><section id="footer"><div class="footer-wrap">
+<div class="article bottom"><section class="article navigation"><p><a class="link" href="/post/shiro-1/"><span class="iconfont icon-article"></span>Apache Shiro - 基本使用和概念</a></p><p><a class="link" href="/post/regex-note/"><span class="iconfont icon-article"></span>Regex - 笔记</a></p></section></div></section><section id="footer"><div class="footer-wrap">
     <p class="copyright">©2019 Notepadium.</p>
     <p class="powerby"><span>Powered by </span><a href="https://gohugo.io" 
         target="_blank">Hugo</a><span> and the </span><a href="https://themes.gohugo.io/hugo-notepadium/" 

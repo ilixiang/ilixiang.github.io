@@ -7,10 +7,20 @@
     <generator>Hugo -- gohugo.io</generator>
     <language>zh-cn</language>
     <copyright>©2019 Notepadium.</copyright>
-    <lastBuildDate>Fri, 12 Jun 2020 14:58:07 +0800</lastBuildDate>
+    <lastBuildDate>Fri, 03 Jul 2020 13:29:04 +0800</lastBuildDate>
     
         <atom:link href="/categories/shell/index.xml" rel="self" type="application/rss+xml" />
     
+    
+    <item>
+      <title>Regex - 笔记</title>
+      <link>/post/regex-note/</link>
+      <pubDate>Fri, 03 Jul 2020 13:29:04 +0800</pubDate>
+      
+      <guid>/post/regex-note/</guid>
+      <description>POSIX字符集 POSIX ASCII Description [:alnum:] [A-Za-z0-9] 字母和数字 [:alpha:] [A-Za-z] 字母 [:blank:] [ \t] 空白和\t [:cntrl:] [\x00-\x1F\x7F] 控制字符集 [:digit:] [0-9] 数字 [:graph:] [\x21-\x7E] 可见字符 [:lower:] [a-z] 小写字母 [:print:] [\x20-\x7E] 空格和可见字符 [:punct:] [][!&amp;quot;#$%&amp;amp;&#39;()*+,./:;&amp;lt;=&amp;gt;?@^_`{ |符号 | [:space:] [ \t\r\n\v\f] 空白集合 [:upper:] [A-Z] 大写字母 [:xdigit:] [A-Fa-f0-9] 十六进制数 上表摘自wiki，删除了原始表格中的部分内容。 POSIX字符集在命令行和shell中都能够使用，而使用时</description>
+      
+    </item>
     
     <item>
       <title>bash - 变量及变量操作</title>

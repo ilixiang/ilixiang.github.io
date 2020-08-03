@@ -23,12 +23,32 @@
     </item>
     
     <item>
+      <title>Apache Shiro - 基本使用和概念</title>
+      <link>/post/shiro-1/</link>
+      <pubDate>Wed, 08 Jul 2020 15:49:38 +0800</pubDate>
+      
+      <guid>/post/shiro-1/</guid>
+      <description>提到安全，我的第一反应其实是加密传输，所以在第一次遇到安全框架这个词的时候，我其实并不了解它所真正扮演的角色。 安全框架的主要功能包括4点： 用户认证。这一点是对匿名用户和认证用户进行区分，简单来说就是是否登录 用户授权。这一点是通过权限对认证用户的进一步细分，以此来判别用户是否能够进</description>
+      
+    </item>
+    
+    <item>
       <title>Java - 反射</title>
       <link>/post/java-reflection/</link>
       <pubDate>Fri, 03 Jul 2020 13:29:04 +0800</pubDate>
       
       <guid>/post/java-reflection/</guid>
       <description>反射是Java的一大特点，能够在运行时获取类的全部信息，因此，在许多的框架中都有其应用。其中我们最熟悉的当属spring了，它的核心两大功能ioc和aop都有使用反射机制，今天我们就来聊一聊反射机制。 简单使用 反射是通过获取Class对象，进而在运行时获取类的全部成员、方法、注解、</description>
+      
+    </item>
+    
+    <item>
+      <title>Regex - 笔记</title>
+      <link>/post/regex-note/</link>
+      <pubDate>Fri, 03 Jul 2020 13:29:04 +0800</pubDate>
+      
+      <guid>/post/regex-note/</guid>
+      <description>POSIX字符集 POSIX ASCII Description [:alnum:] [A-Za-z0-9] 字母和数字 [:alpha:] [A-Za-z] 字母 [:blank:] [ \t] 空白和\t [:cntrl:] [\x00-\x1F\x7F] 控制字符集 [:digit:] [0-9] 数字 [:graph:] [\x21-\x7E] 可见字符 [:lower:] [a-z] 小写字母 [:print:] [\x20-\x7E] 空格和可见字符 [:punct:] [][!&amp;quot;#$%&amp;amp;&#39;()*+,./:;&amp;lt;=&amp;gt;?@^_`{ |符号 | [:space:] [ \t\r\n\v\f] 空白集合 [:upper:] [A-Z] 大写字母 [:xdigit:] [A-Fa-f0-9] 十六进制数 上表摘自wiki，删除了原始表格中的部分内容。 POSIX字符集在命令行和shell中都能够使用，而使用时</description>
       
     </item>
     

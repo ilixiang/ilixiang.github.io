@@ -1,0 +1,225 @@
+<!DOCTYPE html>
+<html lang="en"><meta charset="utf-8"><meta name="generator" content="Hugo 0.68.3" /><meta name="viewport" content="width=device-width,initial-scale=1,viewport-fit=cover">
+<meta name="color-scheme" content="light dark">
+<meta name="supported-color-schemes" content="light dark"><title>Regex - 笔记&nbsp;&ndash;&nbsp;三斜求积术</title><link rel="stylesheet" href="/css/core.min.802aa67397694ca5d7cacc2140e5e8fcb52d3add493941c161a3c4d2d5da57e3ca230e49da9cc38312e9698b71ef4c3a.css" integrity="sha384-gCqmc5dpTKXXyswhQOXo/LUtOt1JOUHBYaPE0tXaV&#43;PKIw5J2pzDgxLpaYtx70w6"><meta name="twitter:card" content="summary" />
+<meta name="twitter:title" content="Regex - 笔记" /><body><section id="header">
+    <div class="header wrap"><span class="header left-side"><a class="site home" href="/"><span class="site name">三斜求积术</span></a></span>
+        <span class="header right-side"><div class="nav wrap"><nav class="nav"><a class="nav item" href="/categories/">Categories</a><a class="nav item" href="/tags/">Tags</a><a class="nav item" href="/about">About</a><a class="nav item" href="https://gohugo%2eio/"target="_blank">Hugo</a></nav></div></span></div><div class="site slogan"><span class="title">Slow is Fast. Less is More. Code for Fun.</span></div></section><section id="content"><div class="article-container"><section class="article header">
+    <h1 class="article title">Regex - 笔记</h1><p class="article date">Friday, July 3, 2020</p></section><article class="article markdown-body"><h2 id="posix字符集">POSIX字符集</h2>
+<table>
+<thead>
+<tr>
+<th align="left">POSIX</th>
+<th align="left">ASCII</th>
+<th align="left">Description</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td align="left"><code>[:alnum:]</code></td>
+<td align="left"><code>[A-Za-z0-9]</code></td>
+<td align="left">字母和数字</td>
+</tr>
+<tr>
+<td align="left"><code>[:alpha:]</code></td>
+<td align="left"><code>[A-Za-z]</code></td>
+<td align="left">字母</td>
+</tr>
+<tr>
+<td align="left"><code>[:blank:]</code></td>
+<td align="left"><code>[ \t]</code></td>
+<td align="left">空白和<code>\t</code></td>
+</tr>
+<tr>
+<td align="left"><code>[:cntrl:]</code></td>
+<td align="left"><code>[\x00-\x1F\x7F]</code></td>
+<td align="left"><a href="https://en.wikipedia.org/wiki/Control_character"target="_blank">控制字符集</a></td>
+</tr>
+<tr>
+<td align="left"><code>[:digit:]</code></td>
+<td align="left"><code>[0-9]</code></td>
+<td align="left">数字</td>
+</tr>
+<tr>
+<td align="left"><code>[:graph:]</code></td>
+<td align="left"><code>[\x21-\x7E]</code></td>
+<td align="left">可见字符</td>
+</tr>
+<tr>
+<td align="left"><code>[:lower:]</code></td>
+<td align="left"><code>[a-z]</code></td>
+<td align="left">小写字母</td>
+</tr>
+<tr>
+<td align="left"><code>[:print:]</code></td>
+<td align="left"><code>[\x20-\x7E]</code></td>
+<td align="left">空格和可见字符</td>
+</tr>
+<tr>
+<td align="left"><code>[:punct:]</code></td>
+<td align="left"><code>[][!&quot;#$%&amp;'()*+,./:;&lt;=&gt;?@^_`{</code> |符号 |</td>
+<td></td>
+</tr>
+<tr>
+<td align="left"><code>[:space:]</code></td>
+<td align="left"><code>[ \t\r\n\v\f]</code></td>
+<td align="left"><a href="https://en.wikipedia.org/wiki/Whitespace_character"target="_blank">空白集合</a></td>
+</tr>
+<tr>
+<td align="left"><code>[:upper:]</code></td>
+<td align="left"><code>[A-Z]</code></td>
+<td align="left">大写字母</td>
+</tr>
+<tr>
+<td align="left"><code>[:xdigit:]</code></td>
+<td align="left"><code>[A-Fa-f0-9]</code></td>
+<td align="left">十六进制数</td>
+</tr>
+</tbody>
+</table>
+<p>上表摘自<a href="https://en.wikipedia.org/wiki/Regular_expression"target="_blank">wiki</a>，删除了原始表格中的部分内容。</p>
+<p>POSIX字符集在命令行和shell中都能够使用，而使用时需要注意<code>[:alpha:]</code>仅表示<code>A-Za-z</code>，因此需要通过<code>[[:alpha:]]</code>表示<code>[A-Za-z]</code>。</p>
+<pre><code>$ echo '2' | grep '[:digit:]' // 没有结果
+
+$ echo '2' | grep '[[:digit:]]' // 匹配到2
+2
+</code></pre><h2 id="bre和ere">BRE和ERE</h2>
+<p>BRE全称为<strong>Basic Regular Expression</strong>，是POSIX规范下的2种正则之一。在我看来它的语法在表达元字符的时候有些诡异，原因在于它有一部分的元字符通过转义获得语义，另一部分元字符不需要转义就能使用。</p>
+<table>
+<thead>
+<tr>
+<th>元字符</th>
+<th>正则语义表示方法</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td><code>|</code></td>
+<td><code>\|</code></td>
+</tr>
+<tr>
+<td><code>{}</code></td>
+<td><code>\{\}</code></td>
+</tr>
+<tr>
+<td><code>()</code></td>
+<td><code>\(\)</code></td>
+</tr>
+<tr>
+<td><code>[]</code></td>
+<td><code>[]</code></td>
+</tr>
+<tr>
+<td><code>+</code></td>
+<td><code>\+</code></td>
+</tr>
+<tr>
+<td><code>*</code></td>
+<td><code>*</code></td>
+</tr>
+<tr>
+<td><code>?</code></td>
+<td><code>\?</code></td>
+</tr>
+<tr>
+<td><code>^</code></td>
+<td><code>^</code></td>
+</tr>
+<tr>
+<td><code>$</code></td>
+<td><code>$</code></td>
+</tr>
+<tr>
+<td><code>.</code></td>
+<td><code>.</code></td>
+</tr>
+</tbody>
+</table>
+<p>POSIX下的另一种正则表达式就是<code>ERE</code>，全称<strong>Extended Regular Expression</strong>。名字里面带有<strong>拓展</strong>，但实际上没有什么新的功能增加，而是在元字符的表示上和BRE有所不同。</p>
+<table>
+<thead>
+<tr>
+<th>元字符</th>
+<th>正则语义表示方法</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td><code>|</code></td>
+<td><code>|</code></td>
+</tr>
+<tr>
+<td><code>{}</code></td>
+<td><code>{}</code></td>
+</tr>
+<tr>
+<td><code>()</code></td>
+<td><code>()</code></td>
+</tr>
+<tr>
+<td><code>[]</code></td>
+<td><code>[]</code></td>
+</tr>
+<tr>
+<td><code>+</code></td>
+<td><code>+</code></td>
+</tr>
+<tr>
+<td><code>*</code></td>
+<td><code>*</code></td>
+</tr>
+<tr>
+<td><code>?</code></td>
+<td><code>?</code></td>
+</tr>
+<tr>
+<td><code>^</code></td>
+<td><code>^</code></td>
+</tr>
+<tr>
+<td><code>$</code></td>
+<td><code>$</code></td>
+</tr>
+<tr>
+<td><code>.</code></td>
+<td><code>.</code></td>
+</tr>
+</tbody>
+</table>
+<p>ERE的元字符看起来清晰很多，所有的字符不需要转义则代表正则语义，如果转义了则表示匹配字符本身。</p>
+<h2 id="各命令支持的regex">各命令支持的Regex</h2>
+<table>
+<thead>
+<tr>
+<th>命令</th>
+<th>支持的正则表达式</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td><code>sed</code></td>
+<td>BRE</td>
+</tr>
+<tr>
+<td><code>vi</code></td>
+<td>BRE</td>
+</tr>
+<tr>
+<td><code>awk</code></td>
+<td>ERE</td>
+</tr>
+<tr>
+<td><code>grep</code></td>
+<td>默认或<code>-G</code>使用BRE；<code>-E</code>使用ERE；<code>-P</code>使用PCRE</td>
+</tr>
+</tbody>
+</table>
+</article><section class="article labels"><a class="category" href=/categories/shell/>shell</a><a class="tag" href=/tags/shell/>shell</a><a class="tag" href=/tags/regex/>regex</a><a class="tag" href=/tags/note/>note</a></section></div>
+<div class="article bottom"><section class="article navigation"><p><a class="link" href="/post/java-reflection/"><span class="iconfont icon-article"></span>Java - 反射</a></p><p><a class="link" href="/post/guava-talk-4/"><span class="iconfont icon-article"></span>Guava杂谈 - ImmutableCollections</a></p></section></div></section><section id="footer"><div class="footer-wrap">
+    <p class="copyright">©2019 Notepadium.</p>
+    <p class="powerby"><span>Powered by </span><a href="https://gohugo.io" 
+        target="_blank">Hugo</a><span> and the </span><a href="https://themes.gohugo.io/hugo-notepadium/" 
+        target="_blank">Notepadium</a></p>
+</div></section></body>
+
+</html>
