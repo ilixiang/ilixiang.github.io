@@ -1,60 +1,330 @@
-<!DOCTYPE html>
-<html lang="en"><meta charset="utf-8"><meta name="generator" content="Hugo 0.68.3" /><meta name="viewport" content="width=device-width,initial-scale=1,viewport-fit=cover">
-<meta name="color-scheme" content="light dark">
-<meta name="supported-color-schemes" content="light dark"><title>sed学习笔记&nbsp;&ndash;&nbsp;三斜求积术</title><link rel="stylesheet" href="/css/core.min.802aa67397694ca5d7cacc2140e5e8fcb52d3add493941c161a3c4d2d5da57e3ca230e49da9cc38312e9698b71ef4c3a.css" integrity="sha384-gCqmc5dpTKXXyswhQOXo/LUtOt1JOUHBYaPE0tXaV&#43;PKIw5J2pzDgxLpaYtx70w6"><meta name="twitter:card" content="summary" />
-<meta name="twitter:title" content="sed学习笔记" /><body><section id="header">
-    <div class="header wrap"><span class="header left-side"><a class="site home" href="/"><span class="site name">三斜求积术</span></a></span>
-        <span class="header right-side"><div class="nav wrap"><nav class="nav"><a class="nav item" href="/categories/">Categories</a><a class="nav item" href="/tags/">Tags</a><a class="nav item" href="/about">About</a><a class="nav item" href="https://gohugo%2eio/"target="_blank">Hugo</a></nav></div></span></div><div class="site slogan"><span class="title">Slow is Fast. Less is More. Code for Fun.</span></div></section><section id="content"><div class="article-container"><section class="article header">
-    <h1 class="article title">sed学习笔记</h1><p class="article date">Wednesday, June 10, 2020</p></section><article class="article markdown-body"><p><img  src="/img/sed.png"
-        alt="sed"/></p>
+<!doctype html>
+<html lang="zh-CN">
+<head>
+
+    <meta charset="utf-8">
+    <meta http-equiv="X-UA-Compatible" content="IE=edge">
+    <meta name="viewport" content="width=device-width, initial-scale=1">
+
+    <title>sed学习笔记 | 三斜求积术</title>
+    <meta property="og:title" content="sed学习笔记 - 三斜求积术">
+    <meta property="og:type" content="article">
+        
+    <meta property="article:published_time" content='2020-06-10T23:15:17&#43;08:00'>
+        
+        
+    <meta property="article:modified_time" content='2020-06-10T23:15:17&#43;08:00'>
+        
+    <meta name="Keywords" content="Java、shell、web">
+    <meta name="description" content="sed学习笔记">
+        
+    <meta name="author" content="石不转">
+    <meta property="og:url" content="https://ilixiang.github.io/post/sed/">
+    <link rel="shortcut icon" href="/favicon.ico" type="image/x-icon">
+
+    <link rel="stylesheet" href='/css/normalize.css'>
+    <link rel="stylesheet" href='/css/style.css'>
+    <script type="text/javascript" src="//cdnjs.cloudflare.com/ajax/libs/jquery/3.4.1/jquery.min.js"></script>
+
+    
+    <script async src="//pagead2.googlesyndication.com/pagead/js/adsbygoogle.js"></script>
+    <script>
+    (adsbygoogle = window.adsbygoogle || []).push({
+        google_ad_client: "ca-pub-4031353640611810",
+        enable_page_level_ads: true
+    });
+    </script>
+    
+
+
+    
+    
+        <link rel="stylesheet" href='/css/douban.css'>
+    
+        <link rel="stylesheet" href='/css/other.css'>
+    
+</head>
+
+
+<body>
+    <header id="header" class="clearfix">
+    <div class="container">
+        <div class="col-group">
+            <div class="site-name ">
+                
+                    <a id="logo" href="https://ilixiang.github.io/">
+                        三斜求积术
+                    </a>
+                
+                <p class="description">Code for fun. Code for better</p>
+            </div>
+            <div>
+                <nav id="nav-menu" class="clearfix">
+                    <a class="current" href="https://ilixiang.github.io/">首页</a>
+                    
+                    <a  href="https://ilixiang.github.io/archives/" title="归档">归档</a>
+                    
+                    <a  href="https://ilixiang.github.io/about/" title="关于">关于</a>
+                    
+                </nav>
+            </div>
+        </div>
+    </div>
+</header>
+
+    <div id="body">
+        <div class="container">
+            <div class="col-group">
+
+                <div class="col-8" id="main">
+                    
+<div class="res-cons">
+    <style type="text/css">
+    .post-toc {
+        position: fixed;
+        width: 200px;
+        margin-left: -210px;
+        padding: 5px 10px;
+        font-family: Athelas, STHeiti, Microsoft Yahei, serif;
+        font-size: 12px;
+        border: 1px solid rgba(0, 0, 0, .07);
+        border-radius: 5px;
+        background-color: rgba(255, 255, 255, 0.98);
+        background-clip: padding-box;
+        -webkit-box-shadow: 1px 1px 2px rgba(0, 0, 0, .125);
+        box-shadow: 1px 1px 2px rgba(0, 0, 0, .125);
+        word-wrap: break-word;
+        white-space: nowrap;
+        -webkit-box-sizing: border-box;
+        box-sizing: border-box;
+        z-index: 999;
+        cursor: pointer;
+        max-height: 70%;
+        overflow-y: auto;
+        overflow-x: hidden;
+    }
+
+    .post-toc .post-toc-title {
+        width: 100%;
+        margin: 0 auto;
+        font-size: 20px;
+        font-weight: 400;
+        text-transform: uppercase;
+        text-align: center;
+    }
+
+    .post-toc .post-toc-content {
+        font-size: 15px;
+    }
+
+    .post-toc .post-toc-content>nav>ul {
+        margin: 10px 0;
+    }
+
+    .post-toc .post-toc-content ul {
+        padding-left: 20px;
+        list-style: square;
+        margin: 0.5em;
+        line-height: 1.8em;
+    }
+
+    .post-toc .post-toc-content ul ul {
+        padding-left: 15px;
+        display: none;
+    }
+
+    @media print,
+    screen and (max-width:1057px) {
+        .post-toc {
+            display: none;
+        }
+    }
+</style>
+<div class="post-toc" style="position: absolute; top: 188px;">
+    <h2 class="post-toc-title">文章目录</h2>
+    <div class="post-toc-content">
+        <nav id="TableOfContents">
+  <ul>
+    <li><a href="#从文本替换开始-">从文本替换开始</a></li>
+    <li><a href="#加一点点限制的替换-">加一点点限制的替换</a></li>
+    <li><a href="#再加一点点限制的替换-">再加一点点限制的替换</a></li>
+    <li><a href="#其他的一些命令-">其他的一些命令</a></li>
+    <li><a href="#总结-">总结</a></li>
+  </ul>
+</nav>
+    </div>
+</div>
+<script type="text/javascript">
+    $(document).ready(function () {
+        var postToc = $(".post-toc");
+        if (postToc.length) {
+            var leftPos = $("#main").offset().left;
+            if(leftPos<220){
+                postToc.css({"width":leftPos-10,"margin-left":(0-leftPos)})
+            }
+
+            var t = postToc.offset().top - 20,
+                a = {
+                    start: {
+                        position: "absolute",
+                        top: t
+                    },
+                    process: {
+                        position: "fixed",
+                        top: 20
+                    },
+                };
+            $(window).scroll(function () {
+                var e = $(window).scrollTop();
+                e < t ? postToc.css(a.start) : postToc.css(a.process)
+            })
+        }
+    })
+</script>
+    <article class="post">
+        <header>
+            <h1 class="post-title">sed学习笔记</h1>
+        </header>
+        <date class="post-meta meta-date">
+            2020年6月10日
+        </date>
+        
+        <div class="post-meta">
+            <span>|</span>
+            
+            <span class="meta-category"><a href='https://ilixiang.github.io/categories/shell'>shell</a></span>
+            
+        </div>
+        
+        
+        <div class="post-meta">
+            <span id="busuanzi_container_page_pv">|<span id="busuanzi_value_page_pv"></span><span>
+                    阅读</span></span>
+        </div>
+        
+        
+        <div class="post-content">
+            <p><img src="/img/sed.png" alt="sed"></p>
 <p><code>sed</code>的全程是Stream Editor，也就是流编辑器。 它的文本操纵单位是行，能够对文本中匹配到的信息进行替换、插入、追加等操作，在批量文本修改操作时十分强力。</p>
 <h2 id="从文本替换开始-">从文本替换开始</h2>
 <p>文本替换是修改文本文件时十分常用的一个功能，Windows上默认的文本编辑器notepad上就有这样的功能。那么<code>sed</code>下的文本替换有什么不同呢？我们首先瞅瞅需要修改的本文内容：</p>
-<div class="highlight"><pre class="chroma"><code class="language-shell" data-lang="shell">$ cat python.txt 
+<div class="highlight"><div style="background-color:#fff;-moz-tab-size:4;-o-tab-size:4;tab-size:4">
+<table style="border-spacing:0;padding:0;margin:0;border:0;width:auto;overflow:auto;display:block;"><tr><td style="vertical-align:top;padding:0;margin:0;border:0;">
+<pre style="background-color:#fff;-moz-tab-size:4;-o-tab-size:4;tab-size:4"><code><span style="margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f">1
+</span><span style="margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f">2
+</span><span style="margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f">3
+</span><span style="margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f">4
+</span><span style="margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f">5
+</span><span style="margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f">6
+</span></code></pre></td>
+<td style="vertical-align:top;padding:0;margin:0;border:0;;width:100%">
+<pre style="background-color:#fff;-moz-tab-size:4;-o-tab-size:4;tab-size:4"><code class="language-shell" data-lang="shell">$ cat python.txt 
 Beautiful is better than ugly.Explicit is better than implicit.
 
 Simple is better than complex.Complex is better than complicated.
 
 Flat is better than nested.Sparse is better than dense.
-</code></pre></div><p>首先，我们的要求是将文本中的<em>better</em>修改为<em>worse</em>，那么命令如下：</p>
-<div class="highlight"><pre class="chroma"><code class="language-shell" data-lang="shell">$ cat python.txt <span class="p">|</span> sed <span class="s1">&#39;s/better/worse/g&#39;</span>
+</code></pre></td></tr></table>
+</div>
+</div><p>首先，我们的要求是将文本中的<em>better</em>修改为<em>worse</em>，那么命令如下：</p>
+<div class="highlight"><div style="background-color:#fff;-moz-tab-size:4;-o-tab-size:4;tab-size:4">
+<table style="border-spacing:0;padding:0;margin:0;border:0;width:auto;overflow:auto;display:block;"><tr><td style="vertical-align:top;padding:0;margin:0;border:0;">
+<pre style="background-color:#fff;-moz-tab-size:4;-o-tab-size:4;tab-size:4"><code><span style="margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f">1
+</span><span style="margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f">2
+</span><span style="margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f">3
+</span><span style="margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f">4
+</span><span style="margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f">5
+</span><span style="margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f">6
+</span></code></pre></td>
+<td style="vertical-align:top;padding:0;margin:0;border:0;;width:100%">
+<pre style="background-color:#fff;-moz-tab-size:4;-o-tab-size:4;tab-size:4"><code class="language-shell" data-lang="shell">$ cat python.txt | sed <span style="color:#d14">&#39;s/better/worse/g&#39;</span>
 Beautiful is worse than ugly.Explicit is worse than implicit.
 
 Simple is worse than complex.Complex is worse than complicated.
 
 Flat is worse than nested.Sparse is worse than dense.
-</code></pre></div><p>这就是<code>sed</code>命令格式，<code>s/better/worse/g</code>也很好理解，<code>s</code>表示这条命令用于替换，<code>/better/</code>表示我需要匹配替换的内容为<em>better</em>，<code>/worse/</code>表示我想要将匹配到的内容替换为<em>worse</em>，最后的<code>g</code>是属于<code>s</code>命令的全局替换标志，表示将<strong>该行</strong>所有匹配到的内容全部替换。</p>
+</code></pre></td></tr></table>
+</div>
+</div><p>这就是<code>sed</code>命令格式，<code>s/better/worse/g</code>也很好理解，<code>s</code>表示这条命令用于替换，<code>/better/</code>表示我需要匹配替换的内容为<em>better</em>，<code>/worse/</code>表示我想要将匹配到的内容替换为<em>worse</em>，最后的<code>g</code>是属于<code>s</code>命令的全局替换标志，表示将<strong>该行</strong>所有匹配到的内容全部替换。</p>
 <p>而<code>s</code>命令的一般形式为<code>s/regex/replacement/[flag]</code>，因此匹配的内容可以使用正则表达式进行抽象，并且<em>replacement</em>部分也支持使用<em>regex</em>中被捕捉的后向引用，举个例子：</p>
-<div class="highlight"><pre class="chroma"><code class="language-shell" data-lang="shell">$ cat python.txt <span class="p">|</span> sed <span class="s1">&#39;s/\(be\)tter/\1worse/g&#39;</span>
+<div class="highlight"><div style="background-color:#fff;-moz-tab-size:4;-o-tab-size:4;tab-size:4">
+<table style="border-spacing:0;padding:0;margin:0;border:0;width:auto;overflow:auto;display:block;"><tr><td style="vertical-align:top;padding:0;margin:0;border:0;">
+<pre style="background-color:#fff;-moz-tab-size:4;-o-tab-size:4;tab-size:4"><code><span style="margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f">1
+</span><span style="margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f">2
+</span><span style="margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f">3
+</span><span style="margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f">4
+</span><span style="margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f">5
+</span><span style="margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f">6
+</span></code></pre></td>
+<td style="vertical-align:top;padding:0;margin:0;border:0;;width:100%">
+<pre style="background-color:#fff;-moz-tab-size:4;-o-tab-size:4;tab-size:4"><code class="language-shell" data-lang="shell">$ cat python.txt | sed <span style="color:#d14">&#39;s/\(be\)tter/\1worse/g&#39;</span>
 Beautiful is beworse than ugly.Explicit is beworse than implicit.
 
 Simple is beworse than complex.Complex is beworse than complicated.
 
 Flat is beworse than nested.Sparse is beworse than dense.
-</code></pre></div><p>这其中<code>\1</code>就代表了前面被<strong>双括号</strong>捕捉的<code>be</code>，而为什么需要使用\对()进行转义这个是由于<code>sed</code>默认实况下使用的是BRE（Basic Regular Expression），如果加上<code>-E</code>参数改用ERE（Extended Regular Expression）就不需要转义，详细信息可以查看<a href="https://www.gnu.org/software/sed/manual/sed.html#BRE-vs-ERE"target="_blank">BRE vs ERE</a>。</p>
+</code></pre></td></tr></table>
+</div>
+</div><p>这其中<code>\1</code>就代表了前面被<strong>双括号</strong>捕捉的<code>be</code>，而为什么需要使用\对()进行转义这个是由于<code>sed</code>默认实况下使用的是BRE（Basic Regular Expression），如果加上<code>-E</code>参数改用ERE（Extended Regular Expression）就不需要转义，详细信息可以查看<a href="https://www.gnu.org/software/sed/manual/sed.html#BRE-vs-ERE">BRE vs ERE</a>。</p>
 <h2 id="加一点点限制的替换-">加一点点限制的替换</h2>
 <p>上述的替换是针对整个文本所有的行，并且对每行所有的<em>better</em>都修改为<em>worse</em>，但如果我只需要第1至第3行进行修改呢？命令如下：</p>
-<div class="highlight"><pre class="chroma"><code class="language-shell" data-lang="shell">$ cat python.txt <span class="p">|</span> sed <span class="s1">&#39;1,3s/better/worse/g&#39;</span>
+<div class="highlight"><div style="background-color:#fff;-moz-tab-size:4;-o-tab-size:4;tab-size:4">
+<table style="border-spacing:0;padding:0;margin:0;border:0;width:auto;overflow:auto;display:block;"><tr><td style="vertical-align:top;padding:0;margin:0;border:0;">
+<pre style="background-color:#fff;-moz-tab-size:4;-o-tab-size:4;tab-size:4"><code><span style="margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f">1
+</span><span style="margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f">2
+</span><span style="margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f">3
+</span><span style="margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f">4
+</span><span style="margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f">5
+</span><span style="margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f">6
+</span></code></pre></td>
+<td style="vertical-align:top;padding:0;margin:0;border:0;;width:100%">
+<pre style="background-color:#fff;-moz-tab-size:4;-o-tab-size:4;tab-size:4"><code class="language-shell" data-lang="shell">$ cat python.txt | sed <span style="color:#d14">&#39;1,3s/better/worse/g&#39;</span>
 Beautiful is worse than ugly.Explicit is worse than implicit.
 
 Simple is worse than complex.Complex is worse than complicated.
 
 Flat is better than nested.Sparse is better than dense.
-</code></pre></div><p>其次，我想仅替换每行的第1个<em>better</em>，如何指定呢？命令如下：</p>
-<div class="highlight"><pre class="chroma"><code class="language-shell" data-lang="shell">$ cat python.txt <span class="p">|</span> sed <span class="s1">&#39;s/better/worse/1&#39;</span>
+</code></pre></td></tr></table>
+</div>
+</div><p>其次，我想仅替换每行的第1个<em>better</em>，如何指定呢？命令如下：</p>
+<div class="highlight"><div style="background-color:#fff;-moz-tab-size:4;-o-tab-size:4;tab-size:4">
+<table style="border-spacing:0;padding:0;margin:0;border:0;width:auto;overflow:auto;display:block;"><tr><td style="vertical-align:top;padding:0;margin:0;border:0;">
+<pre style="background-color:#fff;-moz-tab-size:4;-o-tab-size:4;tab-size:4"><code><span style="margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f">1
+</span><span style="margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f">2
+</span><span style="margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f">3
+</span><span style="margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f">4
+</span><span style="margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f">5
+</span><span style="margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f">6
+</span></code></pre></td>
+<td style="vertical-align:top;padding:0;margin:0;border:0;;width:100%">
+<pre style="background-color:#fff;-moz-tab-size:4;-o-tab-size:4;tab-size:4"><code class="language-shell" data-lang="shell">$ cat python.txt | sed <span style="color:#d14">&#39;s/better/worse/1&#39;</span>
 Beautiful is worse than ugly.Explicit is better than implicit.
 
 Simple is worse than complex.Complex is better than complicated.
 
 Flat is worse than nested.Sparse is better than dense.
-</code></pre></div><p>最后，我希望第1行的所有<em>better</em>全部替换，而其他行我只想替换第一个匹配到的<em>better</em></p>
-<div class="highlight"><pre class="chroma"><code class="language-shell" data-lang="shell">$ cat python.txt <span class="p">|</span> sed <span class="s1">&#39;1s/better/worse/g;2,$s/better/worse/1&#39;</span>
+</code></pre></td></tr></table>
+</div>
+</div><p>最后，我希望第1行的所有<em>better</em>全部替换，而其他行我只想替换第一个匹配到的<em>better</em></p>
+<div class="highlight"><div style="background-color:#fff;-moz-tab-size:4;-o-tab-size:4;tab-size:4">
+<table style="border-spacing:0;padding:0;margin:0;border:0;width:auto;overflow:auto;display:block;"><tr><td style="vertical-align:top;padding:0;margin:0;border:0;">
+<pre style="background-color:#fff;-moz-tab-size:4;-o-tab-size:4;tab-size:4"><code><span style="margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f">1
+</span><span style="margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f">2
+</span><span style="margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f">3
+</span><span style="margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f">4
+</span><span style="margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f">5
+</span><span style="margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f">6
+</span></code></pre></td>
+<td style="vertical-align:top;padding:0;margin:0;border:0;;width:100%">
+<pre style="background-color:#fff;-moz-tab-size:4;-o-tab-size:4;tab-size:4"><code class="language-shell" data-lang="shell">$ cat python.txt | sed <span style="color:#d14">&#39;1s/better/worse/g;2,$s/better/worse/1&#39;</span>
 Beautiful is worse than ugly.Explicit is worse than implicit.
 
 Simple is worse than complex.Complex is better than complicated.
 
 Flat is worse than nested.Sparse is better than dense.
-</code></pre></div><p>上述3个例子分别表明了<code>sed</code>的3个功能：</p>
+</code></pre></td></tr></table>
+</div>
+</div><p>上述3个例子分别表明了<code>sed</code>的3个功能：</p>
 <ol>
 <li>通过在命令前添加行号，可以限制该命令作用的行，并且可以使用<code>$</code>表示最终行</li>
 <li><code>s</code>命令可以通过更换<em>flag</em>控制替换的深度</li>
@@ -64,148 +334,556 @@ Flat is worse than nested.Sparse is better than dense.
 <h2 id="再加一点点限制的替换-">再加一点点限制的替换</h2>
 <p>通过上面的例子，我们了解了<code>sed</code>命令的一般形式，即<code>[address1[,address2]][!]command</code>。而在上面的例子里面，我们通过指定<em>address</em>的数值去控制替换的行，但如果我们没有具体的行号怎么办？为了解决这个问题，<code>sed</code>提供了基于正则匹配去选择<em>address</em>以及通过给定<em>address</em>选择相对行的方法。</p>
 <p>仍然是最开始的文本，这次我们的要求是当前行存在<em>complex</em>出现时，将当前行中所有的<em>better</em>进行替换：</p>
-<div class="highlight"><pre class="chroma"><code class="language-shell" data-lang="shell">$ cat python.txt <span class="p">|</span> sed <span class="s1">&#39;/complex/s/better/worse/g&#39;</span>
+<div class="highlight"><div style="background-color:#fff;-moz-tab-size:4;-o-tab-size:4;tab-size:4">
+<table style="border-spacing:0;padding:0;margin:0;border:0;width:auto;overflow:auto;display:block;"><tr><td style="vertical-align:top;padding:0;margin:0;border:0;">
+<pre style="background-color:#fff;-moz-tab-size:4;-o-tab-size:4;tab-size:4"><code><span style="margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f">1
+</span><span style="margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f">2
+</span><span style="margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f">3
+</span><span style="margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f">4
+</span><span style="margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f">5
+</span><span style="margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f">6
+</span></code></pre></td>
+<td style="vertical-align:top;padding:0;margin:0;border:0;;width:100%">
+<pre style="background-color:#fff;-moz-tab-size:4;-o-tab-size:4;tab-size:4"><code class="language-shell" data-lang="shell">$ cat python.txt | sed <span style="color:#d14">&#39;/complex/s/better/worse/g&#39;</span>
 Beautiful is better than ugly.Explicit is better than implicit.
 
 Simple is worse than complex.Complex is worse than complicated.
 
 Flat is better than nested.Sparse is better than dense.
-</code></pre></div><p>上述命令中的第一个<code>/complex/</code>是做为选择<em>address</em>的条件而存在的，而<code>s</code>后面的匹配表达式是作为<code>s</code>命令本身的参数而存在的，弄清楚了这点，我们来看下一个相对<em>address</em>如何使用。</p>
+</code></pre></td></tr></table>
+</div>
+</div><p>上述命令中的第一个<code>/complex/</code>是做为选择<em>address</em>的条件而存在的，而<code>s</code>后面的匹配表达式是作为<code>s</code>命令本身的参数而存在的，弄清楚了这点，我们来看下一个相对<em>address</em>如何使用。</p>
 <p>现在的要求是出现<em>complex</em>后面的2行中出现的所有<em>better</em>全部替换：</p>
-<div class="highlight"><pre class="chroma"><code class="language-shell" data-lang="shell">$ cat python.txt <span class="p">|</span> sed <span class="s1">&#39;/complex/,+2s/better/worse/g&#39;</span>
+<div class="highlight"><div style="background-color:#fff;-moz-tab-size:4;-o-tab-size:4;tab-size:4">
+<table style="border-spacing:0;padding:0;margin:0;border:0;width:auto;overflow:auto;display:block;"><tr><td style="vertical-align:top;padding:0;margin:0;border:0;">
+<pre style="background-color:#fff;-moz-tab-size:4;-o-tab-size:4;tab-size:4"><code><span style="margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f">1
+</span><span style="margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f">2
+</span><span style="margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f">3
+</span><span style="margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f">4
+</span><span style="margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f">5
+</span><span style="margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f">6
+</span></code></pre></td>
+<td style="vertical-align:top;padding:0;margin:0;border:0;;width:100%">
+<pre style="background-color:#fff;-moz-tab-size:4;-o-tab-size:4;tab-size:4"><code class="language-shell" data-lang="shell">$ cat python.txt | sed <span style="color:#d14">&#39;/complex/,+2s/better/worse/g&#39;</span>
 Beautiful is better than ugly.Explicit is better than implicit.
 
 Simple is worse than complex.Complex is worse than complicated.
 
 Flat is worse than nested.Sparse is worse than dense.
-</code></pre></div><p>上述命令中的<code>+2</code>表示以第一个<em>address</em>为基地址，后面的2行都使用该命令进行处理。</p>
+</code></pre></td></tr></table>
+</div>
+</div><p>上述命令中的<code>+2</code>表示以第一个<em>address</em>为基地址，后面的2行都使用该命令进行处理。</p>
 <p>这里有一个坑，代码如下：</p>
-<div class="highlight"><pre class="chroma"><code class="language-shell" data-lang="shell">$ cat test.txt  
-<span class="m">1</span>
-<span class="m">2</span>
-<span class="m">3</span>
-<span class="m">4</span>
-<span class="m">3</span>
-<span class="m">5</span>
-<span class="m">6</span>
-$ cat test.txt <span class="p">|</span> sed -n <span class="s1">&#39;/3/,+2s/./9/;p&#39;</span> 
-<span class="m">1</span>
-<span class="m">2</span>
-<span class="m">9</span>
-<span class="m">9</span>
-<span class="m">9</span>
-<span class="m">5</span>
-<span class="m">6</span>
-</code></pre></div><p>当第2个<em>3</em>在第1个<em>3</em>所指定的相对地址范围内时，它不会重新计算自己的相对位置去执行命令。</p>
+<div class="highlight"><div style="background-color:#fff;-moz-tab-size:4;-o-tab-size:4;tab-size:4">
+<table style="border-spacing:0;padding:0;margin:0;border:0;width:auto;overflow:auto;display:block;"><tr><td style="vertical-align:top;padding:0;margin:0;border:0;">
+<pre style="background-color:#fff;-moz-tab-size:4;-o-tab-size:4;tab-size:4"><code><span style="margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f"> 1
+</span><span style="margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f"> 2
+</span><span style="margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f"> 3
+</span><span style="margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f"> 4
+</span><span style="margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f"> 5
+</span><span style="margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f"> 6
+</span><span style="margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f"> 7
+</span><span style="margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f"> 8
+</span><span style="margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f"> 9
+</span><span style="margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f">10
+</span><span style="margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f">11
+</span><span style="margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f">12
+</span><span style="margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f">13
+</span><span style="margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f">14
+</span><span style="margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f">15
+</span><span style="margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f">16
+</span></code></pre></td>
+<td style="vertical-align:top;padding:0;margin:0;border:0;;width:100%">
+<pre style="background-color:#fff;-moz-tab-size:4;-o-tab-size:4;tab-size:4"><code class="language-shell" data-lang="shell">$ cat test.txt  
+<span style="color:#099">1</span>
+<span style="color:#099">2</span>
+<span style="color:#099">3</span>
+<span style="color:#099">4</span>
+<span style="color:#099">3</span>
+<span style="color:#099">5</span>
+<span style="color:#099">6</span>
+$ cat test.txt | sed -n <span style="color:#d14">&#39;/3/,+2s/./9/;p&#39;</span> 
+<span style="color:#099">1</span>
+<span style="color:#099">2</span>
+<span style="color:#099">9</span>
+<span style="color:#099">9</span>
+<span style="color:#099">9</span>
+<span style="color:#099">5</span>
+<span style="color:#099">6</span>
+</code></pre></td></tr></table>
+</div>
+</div><p>当第2个<em>3</em>在第1个<em>3</em>所指定的相对地址范围内时，它不会重新计算自己的相对位置去执行命令。</p>
 <p>以上就是对<em>address</em>进行限制的方法了，说白了还是正则表达式的问题，<code>sed</code>中的语法并不复杂，也没有<code>awk</code>中那么多的内建变量和函数，因此学好正则表达式，这个命令也就能使的得心应手。</p>
 <h2 id="其他的一些命令-">其他的一些命令</h2>
 <p>上面所举的例子都是使用了<code>s</code>，也就是替换命令进行说明，但<code>sed</code>并不是仅仅只有<code>s</code>命令，就常用而言，还有<code>d</code>、<code>i</code>、<code>a</code>、<code>n</code>、<code>p</code>等等。</p>
-<p>以下就这些常用命令给出相应的示例（示例来自<a href="https://www.gnu.org/software/sed/manual/sed.html#Common-Commands"target="_blank">GNU sed用户手册</a>），结合上述的<em>address</em>限定，就能去做很多事情了。</p>
+<p>以下就这些常用命令给出相应的示例（示例来自<a href="https://www.gnu.org/software/sed/manual/sed.html#Common-Commands">GNU sed用户手册</a>），结合上述的<em>address</em>限定，就能去做很多事情了。</p>
 <p>首先是原始文本：</p>
-<div class="highlight"><pre class="chroma"><code class="language-shell" data-lang="shell">$ seq <span class="m">6</span>
-<span class="m">1</span>
-<span class="m">2</span>
-<span class="m">3</span>
-<span class="m">4</span>
-<span class="m">5</span>
-<span class="m">6</span>
-</code></pre></div><p><code>p</code>命令用于输出，该条命令使用时多数会配合<code>-n</code>参数进行使用，<code>-n</code>会阻止全部指令执行完毕之后的自动打印，如果没有和<code>-n</code>一同使用，会造成某些行打印多次的情况</p>
-<div class="highlight"><pre class="chroma"><code class="language-shell" data-lang="shell">$ seq <span class="m">6</span> <span class="p">|</span> sed <span class="s1">&#39;2p&#39;</span>
-<span class="m">1</span>
-<span class="m">2</span>
-<span class="m">2</span>
-<span class="m">3</span>
-<span class="m">4</span>
-<span class="m">5</span>
-<span class="m">6</span>
-$ seq <span class="m">6</span> <span class="p">|</span> sed -n <span class="s1">&#39;2p&#39;</span>
-<span class="m">2</span>
-</code></pre></div><p>其次，该条命令应该与<code>s</code>命令中的<em>flag</em>相互区分</p>
-<div class="highlight"><pre class="chroma"><code class="language-shell" data-lang="shell">$ seq <span class="m">6</span> <span class="p">|</span> sed -n <span class="s1">&#39;s/2/9/p&#39;</span>
-<span class="m">9</span>
-$ seq <span class="m">6</span> <span class="p">|</span> sed -n <span class="s1">&#39;s/2/9/;p&#39;</span>
-<span class="m">1</span>
-<span class="m">9</span>
-<span class="m">3</span>
-<span class="m">4</span>
-<span class="m">5</span>
-<span class="m">6</span>
-</code></pre></div><p><code>d</code>命令用于删除<em>address</em>所选中的行</p>
-<div class="highlight"><pre class="chroma"><code class="language-shell" data-lang="shell">$ seq <span class="m">6</span> <span class="p">|</span> sed <span class="s1">&#39;5d&#39;</span>
-<span class="m">1</span>
-<span class="m">2</span>
-<span class="m">3</span>
-<span class="m">4</span>
-<span class="m">6</span>
-</code></pre></div><p><code>a</code>命令用于在<em>address</em>所选中的行后添加新的内容，注意这里是另外起一行写入新的内容，如果想要在当前行最后添加内容需要使用<code>s</code>命令。其次，<code>a</code>命令之后跟随的空白字符都会被作为和想要追加字符串的分隔符，想要在追加内容最开始添加空白需要转义。</p>
-<div class="highlight"><pre class="chroma"><code class="language-shell" data-lang="shell">$ seq <span class="m">6</span> <span class="p">|</span> sed <span class="s1">&#39;5a hello world&#39;</span>
-<span class="m">1</span>
-<span class="m">2</span>
-<span class="m">3</span>
-<span class="m">4</span>
-<span class="m">5</span>
+<div class="highlight"><div style="background-color:#fff;-moz-tab-size:4;-o-tab-size:4;tab-size:4">
+<table style="border-spacing:0;padding:0;margin:0;border:0;width:auto;overflow:auto;display:block;"><tr><td style="vertical-align:top;padding:0;margin:0;border:0;">
+<pre style="background-color:#fff;-moz-tab-size:4;-o-tab-size:4;tab-size:4"><code><span style="margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f">1
+</span><span style="margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f">2
+</span><span style="margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f">3
+</span><span style="margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f">4
+</span><span style="margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f">5
+</span><span style="margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f">6
+</span><span style="margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f">7
+</span></code></pre></td>
+<td style="vertical-align:top;padding:0;margin:0;border:0;;width:100%">
+<pre style="background-color:#fff;-moz-tab-size:4;-o-tab-size:4;tab-size:4"><code class="language-shell" data-lang="shell">$ seq <span style="color:#099">6</span>
+<span style="color:#099">1</span>
+<span style="color:#099">2</span>
+<span style="color:#099">3</span>
+<span style="color:#099">4</span>
+<span style="color:#099">5</span>
+<span style="color:#099">6</span>
+</code></pre></td></tr></table>
+</div>
+</div><p><code>p</code>命令用于输出，该条命令使用时多数会配合<code>-n</code>参数进行使用，<code>-n</code>会阻止全部指令执行完毕之后的自动打印，如果没有和<code>-n</code>一同使用，会造成某些行打印多次的情况</p>
+<div class="highlight"><div style="background-color:#fff;-moz-tab-size:4;-o-tab-size:4;tab-size:4">
+<table style="border-spacing:0;padding:0;margin:0;border:0;width:auto;overflow:auto;display:block;"><tr><td style="vertical-align:top;padding:0;margin:0;border:0;">
+<pre style="background-color:#fff;-moz-tab-size:4;-o-tab-size:4;tab-size:4"><code><span style="margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f"> 1
+</span><span style="margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f"> 2
+</span><span style="margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f"> 3
+</span><span style="margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f"> 4
+</span><span style="margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f"> 5
+</span><span style="margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f"> 6
+</span><span style="margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f"> 7
+</span><span style="margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f"> 8
+</span><span style="margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f"> 9
+</span><span style="margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f">10
+</span></code></pre></td>
+<td style="vertical-align:top;padding:0;margin:0;border:0;;width:100%">
+<pre style="background-color:#fff;-moz-tab-size:4;-o-tab-size:4;tab-size:4"><code class="language-shell" data-lang="shell">$ seq <span style="color:#099">6</span> | sed <span style="color:#d14">&#39;2p&#39;</span>
+<span style="color:#099">1</span>
+<span style="color:#099">2</span>
+<span style="color:#099">2</span>
+<span style="color:#099">3</span>
+<span style="color:#099">4</span>
+<span style="color:#099">5</span>
+<span style="color:#099">6</span>
+$ seq <span style="color:#099">6</span> | sed -n <span style="color:#d14">&#39;2p&#39;</span>
+<span style="color:#099">2</span>
+</code></pre></td></tr></table>
+</div>
+</div><p>其次，该条命令应该与<code>s</code>命令中的<em>flag</em>相互区分</p>
+<div class="highlight"><div style="background-color:#fff;-moz-tab-size:4;-o-tab-size:4;tab-size:4">
+<table style="border-spacing:0;padding:0;margin:0;border:0;width:auto;overflow:auto;display:block;"><tr><td style="vertical-align:top;padding:0;margin:0;border:0;">
+<pre style="background-color:#fff;-moz-tab-size:4;-o-tab-size:4;tab-size:4"><code><span style="margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f">1
+</span><span style="margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f">2
+</span><span style="margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f">3
+</span><span style="margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f">4
+</span><span style="margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f">5
+</span><span style="margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f">6
+</span><span style="margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f">7
+</span><span style="margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f">8
+</span><span style="margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f">9
+</span></code></pre></td>
+<td style="vertical-align:top;padding:0;margin:0;border:0;;width:100%">
+<pre style="background-color:#fff;-moz-tab-size:4;-o-tab-size:4;tab-size:4"><code class="language-shell" data-lang="shell">$ seq <span style="color:#099">6</span> | sed -n <span style="color:#d14">&#39;s/2/9/p&#39;</span>
+<span style="color:#099">9</span>
+$ seq <span style="color:#099">6</span> | sed -n <span style="color:#d14">&#39;s/2/9/;p&#39;</span>
+<span style="color:#099">1</span>
+<span style="color:#099">9</span>
+<span style="color:#099">3</span>
+<span style="color:#099">4</span>
+<span style="color:#099">5</span>
+<span style="color:#099">6</span>
+</code></pre></td></tr></table>
+</div>
+</div><p><code>d</code>命令用于删除<em>address</em>所选中的行</p>
+<div class="highlight"><div style="background-color:#fff;-moz-tab-size:4;-o-tab-size:4;tab-size:4">
+<table style="border-spacing:0;padding:0;margin:0;border:0;width:auto;overflow:auto;display:block;"><tr><td style="vertical-align:top;padding:0;margin:0;border:0;">
+<pre style="background-color:#fff;-moz-tab-size:4;-o-tab-size:4;tab-size:4"><code><span style="margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f">1
+</span><span style="margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f">2
+</span><span style="margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f">3
+</span><span style="margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f">4
+</span><span style="margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f">5
+</span><span style="margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f">6
+</span></code></pre></td>
+<td style="vertical-align:top;padding:0;margin:0;border:0;;width:100%">
+<pre style="background-color:#fff;-moz-tab-size:4;-o-tab-size:4;tab-size:4"><code class="language-shell" data-lang="shell">$ seq <span style="color:#099">6</span> | sed <span style="color:#d14">&#39;5d&#39;</span>
+<span style="color:#099">1</span>
+<span style="color:#099">2</span>
+<span style="color:#099">3</span>
+<span style="color:#099">4</span>
+<span style="color:#099">6</span>
+</code></pre></td></tr></table>
+</div>
+</div><p><code>a</code>命令用于在<em>address</em>所选中的行后添加新的内容，注意这里是另外起一行写入新的内容，如果想要在当前行最后添加内容需要使用<code>s</code>命令。其次，<code>a</code>命令之后跟随的空白字符都会被作为和想要追加字符串的分隔符，想要在追加内容最开始添加空白需要转义。</p>
+<div class="highlight"><div style="background-color:#fff;-moz-tab-size:4;-o-tab-size:4;tab-size:4">
+<table style="border-spacing:0;padding:0;margin:0;border:0;width:auto;overflow:auto;display:block;"><tr><td style="vertical-align:top;padding:0;margin:0;border:0;">
+<pre style="background-color:#fff;-moz-tab-size:4;-o-tab-size:4;tab-size:4"><code><span style="margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f"> 1
+</span><span style="margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f"> 2
+</span><span style="margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f"> 3
+</span><span style="margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f"> 4
+</span><span style="margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f"> 5
+</span><span style="margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f"> 6
+</span><span style="margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f"> 7
+</span><span style="margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f"> 8
+</span><span style="margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f"> 9
+</span><span style="margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f">10
+</span><span style="margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f">11
+</span><span style="margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f">12
+</span><span style="margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f">13
+</span><span style="margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f">14
+</span><span style="margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f">15
+</span><span style="margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f">16
+</span><span style="margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f">17
+</span><span style="margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f">18
+</span><span style="margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f">19
+</span><span style="margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f">20
+</span><span style="margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f">21
+</span><span style="margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f">22
+</span><span style="margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f">23
+</span></code></pre></td>
+<td style="vertical-align:top;padding:0;margin:0;border:0;;width:100%">
+<pre style="background-color:#fff;-moz-tab-size:4;-o-tab-size:4;tab-size:4"><code class="language-shell" data-lang="shell">$ seq <span style="color:#099">6</span> | sed <span style="color:#d14">&#39;5a hello world&#39;</span>
+<span style="color:#099">1</span>
+<span style="color:#099">2</span>
+<span style="color:#099">3</span>
+<span style="color:#099">4</span>
+<span style="color:#099">5</span>
 hello world
-<span class="m">6</span>
-$ seq <span class="m">6</span> <span class="p">|</span> sed <span class="s1">&#39;5s/$/hello world/&#39;</span>
-<span class="m">1</span>
-<span class="m">2</span>
-<span class="m">3</span>
-<span class="m">4</span>
+<span style="color:#099">6</span>
+$ seq <span style="color:#099">6</span> | sed <span style="color:#d14">&#39;5s/$/hello world/&#39;</span>
+<span style="color:#099">1</span>
+<span style="color:#099">2</span>
+<span style="color:#099">3</span>
+<span style="color:#099">4</span>
 5hello world
-<span class="m">6</span>
-$ seq <span class="m">6</span> <span class="p">|</span> sed <span class="s1">&#39;5a \ hello world&#39;</span>
-<span class="m">1</span>
-<span class="m">2</span>
-<span class="m">3</span>
-<span class="m">4</span>
-<span class="m">5</span>
+<span style="color:#099">6</span>
+$ seq <span style="color:#099">6</span> | sed <span style="color:#d14">&#39;5a \ hello world&#39;</span>
+<span style="color:#099">1</span>
+<span style="color:#099">2</span>
+<span style="color:#099">3</span>
+<span style="color:#099">4</span>
+<span style="color:#099">5</span>
  hello world
-<span class="m">6</span>
-</code></pre></div><p><code>i</code>命令用于在<em>address</em>所选行之前插入新行并输入新的内容，其用法与<code>a</code>命令一致</p>
-<div class="highlight"><pre class="chroma"><code class="language-shell" data-lang="shell">$ seq <span class="m">6</span> <span class="p">|</span> sed <span class="s1">&#39;5i hello world&#39;</span>
-<span class="m">1</span>
-<span class="m">2</span>
-<span class="m">3</span>
-<span class="m">4</span>
+<span style="color:#099">6</span>
+</code></pre></td></tr></table>
+</div>
+</div><p><code>i</code>命令用于在<em>address</em>所选行之前插入新行并输入新的内容，其用法与<code>a</code>命令一致</p>
+<div class="highlight"><div style="background-color:#fff;-moz-tab-size:4;-o-tab-size:4;tab-size:4">
+<table style="border-spacing:0;padding:0;margin:0;border:0;width:auto;overflow:auto;display:block;"><tr><td style="vertical-align:top;padding:0;margin:0;border:0;">
+<pre style="background-color:#fff;-moz-tab-size:4;-o-tab-size:4;tab-size:4"><code><span style="margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f">1
+</span><span style="margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f">2
+</span><span style="margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f">3
+</span><span style="margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f">4
+</span><span style="margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f">5
+</span><span style="margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f">6
+</span><span style="margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f">7
+</span><span style="margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f">8
+</span></code></pre></td>
+<td style="vertical-align:top;padding:0;margin:0;border:0;;width:100%">
+<pre style="background-color:#fff;-moz-tab-size:4;-o-tab-size:4;tab-size:4"><code class="language-shell" data-lang="shell">$ seq <span style="color:#099">6</span> | sed <span style="color:#d14">&#39;5i hello world&#39;</span>
+<span style="color:#099">1</span>
+<span style="color:#099">2</span>
+<span style="color:#099">3</span>
+<span style="color:#099">4</span>
 hello world
-<span class="m">5</span>
-<span class="m">6</span>
-</code></pre></div><p><code>n</code>命令用于跳过当前行，并读入下一行<strong>继续</strong>进行处理。</p>
-<div class="highlight"><pre class="chroma"><code class="language-shell" data-lang="shell">$ seq <span class="m">6</span> <span class="p">|</span> sed <span class="s1">&#39;3n;4n;p&#39;</span> -n
-<span class="m">1</span>
-<span class="m">2</span>
-<span class="m">5</span>
-<span class="m">6</span>
-</code></pre></div><p><code>q</code>命令用于退出执行循环，并且不再执行后续命令，但如果没有<code>-n</code>参数，则会最后将缓冲区内的数据打印出来</p>
-<div class="highlight"><pre class="chroma"><code class="language-shell" data-lang="shell">$ seq <span class="m">6</span> <span class="p">|</span> sed <span class="s1">&#39;5q&#39;</span>
-<span class="m">1</span>
-<span class="m">2</span>
-<span class="m">3</span>
-<span class="m">4</span>
-<span class="m">5</span>
-$ seq <span class="m">6</span> <span class="p">|</span> sed <span class="s1">&#39;5q;p&#39;</span>
-<span class="m">1</span>
-<span class="m">1</span>
-<span class="m">2</span>
-<span class="m">2</span>
-<span class="m">3</span>
-<span class="m">3</span>
-<span class="m">4</span>
-<span class="m">4</span>
-<span class="m">5</span>
-$ seq <span class="m">6</span> <span class="p">|</span> sed <span class="s1">&#39;5q;p&#39;</span> -n
-<span class="m">1</span>
-<span class="m">2</span>
-<span class="m">3</span>
-<span class="m">4</span>
-</code></pre></div><h2 id="总结-">总结</h2>
-<p><code>sed</code>的语法相比于<code>awk</code>要简单一些，但如果要涉及一些高级用法并玩出花来，需要去了解它的具体执行循环，以及它执行命令时如何维护缓冲区等原理。并且本文介绍的内容都是<code>sed</code>中仅使用一个缓冲区的命令，<code>sed</code>中还存在一部分高级命令，可以同时操作文件的多个行，想要了解的小伙伴可以去查阅<a href="https://www.gnu.org/software/sed/manual/sed.html#advanced-sed"target="_blank">Advanced sed: cycles and buffers</a>或者网上的其他资料。</p>
-</article><section class="article labels"><a class="category" href=/categories/shell/>shell</a><a class="tag" href=/tags/shell/>shell</a><a class="tag" href=/tags/sed/>sed</a></section></div>
-<div class="article bottom"><section class="article navigation"><p><a class="link" href="/post/bash-variable/"><span class="iconfont icon-article"></span>bash - 变量及变量操作</a></p><p><a class="link" href="/post/awk/"><span class="iconfont icon-article"></span>awk学习笔记</a></p></section></div></section><section id="footer"><div class="footer-wrap">
-    <p class="copyright">©2019 Notepadium.</p>
-    <p class="powerby"><span>Powered by </span><a href="https://gohugo.io" 
-        target="_blank">Hugo</a><span> and the </span><a href="https://themes.gohugo.io/hugo-notepadium/" 
-        target="_blank">Notepadium</a></p>
-</div></section></body>
+<span style="color:#099">5</span>
+<span style="color:#099">6</span>
+</code></pre></td></tr></table>
+</div>
+</div><p><code>n</code>命令用于跳过当前行，并读入下一行<strong>继续</strong>进行处理。</p>
+<div class="highlight"><div style="background-color:#fff;-moz-tab-size:4;-o-tab-size:4;tab-size:4">
+<table style="border-spacing:0;padding:0;margin:0;border:0;width:auto;overflow:auto;display:block;"><tr><td style="vertical-align:top;padding:0;margin:0;border:0;">
+<pre style="background-color:#fff;-moz-tab-size:4;-o-tab-size:4;tab-size:4"><code><span style="margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f">1
+</span><span style="margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f">2
+</span><span style="margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f">3
+</span><span style="margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f">4
+</span><span style="margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f">5
+</span></code></pre></td>
+<td style="vertical-align:top;padding:0;margin:0;border:0;;width:100%">
+<pre style="background-color:#fff;-moz-tab-size:4;-o-tab-size:4;tab-size:4"><code class="language-shell" data-lang="shell">$ seq <span style="color:#099">6</span> | sed <span style="color:#d14">&#39;3n;4n;p&#39;</span> -n
+<span style="color:#099">1</span>
+<span style="color:#099">2</span>
+<span style="color:#099">5</span>
+<span style="color:#099">6</span>
+</code></pre></td></tr></table>
+</div>
+</div><p><code>q</code>命令用于退出执行循环，并且不再执行后续命令，但如果没有<code>-n</code>参数，则会最后将缓冲区内的数据打印出来</p>
+<div class="highlight"><div style="background-color:#fff;-moz-tab-size:4;-o-tab-size:4;tab-size:4">
+<table style="border-spacing:0;padding:0;margin:0;border:0;width:auto;overflow:auto;display:block;"><tr><td style="vertical-align:top;padding:0;margin:0;border:0;">
+<pre style="background-color:#fff;-moz-tab-size:4;-o-tab-size:4;tab-size:4"><code><span style="margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f"> 1
+</span><span style="margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f"> 2
+</span><span style="margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f"> 3
+</span><span style="margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f"> 4
+</span><span style="margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f"> 5
+</span><span style="margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f"> 6
+</span><span style="margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f"> 7
+</span><span style="margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f"> 8
+</span><span style="margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f"> 9
+</span><span style="margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f">10
+</span><span style="margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f">11
+</span><span style="margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f">12
+</span><span style="margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f">13
+</span><span style="margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f">14
+</span><span style="margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f">15
+</span><span style="margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f">16
+</span><span style="margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f">17
+</span><span style="margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f">18
+</span><span style="margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f">19
+</span><span style="margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f">20
+</span><span style="margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f">21
+</span></code></pre></td>
+<td style="vertical-align:top;padding:0;margin:0;border:0;;width:100%">
+<pre style="background-color:#fff;-moz-tab-size:4;-o-tab-size:4;tab-size:4"><code class="language-shell" data-lang="shell">$ seq <span style="color:#099">6</span> | sed <span style="color:#d14">&#39;5q&#39;</span>
+<span style="color:#099">1</span>
+<span style="color:#099">2</span>
+<span style="color:#099">3</span>
+<span style="color:#099">4</span>
+<span style="color:#099">5</span>
+$ seq <span style="color:#099">6</span> | sed <span style="color:#d14">&#39;5q;p&#39;</span>
+<span style="color:#099">1</span>
+<span style="color:#099">1</span>
+<span style="color:#099">2</span>
+<span style="color:#099">2</span>
+<span style="color:#099">3</span>
+<span style="color:#099">3</span>
+<span style="color:#099">4</span>
+<span style="color:#099">4</span>
+<span style="color:#099">5</span>
+$ seq <span style="color:#099">6</span> | sed <span style="color:#d14">&#39;5q;p&#39;</span> -n
+<span style="color:#099">1</span>
+<span style="color:#099">2</span>
+<span style="color:#099">3</span>
+<span style="color:#099">4</span>
+</code></pre></td></tr></table>
+</div>
+</div><h2 id="总结-">总结</h2>
+<p><code>sed</code>的语法相比于<code>awk</code>要简单一些，但如果要涉及一些高级用法并玩出花来，需要去了解它的具体执行循环，以及它执行命令时如何维护缓冲区等原理。并且本文介绍的内容都是<code>sed</code>中仅使用一个缓冲区的命令，<code>sed</code>中还存在一部分高级命令，可以同时操作文件的多个行，想要了解的小伙伴可以去查阅<a href="https://www.gnu.org/software/sed/manual/sed.html#advanced-sed">Advanced sed: cycles and buffers</a>或者网上的其他资料。</p>
+
+        </div>
+
+        
+
+
+        
+
+<div class="post-archive">
+    <h2>See Also</h2>
+    <ul class="listing">
+        
+        <li><a href="/post/awk/">awk学习笔记</a></li>
+        
+        <li><a href="/about/">关于我</a></li>
+        
+        <li><a href="/archives/">归档</a></li>
+        
+        <li><a href="/search/">搜索</a></li>
+        
+    </ul>
+</div>
+
+
+        <div class="post-meta meta-tags">
+            
+            <ul class="clearfix">
+                
+                <li><a href='https://ilixiang.github.io/tags/shell'>shell</a></li>
+                
+                <li><a href='https://ilixiang.github.io/tags/sed'>sed</a></li>
+                
+            </ul>
+            
+        </div>
+    </article>
+    
+    <div id="disqus_thread"></div>
+<script type="application/javascript">
+    var disqus_config = function () {
+    
+    
+    
+    };
+    (function() {
+        if (["localhost", "127.0.0.1"].indexOf(window.location.hostname) != -1) {
+            document.getElementById('disqus_thread').innerHTML = 'Disqus comments not available by default when the website is previewed locally.';
+            return;
+        }
+        var d = document, s = d.createElement('script'); s.async = true;
+        s.src = '//' + "yourdiscussshortname" + '.disqus.com/embed.js';
+        s.setAttribute('data-timestamp', +new Date());
+        (d.head || d.body).appendChild(s);
+    })();
+</script>
+<noscript>Please enable JavaScript to view the <a href="https://disqus.com/?ref_noscript">comments powered by Disqus.</a></noscript>
+<a href="https://disqus.com" class="dsq-brlink">comments powered by <span class="logo-disqus">Disqus</span></a>
+
+    
+    
+    <div class="post bg-white">
+      <script src="https://utteranc.es/client.js"
+            repo= "your github repo"
+            issue-term="pathname"
+            theme="github-light"
+            crossorigin="anonymous"
+            async>
+      </script>
+    </div>
+    
+</div>
+
+                </div>
+
+                <div id="secondary">
+    <section class="widget">
+        <form id="search" action='https://ilixiang.github.io/search/' method="get" accept-charset="utf-8" target="_blank" _lpchecked="1">
+      
+      <input type="text" name="q" maxlength="20" placeholder="Search">
+      <input type="hidden" name="sitesearch" value="https://ilixiang.github.io/">
+      <button type="submit" class="submit icon-search"></button>
+</form>
+    </section>
+    
+    <section class="widget">
+        <h3 class="widget-title">最近文章</h3>
+<ul class="widget-list">
+    
+    <li>
+        <a href="https://ilixiang.github.io/post/java-enum/" title="Java - 枚举">Java - 枚举</a>
+    </li>
+    
+    <li>
+        <a href="https://ilixiang.github.io/post/shiro-1/" title="Apache Shiro - 基本使用和概念">Apache Shiro - 基本使用和概念</a>
+    </li>
+    
+    <li>
+        <a href="https://ilixiang.github.io/post/java-reflection/" title="Java - 反射">Java - 反射</a>
+    </li>
+    
+    <li>
+        <a href="https://ilixiang.github.io/post/regex-note/" title="Regex - 笔记">Regex - 笔记</a>
+    </li>
+    
+    <li>
+        <a href="https://ilixiang.github.io/post/guava-talk-4/" title="Guava杂谈 - ImmutableCollections">Guava杂谈 - ImmutableCollections</a>
+    </li>
+    
+    <li>
+        <a href="https://ilixiang.github.io/post/guava-talk-3/" title="Guava杂谈 - LoadingCache">Guava杂谈 - LoadingCache</a>
+    </li>
+    
+    <li>
+        <a href="https://ilixiang.github.io/post/guava-talk-2/" title="Guava杂谈 - EventBus">Guava杂谈 - EventBus</a>
+    </li>
+    
+    <li>
+        <a href="https://ilixiang.github.io/post/guava-talk-1/" title="Guava杂谈 - ComparisonChain">Guava杂谈 - ComparisonChain</a>
+    </li>
+    
+    <li>
+        <a href="https://ilixiang.github.io/post/bash-variable/" title="bash - 变量及变量操作">bash - 变量及变量操作</a>
+    </li>
+    
+    <li>
+        <a href="https://ilixiang.github.io/post/sed/" title="sed学习笔记">sed学习笔记</a>
+    </li>
+    
+</ul>
+    </section>
+
+    
+
+    <section class="widget">
+        <h3 class="widget-title">分类</h3>
+<ul class="widget-list">
+    
+    <li><a href="https://ilixiang.github.io/categories/Java/">Java (7)</a></li>
+    
+    <li><a href="https://ilixiang.github.io/categories/shell/">shell (4)</a></li>
+    
+</ul>
+    </section>
+
+    <section class="widget">
+        <h3 class="widget-title">标签</h3>
+<div class="tagcloud">
+    
+    <a href="https://ilixiang.github.io/tags/Collection/">Collection</a>
+    
+    <a href="https://ilixiang.github.io/tags/ComparisonChain/">ComparisonChain</a>
+    
+    <a href="https://ilixiang.github.io/tags/EventBus/">EventBus</a>
+    
+    <a href="https://ilixiang.github.io/tags/Guava/">Guava</a>
+    
+    <a href="https://ilixiang.github.io/tags/ImmutableCollection/">ImmutableCollection</a>
+    
+    <a href="https://ilixiang.github.io/tags/Java/">Java</a>
+    
+    <a href="https://ilixiang.github.io/tags/LoadingCache/">LoadingCache</a>
+    
+    <a href="https://ilixiang.github.io/tags/Security/">Security</a>
+    
+    <a href="https://ilixiang.github.io/tags/Shiro/">Shiro</a>
+    
+    <a href="https://ilixiang.github.io/tags/awk/">awk</a>
+    
+    <a href="https://ilixiang.github.io/tags/bash/">bash</a>
+    
+    <a href="https://ilixiang.github.io/tags/enum/">enum</a>
+    
+    <a href="https://ilixiang.github.io/tags/note/">note</a>
+    
+    <a href="https://ilixiang.github.io/tags/reflection/">reflection</a>
+    
+    <a href="https://ilixiang.github.io/tags/regex/">regex</a>
+    
+    <a href="https://ilixiang.github.io/tags/sed/">sed</a>
+    
+    <a href="https://ilixiang.github.io/tags/shell/">shell</a>
+    
+</div>
+    </section>
+
+    
+
+    <section class="widget">
+        <h3 class="widget-title">其它</h3>
+        <ul class="widget-list">
+            <li><a href="https://ilixiang.github.io/index.xml">文章 RSS</a></li>
+        </ul>
+    </section>
+</div>
+            </div>
+        </div>
+    </div>
+    <footer id="footer">
+    <div class="container">
+        &copy; 2020 <a href="https://ilixiang.github.io/">三斜求积术 By 石不转</a>.
+        Powered by <a rel="nofollow noreferer noopener" href="https://gohugo.io" target="_blank">Hugo</a>.
+        <a href="https://www.flysnow.org/" target="_blank">Theme</a> based on <a href="https://github.com/flysnow-org/maupassant-hugo" target="_blank">maupassant</a>.
+        
+    </div>
+</footer>
+
+
+    
+    <script type="text/javascript">
+        window.MathJax = {
+            tex2jax: {
+                inlineMath: [['$', '$']],
+                processEscapes: true
+                }
+            };
+    </script>
+    <script src='https://cdnjs.cloudflare.com/ajax/libs/mathjax/2.7.5/MathJax.js?config=TeX-MML-AM_CHTML' async></script>
+
+
+<a id="rocket" href="#top"></a>
+<script type="text/javascript" src='/js/totop.js?v=0.0.0' async=""></script>
+
+
+
+    <script type="text/javascript" src="//busuanzi.ibruce.info/busuanzi/2.3/busuanzi.pure.mini.js" async></script>
+
+
+
+
+    <script src='/js/douban.js'></script>
+
+</body>
 
 </html>

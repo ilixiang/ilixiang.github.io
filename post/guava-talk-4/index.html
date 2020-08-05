@@ -1,12 +1,208 @@
-<!DOCTYPE html>
-<html lang="en"><meta charset="utf-8"><meta name="generator" content="Hugo 0.68.3" /><meta name="viewport" content="width=device-width,initial-scale=1,viewport-fit=cover">
-<meta name="color-scheme" content="light dark">
-<meta name="supported-color-schemes" content="light dark"><title>Guava杂谈 - ImmutableCollections&nbsp;&ndash;&nbsp;三斜求积术</title><link rel="stylesheet" href="/css/core.min.802aa67397694ca5d7cacc2140e5e8fcb52d3add493941c161a3c4d2d5da57e3ca230e49da9cc38312e9698b71ef4c3a.css" integrity="sha384-gCqmc5dpTKXXyswhQOXo/LUtOt1JOUHBYaPE0tXaV&#43;PKIw5J2pzDgxLpaYtx70w6"><meta name="twitter:card" content="summary" />
-<meta name="twitter:title" content="Guava杂谈 - ImmutableCollections" /><body><section id="header">
-    <div class="header wrap"><span class="header left-side"><a class="site home" href="/"><span class="site name">三斜求积术</span></a></span>
-        <span class="header right-side"><div class="nav wrap"><nav class="nav"><a class="nav item" href="/categories/">Categories</a><a class="nav item" href="/tags/">Tags</a><a class="nav item" href="/about">About</a><a class="nav item" href="https://gohugo%2eio/"target="_blank">Hugo</a></nav></div></span></div><div class="site slogan"><span class="title">Slow is Fast. Less is More. Code for Fun.</span></div></section><section id="content"><div class="article-container"><section class="article header">
-    <h1 class="article title">Guava杂谈 - ImmutableCollections</h1><p class="article date">Friday, July 3, 2020</p></section><article class="article markdown-body"><p><img  src="/img/immutable-collections.png"
-        alt="immutable-collections"/></p>
+<!doctype html>
+<html lang="zh-CN">
+<head>
+
+    <meta charset="utf-8">
+    <meta http-equiv="X-UA-Compatible" content="IE=edge">
+    <meta name="viewport" content="width=device-width, initial-scale=1">
+
+    <title>Guava杂谈 - ImmutableCollections | 三斜求积术</title>
+    <meta property="og:title" content="Guava杂谈 - ImmutableCollections - 三斜求积术">
+    <meta property="og:type" content="article">
+        
+    <meta property="article:published_time" content='2020-07-03T10:36:09&#43;08:00'>
+        
+        
+    <meta property="article:modified_time" content='2020-07-03T10:36:09&#43;08:00'>
+        
+    <meta name="Keywords" content="Java、shell、web">
+    <meta name="description" content="Guava杂谈 - ImmutableCollections">
+        
+    <meta name="author" content="石不转">
+    <meta property="og:url" content="https://ilixiang.github.io/post/guava-talk-4/">
+    <link rel="shortcut icon" href="/favicon.ico" type="image/x-icon">
+
+    <link rel="stylesheet" href='/css/normalize.css'>
+    <link rel="stylesheet" href='/css/style.css'>
+    <script type="text/javascript" src="//cdnjs.cloudflare.com/ajax/libs/jquery/3.4.1/jquery.min.js"></script>
+
+    
+    <script async src="//pagead2.googlesyndication.com/pagead/js/adsbygoogle.js"></script>
+    <script>
+    (adsbygoogle = window.adsbygoogle || []).push({
+        google_ad_client: "ca-pub-4031353640611810",
+        enable_page_level_ads: true
+    });
+    </script>
+    
+
+
+    
+    
+        <link rel="stylesheet" href='/css/douban.css'>
+    
+        <link rel="stylesheet" href='/css/other.css'>
+    
+</head>
+
+
+<body>
+    <header id="header" class="clearfix">
+    <div class="container">
+        <div class="col-group">
+            <div class="site-name ">
+                
+                    <a id="logo" href="https://ilixiang.github.io/">
+                        三斜求积术
+                    </a>
+                
+                <p class="description">Code for fun. Code for better</p>
+            </div>
+            <div>
+                <nav id="nav-menu" class="clearfix">
+                    <a class="current" href="https://ilixiang.github.io/">首页</a>
+                    
+                    <a  href="https://ilixiang.github.io/archives/" title="归档">归档</a>
+                    
+                    <a  href="https://ilixiang.github.io/about/" title="关于">关于</a>
+                    
+                </nav>
+            </div>
+        </div>
+    </div>
+</header>
+
+    <div id="body">
+        <div class="container">
+            <div class="col-group">
+
+                <div class="col-8" id="main">
+                    
+<div class="res-cons">
+    <style type="text/css">
+    .post-toc {
+        position: fixed;
+        width: 200px;
+        margin-left: -210px;
+        padding: 5px 10px;
+        font-family: Athelas, STHeiti, Microsoft Yahei, serif;
+        font-size: 12px;
+        border: 1px solid rgba(0, 0, 0, .07);
+        border-radius: 5px;
+        background-color: rgba(255, 255, 255, 0.98);
+        background-clip: padding-box;
+        -webkit-box-shadow: 1px 1px 2px rgba(0, 0, 0, .125);
+        box-shadow: 1px 1px 2px rgba(0, 0, 0, .125);
+        word-wrap: break-word;
+        white-space: nowrap;
+        -webkit-box-sizing: border-box;
+        box-sizing: border-box;
+        z-index: 999;
+        cursor: pointer;
+        max-height: 70%;
+        overflow-y: auto;
+        overflow-x: hidden;
+    }
+
+    .post-toc .post-toc-title {
+        width: 100%;
+        margin: 0 auto;
+        font-size: 20px;
+        font-weight: 400;
+        text-transform: uppercase;
+        text-align: center;
+    }
+
+    .post-toc .post-toc-content {
+        font-size: 15px;
+    }
+
+    .post-toc .post-toc-content>nav>ul {
+        margin: 10px 0;
+    }
+
+    .post-toc .post-toc-content ul {
+        padding-left: 20px;
+        list-style: square;
+        margin: 0.5em;
+        line-height: 1.8em;
+    }
+
+    .post-toc .post-toc-content ul ul {
+        padding-left: 15px;
+        display: none;
+    }
+
+    @media print,
+    screen and (max-width:1057px) {
+        .post-toc {
+            display: none;
+        }
+    }
+</style>
+<div class="post-toc" style="position: absolute; top: 188px;">
+    <h2 class="post-toc-title">文章目录</h2>
+    <div class="post-toc-content">
+        <nav id="TableOfContents">
+  <ul>
+    <li><a href="#基本使用-">基本使用</a></li>
+    <li><a href="#内部结构-">内部结构</a></li>
+    <li><a href="#总结-">总结</a></li>
+  </ul>
+</nav>
+    </div>
+</div>
+<script type="text/javascript">
+    $(document).ready(function () {
+        var postToc = $(".post-toc");
+        if (postToc.length) {
+            var leftPos = $("#main").offset().left;
+            if(leftPos<220){
+                postToc.css({"width":leftPos-10,"margin-left":(0-leftPos)})
+            }
+
+            var t = postToc.offset().top - 20,
+                a = {
+                    start: {
+                        position: "absolute",
+                        top: t
+                    },
+                    process: {
+                        position: "fixed",
+                        top: 20
+                    },
+                };
+            $(window).scroll(function () {
+                var e = $(window).scrollTop();
+                e < t ? postToc.css(a.start) : postToc.css(a.process)
+            })
+        }
+    })
+</script>
+    <article class="post">
+        <header>
+            <h1 class="post-title">Guava杂谈 - ImmutableCollections</h1>
+        </header>
+        <date class="post-meta meta-date">
+            2020年7月3日
+        </date>
+        
+        <div class="post-meta">
+            <span>|</span>
+            
+            <span class="meta-category"><a href='https://ilixiang.github.io/categories/Java'>Java</a></span>
+            
+        </div>
+        
+        
+        <div class="post-meta">
+            <span id="busuanzi_container_page_pv">|<span id="busuanzi_value_page_pv"></span><span>
+                    阅读</span></span>
+        </div>
+        
+        
+        <div class="post-content">
+            <p><img src="/img/immutable-collections.png" alt="immutable-collections"></p>
 <p>Guava的<code>ImmutableCollection</code>意为不可变集合框架，它的存在弥补了JDK的<code>UnmodifiableCollection</code>的2个缺陷：</p>
 <ul>
 <li><code>UnmodifiableCollection</code>在持有原生集合引用时可以修改集合内容，不安全</li>
@@ -51,57 +247,341 @@
 <li><code>builder().build()</code>。使用<code>Builder</code>作为中间桥梁添加元素，最终调用<code>build()</code>生成不可变集合</li>
 </ul>
 <p>以<code>ImmutableList</code>为例</p>
-<div class="highlight"><pre class="chroma"><code class="language-java" data-lang="java"><span class="nd">@Test</span>
-<span class="kd">public</span> <span class="kt">void</span> <span class="nf">testImmutableList</span><span class="o">()</span> <span class="o">{</span>
-    <span class="c1">// 通过of一口气塞入元素
-</span><span class="c1"></span>    <span class="n">ImmutableList</span><span class="o">&lt;</span><span class="n">Integer</span><span class="o">&gt;</span> <span class="n">ofList</span> <span class="o">=</span> <span class="n">ImmutableList</span><span class="o">.</span><span class="na">of</span><span class="o">(</span><span class="n">1</span><span class="o">,</span> <span class="n">2</span><span class="o">,</span> <span class="n">3</span><span class="o">);</span>
-    <span class="c1">// 通过copyOf复制给定集合的元素
-</span><span class="c1"></span>    <span class="n">ImmutableList</span><span class="o">&lt;</span><span class="n">Integer</span><span class="o">&gt;</span> <span class="n">copyOfList</span> <span class="o">=</span> <span class="n">ImmutableList</span><span class="o">.</span><span class="na">copyOf</span><span class="o">(</span><span class="n">ofList</span><span class="o">);</span>
-    <span class="c1">// 通过Builder中间类创建
-</span><span class="c1"></span>    <span class="n">ImmutableList</span><span class="o">&lt;</span><span class="n">Integer</span><span class="o">&gt;</span> <span class="n">buildList</span> <span class="o">=</span> <span class="n">ImmutableList</span><span class="o">.&lt;</span><span class="n">Integer</span><span class="o">&gt;</span><span class="n">builder</span><span class="o">().</span><span class="na">add</span><span class="o">(</span><span class="n">1</span><span class="o">).</span><span class="na">add</span><span class="o">(</span><span class="n">2</span><span class="o">).</span><span class="na">add</span><span class="o">(</span><span class="n">3</span><span class="o">).</span><span class="na">build</span><span class="o">();</span>
-<span class="o">}</span>
-</code></pre></div><p>比较有意思的是不可变集合可以使用<code>asList()</code>获取其内容的<code>ImmutableList</code>视图，因此很多时候可以通过序数获取相应的元素</p>
-<div class="highlight"><pre class="chroma"><code class="language-java" data-lang="java"><span class="nd">@Test</span>
-<span class="kd">public</span> <span class="kt">void</span> <span class="nf">testAsList</span><span class="o">()</span> <span class="o">{</span>
-    <span class="n">ImmutableSortedSet</span><span class="o">&lt;</span><span class="n">Integer</span><span class="o">&gt;</span> <span class="n">sortedSet</span> <span class="o">=</span> <span class="n">ImmutableSortedSet</span><span class="o">.</span><span class="na">of</span><span class="o">(</span><span class="n">3</span><span class="o">,</span> <span class="n">2</span><span class="o">,</span> <span class="n">1</span><span class="o">);</span>
-    <span class="n">ImmutableSortedMap</span><span class="o">&lt;</span><span class="n">Integer</span><span class="o">,</span> <span class="n">String</span><span class="o">&gt;</span> <span class="n">sortedMap</span> <span class="o">=</span> <span class="n">ImmutableSortedMap</span><span class="o">.&lt;</span><span class="n">Integer</span><span class="o">,</span> <span class="n">String</span><span class="o">&gt;</span><span class="n">naturalOrder</span><span class="o">()</span>
-            <span class="o">.</span><span class="na">put</span><span class="o">(</span><span class="n">1</span><span class="o">,</span> <span class="s">&#34;1&#34;</span><span class="o">).</span><span class="na">put</span><span class="o">(</span><span class="n">2</span><span class="o">,</span> <span class="s">&#34;2&#34;</span><span class="o">).</span><span class="na">put</span><span class="o">(</span><span class="n">3</span><span class="o">,</span> <span class="s">&#34;3&#34;</span><span class="o">).</span><span class="na">build</span><span class="o">();</span>
-    <span class="c1">// 获取索引为1的元素
-</span><span class="c1"></span>    <span class="n">System</span><span class="o">.</span><span class="na">out</span><span class="o">.</span><span class="na">println</span><span class="o">(</span><span class="n">sortedMap</span><span class="o">.</span><span class="na">entrySet</span><span class="o">().</span><span class="na">asList</span><span class="o">().</span><span class="na">get</span><span class="o">(</span><span class="n">1</span><span class="o">));</span>
-    <span class="c1">// 获取索引为2的元素
-</span><span class="c1"></span>    <span class="n">System</span><span class="o">.</span><span class="na">out</span><span class="o">.</span><span class="na">println</span><span class="o">(</span><span class="n">sortedSet</span><span class="o">.</span><span class="na">asList</span><span class="o">().</span><span class="na">get</span><span class="o">(</span><span class="n">2</span><span class="o">));</span>
-<span class="o">}</span>
-<span class="c1">// ----- 输出 -----
-</span><span class="c1"></span><span class="n">2</span><span class="o">=</span><span class="n">2</span>
-<span class="n">3</span>
-</code></pre></div><p>这一特性在操纵排序集合类型时十分有用，因为获取<code>ImmutableList</code>视图并不会复制整个集合，这也是由于不可变所带来的一个好处。也因为可以使用<code>asList()</code>的原因，<code>ImmutableList.copyOf()</code>在其内容是不可变集合时，往往不会复制其内容，而是直接调用<code>asList()</code>返回<code>ImmutableList</code>视图。</p>
+<div class="highlight"><div style="background-color:#fff;-moz-tab-size:4;-o-tab-size:4;tab-size:4">
+<table style="border-spacing:0;padding:0;margin:0;border:0;width:auto;overflow:auto;display:block;"><tr><td style="vertical-align:top;padding:0;margin:0;border:0;">
+<pre style="background-color:#fff;-moz-tab-size:4;-o-tab-size:4;tab-size:4"><code><span style="margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f">1
+</span><span style="margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f">2
+</span><span style="margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f">3
+</span><span style="margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f">4
+</span><span style="margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f">5
+</span><span style="margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f">6
+</span><span style="margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f">7
+</span><span style="margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f">8
+</span><span style="margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f">9
+</span></code></pre></td>
+<td style="vertical-align:top;padding:0;margin:0;border:0;;width:100%">
+<pre style="background-color:#fff;-moz-tab-size:4;-o-tab-size:4;tab-size:4"><code class="language-java" data-lang="java"><span style="color:#3c5d5d;font-weight:bold">@Test</span>
+<span style="color:#000;font-weight:bold">public</span> <span style="color:#458;font-weight:bold">void</span> <span style="color:#900;font-weight:bold">testImmutableList</span><span style="color:#000;font-weight:bold">()</span> <span style="color:#000;font-weight:bold">{</span>
+    <span style="color:#998;font-style:italic">// 通过of一口气塞入元素
+</span><span style="color:#998;font-style:italic"></span>    ImmutableList<span style="color:#000;font-weight:bold">&lt;</span>Integer<span style="color:#000;font-weight:bold">&gt;</span> ofList <span style="color:#000;font-weight:bold">=</span> ImmutableList<span style="color:#000;font-weight:bold">.</span><span style="color:#008080">of</span><span style="color:#000;font-weight:bold">(</span>1<span style="color:#000;font-weight:bold">,</span> 2<span style="color:#000;font-weight:bold">,</span> 3<span style="color:#000;font-weight:bold">);</span>
+    <span style="color:#998;font-style:italic">// 通过copyOf复制给定集合的元素
+</span><span style="color:#998;font-style:italic"></span>    ImmutableList<span style="color:#000;font-weight:bold">&lt;</span>Integer<span style="color:#000;font-weight:bold">&gt;</span> copyOfList <span style="color:#000;font-weight:bold">=</span> ImmutableList<span style="color:#000;font-weight:bold">.</span><span style="color:#008080">copyOf</span><span style="color:#000;font-weight:bold">(</span>ofList<span style="color:#000;font-weight:bold">);</span>
+    <span style="color:#998;font-style:italic">// 通过Builder中间类创建
+</span><span style="color:#998;font-style:italic"></span>    ImmutableList<span style="color:#000;font-weight:bold">&lt;</span>Integer<span style="color:#000;font-weight:bold">&gt;</span> buildList <span style="color:#000;font-weight:bold">=</span> ImmutableList<span style="color:#000;font-weight:bold">.&lt;</span>Integer<span style="color:#000;font-weight:bold">&gt;</span>builder<span style="color:#000;font-weight:bold">().</span><span style="color:#008080">add</span><span style="color:#000;font-weight:bold">(</span>1<span style="color:#000;font-weight:bold">).</span><span style="color:#008080">add</span><span style="color:#000;font-weight:bold">(</span>2<span style="color:#000;font-weight:bold">).</span><span style="color:#008080">add</span><span style="color:#000;font-weight:bold">(</span>3<span style="color:#000;font-weight:bold">).</span><span style="color:#008080">build</span><span style="color:#000;font-weight:bold">();</span>
+<span style="color:#000;font-weight:bold">}</span>
+</code></pre></td></tr></table>
+</div>
+</div><p>比较有意思的是不可变集合可以使用<code>asList()</code>获取其内容的<code>ImmutableList</code>视图，因此很多时候可以通过序数获取相应的元素</p>
+<div class="highlight"><div style="background-color:#fff;-moz-tab-size:4;-o-tab-size:4;tab-size:4">
+<table style="border-spacing:0;padding:0;margin:0;border:0;width:auto;overflow:auto;display:block;"><tr><td style="vertical-align:top;padding:0;margin:0;border:0;">
+<pre style="background-color:#fff;-moz-tab-size:4;-o-tab-size:4;tab-size:4"><code><span style="margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f"> 1
+</span><span style="margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f"> 2
+</span><span style="margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f"> 3
+</span><span style="margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f"> 4
+</span><span style="margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f"> 5
+</span><span style="margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f"> 6
+</span><span style="margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f"> 7
+</span><span style="margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f"> 8
+</span><span style="margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f"> 9
+</span><span style="margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f">10
+</span><span style="margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f">11
+</span><span style="margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f">12
+</span><span style="margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f">13
+</span></code></pre></td>
+<td style="vertical-align:top;padding:0;margin:0;border:0;;width:100%">
+<pre style="background-color:#fff;-moz-tab-size:4;-o-tab-size:4;tab-size:4"><code class="language-java" data-lang="java"><span style="color:#3c5d5d;font-weight:bold">@Test</span>
+<span style="color:#000;font-weight:bold">public</span> <span style="color:#458;font-weight:bold">void</span> <span style="color:#900;font-weight:bold">testAsList</span><span style="color:#000;font-weight:bold">()</span> <span style="color:#000;font-weight:bold">{</span>
+    ImmutableSortedSet<span style="color:#000;font-weight:bold">&lt;</span>Integer<span style="color:#000;font-weight:bold">&gt;</span> sortedSet <span style="color:#000;font-weight:bold">=</span> ImmutableSortedSet<span style="color:#000;font-weight:bold">.</span><span style="color:#008080">of</span><span style="color:#000;font-weight:bold">(</span>3<span style="color:#000;font-weight:bold">,</span> 2<span style="color:#000;font-weight:bold">,</span> 1<span style="color:#000;font-weight:bold">);</span>
+    ImmutableSortedMap<span style="color:#000;font-weight:bold">&lt;</span>Integer<span style="color:#000;font-weight:bold">,</span> String<span style="color:#000;font-weight:bold">&gt;</span> sortedMap <span style="color:#000;font-weight:bold">=</span> ImmutableSortedMap<span style="color:#000;font-weight:bold">.&lt;</span>Integer<span style="color:#000;font-weight:bold">,</span> String<span style="color:#000;font-weight:bold">&gt;</span>naturalOrder<span style="color:#000;font-weight:bold">()</span>
+            <span style="color:#000;font-weight:bold">.</span><span style="color:#008080">put</span><span style="color:#000;font-weight:bold">(</span>1<span style="color:#000;font-weight:bold">,</span> <span style="color:#d14">&#34;1&#34;</span><span style="color:#000;font-weight:bold">).</span><span style="color:#008080">put</span><span style="color:#000;font-weight:bold">(</span>2<span style="color:#000;font-weight:bold">,</span> <span style="color:#d14">&#34;2&#34;</span><span style="color:#000;font-weight:bold">).</span><span style="color:#008080">put</span><span style="color:#000;font-weight:bold">(</span>3<span style="color:#000;font-weight:bold">,</span> <span style="color:#d14">&#34;3&#34;</span><span style="color:#000;font-weight:bold">).</span><span style="color:#008080">build</span><span style="color:#000;font-weight:bold">();</span>
+    <span style="color:#998;font-style:italic">// 获取索引为1的元素
+</span><span style="color:#998;font-style:italic"></span>    System<span style="color:#000;font-weight:bold">.</span><span style="color:#008080">out</span><span style="color:#000;font-weight:bold">.</span><span style="color:#008080">println</span><span style="color:#000;font-weight:bold">(</span>sortedMap<span style="color:#000;font-weight:bold">.</span><span style="color:#008080">entrySet</span><span style="color:#000;font-weight:bold">().</span><span style="color:#008080">asList</span><span style="color:#000;font-weight:bold">().</span><span style="color:#008080">get</span><span style="color:#000;font-weight:bold">(</span>1<span style="color:#000;font-weight:bold">));</span>
+    <span style="color:#998;font-style:italic">// 获取索引为2的元素
+</span><span style="color:#998;font-style:italic"></span>    System<span style="color:#000;font-weight:bold">.</span><span style="color:#008080">out</span><span style="color:#000;font-weight:bold">.</span><span style="color:#008080">println</span><span style="color:#000;font-weight:bold">(</span>sortedSet<span style="color:#000;font-weight:bold">.</span><span style="color:#008080">asList</span><span style="color:#000;font-weight:bold">().</span><span style="color:#008080">get</span><span style="color:#000;font-weight:bold">(</span>2<span style="color:#000;font-weight:bold">));</span>
+<span style="color:#000;font-weight:bold">}</span>
+<span style="color:#998;font-style:italic">// ----- 输出 -----
+</span><span style="color:#998;font-style:italic"></span>2<span style="color:#000;font-weight:bold">=</span>2
+3
+</code></pre></td></tr></table>
+</div>
+</div><p>这一特性在操纵排序集合类型时十分有用，因为获取<code>ImmutableList</code>视图并不会复制整个集合，这也是由于不可变所带来的一个好处。也因为可以使用<code>asList()</code>的原因，<code>ImmutableList.copyOf()</code>在其内容是不可变集合时，往往不会复制其内容，而是直接调用<code>asList()</code>返回<code>ImmutableList</code>视图。</p>
 <h2 id="内部结构-">内部结构</h2>
 <p>前面说过，Guava的不可变集合和可变集合相比，做了一定的数据结构优化。而其中变化最大的是<code>ImmutableSortedSet</code> 和<code>ImmutableSortedMap</code>。</p>
 <p>我们都知道，在JDK的实现中，<code>SortedSet</code>和<code>SortedMap</code>最常用的实现为<code>TreeSet</code>和<code>TreeMap</code>，它们的底层实现为红黑数。使用链式结构的树进行存储的优势是添加/删除元素，但如果不需要添加/删除元素呢？能不能放弃链式结构？</p>
 <p>当然是可以的</p>
-<div class="highlight"><pre class="chroma"><code class="language-java" data-lang="java"><span class="c1">// ImmutableSortedSet实现
-</span><span class="c1"></span><span class="kd">final</span> <span class="kd">class</span> <span class="nc">RegularImmutableSortedSet</span><span class="o">&lt;</span><span class="n">E</span><span class="o">&gt;</span> <span class="kd">extends</span> <span class="n">ImmutableSortedSet</span><span class="o">&lt;</span><span class="n">E</span><span class="o">&gt;</span> <span class="o">{</span>
-    <span class="c1">// 使用ImmutableList存储数据
-</span><span class="c1"></span>	<span class="kd">private</span> <span class="kd">final</span> <span class="kd">transient</span> <span class="n">ImmutableList</span><span class="o">&lt;</span><span class="n">E</span><span class="o">&gt;</span> <span class="n">elements</span><span class="o">;</span>
-<span class="o">}</span>
-<span class="c1">// ImmutableSortedMap实现
-</span><span class="c1"></span><span class="kd">public</span> <span class="kd">final</span> <span class="kd">class</span> <span class="nc">ImmutableSortedMap</span><span class="o">&lt;</span><span class="n">K</span><span class="o">,</span> <span class="n">V</span><span class="o">&gt;</span> <span class="kd">extends</span> <span class="n">ImmutableSortedMapFauxverideShim</span><span class="o">&lt;</span><span class="n">K</span><span class="o">,</span> <span class="n">V</span><span class="o">&gt;</span>
-    <span class="kd">implements</span> <span class="n">NavigableMap</span><span class="o">&lt;</span><span class="n">K</span><span class="o">,</span> <span class="n">V</span><span class="o">&gt;</span> <span class="o">{</span>
-    <span class="c1">// 使用ImmutableSortedSet存储key
-</span><span class="c1"></span>	<span class="kd">private</span> <span class="kd">final</span> <span class="kd">transient</span> <span class="n">RegularImmutableSortedSet</span><span class="o">&lt;</span><span class="n">K</span><span class="o">&gt;</span> <span class="n">keySet</span><span class="o">;</span>
-    <span class="c1">// 使用ImmutableList存储value
-</span><span class="c1"></span>	<span class="kd">private</span> <span class="kd">final</span> <span class="kd">transient</span> <span class="n">ImmutableList</span><span class="o">&lt;</span><span class="n">V</span><span class="o">&gt;</span> <span class="n">valueList</span><span class="o">;</span>
-<span class="o">}</span>
-</code></pre></div><p>那问题在于使用<code>SortedSet</code>和<code>SortedMap</code>查询的复杂度均为对数复杂度，那么底层使用数组的<code>ImmutableList</code>如何做到这点呢？</p>
+<div class="highlight"><div style="background-color:#fff;-moz-tab-size:4;-o-tab-size:4;tab-size:4">
+<table style="border-spacing:0;padding:0;margin:0;border:0;width:auto;overflow:auto;display:block;"><tr><td style="vertical-align:top;padding:0;margin:0;border:0;">
+<pre style="background-color:#fff;-moz-tab-size:4;-o-tab-size:4;tab-size:4"><code><span style="margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f"> 1
+</span><span style="margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f"> 2
+</span><span style="margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f"> 3
+</span><span style="margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f"> 4
+</span><span style="margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f"> 5
+</span><span style="margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f"> 6
+</span><span style="margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f"> 7
+</span><span style="margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f"> 8
+</span><span style="margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f"> 9
+</span><span style="margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f">10
+</span><span style="margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f">11
+</span><span style="margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f">12
+</span><span style="margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f">13
+</span></code></pre></td>
+<td style="vertical-align:top;padding:0;margin:0;border:0;;width:100%">
+<pre style="background-color:#fff;-moz-tab-size:4;-o-tab-size:4;tab-size:4"><code class="language-java" data-lang="java"><span style="color:#998;font-style:italic">// ImmutableSortedSet实现
+</span><span style="color:#998;font-style:italic"></span><span style="color:#000;font-weight:bold">final</span> <span style="color:#000;font-weight:bold">class</span> <span style="color:#458;font-weight:bold">RegularImmutableSortedSet</span><span style="color:#000;font-weight:bold">&lt;</span>E<span style="color:#000;font-weight:bold">&gt;</span> <span style="color:#000;font-weight:bold">extends</span> ImmutableSortedSet<span style="color:#000;font-weight:bold">&lt;</span>E<span style="color:#000;font-weight:bold">&gt;</span> <span style="color:#000;font-weight:bold">{</span>
+    <span style="color:#998;font-style:italic">// 使用ImmutableList存储数据
+</span><span style="color:#998;font-style:italic"></span>	<span style="color:#000;font-weight:bold">private</span> <span style="color:#000;font-weight:bold">final</span> <span style="color:#000;font-weight:bold">transient</span> ImmutableList<span style="color:#000;font-weight:bold">&lt;</span>E<span style="color:#000;font-weight:bold">&gt;</span> elements<span style="color:#000;font-weight:bold">;</span>
+<span style="color:#000;font-weight:bold">}</span>
+<span style="color:#998;font-style:italic">// ImmutableSortedMap实现
+</span><span style="color:#998;font-style:italic"></span><span style="color:#000;font-weight:bold">public</span> <span style="color:#000;font-weight:bold">final</span> <span style="color:#000;font-weight:bold">class</span> <span style="color:#458;font-weight:bold">ImmutableSortedMap</span><span style="color:#000;font-weight:bold">&lt;</span>K<span style="color:#000;font-weight:bold">,</span> V<span style="color:#000;font-weight:bold">&gt;</span> <span style="color:#000;font-weight:bold">extends</span> ImmutableSortedMapFauxverideShim<span style="color:#000;font-weight:bold">&lt;</span>K<span style="color:#000;font-weight:bold">,</span> V<span style="color:#000;font-weight:bold">&gt;</span>
+    <span style="color:#000;font-weight:bold">implements</span> NavigableMap<span style="color:#000;font-weight:bold">&lt;</span>K<span style="color:#000;font-weight:bold">,</span> V<span style="color:#000;font-weight:bold">&gt;</span> <span style="color:#000;font-weight:bold">{</span>
+    <span style="color:#998;font-style:italic">// 使用ImmutableSortedSet存储key
+</span><span style="color:#998;font-style:italic"></span>	<span style="color:#000;font-weight:bold">private</span> <span style="color:#000;font-weight:bold">final</span> <span style="color:#000;font-weight:bold">transient</span> RegularImmutableSortedSet<span style="color:#000;font-weight:bold">&lt;</span>K<span style="color:#000;font-weight:bold">&gt;</span> keySet<span style="color:#000;font-weight:bold">;</span>
+    <span style="color:#998;font-style:italic">// 使用ImmutableList存储value
+</span><span style="color:#998;font-style:italic"></span>	<span style="color:#000;font-weight:bold">private</span> <span style="color:#000;font-weight:bold">final</span> <span style="color:#000;font-weight:bold">transient</span> ImmutableList<span style="color:#000;font-weight:bold">&lt;</span>V<span style="color:#000;font-weight:bold">&gt;</span> valueList<span style="color:#000;font-weight:bold">;</span>
+<span style="color:#000;font-weight:bold">}</span>
+</code></pre></td></tr></table>
+</div>
+</div><p>那问题在于使用<code>SortedSet</code>和<code>SortedMap</code>查询的复杂度均为对数复杂度，那么底层使用数组的<code>ImmutableList</code>如何做到这点呢？</p>
 <p>答案就是二分查找，由于存储结构是数组，且排列有序，因此可以使用二分查找代替平衡二叉树的查找。因此，数组是最合适<code>ImmutableSortedSet</code>和<code>ImmutableSortedMap</code>的数据结构。</p>
 <h2 id="总结-">总结</h2>
 <p>这部分内容大抵了解了有关不可变集合相关的使用和存储结构等内容，在不可变的前提下，存储结构可以产生巨大变化，这也是这部分内容有趣所在。</p>
-</article><section class="article labels"><a class="category" href=/categories/Java/>Java</a><a class="tag" href=/tags/Java/>Java</a><a class="tag" href=/tags/Guava/>Guava</a><a class="tag" href=/tags/Collection/>Collection</a><a class="tag" href=/tags/ImmutableCollection/>ImmutableCollection</a></section></div>
-<div class="article bottom"><section class="article navigation"><p><a class="link" href="/post/regex-note/"><span class="iconfont icon-article"></span>Regex - 笔记</a></p><p><a class="link" href="/post/guava-talk-3/"><span class="iconfont icon-article"></span>Guava杂谈 - LoadingCache</a></p></section></div></section><section id="footer"><div class="footer-wrap">
-    <p class="copyright">©2019 Notepadium.</p>
-    <p class="powerby"><span>Powered by </span><a href="https://gohugo.io" 
-        target="_blank">Hugo</a><span> and the </span><a href="https://themes.gohugo.io/hugo-notepadium/" 
-        target="_blank">Notepadium</a></p>
-</div></section></body>
+
+        </div>
+
+        
+
+
+        
+
+<div class="post-archive">
+    <h2>See Also</h2>
+    <ul class="listing">
+        
+        <li><a href="/post/guava-talk-3/">Guava杂谈 - LoadingCache</a></li>
+        
+        <li><a href="/post/guava-talk-2/">Guava杂谈 - EventBus</a></li>
+        
+        <li><a href="/post/guava-talk-1/">Guava杂谈 - ComparisonChain</a></li>
+        
+        <li><a href="/post/bash-variable/">bash - 变量及变量操作</a></li>
+        
+        <li><a href="/post/sed/">sed学习笔记</a></li>
+        
+    </ul>
+</div>
+
+
+        <div class="post-meta meta-tags">
+            
+            <ul class="clearfix">
+                
+                <li><a href='https://ilixiang.github.io/tags/Java'>Java</a></li>
+                
+                <li><a href='https://ilixiang.github.io/tags/Guava'>Guava</a></li>
+                
+                <li><a href='https://ilixiang.github.io/tags/Collection'>Collection</a></li>
+                
+                <li><a href='https://ilixiang.github.io/tags/ImmutableCollection'>ImmutableCollection</a></li>
+                
+            </ul>
+            
+        </div>
+    </article>
+    
+    <div id="disqus_thread"></div>
+<script type="application/javascript">
+    var disqus_config = function () {
+    
+    
+    
+    };
+    (function() {
+        if (["localhost", "127.0.0.1"].indexOf(window.location.hostname) != -1) {
+            document.getElementById('disqus_thread').innerHTML = 'Disqus comments not available by default when the website is previewed locally.';
+            return;
+        }
+        var d = document, s = d.createElement('script'); s.async = true;
+        s.src = '//' + "yourdiscussshortname" + '.disqus.com/embed.js';
+        s.setAttribute('data-timestamp', +new Date());
+        (d.head || d.body).appendChild(s);
+    })();
+</script>
+<noscript>Please enable JavaScript to view the <a href="https://disqus.com/?ref_noscript">comments powered by Disqus.</a></noscript>
+<a href="https://disqus.com" class="dsq-brlink">comments powered by <span class="logo-disqus">Disqus</span></a>
+
+    
+    
+    <div class="post bg-white">
+      <script src="https://utteranc.es/client.js"
+            repo= "your github repo"
+            issue-term="pathname"
+            theme="github-light"
+            crossorigin="anonymous"
+            async>
+      </script>
+    </div>
+    
+</div>
+
+                </div>
+
+                <div id="secondary">
+    <section class="widget">
+        <form id="search" action='https://ilixiang.github.io/search/' method="get" accept-charset="utf-8" target="_blank" _lpchecked="1">
+      
+      <input type="text" name="q" maxlength="20" placeholder="Search">
+      <input type="hidden" name="sitesearch" value="https://ilixiang.github.io/">
+      <button type="submit" class="submit icon-search"></button>
+</form>
+    </section>
+    
+    <section class="widget">
+        <h3 class="widget-title">最近文章</h3>
+<ul class="widget-list">
+    
+    <li>
+        <a href="https://ilixiang.github.io/post/java-enum/" title="Java - 枚举">Java - 枚举</a>
+    </li>
+    
+    <li>
+        <a href="https://ilixiang.github.io/post/shiro-1/" title="Apache Shiro - 基本使用和概念">Apache Shiro - 基本使用和概念</a>
+    </li>
+    
+    <li>
+        <a href="https://ilixiang.github.io/post/java-reflection/" title="Java - 反射">Java - 反射</a>
+    </li>
+    
+    <li>
+        <a href="https://ilixiang.github.io/post/regex-note/" title="Regex - 笔记">Regex - 笔记</a>
+    </li>
+    
+    <li>
+        <a href="https://ilixiang.github.io/post/guava-talk-4/" title="Guava杂谈 - ImmutableCollections">Guava杂谈 - ImmutableCollections</a>
+    </li>
+    
+    <li>
+        <a href="https://ilixiang.github.io/post/guava-talk-3/" title="Guava杂谈 - LoadingCache">Guava杂谈 - LoadingCache</a>
+    </li>
+    
+    <li>
+        <a href="https://ilixiang.github.io/post/guava-talk-2/" title="Guava杂谈 - EventBus">Guava杂谈 - EventBus</a>
+    </li>
+    
+    <li>
+        <a href="https://ilixiang.github.io/post/guava-talk-1/" title="Guava杂谈 - ComparisonChain">Guava杂谈 - ComparisonChain</a>
+    </li>
+    
+    <li>
+        <a href="https://ilixiang.github.io/post/bash-variable/" title="bash - 变量及变量操作">bash - 变量及变量操作</a>
+    </li>
+    
+    <li>
+        <a href="https://ilixiang.github.io/post/sed/" title="sed学习笔记">sed学习笔记</a>
+    </li>
+    
+</ul>
+    </section>
+
+    
+
+    <section class="widget">
+        <h3 class="widget-title">分类</h3>
+<ul class="widget-list">
+    
+    <li><a href="https://ilixiang.github.io/categories/Java/">Java (7)</a></li>
+    
+    <li><a href="https://ilixiang.github.io/categories/shell/">shell (4)</a></li>
+    
+</ul>
+    </section>
+
+    <section class="widget">
+        <h3 class="widget-title">标签</h3>
+<div class="tagcloud">
+    
+    <a href="https://ilixiang.github.io/tags/Collection/">Collection</a>
+    
+    <a href="https://ilixiang.github.io/tags/ComparisonChain/">ComparisonChain</a>
+    
+    <a href="https://ilixiang.github.io/tags/EventBus/">EventBus</a>
+    
+    <a href="https://ilixiang.github.io/tags/Guava/">Guava</a>
+    
+    <a href="https://ilixiang.github.io/tags/ImmutableCollection/">ImmutableCollection</a>
+    
+    <a href="https://ilixiang.github.io/tags/Java/">Java</a>
+    
+    <a href="https://ilixiang.github.io/tags/LoadingCache/">LoadingCache</a>
+    
+    <a href="https://ilixiang.github.io/tags/Security/">Security</a>
+    
+    <a href="https://ilixiang.github.io/tags/Shiro/">Shiro</a>
+    
+    <a href="https://ilixiang.github.io/tags/awk/">awk</a>
+    
+    <a href="https://ilixiang.github.io/tags/bash/">bash</a>
+    
+    <a href="https://ilixiang.github.io/tags/enum/">enum</a>
+    
+    <a href="https://ilixiang.github.io/tags/note/">note</a>
+    
+    <a href="https://ilixiang.github.io/tags/reflection/">reflection</a>
+    
+    <a href="https://ilixiang.github.io/tags/regex/">regex</a>
+    
+    <a href="https://ilixiang.github.io/tags/sed/">sed</a>
+    
+    <a href="https://ilixiang.github.io/tags/shell/">shell</a>
+    
+</div>
+    </section>
+
+    
+
+    <section class="widget">
+        <h3 class="widget-title">其它</h3>
+        <ul class="widget-list">
+            <li><a href="https://ilixiang.github.io/index.xml">文章 RSS</a></li>
+        </ul>
+    </section>
+</div>
+            </div>
+        </div>
+    </div>
+    <footer id="footer">
+    <div class="container">
+        &copy; 2020 <a href="https://ilixiang.github.io/">三斜求积术 By 石不转</a>.
+        Powered by <a rel="nofollow noreferer noopener" href="https://gohugo.io" target="_blank">Hugo</a>.
+        <a href="https://www.flysnow.org/" target="_blank">Theme</a> based on <a href="https://github.com/flysnow-org/maupassant-hugo" target="_blank">maupassant</a>.
+        
+    </div>
+</footer>
+
+
+    
+    <script type="text/javascript">
+        window.MathJax = {
+            tex2jax: {
+                inlineMath: [['$', '$']],
+                processEscapes: true
+                }
+            };
+    </script>
+    <script src='https://cdnjs.cloudflare.com/ajax/libs/mathjax/2.7.5/MathJax.js?config=TeX-MML-AM_CHTML' async></script>
+
+
+<a id="rocket" href="#top"></a>
+<script type="text/javascript" src='/js/totop.js?v=0.0.0' async=""></script>
+
+
+
+    <script type="text/javascript" src="//busuanzi.ibruce.info/busuanzi/2.3/busuanzi.pure.mini.js" async></script>
+
+
+
+
+    <script src='/js/douban.js'></script>
+
+</body>
 
 </html>

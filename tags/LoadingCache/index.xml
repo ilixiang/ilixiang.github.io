@@ -1,25 +1,23 @@
-<?xml version="1.0" encoding="utf-8" standalone="yes" ?>
-<rss version="2.0" xmlns:atom="http://www.w3.org/2005/Atom" xmlns:content="http://purl.org/rss/1.0/modules/content/">
+<?xml version="1.0" encoding="utf-8" standalone="yes"?>
+<rss version="2.0" xmlns:atom="http://www.w3.org/2005/Atom">
   <channel>
     <title>LoadingCache on 三斜求积术</title>
-    <link>/tags/LoadingCache/</link>
+    <link>https://ilixiang.github.io/tags/LoadingCache/</link>
     <description>Recent content in LoadingCache on 三斜求积术</description>
     <generator>Hugo -- gohugo.io</generator>
-    <language>zh-cn</language>
-    <copyright>©2019 Notepadium.</copyright>
+    <language>zh-CN</language>
     <lastBuildDate>Wed, 01 Jul 2020 14:26:00 +0800</lastBuildDate>
     
-        <atom:link href="/tags/LoadingCache/index.xml" rel="self" type="application/rss+xml" />
+	<atom:link href="https://ilixiang.github.io/tags/LoadingCache/index.xml" rel="self" type="application/rss+xml" />
     
     
     <item>
       <title>Guava杂谈 - LoadingCache</title>
-      <link>/post/guava-talk-3/</link>
+      <link>https://ilixiang.github.io/post/guava-talk-3/</link>
       <pubDate>Wed, 01 Jul 2020 14:26:00 +0800</pubDate>
       
-      <guid>/post/guava-talk-3/</guid>
+      <guid>https://ilixiang.github.io/post/guava-talk-3/</guid>
       <description>我与Cache这个词第一次相遇是在本科的《计算机组成原理》这门课上，这门课当时上起来那是满头问号。Cache是用于存储数据的一种组件，它存在的目的是让获取数据的速度更快。在集成Web服务时，使用比较广泛的Cache服务器应该是redis了，它作为跨进程甚至跨网络的缓存系统提供了十</description>
-      
     </item>
     
   </channel>

@@ -1,125 +1,113 @@
-<?xml version="1.0" encoding="utf-8" standalone="yes" ?>
-<rss version="2.0" xmlns:atom="http://www.w3.org/2005/Atom" xmlns:content="http://purl.org/rss/1.0/modules/content/">
+<?xml version="1.0" encoding="utf-8" standalone="yes"?>
+<rss version="2.0" xmlns:atom="http://www.w3.org/2005/Atom">
   <channel>
     <title>Posts on 三斜求积术</title>
-    <link>/post/</link>
+    <link>https://ilixiang.github.io/post/</link>
     <description>Recent content in Posts on 三斜求积术</description>
     <generator>Hugo -- gohugo.io</generator>
-    <language>zh-cn</language>
-    <copyright>©2019 Notepadium.</copyright>
+    <language>zh-CN</language>
     <lastBuildDate>Tue, 14 Jul 2020 16:45:06 +0800</lastBuildDate>
     
-        <atom:link href="/post/index.xml" rel="self" type="application/rss+xml" />
+	<atom:link href="https://ilixiang.github.io/post/index.xml" rel="self" type="application/rss+xml" />
     
     
     <item>
       <title>Java - 枚举</title>
-      <link>/post/java-enum/</link>
+      <link>https://ilixiang.github.io/post/java-enum/</link>
       <pubDate>Tue, 14 Jul 2020 16:45:06 +0800</pubDate>
       
-      <guid>/post/java-enum/</guid>
-      <description>枚举，是Java中一中比较特殊的类型。我个人而言，它是一种有穷集合，因而它的成员都是它自己的某一个元素。枚举的关键字是enum，并且在各种语言中枚举的行为并不相同。在C中，枚举的元素对应一个整型数字，虽然其变量能够作为左值，但却并不安全，能够被任意的其他枚举元素以及整型赋值。 #include &amp;lt;stdio.h&amp;gt;</description>
-      
+      <guid>https://ilixiang.github.io/post/java-enum/</guid>
+      <description>枚举，是Java中一中比较特殊的类型。我个人而言，它是一种有穷集合，因而它的成员都是它自己的某一个元素。枚举的关键字是enum，并且在各种语言中枚举的行为并不相同。在C中，枚举的元素对应一个整型数字，虽然其变量能够作为左值，但却并不安全，能够被任意的其他枚举元素以及整型赋值。 1 2</description>
     </item>
     
     <item>
       <title>Apache Shiro - 基本使用和概念</title>
-      <link>/post/shiro-1/</link>
+      <link>https://ilixiang.github.io/post/shiro-1/</link>
       <pubDate>Wed, 08 Jul 2020 15:49:38 +0800</pubDate>
       
-      <guid>/post/shiro-1/</guid>
+      <guid>https://ilixiang.github.io/post/shiro-1/</guid>
       <description>提到安全，我的第一反应其实是加密传输，所以在第一次遇到安全框架这个词的时候，我其实并不了解它所真正扮演的角色。 安全框架的主要功能包括4点： 用户认证。这一点是对匿名用户和认证用户进行区分，简单来说就是是否登录 用户授权。这一点是通过权限对认证用户的进一步细分，以此来判别用户是否能够进</description>
-      
     </item>
     
     <item>
       <title>Java - 反射</title>
-      <link>/post/java-reflection/</link>
+      <link>https://ilixiang.github.io/post/java-reflection/</link>
       <pubDate>Fri, 03 Jul 2020 13:29:04 +0800</pubDate>
       
-      <guid>/post/java-reflection/</guid>
+      <guid>https://ilixiang.github.io/post/java-reflection/</guid>
       <description>反射是Java的一大特点，能够在运行时获取类的全部信息，因此，在许多的框架中都有其应用。其中我们最熟悉的当属spring了，它的核心两大功能ioc和aop都有使用反射机制，今天我们就来聊一聊反射机制。 简单使用 反射是通过获取Class对象，进而在运行时获取类的全部成员、方法、注解、</description>
-      
     </item>
     
     <item>
       <title>Regex - 笔记</title>
-      <link>/post/regex-note/</link>
+      <link>https://ilixiang.github.io/post/regex-note/</link>
       <pubDate>Fri, 03 Jul 2020 13:29:04 +0800</pubDate>
       
-      <guid>/post/regex-note/</guid>
-      <description>POSIX字符集 POSIX ASCII Description [:alnum:] [A-Za-z0-9] 字母和数字 [:alpha:] [A-Za-z] 字母 [:blank:] [ \t] 空白和\t [:cntrl:] [\x00-\x1F\x7F] 控制字符集 [:digit:] [0-9] 数字 [:graph:] [\x21-\x7E] 可见字符 [:lower:] [a-z] 小写字母 [:print:] [\x20-\x7E] 空格和可见字符 [:punct:] [][!&amp;quot;#$%&amp;amp;&#39;()*+,./:;&amp;lt;=&amp;gt;?@^_`{ |符号 | [:space:] [ \t\r\n\v\f] 空白集合 [:upper:] [A-Z] 大写字母 [:xdigit:] [A-Fa-f0-9] 十六进制数 上表摘自wiki，删除了原始表格中的部分内容。 POSIX字符集在命令行和shell中都能够使用，而使用时</description>
-      
+      <guid>https://ilixiang.github.io/post/regex-note/</guid>
+      <description>POSIX字符集 POSIX ASCII Description [:alnum:] [A-Za-z0-9] 字母和数字 [:alpha:] [A-Za-z] 字母 [:blank:] [ \t] 空白和\t [:cntrl:] [\x00-\x1F\x7F] 控制字符集 [:digit:] [0-9] 数字 [:graph:] [\x21-\x7E] 可见字符 [:lower:] [a-z] 小写字母 [:print:] [\x20-\x7E] 空格和可见字符 [:space:] [ \t\r\n\v\f] 空白集合 [:upper:] [A-Z] 大写字母 [:xdigit:] [A-Fa-f0-9] 十六进制数 表中还有一项[:punct:]表示可见的符号集合，然而里面的符号和markdown语法冲突，因此删掉了，注意一下。 上</description>
     </item>
     
     <item>
       <title>Guava杂谈 - ImmutableCollections</title>
-      <link>/post/guava-talk-4/</link>
+      <link>https://ilixiang.github.io/post/guava-talk-4/</link>
       <pubDate>Fri, 03 Jul 2020 10:36:09 +0800</pubDate>
       
-      <guid>/post/guava-talk-4/</guid>
+      <guid>https://ilixiang.github.io/post/guava-talk-4/</guid>
       <description>Guava的ImmutableCollection意为不可变集合框架，它的存在弥补了JDK的UnmodifiableCollection的2个缺陷： UnmodifiableCollection在持有原生集合引用时可以修改集合内容，不安全 UnmodifiableCollection</description>
-      
     </item>
     
     <item>
       <title>Guava杂谈 - LoadingCache</title>
-      <link>/post/guava-talk-3/</link>
+      <link>https://ilixiang.github.io/post/guava-talk-3/</link>
       <pubDate>Wed, 01 Jul 2020 14:26:00 +0800</pubDate>
       
-      <guid>/post/guava-talk-3/</guid>
+      <guid>https://ilixiang.github.io/post/guava-talk-3/</guid>
       <description>我与Cache这个词第一次相遇是在本科的《计算机组成原理》这门课上，这门课当时上起来那是满头问号。Cache是用于存储数据的一种组件，它存在的目的是让获取数据的速度更快。在集成Web服务时，使用比较广泛的Cache服务器应该是redis了，它作为跨进程甚至跨网络的缓存系统提供了十</description>
-      
     </item>
     
     <item>
       <title>Guava杂谈 - EventBus</title>
-      <link>/post/guava-talk-2/</link>
+      <link>https://ilixiang.github.io/post/guava-talk-2/</link>
       <pubDate>Tue, 23 Jun 2020 13:28:12 +0800</pubDate>
       
-      <guid>/post/guava-talk-2/</guid>
+      <guid>https://ilixiang.github.io/post/guava-talk-2/</guid>
       <description>EventBus俗称“事件总线”。它的作用方式就如上图所示，能够将数据推送到所有需要它的人订阅者手上。它的行为总共分为4步： Subscriber向EventBus订阅某种Event Publisher向EventBus发送某种Event EventBus将Event送到订阅了它的Su</description>
-      
     </item>
     
     <item>
       <title>Guava杂谈 - ComparisonChain</title>
-      <link>/post/guava-talk-1/</link>
+      <link>https://ilixiang.github.io/post/guava-talk-1/</link>
       <pubDate>Sat, 13 Jun 2020 10:33:25 +0800</pubDate>
       
-      <guid>/post/guava-talk-1/</guid>
-      <description>ComparisonChain &amp;mdash; 单例模式、状态对象与链式编程 ComparisonChain这个类的作用是辅助我们去实现compareTo()方法的，使用方法极为简单 @Data @AllArgsConstructor public class Person implements Comparable&amp;lt;Person&amp;gt; { private String name; private Integer age; @Override public int compareTo(Person person) { return ComparisonChain.start() .compare(this.name, person.name) .compare(this.age, person.age) .result(); } } 它的作用是避免了自己手写compareTo()时，为了按一定优先级比较多个成员变量会出</description>
-      
+      <guid>https://ilixiang.github.io/post/guava-talk-1/</guid>
+      <description>ComparisonChain &amp;mdash; 单例模式、状态对象与链式编程 ComparisonChain这个类的作用是辅助我们去实现compareTo()方法的，使用方法极为简单 1 2 3 4 5 6 7 8 9 10 11 12 13 14 @Data @AllArgsConstructor public class Person implements Comparable&amp;lt;Person&amp;gt; { private String name; private Integer age; @Override public int compareTo(Person person) { return ComparisonChain.start() .compare(this.name, person.name) .compare(this.age, person.age) .result(); } } 它的作用是避免了自己手写compareTo()时，为了按一</description>
     </item>
     
     <item>
       <title>bash - 变量及变量操作</title>
-      <link>/post/bash-variable/</link>
+      <link>https://ilixiang.github.io/post/bash-variable/</link>
       <pubDate>Fri, 12 Jun 2020 14:58:07 +0800</pubDate>
       
-      <guid>/post/bash-variable/</guid>
-      <description>基本变量操作 变量声明 bash中的变量有2个特点： 变量不存在类型 变量的作用域默认为全局 这两个特点决定了bash中的变量可以在你想要的任何时候定义，并且不会因为定义在循环或者条件分支中而失效。比较特殊的例子就是数组类型： #!/bin/bash # test.sh arr[0]=&amp;#34;hello&amp;#34; arr[1]=&amp;#34;world&amp;#34; echo ${arr[0]} echo ${arr[1]} #------------------------ $ ./test.sh hello world 你可以不用声明这是一个数组，然后直接</description>
-      
+      <guid>https://ilixiang.github.io/post/bash-variable/</guid>
+      <description>基本变量操作 变量声明 bash中的变量有2个特点： 变量不存在类型 变量的作用域默认为全局 这两个特点决定了bash中的变量可以在你想要的任何时候定义，并且不会因为定义在循环或者条件分支中而失效。比较特殊的例子就是数组类型： 1 2 3 4 5 6 7 8 9 10 11 12 13 #!/bin/bash # test.sh arr[0]=&amp;#34;hello&amp;#34; arr[1]=&amp;#34;world&amp;#34; echo ${arr[0]} echo ${arr[1]} #------------------------ $ ./test.sh hello world 你可以不用</description>
     </item>
     
     <item>
       <title>sed学习笔记</title>
-      <link>/post/sed/</link>
+      <link>https://ilixiang.github.io/post/sed/</link>
       <pubDate>Wed, 10 Jun 2020 23:15:17 +0800</pubDate>
       
-      <guid>/post/sed/</guid>
+      <guid>https://ilixiang.github.io/post/sed/</guid>
       <description>sed的全程是Stream Editor，也就是流编辑器。 它的文本操纵单位是行，能够对文本中匹配到的信息进行替换、插入、追加等操作，在批量文本修改操作时十分强力。 从文本替换开始 文本替换是修改文本文件时十分常用的一个功能，Windows上默认的文本编辑器notepad上就有这样的功能</description>
-      
     </item>
     
     <item>
       <title>awk学习笔记</title>
-      <link>/post/awk/</link>
+      <link>https://ilixiang.github.io/post/awk/</link>
       <pubDate>Tue, 09 Jun 2020 23:48:30 +0800</pubDate>
       
-      <guid>/post/awk/</guid>
+      <guid>https://ilixiang.github.io/post/awk/</guid>
       <description>awk、sed以及grep是linux下用于操作文本的3大上古神器，它们操纵文本的侧重点各有不同，但都对正则表达式有着十分完整的支持，因此经常出现在同一场合。 初学乍练 awk在shell中同时作为一个命令和一种脚本语言存在，能够使用它进行操纵的文本格式十分接近表格，即拥有的明确的分</description>
-      
     </item>
     
   </channel>

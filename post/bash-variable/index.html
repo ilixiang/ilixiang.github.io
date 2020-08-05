@@ -1,12 +1,220 @@
-<!DOCTYPE html>
-<html lang="en"><meta charset="utf-8"><meta name="generator" content="Hugo 0.68.3" /><meta name="viewport" content="width=device-width,initial-scale=1,viewport-fit=cover">
-<meta name="color-scheme" content="light dark">
-<meta name="supported-color-schemes" content="light dark"><title>bash - 变量及变量操作&nbsp;&ndash;&nbsp;三斜求积术</title><link rel="stylesheet" href="/css/core.min.802aa67397694ca5d7cacc2140e5e8fcb52d3add493941c161a3c4d2d5da57e3ca230e49da9cc38312e9698b71ef4c3a.css" integrity="sha384-gCqmc5dpTKXXyswhQOXo/LUtOt1JOUHBYaPE0tXaV&#43;PKIw5J2pzDgxLpaYtx70w6"><meta name="twitter:card" content="summary" />
-<meta name="twitter:title" content="bash - 变量及变量操作" /><body><section id="header">
-    <div class="header wrap"><span class="header left-side"><a class="site home" href="/"><span class="site name">三斜求积术</span></a></span>
-        <span class="header right-side"><div class="nav wrap"><nav class="nav"><a class="nav item" href="/categories/">Categories</a><a class="nav item" href="/tags/">Tags</a><a class="nav item" href="/about">About</a><a class="nav item" href="https://gohugo%2eio/"target="_blank">Hugo</a></nav></div></span></div><div class="site slogan"><span class="title">Slow is Fast. Less is More. Code for Fun.</span></div></section><section id="content"><div class="article-container"><section class="article header">
-    <h1 class="article title">bash - 变量及变量操作</h1><p class="article date">Friday, June 12, 2020</p></section><article class="article markdown-body"><p><img  src="/img/bash.jpeg"
-        alt="bash"/></p>
+<!doctype html>
+<html lang="zh-CN">
+<head>
+
+    <meta charset="utf-8">
+    <meta http-equiv="X-UA-Compatible" content="IE=edge">
+    <meta name="viewport" content="width=device-width, initial-scale=1">
+
+    <title>bash - 变量及变量操作 | 三斜求积术</title>
+    <meta property="og:title" content="bash - 变量及变量操作 - 三斜求积术">
+    <meta property="og:type" content="article">
+        
+    <meta property="article:published_time" content='2020-06-12T14:58:07&#43;08:00'>
+        
+        
+    <meta property="article:modified_time" content='2020-06-12T14:58:07&#43;08:00'>
+        
+    <meta name="Keywords" content="Java、shell、web">
+    <meta name="description" content="bash - 变量及变量操作">
+        
+    <meta name="author" content="石不转">
+    <meta property="og:url" content="https://ilixiang.github.io/post/bash-variable/">
+    <link rel="shortcut icon" href="/favicon.ico" type="image/x-icon">
+
+    <link rel="stylesheet" href='/css/normalize.css'>
+    <link rel="stylesheet" href='/css/style.css'>
+    <script type="text/javascript" src="//cdnjs.cloudflare.com/ajax/libs/jquery/3.4.1/jquery.min.js"></script>
+
+    
+    <script async src="//pagead2.googlesyndication.com/pagead/js/adsbygoogle.js"></script>
+    <script>
+    (adsbygoogle = window.adsbygoogle || []).push({
+        google_ad_client: "ca-pub-4031353640611810",
+        enable_page_level_ads: true
+    });
+    </script>
+    
+
+
+    
+    
+        <link rel="stylesheet" href='/css/douban.css'>
+    
+        <link rel="stylesheet" href='/css/other.css'>
+    
+</head>
+
+
+<body>
+    <header id="header" class="clearfix">
+    <div class="container">
+        <div class="col-group">
+            <div class="site-name ">
+                
+                    <a id="logo" href="https://ilixiang.github.io/">
+                        三斜求积术
+                    </a>
+                
+                <p class="description">Code for fun. Code for better</p>
+            </div>
+            <div>
+                <nav id="nav-menu" class="clearfix">
+                    <a class="current" href="https://ilixiang.github.io/">首页</a>
+                    
+                    <a  href="https://ilixiang.github.io/archives/" title="归档">归档</a>
+                    
+                    <a  href="https://ilixiang.github.io/about/" title="关于">关于</a>
+                    
+                </nav>
+            </div>
+        </div>
+    </div>
+</header>
+
+    <div id="body">
+        <div class="container">
+            <div class="col-group">
+
+                <div class="col-8" id="main">
+                    
+<div class="res-cons">
+    <style type="text/css">
+    .post-toc {
+        position: fixed;
+        width: 200px;
+        margin-left: -210px;
+        padding: 5px 10px;
+        font-family: Athelas, STHeiti, Microsoft Yahei, serif;
+        font-size: 12px;
+        border: 1px solid rgba(0, 0, 0, .07);
+        border-radius: 5px;
+        background-color: rgba(255, 255, 255, 0.98);
+        background-clip: padding-box;
+        -webkit-box-shadow: 1px 1px 2px rgba(0, 0, 0, .125);
+        box-shadow: 1px 1px 2px rgba(0, 0, 0, .125);
+        word-wrap: break-word;
+        white-space: nowrap;
+        -webkit-box-sizing: border-box;
+        box-sizing: border-box;
+        z-index: 999;
+        cursor: pointer;
+        max-height: 70%;
+        overflow-y: auto;
+        overflow-x: hidden;
+    }
+
+    .post-toc .post-toc-title {
+        width: 100%;
+        margin: 0 auto;
+        font-size: 20px;
+        font-weight: 400;
+        text-transform: uppercase;
+        text-align: center;
+    }
+
+    .post-toc .post-toc-content {
+        font-size: 15px;
+    }
+
+    .post-toc .post-toc-content>nav>ul {
+        margin: 10px 0;
+    }
+
+    .post-toc .post-toc-content ul {
+        padding-left: 20px;
+        list-style: square;
+        margin: 0.5em;
+        line-height: 1.8em;
+    }
+
+    .post-toc .post-toc-content ul ul {
+        padding-left: 15px;
+        display: none;
+    }
+
+    @media print,
+    screen and (max-width:1057px) {
+        .post-toc {
+            display: none;
+        }
+    }
+</style>
+<div class="post-toc" style="position: absolute; top: 188px;">
+    <h2 class="post-toc-title">文章目录</h2>
+    <div class="post-toc-content">
+        <nav id="TableOfContents">
+  <ul>
+    <li><a href="#基本变量操作-">基本变量操作</a>
+      <ul>
+        <li><a href="#变量声明-">变量声明</a></li>
+        <li><a href="#数组操作-">数组操作</a></li>
+        <li><a href="#算数运算-">算数运算</a></li>
+        <li><a href="#逻辑运算-">逻辑运算</a></li>
+      </ul>
+    </li>
+    <li><a href="#字符串操作-">字符串操作</a>
+      <ul>
+        <li><a href="#内建字符串操作-">内建字符串操作</a></li>
+        <li><a href="#expr字符串操作-"><code>expr</code>字符串操作</a></li>
+      </ul>
+    </li>
+    <li><a href="#总结-">总结</a></li>
+  </ul>
+</nav>
+    </div>
+</div>
+<script type="text/javascript">
+    $(document).ready(function () {
+        var postToc = $(".post-toc");
+        if (postToc.length) {
+            var leftPos = $("#main").offset().left;
+            if(leftPos<220){
+                postToc.css({"width":leftPos-10,"margin-left":(0-leftPos)})
+            }
+
+            var t = postToc.offset().top - 20,
+                a = {
+                    start: {
+                        position: "absolute",
+                        top: t
+                    },
+                    process: {
+                        position: "fixed",
+                        top: 20
+                    },
+                };
+            $(window).scroll(function () {
+                var e = $(window).scrollTop();
+                e < t ? postToc.css(a.start) : postToc.css(a.process)
+            })
+        }
+    })
+</script>
+    <article class="post">
+        <header>
+            <h1 class="post-title">bash - 变量及变量操作</h1>
+        </header>
+        <date class="post-meta meta-date">
+            2020年6月12日
+        </date>
+        
+        <div class="post-meta">
+            <span>|</span>
+            
+            <span class="meta-category"><a href='https://ilixiang.github.io/categories/shell'>shell</a></span>
+            
+        </div>
+        
+        
+        <div class="post-meta">
+            <span id="busuanzi_container_page_pv">|<span id="busuanzi_value_page_pv"></span><span>
+                    阅读</span></span>
+        </div>
+        
+        
+        <div class="post-content">
+            <p><img src="/img/bash.jpeg" alt="bash"></p>
 <h2 id="基本变量操作-">基本变量操作</h2>
 <h3 id="变量声明-">变量声明</h3>
 <p>bash中的变量有2个特点：</p>
@@ -15,36 +223,75 @@
 <li>变量的作用域默认为全局</li>
 </ol>
 <p>这两个特点决定了bash中的变量可以在你想要的任何时候定义，并且不会因为定义在循环或者条件分支中而失效。比较特殊的例子就是数组类型：</p>
-<div class="highlight"><pre class="chroma"><code class="language-shell" data-lang="shell"><span class="cp">#!/bin/bash
-</span><span class="cp"></span><span class="c1"># test.sh</span>
+<div class="highlight"><div style="background-color:#fff;-moz-tab-size:4;-o-tab-size:4;tab-size:4">
+<table style="border-spacing:0;padding:0;margin:0;border:0;width:auto;overflow:auto;display:block;"><tr><td style="vertical-align:top;padding:0;margin:0;border:0;">
+<pre style="background-color:#fff;-moz-tab-size:4;-o-tab-size:4;tab-size:4"><code><span style="margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f"> 1
+</span><span style="margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f"> 2
+</span><span style="margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f"> 3
+</span><span style="margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f"> 4
+</span><span style="margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f"> 5
+</span><span style="margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f"> 6
+</span><span style="margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f"> 7
+</span><span style="margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f"> 8
+</span><span style="margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f"> 9
+</span><span style="margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f">10
+</span><span style="margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f">11
+</span><span style="margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f">12
+</span><span style="margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f">13
+</span></code></pre></td>
+<td style="vertical-align:top;padding:0;margin:0;border:0;;width:100%">
+<pre style="background-color:#fff;-moz-tab-size:4;-o-tab-size:4;tab-size:4"><code class="language-shell" data-lang="shell"><span style="color:#999;font-weight:bold;font-style:italic">#!/bin/bash
+</span><span style="color:#999;font-weight:bold;font-style:italic"></span><span style="color:#998;font-style:italic"># test.sh</span>
 
-arr<span class="o">[</span>0<span class="o">]=</span><span class="s2">&#34;hello&#34;</span>
-arr<span class="o">[</span>1<span class="o">]=</span><span class="s2">&#34;world&#34;</span>
+arr<span style="color:#000;font-weight:bold">[</span>0<span style="color:#000;font-weight:bold">]=</span><span style="color:#d14">&#34;hello&#34;</span>
+arr<span style="color:#000;font-weight:bold">[</span>1<span style="color:#000;font-weight:bold">]=</span><span style="color:#d14">&#34;world&#34;</span>
 
-<span class="nb">echo</span> <span class="si">${</span><span class="nv">arr</span><span class="p">[0]</span><span class="si">}</span>
-<span class="nb">echo</span> <span class="si">${</span><span class="nv">arr</span><span class="p">[1]</span><span class="si">}</span>
+<span style="color:#0086b3">echo</span> <span style="color:#d14">${</span><span style="color:#008080">arr</span>[0]<span style="color:#d14">}</span>
+<span style="color:#0086b3">echo</span> <span style="color:#d14">${</span><span style="color:#008080">arr</span>[1]<span style="color:#d14">}</span>
 
-<span class="c1">#------------------------</span>
+<span style="color:#998;font-style:italic">#------------------------</span>
 $ ./test.sh
 hello
 world
-</code></pre></div><p>你可以不用声明这是一个数组，然后直接往里面塞东西，十分方便。</p>
+</code></pre></td></tr></table>
+</div>
+</div><p>你可以不用声明这是一个数组，然后直接往里面塞东西，十分方便。</p>
 <p>即使如此，bash依然提供<code>declare</code>和<code>typeset</code>两个内建命令去声明变量的类型，当你声明了变量的类型之后，对这个变量的赋值就会被限制，举个栗子：</p>
-<div class="highlight"><pre class="chroma"><code class="language-shell" data-lang="shell"><span class="cp">#!/bin/bash
-</span><span class="cp"></span><span class="c1"># test.sh</span>
+<div class="highlight"><div style="background-color:#fff;-moz-tab-size:4;-o-tab-size:4;tab-size:4">
+<table style="border-spacing:0;padding:0;margin:0;border:0;width:auto;overflow:auto;display:block;"><tr><td style="vertical-align:top;padding:0;margin:0;border:0;">
+<pre style="background-color:#fff;-moz-tab-size:4;-o-tab-size:4;tab-size:4"><code><span style="margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f"> 1
+</span><span style="margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f"> 2
+</span><span style="margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f"> 3
+</span><span style="margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f"> 4
+</span><span style="margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f"> 5
+</span><span style="margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f"> 6
+</span><span style="margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f"> 7
+</span><span style="margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f"> 8
+</span><span style="margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f"> 9
+</span><span style="margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f">10
+</span><span style="margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f">11
+</span><span style="margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f">12
+</span><span style="margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f">13
+</span><span style="margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f">14
+</span></code></pre></td>
+<td style="vertical-align:top;padding:0;margin:0;border:0;;width:100%">
+<pre style="background-color:#fff;-moz-tab-size:4;-o-tab-size:4;tab-size:4"><code class="language-shell" data-lang="shell"><span style="color:#999;font-weight:bold;font-style:italic">#!/bin/bash
+</span><span style="color:#999;font-weight:bold;font-style:italic"></span><span style="color:#998;font-style:italic"># test.sh</span>
 
-<span class="c1"># declare an integer variable</span>
-<span class="nb">declare</span> -i <span class="nv">arr</span><span class="o">=</span><span class="m">3</span>
+<span style="color:#998;font-style:italic"># declare an integer variable</span>
+<span style="color:#0086b3">declare</span> -i <span style="color:#008080">arr</span><span style="color:#000;font-weight:bold">=</span><span style="color:#099">3</span>
 
-<span class="c1"># assign string to varialbe</span>
-<span class="nv">arr</span><span class="o">=</span><span class="s2">&#34;hello&#34;</span>
+<span style="color:#998;font-style:italic"># assign string to varialbe</span>
+<span style="color:#008080">arr</span><span style="color:#000;font-weight:bold">=</span><span style="color:#d14">&#34;hello&#34;</span>
 
-<span class="nb">echo</span> <span class="nv">$arr</span>
+<span style="color:#0086b3">echo</span> <span style="color:#008080">$arr</span>
 
-<span class="c1">#-------------------</span>
+<span style="color:#998;font-style:italic">#-------------------</span>
 $ ./test.sh
-<span class="m">0</span>
-</code></pre></div><p>由此可见赋值失败了，比较失望的是没有报错。</p>
+<span style="color:#099">0</span>
+</code></pre></td></tr></table>
+</div>
+</div><p>由此可见赋值失败了，比较失望的是没有报错。</p>
 <p>对于变量的声明<code>declare</code>和<code>typeset</code>几乎拥有一样的参数，以下列举几个比较常用的参数：</p>
 <ol>
 <li><code>-i</code>整型变量</li>
@@ -60,151 +307,301 @@ $ ./test.sh
 <li>使用<code>${#arr[@]}</code>获取数组长度进行遍历，但bash的数组可能存在元素为空的位置</li>
 <li>使用<code>${!arr[@]}</code>获取数组索引序列，不会遇到以上问题，推荐</li>
 </ol>
-<div class="highlight"><pre class="chroma"><code class="language-shell" data-lang="shell"><span class="cp">#!/bin/bash
-</span><span class="cp"></span><span class="c1"># test.sh</span>
+<div class="highlight"><div style="background-color:#fff;-moz-tab-size:4;-o-tab-size:4;tab-size:4">
+<table style="border-spacing:0;padding:0;margin:0;border:0;width:auto;overflow:auto;display:block;"><tr><td style="vertical-align:top;padding:0;margin:0;border:0;">
+<pre style="background-color:#fff;-moz-tab-size:4;-o-tab-size:4;tab-size:4"><code><span style="margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f"> 1
+</span><span style="margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f"> 2
+</span><span style="margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f"> 3
+</span><span style="margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f"> 4
+</span><span style="margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f"> 5
+</span><span style="margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f"> 6
+</span><span style="margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f"> 7
+</span><span style="margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f"> 8
+</span><span style="margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f"> 9
+</span><span style="margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f">10
+</span><span style="margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f">11
+</span><span style="margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f">12
+</span><span style="margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f">13
+</span><span style="margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f">14
+</span><span style="margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f">15
+</span><span style="margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f">16
+</span><span style="margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f">17
+</span><span style="margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f">18
+</span><span style="margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f">19
+</span><span style="margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f">20
+</span><span style="margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f">21
+</span><span style="margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f">22
+</span><span style="margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f">23
+</span><span style="margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f">24
+</span><span style="margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f">25
+</span><span style="margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f">26
+</span><span style="margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f">27
+</span><span style="margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f">28
+</span><span style="margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f">29
+</span><span style="margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f">30
+</span><span style="margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f">31
+</span><span style="margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f">32
+</span><span style="margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f">33
+</span><span style="margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f">34
+</span><span style="margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f">35
+</span><span style="margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f">36
+</span><span style="margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f">37
+</span><span style="margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f">38
+</span><span style="margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f">39
+</span><span style="margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f">40
+</span><span style="margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f">41
+</span><span style="margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f">42
+</span><span style="margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f">43
+</span><span style="margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f">44
+</span><span style="margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f">45
+</span><span style="margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f">46
+</span><span style="margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f">47
+</span></code></pre></td>
+<td style="vertical-align:top;padding:0;margin:0;border:0;;width:100%">
+<pre style="background-color:#fff;-moz-tab-size:4;-o-tab-size:4;tab-size:4"><code class="language-shell" data-lang="shell"><span style="color:#999;font-weight:bold;font-style:italic">#!/bin/bash
+</span><span style="color:#999;font-weight:bold;font-style:italic"></span><span style="color:#998;font-style:italic"># test.sh</span>
 
-<span class="k">for</span> i in <span class="k">$(</span>seq 6<span class="k">)</span><span class="p">;</span> <span class="k">do</span>
-	arr<span class="o">[</span><span class="k">$((</span> i <span class="o">-</span> <span class="m">1</span> <span class="k">))</span><span class="o">]=</span><span class="nv">$i</span>
-<span class="k">done</span>
+<span style="color:#000;font-weight:bold">for</span> i in <span style="color:#000;font-weight:bold">$(</span>seq 6<span style="color:#000;font-weight:bold">)</span>; <span style="color:#000;font-weight:bold">do</span>
+	arr<span style="color:#000;font-weight:bold">[</span><span style="color:#000;font-weight:bold">$((</span> i <span style="color:#000;font-weight:bold">-</span> <span style="color:#099">1</span> <span style="color:#000;font-weight:bold">))</span><span style="color:#000;font-weight:bold">]=</span><span style="color:#008080">$i</span>
+<span style="color:#000;font-weight:bold">done</span>
 
-<span class="nb">echo</span> <span class="s2">&#34;----------\${arr[@]}--------&#34;</span>
-<span class="k">for</span> str in <span class="si">${</span><span class="nv">arr</span><span class="p">[@]</span><span class="si">}</span><span class="p">;</span> <span class="k">do</span>
-	<span class="nb">echo</span> <span class="nv">$str</span>
-<span class="k">done</span>
+<span style="color:#0086b3">echo</span> <span style="color:#d14">&#34;----------\${arr[@]}--------&#34;</span>
+<span style="color:#000;font-weight:bold">for</span> str in <span style="color:#d14">${</span><span style="color:#008080">arr</span>[@]<span style="color:#d14">}</span>; <span style="color:#000;font-weight:bold">do</span>
+	<span style="color:#0086b3">echo</span> <span style="color:#008080">$str</span>
+<span style="color:#000;font-weight:bold">done</span>
 
-<span class="nb">echo</span> <span class="s2">&#34;----------\${#arr[@]}--------&#34;</span>
-<span class="nv">i</span><span class="o">=</span><span class="m">0</span>
-<span class="k">while</span> <span class="o">[[</span> <span class="nv">$i</span> &lt; <span class="si">${#</span><span class="nv">arr</span><span class="p">[@]</span><span class="si">}</span> <span class="o">]]</span><span class="p">;</span> <span class="k">do</span>
-	<span class="nb">echo</span> <span class="si">${</span><span class="nv">arr</span><span class="p">[</span><span class="nv">$i</span><span class="p">]</span><span class="si">}</span>
-	<span class="o">((</span> ++i <span class="o">))</span>
-<span class="k">done</span>
+<span style="color:#0086b3">echo</span> <span style="color:#d14">&#34;----------\${#arr[@]}--------&#34;</span>
+<span style="color:#008080">i</span><span style="color:#000;font-weight:bold">=</span><span style="color:#099">0</span>
+<span style="color:#000;font-weight:bold">while</span> <span style="color:#000;font-weight:bold">[[</span> <span style="color:#008080">$i</span> &lt; <span style="color:#d14">${#</span><span style="color:#008080">arr</span>[@]<span style="color:#d14">}</span> <span style="color:#000;font-weight:bold">]]</span>; <span style="color:#000;font-weight:bold">do</span>
+	<span style="color:#0086b3">echo</span> <span style="color:#d14">${</span><span style="color:#008080">arr</span>[<span style="color:#008080">$i</span>]<span style="color:#d14">}</span>
+	<span style="color:#000;font-weight:bold">((</span> ++i <span style="color:#000;font-weight:bold">))</span>
+<span style="color:#000;font-weight:bold">done</span>
 
-<span class="nb">echo</span> <span class="s2">&#34;----------\${!arr[@]}--------&#34;</span>
-<span class="k">for</span> i in <span class="si">${</span><span class="p">!arr[@]</span><span class="si">}</span><span class="p">;</span> <span class="k">do</span>
-	<span class="nb">echo</span> <span class="si">${</span><span class="nv">arr</span><span class="p">[</span><span class="nv">$i</span><span class="p">]</span><span class="si">}</span>
-<span class="k">done</span>
+<span style="color:#0086b3">echo</span> <span style="color:#d14">&#34;----------\${!arr[@]}--------&#34;</span>
+<span style="color:#000;font-weight:bold">for</span> i in <span style="color:#d14">${</span>!arr[@]<span style="color:#d14">}</span>; <span style="color:#000;font-weight:bold">do</span>
+	<span style="color:#0086b3">echo</span> <span style="color:#d14">${</span><span style="color:#008080">arr</span>[<span style="color:#008080">$i</span>]<span style="color:#d14">}</span>
+<span style="color:#000;font-weight:bold">done</span>
 
-<span class="c1"># -----------------------------------------------</span>
+<span style="color:#998;font-style:italic"># -----------------------------------------------</span>
 $ ./test.sh 
-----------<span class="si">${</span><span class="nv">arr</span><span class="p">[@]</span><span class="si">}</span>--------
-<span class="m">1</span>
-<span class="m">2</span>
-<span class="m">3</span>
-<span class="m">4</span>
-<span class="m">5</span>
-<span class="m">6</span>
-----------<span class="si">${#</span><span class="nv">arr</span><span class="p">[@]</span><span class="si">}</span>--------
-<span class="m">1</span>
-<span class="m">2</span>
-<span class="m">3</span>
-<span class="m">4</span>
-<span class="m">5</span>
-<span class="m">6</span>
-----------<span class="si">${</span><span class="p">!arr[@]</span><span class="si">}</span>--------
-<span class="m">1</span>
-<span class="m">2</span>
-<span class="m">3</span>
-<span class="m">4</span>
-<span class="m">5</span>
-<span class="m">6</span>
-</code></pre></div><h3 id="算数运算-">算数运算</h3>
+----------<span style="color:#d14">${</span><span style="color:#008080">arr</span>[@]<span style="color:#d14">}</span>--------
+<span style="color:#099">1</span>
+<span style="color:#099">2</span>
+<span style="color:#099">3</span>
+<span style="color:#099">4</span>
+<span style="color:#099">5</span>
+<span style="color:#099">6</span>
+----------<span style="color:#d14">${#</span><span style="color:#008080">arr</span>[@]<span style="color:#d14">}</span>--------
+<span style="color:#099">1</span>
+<span style="color:#099">2</span>
+<span style="color:#099">3</span>
+<span style="color:#099">4</span>
+<span style="color:#099">5</span>
+<span style="color:#099">6</span>
+----------<span style="color:#d14">${</span>!arr[@]<span style="color:#d14">}</span>--------
+<span style="color:#099">1</span>
+<span style="color:#099">2</span>
+<span style="color:#099">3</span>
+<span style="color:#099">4</span>
+<span style="color:#099">5</span>
+<span style="color:#099">6</span>
+</code></pre></td></tr></table>
+</div>
+</div><h3 id="算数运算-">算数运算</h3>
 <p>bash中的变量在大多数情况下是无法和C语言一样直接进行运算的，无论是算数运算还是逻辑运算都要使用相应的语法或者内建命令。</p>
 <p>bash中变量在大多数情况下是无法和C语言一样直接进行运算的，无论是算数运算还是逻辑运算都要使用相应的语法或者内建命令。</p>
 <p>常见的执行算数运算的方法有<code>expr</code>、<code>let</code>、<code>$((expression))</code>、<code>$[expression]</code>这4种，<code>expr</code>属于外部命令，<code>let</code>、<code>$((expression))</code>和<code>$[expression]</code>属于内建的算数拓展，其中<code>$[expression]</code>这种已被声明后续版本会移除而不建议使用。举个栗子：</p>
-<div class="highlight"><pre class="chroma"><code class="language-shell" data-lang="shell"><span class="cp">#!/bin/bash
-</span><span class="cp"></span><span class="c1"># test.sh</span>
+<div class="highlight"><div style="background-color:#fff;-moz-tab-size:4;-o-tab-size:4;tab-size:4">
+<table style="border-spacing:0;padding:0;margin:0;border:0;width:auto;overflow:auto;display:block;"><tr><td style="vertical-align:top;padding:0;margin:0;border:0;">
+<pre style="background-color:#fff;-moz-tab-size:4;-o-tab-size:4;tab-size:4"><code><span style="margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f"> 1
+</span><span style="margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f"> 2
+</span><span style="margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f"> 3
+</span><span style="margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f"> 4
+</span><span style="margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f"> 5
+</span><span style="margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f"> 6
+</span><span style="margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f"> 7
+</span><span style="margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f"> 8
+</span><span style="margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f"> 9
+</span><span style="margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f">10
+</span><span style="margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f">11
+</span><span style="margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f">12
+</span><span style="margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f">13
+</span><span style="margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f">14
+</span><span style="margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f">15
+</span><span style="margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f">16
+</span><span style="margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f">17
+</span><span style="margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f">18
+</span><span style="margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f">19
+</span><span style="margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f">20
+</span><span style="margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f">21
+</span><span style="margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f">22
+</span><span style="margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f">23
+</span><span style="margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f">24
+</span><span style="margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f">25
+</span><span style="margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f">26
+</span><span style="margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f">27
+</span><span style="margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f">28
+</span><span style="margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f">29
+</span><span style="margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f">30
+</span><span style="margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f">31
+</span><span style="margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f">32
+</span><span style="margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f">33
+</span><span style="margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f">34
+</span><span style="margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f">35
+</span><span style="margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f">36
+</span><span style="margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f">37
+</span><span style="margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f">38
+</span><span style="margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f">39
+</span><span style="margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f">40
+</span><span style="margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f">41
+</span><span style="margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f">42
+</span><span style="margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f">43
+</span><span style="margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f">44
+</span><span style="margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f">45
+</span><span style="margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f">46
+</span><span style="margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f">47
+</span><span style="margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f">48
+</span><span style="margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f">49
+</span><span style="margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f">50
+</span><span style="margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f">51
+</span><span style="margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f">52
+</span><span style="margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f">53
+</span><span style="margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f">54
+</span><span style="margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f">55
+</span></code></pre></td>
+<td style="vertical-align:top;padding:0;margin:0;border:0;;width:100%">
+<pre style="background-color:#fff;-moz-tab-size:4;-o-tab-size:4;tab-size:4"><code class="language-shell" data-lang="shell"><span style="color:#999;font-weight:bold;font-style:italic">#!/bin/bash
+</span><span style="color:#999;font-weight:bold;font-style:italic"></span><span style="color:#998;font-style:italic"># test.sh</span>
 
-<span class="nv">a</span><span class="o">=</span><span class="m">5</span>
-<span class="nv">b</span><span class="o">=</span><span class="m">4</span>
+<span style="color:#008080">a</span><span style="color:#000;font-weight:bold">=</span><span style="color:#099">5</span>
+<span style="color:#008080">b</span><span style="color:#000;font-weight:bold">=</span><span style="color:#099">4</span>
 
-<span class="nv">str</span><span class="o">=</span><span class="s2">&#34;</span><span class="nv">$a</span><span class="s2"> + </span><span class="nv">$b</span><span class="s2">&#34;</span>
+<span style="color:#008080">str</span><span style="color:#000;font-weight:bold">=</span><span style="color:#d14">&#34;</span><span style="color:#008080">$a</span><span style="color:#d14"> + </span><span style="color:#008080">$b</span><span style="color:#d14">&#34;</span>
 
-<span class="nb">echo</span> <span class="s2">&#34;-----------expr----------&#34;</span>
-<span class="nb">echo</span> <span class="s2">&#34;</span><span class="nv">$a</span><span class="s2"> * </span><span class="nv">$b</span><span class="s2"> = </span><span class="k">$(</span>expr <span class="nv">$a</span> <span class="se">\*</span> <span class="nv">$b</span><span class="k">)</span><span class="s2">&#34;</span>
-<span class="nb">echo</span> <span class="s2">&#34;</span><span class="nv">$a</span><span class="s2"> % </span><span class="nv">$b</span><span class="s2"> = </span><span class="k">$(</span>expr <span class="nv">$a</span> % <span class="nv">$b</span><span class="k">)</span><span class="s2">&#34;</span>
-<span class="nb">echo</span> <span class="s2">&#34;</span><span class="nv">$a</span><span class="s2"> + </span><span class="nv">$b</span><span class="s2"> = </span><span class="k">$(</span>expr <span class="nv">$a</span> + <span class="nv">$b</span><span class="k">)</span><span class="s2">&#34;</span>
-<span class="nb">echo</span> <span class="s2">&#34;</span><span class="nv">$a</span><span class="s2"> + </span><span class="nv">$b</span><span class="s2"> = </span><span class="k">$(</span>expr <span class="nv">$str</span><span class="k">)</span><span class="s2">&#34;</span>
+<span style="color:#0086b3">echo</span> <span style="color:#d14">&#34;-----------expr----------&#34;</span>
+<span style="color:#0086b3">echo</span> <span style="color:#d14">&#34;</span><span style="color:#008080">$a</span><span style="color:#d14"> * </span><span style="color:#008080">$b</span><span style="color:#d14"> = </span><span style="color:#000;font-weight:bold">$(</span>expr <span style="color:#008080">$a</span> <span style="color:#d14">\*</span> <span style="color:#008080">$b</span><span style="color:#000;font-weight:bold">)</span><span style="color:#d14">&#34;</span>
+<span style="color:#0086b3">echo</span> <span style="color:#d14">&#34;</span><span style="color:#008080">$a</span><span style="color:#d14"> % </span><span style="color:#008080">$b</span><span style="color:#d14"> = </span><span style="color:#000;font-weight:bold">$(</span>expr <span style="color:#008080">$a</span> % <span style="color:#008080">$b</span><span style="color:#000;font-weight:bold">)</span><span style="color:#d14">&#34;</span>
+<span style="color:#0086b3">echo</span> <span style="color:#d14">&#34;</span><span style="color:#008080">$a</span><span style="color:#d14"> + </span><span style="color:#008080">$b</span><span style="color:#d14"> = </span><span style="color:#000;font-weight:bold">$(</span>expr <span style="color:#008080">$a</span> + <span style="color:#008080">$b</span><span style="color:#000;font-weight:bold">)</span><span style="color:#d14">&#34;</span>
+<span style="color:#0086b3">echo</span> <span style="color:#d14">&#34;</span><span style="color:#008080">$a</span><span style="color:#d14"> + </span><span style="color:#008080">$b</span><span style="color:#d14"> = </span><span style="color:#000;font-weight:bold">$(</span>expr <span style="color:#008080">$str</span><span style="color:#000;font-weight:bold">)</span><span style="color:#d14">&#34;</span>
 
-<span class="nb">echo</span> <span class="s2">&#34;-----------let-----------&#34;</span>
-<span class="nb">let</span> <span class="nv">c</span><span class="o">=</span>a*b <span class="nv">d</span><span class="o">=</span>a%b <span class="nv">f</span><span class="o">=</span>a+b <span class="nv">g</span><span class="o">=</span>str
-<span class="nb">echo</span> <span class="s2">&#34;</span><span class="nv">$a</span><span class="s2"> * </span><span class="nv">$b</span><span class="s2"> = </span><span class="nv">$c</span><span class="s2">&#34;</span>
-<span class="nb">echo</span> <span class="s2">&#34;</span><span class="nv">$a</span><span class="s2"> % </span><span class="nv">$b</span><span class="s2"> = </span><span class="nv">$d</span><span class="s2">&#34;</span>
-<span class="nb">echo</span> <span class="s2">&#34;</span><span class="nv">$a</span><span class="s2"> + </span><span class="nv">$b</span><span class="s2"> = </span><span class="nv">$f</span><span class="s2">&#34;</span>
-<span class="nb">echo</span> <span class="s2">&#34;</span><span class="nv">$a</span><span class="s2"> + </span><span class="nv">$b</span><span class="s2"> = </span><span class="nv">$g</span><span class="s2">&#34;</span>
+<span style="color:#0086b3">echo</span> <span style="color:#d14">&#34;-----------let-----------&#34;</span>
+<span style="color:#0086b3">let</span> <span style="color:#008080">c</span><span style="color:#000;font-weight:bold">=</span>a*b <span style="color:#008080">d</span><span style="color:#000;font-weight:bold">=</span>a%b <span style="color:#008080">f</span><span style="color:#000;font-weight:bold">=</span>a+b <span style="color:#008080">g</span><span style="color:#000;font-weight:bold">=</span>str
+<span style="color:#0086b3">echo</span> <span style="color:#d14">&#34;</span><span style="color:#008080">$a</span><span style="color:#d14"> * </span><span style="color:#008080">$b</span><span style="color:#d14"> = </span><span style="color:#008080">$c</span><span style="color:#d14">&#34;</span>
+<span style="color:#0086b3">echo</span> <span style="color:#d14">&#34;</span><span style="color:#008080">$a</span><span style="color:#d14"> % </span><span style="color:#008080">$b</span><span style="color:#d14"> = </span><span style="color:#008080">$d</span><span style="color:#d14">&#34;</span>
+<span style="color:#0086b3">echo</span> <span style="color:#d14">&#34;</span><span style="color:#008080">$a</span><span style="color:#d14"> + </span><span style="color:#008080">$b</span><span style="color:#d14"> = </span><span style="color:#008080">$f</span><span style="color:#d14">&#34;</span>
+<span style="color:#0086b3">echo</span> <span style="color:#d14">&#34;</span><span style="color:#008080">$a</span><span style="color:#d14"> + </span><span style="color:#008080">$b</span><span style="color:#d14"> = </span><span style="color:#008080">$g</span><span style="color:#d14">&#34;</span>
 
-<span class="nb">echo</span> <span class="s2">&#34;----------\$(())---------&#34;</span>
-<span class="nb">echo</span> <span class="s2">&#34;</span><span class="nv">$a</span><span class="s2"> * </span><span class="nv">$b</span><span class="s2"> = </span><span class="k">$((</span>a*b<span class="k">))</span><span class="s2">&#34;</span>
-<span class="nb">echo</span> <span class="s2">&#34;</span><span class="nv">$a</span><span class="s2"> % </span><span class="nv">$b</span><span class="s2"> = </span><span class="k">$((</span>a%b<span class="k">))</span><span class="s2">&#34;</span>
-<span class="nb">echo</span> <span class="s2">&#34;</span><span class="nv">$a</span><span class="s2"> + </span><span class="nv">$b</span><span class="s2"> = </span><span class="k">$((</span>a+b<span class="k">))</span><span class="s2">&#34;</span>
-<span class="nb">echo</span> <span class="s2">&#34;</span><span class="nv">$a</span><span class="s2"> + </span><span class="nv">$b</span><span class="s2"> = </span><span class="k">$((</span>str<span class="k">))</span><span class="s2">&#34;</span>
+<span style="color:#0086b3">echo</span> <span style="color:#d14">&#34;----------\$(())---------&#34;</span>
+<span style="color:#0086b3">echo</span> <span style="color:#d14">&#34;</span><span style="color:#008080">$a</span><span style="color:#d14"> * </span><span style="color:#008080">$b</span><span style="color:#d14"> = </span><span style="color:#000;font-weight:bold">$((</span>a*b<span style="color:#000;font-weight:bold">))</span><span style="color:#d14">&#34;</span>
+<span style="color:#0086b3">echo</span> <span style="color:#d14">&#34;</span><span style="color:#008080">$a</span><span style="color:#d14"> % </span><span style="color:#008080">$b</span><span style="color:#d14"> = </span><span style="color:#000;font-weight:bold">$((</span>a%b<span style="color:#000;font-weight:bold">))</span><span style="color:#d14">&#34;</span>
+<span style="color:#0086b3">echo</span> <span style="color:#d14">&#34;</span><span style="color:#008080">$a</span><span style="color:#d14"> + </span><span style="color:#008080">$b</span><span style="color:#d14"> = </span><span style="color:#000;font-weight:bold">$((</span>a+b<span style="color:#000;font-weight:bold">))</span><span style="color:#d14">&#34;</span>
+<span style="color:#0086b3">echo</span> <span style="color:#d14">&#34;</span><span style="color:#008080">$a</span><span style="color:#d14"> + </span><span style="color:#008080">$b</span><span style="color:#d14"> = </span><span style="color:#000;font-weight:bold">$((</span>str<span style="color:#000;font-weight:bold">))</span><span style="color:#d14">&#34;</span>
 
-<span class="nb">echo</span> <span class="s2">&#34;----------(())-----------&#34;</span>
-<span class="o">((</span><span class="nv">c</span><span class="o">=</span>a-b,d<span class="o">=</span>a/b,f<span class="o">=</span>a**b,g<span class="o">=</span>str<span class="o">))</span>
-<span class="nb">echo</span> <span class="s2">&#34;</span><span class="nv">$a</span><span class="s2"> - </span><span class="nv">$b</span><span class="s2"> = </span><span class="nv">$c</span><span class="s2">&#34;</span>
-<span class="nb">echo</span> <span class="s2">&#34;</span><span class="nv">$a</span><span class="s2"> / </span><span class="nv">$b</span><span class="s2"> = </span><span class="nv">$d</span><span class="s2">&#34;</span>
-<span class="nb">echo</span> <span class="s2">&#34;</span><span class="nv">$a</span><span class="s2"> ** </span><span class="nv">$b</span><span class="s2"> = </span><span class="nv">$f</span><span class="s2">&#34;</span>
-<span class="nb">echo</span> <span class="s2">&#34;</span><span class="nv">$a</span><span class="s2"> + </span><span class="nv">$b</span><span class="s2"> = </span><span class="nv">$g</span><span class="s2">&#34;</span>
+<span style="color:#0086b3">echo</span> <span style="color:#d14">&#34;----------(())-----------&#34;</span>
+<span style="color:#000;font-weight:bold">((</span><span style="color:#008080">c</span><span style="color:#000;font-weight:bold">=</span>a-b,d<span style="color:#000;font-weight:bold">=</span>a/b,f<span style="color:#000;font-weight:bold">=</span>a**b,g<span style="color:#000;font-weight:bold">=</span>str<span style="color:#000;font-weight:bold">))</span>
+<span style="color:#0086b3">echo</span> <span style="color:#d14">&#34;</span><span style="color:#008080">$a</span><span style="color:#d14"> - </span><span style="color:#008080">$b</span><span style="color:#d14"> = </span><span style="color:#008080">$c</span><span style="color:#d14">&#34;</span>
+<span style="color:#0086b3">echo</span> <span style="color:#d14">&#34;</span><span style="color:#008080">$a</span><span style="color:#d14"> / </span><span style="color:#008080">$b</span><span style="color:#d14"> = </span><span style="color:#008080">$d</span><span style="color:#d14">&#34;</span>
+<span style="color:#0086b3">echo</span> <span style="color:#d14">&#34;</span><span style="color:#008080">$a</span><span style="color:#d14"> ** </span><span style="color:#008080">$b</span><span style="color:#d14"> = </span><span style="color:#008080">$f</span><span style="color:#d14">&#34;</span>
+<span style="color:#0086b3">echo</span> <span style="color:#d14">&#34;</span><span style="color:#008080">$a</span><span style="color:#d14"> + </span><span style="color:#008080">$b</span><span style="color:#d14"> = </span><span style="color:#008080">$g</span><span style="color:#d14">&#34;</span>
 
-<span class="c1">#------------------------------</span>
+<span style="color:#998;font-style:italic">#------------------------------</span>
 -----------expr----------
-<span class="m">5</span> * <span class="nv">4</span> <span class="o">=</span> <span class="m">20</span>
-<span class="m">5</span> % <span class="nv">4</span> <span class="o">=</span> <span class="m">1</span>
-<span class="m">5</span> + <span class="nv">4</span> <span class="o">=</span> <span class="m">9</span>
-<span class="m">5</span> + <span class="nv">4</span> <span class="o">=</span> <span class="m">9</span>
+<span style="color:#099">5</span> * <span style="color:#008080">4</span> <span style="color:#000;font-weight:bold">=</span> <span style="color:#099">20</span>
+<span style="color:#099">5</span> % <span style="color:#008080">4</span> <span style="color:#000;font-weight:bold">=</span> <span style="color:#099">1</span>
+<span style="color:#099">5</span> + <span style="color:#008080">4</span> <span style="color:#000;font-weight:bold">=</span> <span style="color:#099">9</span>
+<span style="color:#099">5</span> + <span style="color:#008080">4</span> <span style="color:#000;font-weight:bold">=</span> <span style="color:#099">9</span>
 -----------let-----------
-<span class="m">5</span> * <span class="nv">4</span> <span class="o">=</span> <span class="m">20</span>
-<span class="m">5</span> % <span class="nv">4</span> <span class="o">=</span> <span class="m">1</span>
-<span class="m">5</span> + <span class="nv">4</span> <span class="o">=</span> <span class="m">9</span>
-<span class="m">5</span> + <span class="nv">4</span> <span class="o">=</span> <span class="m">9</span>
-----------<span class="k">$(())</span>---------
-<span class="m">5</span> * <span class="nv">4</span> <span class="o">=</span> <span class="m">20</span>
-<span class="m">5</span> % <span class="nv">4</span> <span class="o">=</span> <span class="m">1</span>
-<span class="m">5</span> + <span class="nv">4</span> <span class="o">=</span> <span class="m">9</span>
-<span class="m">5</span> + <span class="nv">4</span> <span class="o">=</span> <span class="m">9</span>
-----------<span class="o">(())</span>-----------
-<span class="m">5</span> - <span class="nv">4</span> <span class="o">=</span> <span class="m">1</span>
-<span class="m">5</span> / <span class="nv">4</span> <span class="o">=</span> <span class="m">1</span>
-<span class="m">5</span> ** <span class="nv">4</span> <span class="o">=</span> <span class="m">625</span>
-<span class="m">5</span> + <span class="nv">4</span> <span class="o">=</span> <span class="m">9</span>
-</code></pre></div><p>就以上的例子而言，我觉得最好用的算数计算方法是<code>$(())</code></p>
+<span style="color:#099">5</span> * <span style="color:#008080">4</span> <span style="color:#000;font-weight:bold">=</span> <span style="color:#099">20</span>
+<span style="color:#099">5</span> % <span style="color:#008080">4</span> <span style="color:#000;font-weight:bold">=</span> <span style="color:#099">1</span>
+<span style="color:#099">5</span> + <span style="color:#008080">4</span> <span style="color:#000;font-weight:bold">=</span> <span style="color:#099">9</span>
+<span style="color:#099">5</span> + <span style="color:#008080">4</span> <span style="color:#000;font-weight:bold">=</span> <span style="color:#099">9</span>
+----------<span style="color:#000;font-weight:bold">$(())</span>---------
+<span style="color:#099">5</span> * <span style="color:#008080">4</span> <span style="color:#000;font-weight:bold">=</span> <span style="color:#099">20</span>
+<span style="color:#099">5</span> % <span style="color:#008080">4</span> <span style="color:#000;font-weight:bold">=</span> <span style="color:#099">1</span>
+<span style="color:#099">5</span> + <span style="color:#008080">4</span> <span style="color:#000;font-weight:bold">=</span> <span style="color:#099">9</span>
+<span style="color:#099">5</span> + <span style="color:#008080">4</span> <span style="color:#000;font-weight:bold">=</span> <span style="color:#099">9</span>
+----------<span style="color:#000;font-weight:bold">(())</span>-----------
+<span style="color:#099">5</span> - <span style="color:#008080">4</span> <span style="color:#000;font-weight:bold">=</span> <span style="color:#099">1</span>
+<span style="color:#099">5</span> / <span style="color:#008080">4</span> <span style="color:#000;font-weight:bold">=</span> <span style="color:#099">1</span>
+<span style="color:#099">5</span> ** <span style="color:#008080">4</span> <span style="color:#000;font-weight:bold">=</span> <span style="color:#099">625</span>
+<span style="color:#099">5</span> + <span style="color:#008080">4</span> <span style="color:#000;font-weight:bold">=</span> <span style="color:#099">9</span>
+</code></pre></td></tr></table>
+</div>
+</div><p>就以上的例子而言，我觉得最好用的算数计算方法是<code>$(())</code></p>
 <ol>
 <li><code>expr</code>的缺点在于构造表达式的时候必须读取变量，并且在运算符和变量之间必须有空白，并且它支持的运算是最少的，且使用乘法需要对<code>*</code>进行转义</li>
 <li><code>let</code>相当于<code>(())</code>，他执行的表达式大多需要进行赋值操作，并且它能做到的<code>$(())</code>都能做到</li>
-<li><code>$(())</code>功能上几乎无可挑剔，拥有前面两者的全部功能，并且<a href="https://stackoverflow.com/questions/22389570/let-vs-expr-vs-double-parenthesis-arithmetic-in-shell"target="_blank">定义在POSIX标准中，可移植性最好</a></li>
+<li><code>$(())</code>功能上几乎无可挑剔，拥有前面两者的全部功能，并且<a href="https://stackoverflow.com/questions/22389570/let-vs-expr-vs-double-parenthesis-arithmetic-in-shell">定义在POSIX标准中，可移植性最好</a></li>
 </ol>
 <h3 id="逻辑运算-">逻辑运算</h3>
 <p>bash中提供的逻辑运算方法有<code>test</code>、<code>[ expression ]</code>以及<code>[[ expression ]]</code>三种。前两者属于内建方式，定义在POSIX标准当中，而第三种是bash中的关键字，可移植性较低，但却是最安全的。</p>
-<div class="highlight"><pre class="chroma"><code class="language-shell" data-lang="shell">$ <span class="nv">str1</span><span class="o">=</span><span class="s2">&#34;a&#34;</span>
-$ <span class="nv">str2</span><span class="o">=</span><span class="s2">&#34;b&#34;</span>
-$ <span class="o">[</span> <span class="nv">$str1</span> <span class="o">=</span> <span class="nv">$str2</span> <span class="o">]</span> <span class="o">||</span> <span class="nb">echo</span> <span class="s2">&#34;false&#34;</span>
-<span class="nb">false</span>
-$ <span class="nb">unset</span> str1
-$ <span class="o">[</span> <span class="nv">$str1</span> <span class="o">=</span> <span class="nv">$str2</span> <span class="o">]</span> <span class="o">||</span> <span class="nb">echo</span> <span class="s2">&#34;false&#34;</span>
--bash: <span class="o">[</span>: <span class="o">=</span>: unary operator expected
-<span class="nb">false</span>
-$ <span class="o">[[</span> <span class="nv">$str1</span> <span class="o">=</span> <span class="nv">$str2</span> <span class="o">]]</span> <span class="o">||</span> <span class="nb">echo</span> <span class="s2">&#34;false&#34;</span>
-<span class="nb">false</span>
-$ <span class="nv">str1</span><span class="o">=</span><span class="s2">&#34;a bcd&#34;</span>
-$ <span class="o">[</span> <span class="nv">$str1</span> <span class="o">=</span> <span class="nv">$str2</span> <span class="o">]</span> <span class="o">||</span> <span class="nb">echo</span> <span class="s2">&#34;false&#34;</span>
--bash: <span class="o">[</span>: too many arguments
-<span class="nb">false</span>
-$ <span class="o">[</span> <span class="s2">&#34;</span><span class="nv">$str1</span><span class="s2">&#34;</span> <span class="o">=</span> <span class="s2">&#34;</span><span class="nv">$str2</span><span class="s2">&#34;</span> <span class="o">]</span> <span class="o">||</span> <span class="nb">echo</span> <span class="s2">&#34;false&#34;</span>
-<span class="nb">false</span>
-$ <span class="o">[[</span> <span class="nv">$str1</span> <span class="o">=</span> <span class="nv">$str2</span> <span class="o">]]</span> <span class="o">||</span> <span class="nb">echo</span> <span class="s2">&#34;false&#34;</span>
-<span class="nb">false</span>
-</code></pre></div><p>上述示例说明了为什么使用<code>[ expression ]</code>是不安全的：</p>
+<div class="highlight"><div style="background-color:#fff;-moz-tab-size:4;-o-tab-size:4;tab-size:4">
+<table style="border-spacing:0;padding:0;margin:0;border:0;width:auto;overflow:auto;display:block;"><tr><td style="vertical-align:top;padding:0;margin:0;border:0;">
+<pre style="background-color:#fff;-moz-tab-size:4;-o-tab-size:4;tab-size:4"><code><span style="margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f"> 1
+</span><span style="margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f"> 2
+</span><span style="margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f"> 3
+</span><span style="margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f"> 4
+</span><span style="margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f"> 5
+</span><span style="margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f"> 6
+</span><span style="margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f"> 7
+</span><span style="margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f"> 8
+</span><span style="margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f"> 9
+</span><span style="margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f">10
+</span><span style="margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f">11
+</span><span style="margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f">12
+</span><span style="margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f">13
+</span><span style="margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f">14
+</span><span style="margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f">15
+</span><span style="margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f">16
+</span><span style="margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f">17
+</span><span style="margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f">18
+</span></code></pre></td>
+<td style="vertical-align:top;padding:0;margin:0;border:0;;width:100%">
+<pre style="background-color:#fff;-moz-tab-size:4;-o-tab-size:4;tab-size:4"><code class="language-shell" data-lang="shell">$ <span style="color:#008080">str1</span><span style="color:#000;font-weight:bold">=</span><span style="color:#d14">&#34;a&#34;</span>
+$ <span style="color:#008080">str2</span><span style="color:#000;font-weight:bold">=</span><span style="color:#d14">&#34;b&#34;</span>
+$ <span style="color:#000;font-weight:bold">[</span> <span style="color:#008080">$str1</span> <span style="color:#000;font-weight:bold">=</span> <span style="color:#008080">$str2</span> <span style="color:#000;font-weight:bold">]</span> <span style="color:#000;font-weight:bold">||</span> <span style="color:#0086b3">echo</span> <span style="color:#d14">&#34;false&#34;</span>
+<span style="color:#0086b3">false</span>
+$ <span style="color:#0086b3">unset</span> str1
+$ <span style="color:#000;font-weight:bold">[</span> <span style="color:#008080">$str1</span> <span style="color:#000;font-weight:bold">=</span> <span style="color:#008080">$str2</span> <span style="color:#000;font-weight:bold">]</span> <span style="color:#000;font-weight:bold">||</span> <span style="color:#0086b3">echo</span> <span style="color:#d14">&#34;false&#34;</span>
+-bash: <span style="color:#000;font-weight:bold">[</span>: <span style="color:#000;font-weight:bold">=</span>: unary operator expected
+<span style="color:#0086b3">false</span>
+$ <span style="color:#000;font-weight:bold">[[</span> <span style="color:#008080">$str1</span> <span style="color:#000;font-weight:bold">=</span> <span style="color:#008080">$str2</span> <span style="color:#000;font-weight:bold">]]</span> <span style="color:#000;font-weight:bold">||</span> <span style="color:#0086b3">echo</span> <span style="color:#d14">&#34;false&#34;</span>
+<span style="color:#0086b3">false</span>
+$ <span style="color:#008080">str1</span><span style="color:#000;font-weight:bold">=</span><span style="color:#d14">&#34;a bcd&#34;</span>
+$ <span style="color:#000;font-weight:bold">[</span> <span style="color:#008080">$str1</span> <span style="color:#000;font-weight:bold">=</span> <span style="color:#008080">$str2</span> <span style="color:#000;font-weight:bold">]</span> <span style="color:#000;font-weight:bold">||</span> <span style="color:#0086b3">echo</span> <span style="color:#d14">&#34;false&#34;</span>
+-bash: <span style="color:#000;font-weight:bold">[</span>: too many arguments
+<span style="color:#0086b3">false</span>
+$ <span style="color:#000;font-weight:bold">[</span> <span style="color:#d14">&#34;</span><span style="color:#008080">$str1</span><span style="color:#d14">&#34;</span> <span style="color:#000;font-weight:bold">=</span> <span style="color:#d14">&#34;</span><span style="color:#008080">$str2</span><span style="color:#d14">&#34;</span> <span style="color:#000;font-weight:bold">]</span> <span style="color:#000;font-weight:bold">||</span> <span style="color:#0086b3">echo</span> <span style="color:#d14">&#34;false&#34;</span>
+<span style="color:#0086b3">false</span>
+$ <span style="color:#000;font-weight:bold">[[</span> <span style="color:#008080">$str1</span> <span style="color:#000;font-weight:bold">=</span> <span style="color:#008080">$str2</span> <span style="color:#000;font-weight:bold">]]</span> <span style="color:#000;font-weight:bold">||</span> <span style="color:#0086b3">echo</span> <span style="color:#d14">&#34;false&#34;</span>
+<span style="color:#0086b3">false</span>
+</code></pre></td></tr></table>
+</div>
+</div><p>上述示例说明了为什么使用<code>[ expression ]</code>是不安全的：</p>
 <ol>
 <li>当变量不存在时，会报错</li>
 <li>当字符串中含有空白时，必须使用双引号抱住才能保证正常运行</li>
 </ol>
 <p>除此之外，<code>[[ expression ]]</code>还有支持<code>=</code>使用通配符，<code>&lt;</code>和<code>&gt;</code>字典顺序的大小比较以及<code>=~</code>正则表达式匹配</p>
-<div class="highlight"><pre class="chroma"><code class="language-shell" data-lang="shell">$ <span class="o">[[</span> <span class="nv">abc</span> <span class="o">=</span> a* <span class="o">]]</span> <span class="o">&amp;&amp;</span> <span class="nb">echo</span> <span class="s2">&#34;true&#34;</span>
-<span class="nb">true</span>
-$ <span class="o">[[</span> abc &lt; bc <span class="o">]]</span> <span class="o">&amp;&amp;</span> <span class="nb">echo</span> <span class="s2">&#34;true&#34;</span>
-<span class="nb">true</span>
-$ <span class="o">[[</span> <span class="nv">abc</span> <span class="o">=</span>~ a.* <span class="o">]]</span> <span class="o">&amp;&amp;</span> <span class="nb">echo</span> <span class="s2">&#34;true&#34;</span>
-<span class="nb">true</span>
-</code></pre></div><p>因此，在bash环境下建议使用<code>[[ expression ]]</code>的方式进行逻辑运算</p>
+<div class="highlight"><div style="background-color:#fff;-moz-tab-size:4;-o-tab-size:4;tab-size:4">
+<table style="border-spacing:0;padding:0;margin:0;border:0;width:auto;overflow:auto;display:block;"><tr><td style="vertical-align:top;padding:0;margin:0;border:0;">
+<pre style="background-color:#fff;-moz-tab-size:4;-o-tab-size:4;tab-size:4"><code><span style="margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f">1
+</span><span style="margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f">2
+</span><span style="margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f">3
+</span><span style="margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f">4
+</span><span style="margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f">5
+</span><span style="margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f">6
+</span></code></pre></td>
+<td style="vertical-align:top;padding:0;margin:0;border:0;;width:100%">
+<pre style="background-color:#fff;-moz-tab-size:4;-o-tab-size:4;tab-size:4"><code class="language-shell" data-lang="shell">$ <span style="color:#000;font-weight:bold">[[</span> <span style="color:#008080">abc</span> <span style="color:#000;font-weight:bold">=</span> a* <span style="color:#000;font-weight:bold">]]</span> <span style="color:#000;font-weight:bold">&amp;&amp;</span> <span style="color:#0086b3">echo</span> <span style="color:#d14">&#34;true&#34;</span>
+<span style="color:#0086b3">true</span>
+$ <span style="color:#000;font-weight:bold">[[</span> abc &lt; bc <span style="color:#000;font-weight:bold">]]</span> <span style="color:#000;font-weight:bold">&amp;&amp;</span> <span style="color:#0086b3">echo</span> <span style="color:#d14">&#34;true&#34;</span>
+<span style="color:#0086b3">true</span>
+$ <span style="color:#000;font-weight:bold">[[</span> <span style="color:#008080">abc</span> <span style="color:#000;font-weight:bold">=</span>~ a.* <span style="color:#000;font-weight:bold">]]</span> <span style="color:#000;font-weight:bold">&amp;&amp;</span> <span style="color:#0086b3">echo</span> <span style="color:#d14">&#34;true&#34;</span>
+<span style="color:#0086b3">true</span>
+</code></pre></td></tr></table>
+</div>
+</div><p>因此，在bash环境下建议使用<code>[[ expression ]]</code>的方式进行逻辑运算</p>
 <h2 id="字符串操作-">字符串操作</h2>
 <p>bash的字符串操作方法大致分为2种：</p>
 <ol>
@@ -215,24 +612,50 @@ $ <span class="o">[[</span> <span class="nv">abc</span> <span class="o">=</span>
 <p>而内建的字符串操作必须将字符串存储于变量中才能够使用，因而不适合在交互式的命令行下直接使用。而<code>expr</code>没有这个限制，但能够进行的操作少一些。其次，内建的字符串操作不支持正则表达式，而<code>expr</code>是支持的。</p>
 <h3 id="内建字符串操作-">内建字符串操作</h3>
 <p><code>${#str}</code> 获取<code>$str</code>的长度</p>
-<div class="highlight"><pre class="chroma"><code class="language-shell" data-lang="shell">$ <span class="nv">str</span><span class="o">=</span><span class="s2">&#34;0123456789&#34;</span>
-$ <span class="nb">echo</span> <span class="si">${#</span><span class="nv">str</span><span class="si">}</span>
-<span class="m">10</span>
-</code></pre></div><p><code>${str:index}</code> 从<code>index</code>开始截取<code>$str</code>中的子串至最后。</p>
+<div class="highlight"><div style="background-color:#fff;-moz-tab-size:4;-o-tab-size:4;tab-size:4">
+<table style="border-spacing:0;padding:0;margin:0;border:0;width:auto;overflow:auto;display:block;"><tr><td style="vertical-align:top;padding:0;margin:0;border:0;">
+<pre style="background-color:#fff;-moz-tab-size:4;-o-tab-size:4;tab-size:4"><code><span style="margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f">1
+</span><span style="margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f">2
+</span><span style="margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f">3
+</span></code></pre></td>
+<td style="vertical-align:top;padding:0;margin:0;border:0;;width:100%">
+<pre style="background-color:#fff;-moz-tab-size:4;-o-tab-size:4;tab-size:4"><code class="language-shell" data-lang="shell">$ <span style="color:#008080">str</span><span style="color:#000;font-weight:bold">=</span><span style="color:#d14">&#34;0123456789&#34;</span>
+$ <span style="color:#0086b3">echo</span> <span style="color:#d14">${#</span><span style="color:#008080">str</span><span style="color:#d14">}</span>
+<span style="color:#099">10</span>
+</code></pre></td></tr></table>
+</div>
+</div><p><code>${str:index}</code> 从<code>index</code>开始截取<code>$str</code>中的子串至最后。</p>
 <p><code>${str:index:length}</code> 从<code>index</code>开始截取<code>$str</code>中长度为<code>length</code>的字串</p>
 <p>上面的两条语句<code>index</code>皆可以是<strong>负数</strong>，用于表示字符串从后向前的索引</p>
-<div class="highlight"><pre class="chroma"><code class="language-shell" data-lang="shell">$ <span class="nv">str</span><span class="o">=</span><span class="s2">&#34;0123456789&#34;</span>
-$ <span class="nb">echo</span> <span class="si">${</span><span class="nv">str</span><span class="p">:</span><span class="nv">4</span><span class="si">}</span>
-<span class="m">456789</span>
-$ <span class="nb">echo</span> <span class="si">${</span><span class="nv">str</span><span class="p">:</span><span class="nv">4</span><span class="p">:</span><span class="nv">3</span><span class="si">}</span>
-<span class="m">456</span>
-$ <span class="nb">echo</span> <span class="si">${</span><span class="nv">str</span><span class="p">: -2</span><span class="si">}</span> <span class="c1"># 负数这里:和-之间必须有一个空格</span>
-<span class="m">89</span>
-$ <span class="nb">echo</span> <span class="si">${</span><span class="nv">str</span><span class="p">:(-2)</span><span class="si">}</span> <span class="c1"># 也可以用()将这个数括起来</span>
-<span class="m">89</span>
-$ <span class="nb">echo</span> <span class="si">${</span><span class="nv">str</span><span class="p">: -2:</span><span class="nv">1</span><span class="si">}</span>
-<span class="m">8</span>
-</code></pre></div><p><code>${str#$substr}</code>从<code>$str</code>中从左向右移除匹配<code>$substr</code>的最短的部分</p>
+<div class="highlight"><div style="background-color:#fff;-moz-tab-size:4;-o-tab-size:4;tab-size:4">
+<table style="border-spacing:0;padding:0;margin:0;border:0;width:auto;overflow:auto;display:block;"><tr><td style="vertical-align:top;padding:0;margin:0;border:0;">
+<pre style="background-color:#fff;-moz-tab-size:4;-o-tab-size:4;tab-size:4"><code><span style="margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f"> 1
+</span><span style="margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f"> 2
+</span><span style="margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f"> 3
+</span><span style="margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f"> 4
+</span><span style="margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f"> 5
+</span><span style="margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f"> 6
+</span><span style="margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f"> 7
+</span><span style="margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f"> 8
+</span><span style="margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f"> 9
+</span><span style="margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f">10
+</span><span style="margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f">11
+</span></code></pre></td>
+<td style="vertical-align:top;padding:0;margin:0;border:0;;width:100%">
+<pre style="background-color:#fff;-moz-tab-size:4;-o-tab-size:4;tab-size:4"><code class="language-shell" data-lang="shell">$ <span style="color:#008080">str</span><span style="color:#000;font-weight:bold">=</span><span style="color:#d14">&#34;0123456789&#34;</span>
+$ <span style="color:#0086b3">echo</span> <span style="color:#d14">${</span><span style="color:#008080">str</span>:<span style="color:#008080">4</span><span style="color:#d14">}</span>
+<span style="color:#099">456789</span>
+$ <span style="color:#0086b3">echo</span> <span style="color:#d14">${</span><span style="color:#008080">str</span>:<span style="color:#008080">4</span>:<span style="color:#008080">3</span><span style="color:#d14">}</span>
+<span style="color:#099">456</span>
+$ <span style="color:#0086b3">echo</span> <span style="color:#d14">${</span><span style="color:#008080">str</span>: -2<span style="color:#d14">}</span> <span style="color:#998;font-style:italic"># 负数这里:和-之间必须有一个空格</span>
+<span style="color:#099">89</span>
+$ <span style="color:#0086b3">echo</span> <span style="color:#d14">${</span><span style="color:#008080">str</span>:(-2)<span style="color:#d14">}</span> <span style="color:#998;font-style:italic"># 也可以用()将这个数括起来</span>
+<span style="color:#099">89</span>
+$ <span style="color:#0086b3">echo</span> <span style="color:#d14">${</span><span style="color:#008080">str</span>: -2:<span style="color:#008080">1</span><span style="color:#d14">}</span>
+<span style="color:#099">8</span>
+</code></pre></td></tr></table>
+</div>
+</div><p><code>${str#$substr}</code>从<code>$str</code>中从左向右移除匹配<code>$substr</code>的最短的部分</p>
 <p><code>${str##$substr}</code>从<code>$str</code>中从左向右移除匹配<code>$substr</code>的最长的部分</p>
 <p><code>${str%$substr}</code>从<code>$str</code>中从右向左移除匹配<code>$substr</code>的最短的部分</p>
 <p><code>${str%%$substr}</code>从<code>$str</code>中从右向左移除匹配<code>$substr</code>的最长的部分</p>
@@ -243,68 +666,373 @@ $ <span class="nb">echo</span> <span class="si">${</span><span class="nv">str</s
 <li>移除什么。<code>$substr</code>部分可以直接换成字符串，比如从左至右移除字符串<code>0123</code>，可以写成<code>${str#0123}</code>；移除的部分可以使用<strong>通配符</strong>，这也是为什么有最长和最短匹配的原因</li>
 <li>移除起点。必须从第一个字符开始移除，否则不移除</li>
 </ol>
-<div class="highlight"><pre class="chroma"><code class="language-shell" data-lang="shell">$ <span class="nv">str</span><span class="o">=</span><span class="s2">&#34;abcABC123ABCabc&#34;</span>
-$ <span class="nb">echo</span> <span class="si">${</span><span class="nv">str</span><span class="p">#a*c</span><span class="si">}</span>
+<div class="highlight"><div style="background-color:#fff;-moz-tab-size:4;-o-tab-size:4;tab-size:4">
+<table style="border-spacing:0;padding:0;margin:0;border:0;width:auto;overflow:auto;display:block;"><tr><td style="vertical-align:top;padding:0;margin:0;border:0;">
+<pre style="background-color:#fff;-moz-tab-size:4;-o-tab-size:4;tab-size:4"><code><span style="margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f"> 1
+</span><span style="margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f"> 2
+</span><span style="margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f"> 3
+</span><span style="margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f"> 4
+</span><span style="margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f"> 5
+</span><span style="margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f"> 6
+</span><span style="margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f"> 7
+</span><span style="margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f"> 8
+</span><span style="margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f"> 9
+</span><span style="margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f">10
+</span><span style="margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f">11
+</span><span style="margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f">12
+</span><span style="margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f">13
+</span></code></pre></td>
+<td style="vertical-align:top;padding:0;margin:0;border:0;;width:100%">
+<pre style="background-color:#fff;-moz-tab-size:4;-o-tab-size:4;tab-size:4"><code class="language-shell" data-lang="shell">$ <span style="color:#008080">str</span><span style="color:#000;font-weight:bold">=</span><span style="color:#d14">&#34;abcABC123ABCabc&#34;</span>
+$ <span style="color:#0086b3">echo</span> <span style="color:#d14">${</span><span style="color:#008080">str</span>#a*c<span style="color:#d14">}</span>
 ABC123ABCabc
-$ <span class="nb">echo</span> <span class="si">${</span><span class="nv">str</span><span class="p">#a*A</span><span class="si">}</span>
+$ <span style="color:#0086b3">echo</span> <span style="color:#d14">${</span><span style="color:#008080">str</span>#a*A<span style="color:#d14">}</span>
 BC123ABCabc
-$ <span class="nb">echo</span> <span class="si">${</span><span class="nv">str</span><span class="p">##a*A</span><span class="si">}</span>
+$ <span style="color:#0086b3">echo</span> <span style="color:#d14">${</span><span style="color:#008080">str</span>##a*A<span style="color:#d14">}</span>
 BCabc
-$ <span class="nb">echo</span> <span class="si">${</span><span class="nv">str</span><span class="p">%A*c</span><span class="si">}</span>
+$ <span style="color:#0086b3">echo</span> <span style="color:#d14">${</span><span style="color:#008080">str</span>%A*c<span style="color:#d14">}</span>
 abcABC123
-$ <span class="nb">echo</span> <span class="si">${</span><span class="nv">str</span><span class="p">%%A*c</span><span class="si">}</span>
+$ <span style="color:#0086b3">echo</span> <span style="color:#d14">${</span><span style="color:#008080">str</span>%%A*c<span style="color:#d14">}</span>
 abc
-$ <span class="nb">echo</span> <span class="si">${</span><span class="nv">str</span><span class="p">#b</span><span class="si">}</span> <span class="c1"># 第一个字符不匹配，不移除</span>
+$ <span style="color:#0086b3">echo</span> <span style="color:#d14">${</span><span style="color:#008080">str</span>#b<span style="color:#d14">}</span> <span style="color:#998;font-style:italic"># 第一个字符不匹配，不移除</span>
 abcABC123ABCabc
-</code></pre></div><p><code>${str/$substr/$replacement}</code>替换第1个与<code>$substr</code>匹配的部分为<code>$replacement</code></p>
+</code></pre></td></tr></table>
+</div>
+</div><p><code>${str/$substr/$replacement}</code>替换第1个与<code>$substr</code>匹配的部分为<code>$replacement</code></p>
 <p><code>${str//$substr/$replacement}</code>替换所有与<code>$substr</code>匹配的部分为<code>$replacement</code></p>
 <p><code>${str/#$substr/$replacement}</code>如果<code>$substr</code>能从<strong>头</strong>开始匹配<code>$str</code>的一个字串，则将之替换为<code>$replacement</code></p>
 <p><code>${str/%$substr/$replacement}</code>如果<code>$substr</code>能从<strong>尾</strong>开始匹配<code>$str</code>的一个字串，则将之替换为<code>$replacement</code></p>
 <p>同样，这部分的<code>$substr</code>也支持使用通配符，并且能将<code>$substr</code>和<code>$replacement</code>部分直接使用字符串替换</p>
-<div class="highlight"><pre class="chroma"><code class="language-shell" data-lang="shell">$ <span class="nv">str</span><span class="o">=</span><span class="s2">&#34;abcABC123ABCabc&#34;</span>
-$ <span class="nb">echo</span> <span class="si">${</span><span class="nv">str</span><span class="p">/abc/xyz</span><span class="si">}</span>
+<div class="highlight"><div style="background-color:#fff;-moz-tab-size:4;-o-tab-size:4;tab-size:4">
+<table style="border-spacing:0;padding:0;margin:0;border:0;width:auto;overflow:auto;display:block;"><tr><td style="vertical-align:top;padding:0;margin:0;border:0;">
+<pre style="background-color:#fff;-moz-tab-size:4;-o-tab-size:4;tab-size:4"><code><span style="margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f"> 1
+</span><span style="margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f"> 2
+</span><span style="margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f"> 3
+</span><span style="margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f"> 4
+</span><span style="margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f"> 5
+</span><span style="margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f"> 6
+</span><span style="margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f"> 7
+</span><span style="margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f"> 8
+</span><span style="margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f"> 9
+</span><span style="margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f">10
+</span><span style="margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f">11
+</span><span style="margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f">12
+</span><span style="margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f">13
+</span></code></pre></td>
+<td style="vertical-align:top;padding:0;margin:0;border:0;;width:100%">
+<pre style="background-color:#fff;-moz-tab-size:4;-o-tab-size:4;tab-size:4"><code class="language-shell" data-lang="shell">$ <span style="color:#008080">str</span><span style="color:#000;font-weight:bold">=</span><span style="color:#d14">&#34;abcABC123ABCabc&#34;</span>
+$ <span style="color:#0086b3">echo</span> <span style="color:#d14">${</span><span style="color:#008080">str</span>/abc/xyz<span style="color:#d14">}</span>
 xyzABC123ABCabc
-$ <span class="nb">echo</span> <span class="si">${</span><span class="nv">str</span><span class="p">//abc/xyz</span><span class="si">}</span>
+$ <span style="color:#0086b3">echo</span> <span style="color:#d14">${</span><span style="color:#008080">str</span>//abc/xyz<span style="color:#d14">}</span>
 xyzABC123ABCxyz
-$ <span class="nb">echo</span> <span class="si">${</span><span class="nv">str</span><span class="p">/#abc/xyz</span><span class="si">}</span>
+$ <span style="color:#0086b3">echo</span> <span style="color:#d14">${</span><span style="color:#008080">str</span>/#abc/xyz<span style="color:#d14">}</span>
 xyzABC123ABCabc
-$ <span class="nb">echo</span> <span class="si">${</span><span class="nv">str</span><span class="p">/#ABC/XYZ</span><span class="si">}</span> <span class="c1"># 无法从头匹配，不替换</span>
+$ <span style="color:#0086b3">echo</span> <span style="color:#d14">${</span><span style="color:#008080">str</span>/#ABC/XYZ<span style="color:#d14">}</span> <span style="color:#998;font-style:italic"># 无法从头匹配，不替换</span>
 abcABC123ABCabc
-$ <span class="nb">echo</span> <span class="si">${</span><span class="nv">str</span><span class="p">/%abc/xyz</span><span class="si">}</span>
+$ <span style="color:#0086b3">echo</span> <span style="color:#d14">${</span><span style="color:#008080">str</span>/%abc/xyz<span style="color:#d14">}</span>
 abcABC123ABCxyz
-$ <span class="nb">echo</span> <span class="si">${</span><span class="nv">str</span><span class="p">/%ABC/XYZ</span><span class="si">}</span> <span class="c1"># 无法从尾匹配，不替换</span>
+$ <span style="color:#0086b3">echo</span> <span style="color:#d14">${</span><span style="color:#008080">str</span>/%ABC/XYZ<span style="color:#d14">}</span> <span style="color:#998;font-style:italic"># 无法从尾匹配，不替换</span>
 abcABC123ABCabc
-</code></pre></div><h3 id="expr字符串操作-"><code>expr</code>字符串操作</h3>
+</code></pre></td></tr></table>
+</div>
+</div><h3 id="expr字符串操作-"><code>expr</code>字符串操作</h3>
 <p><code>expr length $str</code> 获取<code>$str</code>的长度</p>
-<div class="highlight"><pre class="chroma"><code class="language-shell" data-lang="shell">$ <span class="nv">str</span><span class="o">=</span><span class="s2">&#34;abcABC123ABCabc&#34;</span>
-$ expr length <span class="nv">$str</span>
-<span class="m">15</span>
-</code></pre></div><p><code>expr $str : $regex</code> 获取<code>$str</code>中匹配正则表达式<code>$regex</code>的长度</p>
+<div class="highlight"><div style="background-color:#fff;-moz-tab-size:4;-o-tab-size:4;tab-size:4">
+<table style="border-spacing:0;padding:0;margin:0;border:0;width:auto;overflow:auto;display:block;"><tr><td style="vertical-align:top;padding:0;margin:0;border:0;">
+<pre style="background-color:#fff;-moz-tab-size:4;-o-tab-size:4;tab-size:4"><code><span style="margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f">1
+</span><span style="margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f">2
+</span><span style="margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f">3
+</span></code></pre></td>
+<td style="vertical-align:top;padding:0;margin:0;border:0;;width:100%">
+<pre style="background-color:#fff;-moz-tab-size:4;-o-tab-size:4;tab-size:4"><code class="language-shell" data-lang="shell">$ <span style="color:#008080">str</span><span style="color:#000;font-weight:bold">=</span><span style="color:#d14">&#34;abcABC123ABCabc&#34;</span>
+$ expr length <span style="color:#008080">$str</span>
+<span style="color:#099">15</span>
+</code></pre></td></tr></table>
+</div>
+</div><p><code>expr $str : $regex</code> 获取<code>$str</code>中匹配正则表达式<code>$regex</code>的长度</p>
 <p><code>expr match $str $regex</code> 获取<code>$str</code>中匹配正则表达式<code>$regex</code>的长度</p>
-<div class="highlight"><pre class="chroma"><code class="language-shell" data-lang="shell">$ <span class="nv">str</span><span class="o">=</span><span class="s2">&#34;abcABC123ABCabc&#34;</span>
-$ expr <span class="nv">$str</span> : a.*A
-<span class="m">10</span>
-$ expr match <span class="nv">$str</span> a.*A
-<span class="m">10</span>
-</code></pre></div><p><code>expr substr $str $position $length</code> 获取<code>$str</code>中从<code>$position</code>开始长度为<code>$length</code>的字串，<code>$str</code>中的第一个字符对应的<code>$position</code>为1而不是0</p>
-<div class="highlight"><pre class="chroma"><code class="language-shell" data-lang="shell">$ <span class="nv">str</span><span class="o">=</span><span class="s2">&#34;abcABC123ABCabc&#34;</span>
-$ expr substr <span class="nv">$str</span> <span class="m">4</span> <span class="m">6</span>
+<div class="highlight"><div style="background-color:#fff;-moz-tab-size:4;-o-tab-size:4;tab-size:4">
+<table style="border-spacing:0;padding:0;margin:0;border:0;width:auto;overflow:auto;display:block;"><tr><td style="vertical-align:top;padding:0;margin:0;border:0;">
+<pre style="background-color:#fff;-moz-tab-size:4;-o-tab-size:4;tab-size:4"><code><span style="margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f">1
+</span><span style="margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f">2
+</span><span style="margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f">3
+</span><span style="margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f">4
+</span><span style="margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f">5
+</span></code></pre></td>
+<td style="vertical-align:top;padding:0;margin:0;border:0;;width:100%">
+<pre style="background-color:#fff;-moz-tab-size:4;-o-tab-size:4;tab-size:4"><code class="language-shell" data-lang="shell">$ <span style="color:#008080">str</span><span style="color:#000;font-weight:bold">=</span><span style="color:#d14">&#34;abcABC123ABCabc&#34;</span>
+$ expr <span style="color:#008080">$str</span> : a.*A
+<span style="color:#099">10</span>
+$ expr match <span style="color:#008080">$str</span> a.*A
+<span style="color:#099">10</span>
+</code></pre></td></tr></table>
+</div>
+</div><p><code>expr substr $str $position $length</code> 获取<code>$str</code>中从<code>$position</code>开始长度为<code>$length</code>的字串，<code>$str</code>中的第一个字符对应的<code>$position</code>为1而不是0</p>
+<div class="highlight"><div style="background-color:#fff;-moz-tab-size:4;-o-tab-size:4;tab-size:4">
+<table style="border-spacing:0;padding:0;margin:0;border:0;width:auto;overflow:auto;display:block;"><tr><td style="vertical-align:top;padding:0;margin:0;border:0;">
+<pre style="background-color:#fff;-moz-tab-size:4;-o-tab-size:4;tab-size:4"><code><span style="margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f">1
+</span><span style="margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f">2
+</span><span style="margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f">3
+</span></code></pre></td>
+<td style="vertical-align:top;padding:0;margin:0;border:0;;width:100%">
+<pre style="background-color:#fff;-moz-tab-size:4;-o-tab-size:4;tab-size:4"><code class="language-shell" data-lang="shell">$ <span style="color:#008080">str</span><span style="color:#000;font-weight:bold">=</span><span style="color:#d14">&#34;abcABC123ABCabc&#34;</span>
+$ expr substr <span style="color:#008080">$str</span> <span style="color:#099">4</span> <span style="color:#099">6</span>
 ABC123
-</code></pre></div><p><code>expr index $str $chars</code> 获取<code>$str</code>中首次匹配字符集<code>$chars</code>中任意字符的位置索引</p>
-<div class="highlight"><pre class="chroma"><code class="language-shell" data-lang="shell">$ <span class="nv">str</span><span class="o">=</span><span class="s2">&#34;abcABC123ABCabc&#34;</span>
-$ expr index <span class="nv">$str</span> kaib
-<span class="m">1</span>
-$ expr index <span class="nv">$str</span> kib
-<span class="m">2</span>
-</code></pre></div><p>字符串操作基本能够满足日常使用，但无论是内建表达式或者<code>expr</code>都没有能够支持正则表达式的字符串替换功能，想要做到这点可以使用<code>sed</code>的<code>s</code>命令去做，感兴趣的小伙伴可以查阅相关文档去了解一波。</p>
+</code></pre></td></tr></table>
+</div>
+</div><p><code>expr index $str $chars</code> 获取<code>$str</code>中首次匹配字符集<code>$chars</code>中任意字符的位置索引</p>
+<div class="highlight"><div style="background-color:#fff;-moz-tab-size:4;-o-tab-size:4;tab-size:4">
+<table style="border-spacing:0;padding:0;margin:0;border:0;width:auto;overflow:auto;display:block;"><tr><td style="vertical-align:top;padding:0;margin:0;border:0;">
+<pre style="background-color:#fff;-moz-tab-size:4;-o-tab-size:4;tab-size:4"><code><span style="margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f">1
+</span><span style="margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f">2
+</span><span style="margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f">3
+</span><span style="margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f">4
+</span><span style="margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f">5
+</span></code></pre></td>
+<td style="vertical-align:top;padding:0;margin:0;border:0;;width:100%">
+<pre style="background-color:#fff;-moz-tab-size:4;-o-tab-size:4;tab-size:4"><code class="language-shell" data-lang="shell">$ <span style="color:#008080">str</span><span style="color:#000;font-weight:bold">=</span><span style="color:#d14">&#34;abcABC123ABCabc&#34;</span>
+$ expr index <span style="color:#008080">$str</span> kaib
+<span style="color:#099">1</span>
+$ expr index <span style="color:#008080">$str</span> kib
+<span style="color:#099">2</span>
+</code></pre></td></tr></table>
+</div>
+</div><p>字符串操作基本能够满足日常使用，但无论是内建表达式或者<code>expr</code>都没有能够支持正则表达式的字符串替换功能，想要做到这点可以使用<code>sed</code>的<code>s</code>命令去做，感兴趣的小伙伴可以查阅相关文档去了解一波。</p>
 <h2 id="总结-">总结</h2>
 <p>bash基础部分其实还有比较多的内容，包括基础语法等部分，但我只写了我不太熟悉的部分，平时直接敲命令敲的比较多，很少写脚本干些啥，今天也算理清了以前比较模糊的一些知识。</p>
-</article><section class="article labels"><a class="category" href=/categories/shell/>shell</a><a class="tag" href=/tags/shell/>shell</a><a class="tag" href=/tags/bash/>bash</a></section></div>
-<div class="article bottom"><section class="article navigation"><p><a class="link" href="/post/guava-talk-1/"><span class="iconfont icon-article"></span>Guava杂谈 - ComparisonChain</a></p><p><a class="link" href="/post/sed/"><span class="iconfont icon-article"></span>sed学习笔记</a></p></section></div></section><section id="footer"><div class="footer-wrap">
-    <p class="copyright">©2019 Notepadium.</p>
-    <p class="powerby"><span>Powered by </span><a href="https://gohugo.io" 
-        target="_blank">Hugo</a><span> and the </span><a href="https://themes.gohugo.io/hugo-notepadium/" 
-        target="_blank">Notepadium</a></p>
-</div></section></body>
+
+        </div>
+
+        
+
+
+        
+
+<div class="post-archive">
+    <h2>See Also</h2>
+    <ul class="listing">
+        
+        <li><a href="/post/sed/">sed学习笔记</a></li>
+        
+        <li><a href="/post/awk/">awk学习笔记</a></li>
+        
+        <li><a href="/about/">关于我</a></li>
+        
+        <li><a href="/archives/">归档</a></li>
+        
+        <li><a href="/search/">搜索</a></li>
+        
+    </ul>
+</div>
+
+
+        <div class="post-meta meta-tags">
+            
+            <ul class="clearfix">
+                
+                <li><a href='https://ilixiang.github.io/tags/shell'>shell</a></li>
+                
+                <li><a href='https://ilixiang.github.io/tags/bash'>bash</a></li>
+                
+            </ul>
+            
+        </div>
+    </article>
+    
+    <div id="disqus_thread"></div>
+<script type="application/javascript">
+    var disqus_config = function () {
+    
+    
+    
+    };
+    (function() {
+        if (["localhost", "127.0.0.1"].indexOf(window.location.hostname) != -1) {
+            document.getElementById('disqus_thread').innerHTML = 'Disqus comments not available by default when the website is previewed locally.';
+            return;
+        }
+        var d = document, s = d.createElement('script'); s.async = true;
+        s.src = '//' + "yourdiscussshortname" + '.disqus.com/embed.js';
+        s.setAttribute('data-timestamp', +new Date());
+        (d.head || d.body).appendChild(s);
+    })();
+</script>
+<noscript>Please enable JavaScript to view the <a href="https://disqus.com/?ref_noscript">comments powered by Disqus.</a></noscript>
+<a href="https://disqus.com" class="dsq-brlink">comments powered by <span class="logo-disqus">Disqus</span></a>
+
+    
+    
+    <div class="post bg-white">
+      <script src="https://utteranc.es/client.js"
+            repo= "your github repo"
+            issue-term="pathname"
+            theme="github-light"
+            crossorigin="anonymous"
+            async>
+      </script>
+    </div>
+    
+</div>
+
+                </div>
+
+                <div id="secondary">
+    <section class="widget">
+        <form id="search" action='https://ilixiang.github.io/search/' method="get" accept-charset="utf-8" target="_blank" _lpchecked="1">
+      
+      <input type="text" name="q" maxlength="20" placeholder="Search">
+      <input type="hidden" name="sitesearch" value="https://ilixiang.github.io/">
+      <button type="submit" class="submit icon-search"></button>
+</form>
+    </section>
+    
+    <section class="widget">
+        <h3 class="widget-title">最近文章</h3>
+<ul class="widget-list">
+    
+    <li>
+        <a href="https://ilixiang.github.io/post/java-enum/" title="Java - 枚举">Java - 枚举</a>
+    </li>
+    
+    <li>
+        <a href="https://ilixiang.github.io/post/shiro-1/" title="Apache Shiro - 基本使用和概念">Apache Shiro - 基本使用和概念</a>
+    </li>
+    
+    <li>
+        <a href="https://ilixiang.github.io/post/java-reflection/" title="Java - 反射">Java - 反射</a>
+    </li>
+    
+    <li>
+        <a href="https://ilixiang.github.io/post/regex-note/" title="Regex - 笔记">Regex - 笔记</a>
+    </li>
+    
+    <li>
+        <a href="https://ilixiang.github.io/post/guava-talk-4/" title="Guava杂谈 - ImmutableCollections">Guava杂谈 - ImmutableCollections</a>
+    </li>
+    
+    <li>
+        <a href="https://ilixiang.github.io/post/guava-talk-3/" title="Guava杂谈 - LoadingCache">Guava杂谈 - LoadingCache</a>
+    </li>
+    
+    <li>
+        <a href="https://ilixiang.github.io/post/guava-talk-2/" title="Guava杂谈 - EventBus">Guava杂谈 - EventBus</a>
+    </li>
+    
+    <li>
+        <a href="https://ilixiang.github.io/post/guava-talk-1/" title="Guava杂谈 - ComparisonChain">Guava杂谈 - ComparisonChain</a>
+    </li>
+    
+    <li>
+        <a href="https://ilixiang.github.io/post/bash-variable/" title="bash - 变量及变量操作">bash - 变量及变量操作</a>
+    </li>
+    
+    <li>
+        <a href="https://ilixiang.github.io/post/sed/" title="sed学习笔记">sed学习笔记</a>
+    </li>
+    
+</ul>
+    </section>
+
+    
+
+    <section class="widget">
+        <h3 class="widget-title">分类</h3>
+<ul class="widget-list">
+    
+    <li><a href="https://ilixiang.github.io/categories/Java/">Java (7)</a></li>
+    
+    <li><a href="https://ilixiang.github.io/categories/shell/">shell (4)</a></li>
+    
+</ul>
+    </section>
+
+    <section class="widget">
+        <h3 class="widget-title">标签</h3>
+<div class="tagcloud">
+    
+    <a href="https://ilixiang.github.io/tags/Collection/">Collection</a>
+    
+    <a href="https://ilixiang.github.io/tags/ComparisonChain/">ComparisonChain</a>
+    
+    <a href="https://ilixiang.github.io/tags/EventBus/">EventBus</a>
+    
+    <a href="https://ilixiang.github.io/tags/Guava/">Guava</a>
+    
+    <a href="https://ilixiang.github.io/tags/ImmutableCollection/">ImmutableCollection</a>
+    
+    <a href="https://ilixiang.github.io/tags/Java/">Java</a>
+    
+    <a href="https://ilixiang.github.io/tags/LoadingCache/">LoadingCache</a>
+    
+    <a href="https://ilixiang.github.io/tags/Security/">Security</a>
+    
+    <a href="https://ilixiang.github.io/tags/Shiro/">Shiro</a>
+    
+    <a href="https://ilixiang.github.io/tags/awk/">awk</a>
+    
+    <a href="https://ilixiang.github.io/tags/bash/">bash</a>
+    
+    <a href="https://ilixiang.github.io/tags/enum/">enum</a>
+    
+    <a href="https://ilixiang.github.io/tags/note/">note</a>
+    
+    <a href="https://ilixiang.github.io/tags/reflection/">reflection</a>
+    
+    <a href="https://ilixiang.github.io/tags/regex/">regex</a>
+    
+    <a href="https://ilixiang.github.io/tags/sed/">sed</a>
+    
+    <a href="https://ilixiang.github.io/tags/shell/">shell</a>
+    
+</div>
+    </section>
+
+    
+
+    <section class="widget">
+        <h3 class="widget-title">其它</h3>
+        <ul class="widget-list">
+            <li><a href="https://ilixiang.github.io/index.xml">文章 RSS</a></li>
+        </ul>
+    </section>
+</div>
+            </div>
+        </div>
+    </div>
+    <footer id="footer">
+    <div class="container">
+        &copy; 2020 <a href="https://ilixiang.github.io/">三斜求积术 By 石不转</a>.
+        Powered by <a rel="nofollow noreferer noopener" href="https://gohugo.io" target="_blank">Hugo</a>.
+        <a href="https://www.flysnow.org/" target="_blank">Theme</a> based on <a href="https://github.com/flysnow-org/maupassant-hugo" target="_blank">maupassant</a>.
+        
+    </div>
+</footer>
+
+
+    
+    <script type="text/javascript">
+        window.MathJax = {
+            tex2jax: {
+                inlineMath: [['$', '$']],
+                processEscapes: true
+                }
+            };
+    </script>
+    <script src='https://cdnjs.cloudflare.com/ajax/libs/mathjax/2.7.5/MathJax.js?config=TeX-MML-AM_CHTML' async></script>
+
+
+<a id="rocket" href="#top"></a>
+<script type="text/javascript" src='/js/totop.js?v=0.0.0' async=""></script>
+
+
+
+    <script type="text/javascript" src="//busuanzi.ibruce.info/busuanzi/2.3/busuanzi.pure.mini.js" async></script>
+
+
+
+
+    <script src='/js/douban.js'></script>
+
+</body>
 
 </html>

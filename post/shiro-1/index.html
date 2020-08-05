@@ -1,12 +1,208 @@
-<!DOCTYPE html>
-<html lang="en"><meta charset="utf-8"><meta name="generator" content="Hugo 0.68.3" /><meta name="viewport" content="width=device-width,initial-scale=1,viewport-fit=cover">
-<meta name="color-scheme" content="light dark">
-<meta name="supported-color-schemes" content="light dark"><title>Apache Shiro - 基本使用和概念&nbsp;&ndash;&nbsp;三斜求积术</title><link rel="stylesheet" href="/css/core.min.802aa67397694ca5d7cacc2140e5e8fcb52d3add493941c161a3c4d2d5da57e3ca230e49da9cc38312e9698b71ef4c3a.css" integrity="sha384-gCqmc5dpTKXXyswhQOXo/LUtOt1JOUHBYaPE0tXaV&#43;PKIw5J2pzDgxLpaYtx70w6"><meta name="twitter:card" content="summary" />
-<meta name="twitter:title" content="Apache Shiro - 基本使用和概念" /><body><section id="header">
-    <div class="header wrap"><span class="header left-side"><a class="site home" href="/"><span class="site name">三斜求积术</span></a></span>
-        <span class="header right-side"><div class="nav wrap"><nav class="nav"><a class="nav item" href="/categories/">Categories</a><a class="nav item" href="/tags/">Tags</a><a class="nav item" href="/about">About</a><a class="nav item" href="https://gohugo%2eio/"target="_blank">Hugo</a></nav></div></span></div><div class="site slogan"><span class="title">Slow is Fast. Less is More. Code for Fun.</span></div></section><section id="content"><div class="article-container"><section class="article header">
-    <h1 class="article title">Apache Shiro - 基本使用和概念</h1><p class="article date">Wednesday, July 8, 2020</p></section><article class="article markdown-body"><p><img  src="/img/apache-shiro.png"
-        alt="apache shiro"/></p>
+<!doctype html>
+<html lang="zh-CN">
+<head>
+
+    <meta charset="utf-8">
+    <meta http-equiv="X-UA-Compatible" content="IE=edge">
+    <meta name="viewport" content="width=device-width, initial-scale=1">
+
+    <title>Apache Shiro - 基本使用和概念 | 三斜求积术</title>
+    <meta property="og:title" content="Apache Shiro - 基本使用和概念 - 三斜求积术">
+    <meta property="og:type" content="article">
+        
+    <meta property="article:published_time" content='2020-07-08T15:49:38&#43;08:00'>
+        
+        
+    <meta property="article:modified_time" content='2020-07-08T15:49:38&#43;08:00'>
+        
+    <meta name="Keywords" content="Java、shell、web">
+    <meta name="description" content="Apache Shiro - 基本使用和概念">
+        
+    <meta name="author" content="石不转">
+    <meta property="og:url" content="https://ilixiang.github.io/post/shiro-1/">
+    <link rel="shortcut icon" href="/favicon.ico" type="image/x-icon">
+
+    <link rel="stylesheet" href='/css/normalize.css'>
+    <link rel="stylesheet" href='/css/style.css'>
+    <script type="text/javascript" src="//cdnjs.cloudflare.com/ajax/libs/jquery/3.4.1/jquery.min.js"></script>
+
+    
+    <script async src="//pagead2.googlesyndication.com/pagead/js/adsbygoogle.js"></script>
+    <script>
+    (adsbygoogle = window.adsbygoogle || []).push({
+        google_ad_client: "ca-pub-4031353640611810",
+        enable_page_level_ads: true
+    });
+    </script>
+    
+
+
+    
+    
+        <link rel="stylesheet" href='/css/douban.css'>
+    
+        <link rel="stylesheet" href='/css/other.css'>
+    
+</head>
+
+
+<body>
+    <header id="header" class="clearfix">
+    <div class="container">
+        <div class="col-group">
+            <div class="site-name ">
+                
+                    <a id="logo" href="https://ilixiang.github.io/">
+                        三斜求积术
+                    </a>
+                
+                <p class="description">Code for fun. Code for better</p>
+            </div>
+            <div>
+                <nav id="nav-menu" class="clearfix">
+                    <a class="current" href="https://ilixiang.github.io/">首页</a>
+                    
+                    <a  href="https://ilixiang.github.io/archives/" title="归档">归档</a>
+                    
+                    <a  href="https://ilixiang.github.io/about/" title="关于">关于</a>
+                    
+                </nav>
+            </div>
+        </div>
+    </div>
+</header>
+
+    <div id="body">
+        <div class="container">
+            <div class="col-group">
+
+                <div class="col-8" id="main">
+                    
+<div class="res-cons">
+    <style type="text/css">
+    .post-toc {
+        position: fixed;
+        width: 200px;
+        margin-left: -210px;
+        padding: 5px 10px;
+        font-family: Athelas, STHeiti, Microsoft Yahei, serif;
+        font-size: 12px;
+        border: 1px solid rgba(0, 0, 0, .07);
+        border-radius: 5px;
+        background-color: rgba(255, 255, 255, 0.98);
+        background-clip: padding-box;
+        -webkit-box-shadow: 1px 1px 2px rgba(0, 0, 0, .125);
+        box-shadow: 1px 1px 2px rgba(0, 0, 0, .125);
+        word-wrap: break-word;
+        white-space: nowrap;
+        -webkit-box-sizing: border-box;
+        box-sizing: border-box;
+        z-index: 999;
+        cursor: pointer;
+        max-height: 70%;
+        overflow-y: auto;
+        overflow-x: hidden;
+    }
+
+    .post-toc .post-toc-title {
+        width: 100%;
+        margin: 0 auto;
+        font-size: 20px;
+        font-weight: 400;
+        text-transform: uppercase;
+        text-align: center;
+    }
+
+    .post-toc .post-toc-content {
+        font-size: 15px;
+    }
+
+    .post-toc .post-toc-content>nav>ul {
+        margin: 10px 0;
+    }
+
+    .post-toc .post-toc-content ul {
+        padding-left: 20px;
+        list-style: square;
+        margin: 0.5em;
+        line-height: 1.8em;
+    }
+
+    .post-toc .post-toc-content ul ul {
+        padding-left: 15px;
+        display: none;
+    }
+
+    @media print,
+    screen and (max-width:1057px) {
+        .post-toc {
+            display: none;
+        }
+    }
+</style>
+<div class="post-toc" style="position: absolute; top: 188px;">
+    <h2 class="post-toc-title">文章目录</h2>
+    <div class="post-toc-content">
+        <nav id="TableOfContents">
+  <ul>
+    <li><a href="#基本使用">基本使用</a></li>
+    <li><a href="#基础概念和组件">基础概念和组件</a></li>
+    <li><a href="#总结">总结</a></li>
+  </ul>
+</nav>
+    </div>
+</div>
+<script type="text/javascript">
+    $(document).ready(function () {
+        var postToc = $(".post-toc");
+        if (postToc.length) {
+            var leftPos = $("#main").offset().left;
+            if(leftPos<220){
+                postToc.css({"width":leftPos-10,"margin-left":(0-leftPos)})
+            }
+
+            var t = postToc.offset().top - 20,
+                a = {
+                    start: {
+                        position: "absolute",
+                        top: t
+                    },
+                    process: {
+                        position: "fixed",
+                        top: 20
+                    },
+                };
+            $(window).scroll(function () {
+                var e = $(window).scrollTop();
+                e < t ? postToc.css(a.start) : postToc.css(a.process)
+            })
+        }
+    })
+</script>
+    <article class="post">
+        <header>
+            <h1 class="post-title">Apache Shiro - 基本使用和概念</h1>
+        </header>
+        <date class="post-meta meta-date">
+            2020年7月8日
+        </date>
+        
+        <div class="post-meta">
+            <span>|</span>
+            
+            <span class="meta-category"><a href='https://ilixiang.github.io/categories/Java'>Java</a></span>
+            
+        </div>
+        
+        
+        <div class="post-meta">
+            <span id="busuanzi_container_page_pv">|<span id="busuanzi_value_page_pv"></span><span>
+                    阅读</span></span>
+        </div>
+        
+        
+        <div class="post-content">
+            <p><img src="/img/apache-shiro.png" alt="apache shiro"></p>
 <p>提到安全，我的第一反应其实是加密传输，所以在第一次遇到<strong>安全框架</strong>这个词的时候，我其实并不了解它所真正扮演的角色。</p>
 <p>安全框架的主要功能包括4点：</p>
 <ul>
@@ -16,47 +212,93 @@
 <li>加密。提供基本的加密方法，比如md5+salt对密码进行加密等</li>
 </ul>
 <p>Shiro是Apache的一个开源安全框架，我暂时没有了解过其他安全框架的使用，因而无法与其他安全框架进行对比。Shiro所提供的特性如下图所示：</p>
-<p><img  src="/img/shiro-features.png"
-        alt="shiro features"/></p>
+<p><img src="/img/shiro-features.png" alt="shiro features"></p>
 <p>接下来就结合代码去了解shiro提供的安全特性是如何使用的。</p>
 <h2 id="基本使用">基本使用</h2>
 <p>首先，来观察一下使用Shiro的代码示例</p>
-<div class="highlight"><pre class="chroma"><code class="language-ini" data-lang="ini"><span class="k">[users]</span>
-<span class="c1"># 用户名 = 密码， 角色</span>
-<span class="na">root</span> <span class="o">=</span> <span class="s">secret, admin</span>
-<span class="na">guest</span> <span class="o">=</span> <span class="s">guest, guest</span>
-<span class="na">presidentskroob</span> <span class="o">=</span> <span class="s">12345, president</span>
-<span class="na">darkhelmet</span> <span class="o">=</span> <span class="s">ludicrousspeed, darklord, schwartz</span>
-<span class="na">lonestarr</span> <span class="o">=</span> <span class="s">vespa, goodguy, schwartz</span>
+<div class="highlight"><div style="background-color:#fff;-moz-tab-size:4;-o-tab-size:4;tab-size:4">
+<table style="border-spacing:0;padding:0;margin:0;border:0;width:auto;overflow:auto;display:block;"><tr><td style="vertical-align:top;padding:0;margin:0;border:0;">
+<pre style="background-color:#fff;-moz-tab-size:4;-o-tab-size:4;tab-size:4"><code><span style="margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f"> 1
+</span><span style="margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f"> 2
+</span><span style="margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f"> 3
+</span><span style="margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f"> 4
+</span><span style="margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f"> 5
+</span><span style="margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f"> 6
+</span><span style="margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f"> 7
+</span><span style="margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f"> 8
+</span><span style="margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f"> 9
+</span><span style="margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f">10
+</span><span style="margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f">11
+</span><span style="margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f">12
+</span><span style="margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f">13
+</span></code></pre></td>
+<td style="vertical-align:top;padding:0;margin:0;border:0;;width:100%">
+<pre style="background-color:#fff;-moz-tab-size:4;-o-tab-size:4;tab-size:4"><code class="language-ini" data-lang="ini"><span style="color:#000;font-weight:bold">[users]</span>
+<span style="color:#998;font-style:italic"># 用户名 = 密码， 角色</span>
+<span style="color:#008080">root</span> <span style="color:#000;font-weight:bold">=</span> <span style="color:#d14">secret, admin</span>
+<span style="color:#008080">guest</span> <span style="color:#000;font-weight:bold">=</span> <span style="color:#d14">guest, guest</span>
+<span style="color:#008080">presidentskroob</span> <span style="color:#000;font-weight:bold">=</span> <span style="color:#d14">12345, president</span>
+<span style="color:#008080">darkhelmet</span> <span style="color:#000;font-weight:bold">=</span> <span style="color:#d14">ludicrousspeed, darklord, schwartz</span>
+<span style="color:#008080">lonestarr</span> <span style="color:#000;font-weight:bold">=</span> <span style="color:#d14">vespa, goodguy, schwartz</span>
 
-<span class="k">[roles]</span>
-<span class="c1"># 角色 = 权限</span>
-<span class="na">admin</span> <span class="o">=</span> <span class="s">*</span>
-<span class="na">schwartz</span> <span class="o">=</span> <span class="s">lightsaber:*</span>
-<span class="na">goodguy</span> <span class="o">=</span> <span class="s">winnebago:drive:eagle5</span>
-</code></pre></div><div class="highlight"><pre class="chroma"><code class="language-java" data-lang="java"><span class="c1">// Tutorial.java
-</span><span class="c1"></span><span class="kd">public</span> <span class="kd">class</span> <span class="nc">Tutorial</span> <span class="o">{</span>
-    <span class="kd">public</span> <span class="kd">static</span> <span class="kt">void</span> <span class="nf">main</span><span class="o">(</span><span class="n">String</span><span class="o">[]</span> <span class="n">args</span><span class="o">)</span> <span class="o">{</span>
-        <span class="n">Realm</span> <span class="n">realm</span> <span class="o">=</span> <span class="k">new</span> <span class="n">IniRealm</span><span class="o">(</span><span class="s">&#34;classpath:shiro.ini&#34;</span><span class="o">);</span>
-        <span class="n">SecurityManager</span> <span class="n">securityManager</span> <span class="o">=</span> <span class="k">new</span> <span class="n">DefaultSecurityManager</span><span class="o">(</span><span class="n">realm</span><span class="o">);</span>
-        <span class="c1">// 使用SecurityUtils设置SecurityManager
-</span><span class="c1"></span>        <span class="n">SecurityUtils</span><span class="o">.</span><span class="na">setSecurityManager</span><span class="o">(</span><span class="n">securityManager</span><span class="o">);</span>
+<span style="color:#000;font-weight:bold">[roles]</span>
+<span style="color:#998;font-style:italic"># 角色 = 权限</span>
+<span style="color:#008080">admin</span> <span style="color:#000;font-weight:bold">=</span> <span style="color:#d14">*</span>
+<span style="color:#008080">schwartz</span> <span style="color:#000;font-weight:bold">=</span> <span style="color:#d14">lightsaber:*</span>
+<span style="color:#008080">goodguy</span> <span style="color:#000;font-weight:bold">=</span> <span style="color:#d14">winnebago:drive:eagle5</span>
+</code></pre></td></tr></table>
+</div>
+</div><div class="highlight"><div style="background-color:#fff;-moz-tab-size:4;-o-tab-size:4;tab-size:4">
+<table style="border-spacing:0;padding:0;margin:0;border:0;width:auto;overflow:auto;display:block;"><tr><td style="vertical-align:top;padding:0;margin:0;border:0;">
+<pre style="background-color:#fff;-moz-tab-size:4;-o-tab-size:4;tab-size:4"><code><span style="margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f"> 1
+</span><span style="margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f"> 2
+</span><span style="margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f"> 3
+</span><span style="margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f"> 4
+</span><span style="margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f"> 5
+</span><span style="margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f"> 6
+</span><span style="margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f"> 7
+</span><span style="margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f"> 8
+</span><span style="margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f"> 9
+</span><span style="margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f">10
+</span><span style="margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f">11
+</span><span style="margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f">12
+</span><span style="margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f">13
+</span><span style="margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f">14
+</span><span style="margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f">15
+</span><span style="margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f">16
+</span><span style="margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f">17
+</span><span style="margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f">18
+</span><span style="margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f">19
+</span><span style="margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f">20
+</span><span style="margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f">21
+</span><span style="margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f">22
+</span></code></pre></td>
+<td style="vertical-align:top;padding:0;margin:0;border:0;;width:100%">
+<pre style="background-color:#fff;-moz-tab-size:4;-o-tab-size:4;tab-size:4"><code class="language-java" data-lang="java"><span style="color:#998;font-style:italic">// Tutorial.java
+</span><span style="color:#998;font-style:italic"></span><span style="color:#000;font-weight:bold">public</span> <span style="color:#000;font-weight:bold">class</span> <span style="color:#458;font-weight:bold">Tutorial</span> <span style="color:#000;font-weight:bold">{</span>
+    <span style="color:#000;font-weight:bold">public</span> <span style="color:#000;font-weight:bold">static</span> <span style="color:#458;font-weight:bold">void</span> <span style="color:#900;font-weight:bold">main</span><span style="color:#000;font-weight:bold">(</span>String<span style="color:#000;font-weight:bold">[]</span> args<span style="color:#000;font-weight:bold">)</span> <span style="color:#000;font-weight:bold">{</span>
+        Realm realm <span style="color:#000;font-weight:bold">=</span> <span style="color:#000;font-weight:bold">new</span> IniRealm<span style="color:#000;font-weight:bold">(</span><span style="color:#d14">&#34;classpath:shiro.ini&#34;</span><span style="color:#000;font-weight:bold">);</span>
+        SecurityManager securityManager <span style="color:#000;font-weight:bold">=</span> <span style="color:#000;font-weight:bold">new</span> DefaultSecurityManager<span style="color:#000;font-weight:bold">(</span>realm<span style="color:#000;font-weight:bold">);</span>
+        <span style="color:#998;font-style:italic">// 使用SecurityUtils设置SecurityManager
+</span><span style="color:#998;font-style:italic"></span>        SecurityUtils<span style="color:#000;font-weight:bold">.</span><span style="color:#008080">setSecurityManager</span><span style="color:#000;font-weight:bold">(</span>securityManager<span style="color:#000;font-weight:bold">);</span>
 
-        <span class="c1">// 获取当前主体
-</span><span class="c1"></span>        <span class="n">Subject</span> <span class="n">subject</span> <span class="o">=</span> <span class="n">SecurityUtils</span><span class="o">.</span><span class="na">getSubject</span><span class="o">();</span>
-        <span class="n">Session</span> <span class="n">session</span> <span class="o">=</span> <span class="n">subject</span><span class="o">.</span><span class="na">getSession</span><span class="o">();</span>
-        <span class="n">log</span><span class="o">.</span><span class="na">info</span><span class="o">(</span><span class="s">&#34;Before login, current user is {}&#34;</span><span class="o">,</span> <span class="n">subject</span><span class="o">.</span><span class="na">getPrincipal</span><span class="o">());</span>
-        <span class="n">session</span><span class="o">.</span><span class="na">setAttribute</span><span class="o">(</span><span class="s">&#34;key&#34;</span><span class="o">,</span> <span class="s">&#34;value&#34;</span><span class="o">);</span>
-        <span class="n">subject</span><span class="o">.</span><span class="na">login</span><span class="o">(</span><span class="k">new</span> <span class="n">UsernamePasswordToken</span><span class="o">(</span><span class="s">&#34;root&#34;</span><span class="o">,</span> <span class="s">&#34;secret&#34;</span><span class="o">));</span>
-        <span class="n">log</span><span class="o">.</span><span class="na">info</span><span class="o">(</span><span class="s">&#34;After login, current user is {}&#34;</span><span class="o">,</span> <span class="n">subject</span><span class="o">.</span><span class="na">getPrincipal</span><span class="o">());</span>
-        <span class="n">log</span><span class="o">.</span><span class="na">info</span><span class="o">(</span><span class="n">String</span><span class="o">.</span><span class="na">valueOf</span><span class="o">(</span><span class="n">subject</span><span class="o">.</span><span class="na">isAuthenticated</span><span class="o">()));</span>
-    <span class="o">}</span>
-<span class="o">}</span>
-<span class="c1">// ----- 输出 -----
-</span><span class="c1"></span><span class="o">[</span><span class="n">main</span><span class="o">]</span> <span class="n">INFO</span> <span class="n">Tutorial</span> <span class="o">-</span> <span class="n">Before</span> <span class="n">login</span><span class="o">,</span> <span class="n">current</span> <span class="n">user</span> <span class="n">is</span> <span class="kc">null</span>
-<span class="o">[</span><span class="n">main</span><span class="o">]</span> <span class="n">INFO</span> <span class="n">Tutorial</span> <span class="o">-</span> <span class="n">After</span> <span class="n">login</span><span class="o">,</span> <span class="n">current</span> <span class="n">user</span> <span class="n">is</span> <span class="n">root</span>
-<span class="o">[</span><span class="n">main</span><span class="o">]</span> <span class="n">INFO</span> <span class="n">Tutorial</span> <span class="o">-</span> <span class="kc">true</span>
-</code></pre></div><p>上述两个文件就构成了shiro的最基本使用。</p>
+        <span style="color:#998;font-style:italic">// 获取当前主体
+</span><span style="color:#998;font-style:italic"></span>        Subject subject <span style="color:#000;font-weight:bold">=</span> SecurityUtils<span style="color:#000;font-weight:bold">.</span><span style="color:#008080">getSubject</span><span style="color:#000;font-weight:bold">();</span>
+        Session session <span style="color:#000;font-weight:bold">=</span> subject<span style="color:#000;font-weight:bold">.</span><span style="color:#008080">getSession</span><span style="color:#000;font-weight:bold">();</span>
+        log<span style="color:#000;font-weight:bold">.</span><span style="color:#008080">info</span><span style="color:#000;font-weight:bold">(</span><span style="color:#d14">&#34;Before login, current user is {}&#34;</span><span style="color:#000;font-weight:bold">,</span> subject<span style="color:#000;font-weight:bold">.</span><span style="color:#008080">getPrincipal</span><span style="color:#000;font-weight:bold">());</span>
+        session<span style="color:#000;font-weight:bold">.</span><span style="color:#008080">setAttribute</span><span style="color:#000;font-weight:bold">(</span><span style="color:#d14">&#34;key&#34;</span><span style="color:#000;font-weight:bold">,</span> <span style="color:#d14">&#34;value&#34;</span><span style="color:#000;font-weight:bold">);</span>
+        subject<span style="color:#000;font-weight:bold">.</span><span style="color:#008080">login</span><span style="color:#000;font-weight:bold">(</span><span style="color:#000;font-weight:bold">new</span> UsernamePasswordToken<span style="color:#000;font-weight:bold">(</span><span style="color:#d14">&#34;root&#34;</span><span style="color:#000;font-weight:bold">,</span> <span style="color:#d14">&#34;secret&#34;</span><span style="color:#000;font-weight:bold">));</span>
+        log<span style="color:#000;font-weight:bold">.</span><span style="color:#008080">info</span><span style="color:#000;font-weight:bold">(</span><span style="color:#d14">&#34;After login, current user is {}&#34;</span><span style="color:#000;font-weight:bold">,</span> subject<span style="color:#000;font-weight:bold">.</span><span style="color:#008080">getPrincipal</span><span style="color:#000;font-weight:bold">());</span>
+        log<span style="color:#000;font-weight:bold">.</span><span style="color:#008080">info</span><span style="color:#000;font-weight:bold">(</span>String<span style="color:#000;font-weight:bold">.</span><span style="color:#008080">valueOf</span><span style="color:#000;font-weight:bold">(</span>subject<span style="color:#000;font-weight:bold">.</span><span style="color:#008080">isAuthenticated</span><span style="color:#000;font-weight:bold">()));</span>
+    <span style="color:#000;font-weight:bold">}</span>
+<span style="color:#000;font-weight:bold">}</span>
+<span style="color:#998;font-style:italic">// ----- 输出 -----
+</span><span style="color:#998;font-style:italic"></span><span style="color:#000;font-weight:bold">[</span>main<span style="color:#000;font-weight:bold">]</span> INFO Tutorial <span style="color:#000;font-weight:bold">-</span> Before login<span style="color:#000;font-weight:bold">,</span> current user is <span style="color:#000;font-weight:bold">null</span>
+<span style="color:#000;font-weight:bold">[</span>main<span style="color:#000;font-weight:bold">]</span> INFO Tutorial <span style="color:#000;font-weight:bold">-</span> After login<span style="color:#000;font-weight:bold">,</span> current user is root
+<span style="color:#000;font-weight:bold">[</span>main<span style="color:#000;font-weight:bold">]</span> INFO Tutorial <span style="color:#000;font-weight:bold">-</span> <span style="color:#000;font-weight:bold">true</span>
+</code></pre></td></tr></table>
+</div>
+</div><p>上述两个文件就构成了shiro的最基本使用。</p>
 <h2 id="基础概念和组件">基础概念和组件</h2>
 <p><strong>shiro.ini</strong>是shiro的配置文件，几乎所有的配置都能够在里面进行，灵活性极高。但如果集成springboot，相对而言就比较少用，因为springboot中一般通过配置Bean来配置shiro。在示例当中，我们配置了<code>[users]</code>和<code>[roles]</code>两节内容，分别用于表示<strong>用户</strong>和<strong>角色</strong>。这就牵扯到了shiro当中用于认证和授权的几个概念：</p>
 <ol>
@@ -77,8 +319,15 @@
 </li>
 <li>
 <p><code>SecurityManager</code>. 真正进行<strong>认证</strong>、<strong>授权</strong>、<strong>会话管理</strong>的类。上连<code>Subject</code>，下通<code>Realm</code>，它的接口定义如下：</p>
-<div class="highlight"><pre class="chroma"><code class="language-java" data-lang="java"><span class="kd">public</span> <span class="kd">interface</span> <span class="nc">SecurityManager</span> <span class="kd">extends</span> <span class="n">Authenticator</span><span class="o">,</span> <span class="n">Authorizer</span><span class="o">,</span> <span class="n">SessionManager</span>
-</code></pre></div><p>是不是十分直观，<code>Authenticator</code>、<code>Authorizer</code>和<code>SessionManager</code>分别代表了认证器、授权器、会话管理器</p>
+<div class="highlight"><div style="background-color:#fff;-moz-tab-size:4;-o-tab-size:4;tab-size:4">
+<table style="border-spacing:0;padding:0;margin:0;border:0;width:auto;overflow:auto;display:block;"><tr><td style="vertical-align:top;padding:0;margin:0;border:0;">
+<pre style="background-color:#fff;-moz-tab-size:4;-o-tab-size:4;tab-size:4"><code><span style="margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f">1
+</span></code></pre></td>
+<td style="vertical-align:top;padding:0;margin:0;border:0;;width:100%">
+<pre style="background-color:#fff;-moz-tab-size:4;-o-tab-size:4;tab-size:4"><code class="language-java" data-lang="java"><span style="color:#000;font-weight:bold">public</span> <span style="color:#000;font-weight:bold">interface</span> <span style="color:#458;font-weight:bold">SecurityManager</span> <span style="color:#000;font-weight:bold">extends</span> Authenticator<span style="color:#000;font-weight:bold">,</span> Authorizer<span style="color:#000;font-weight:bold">,</span> SessionManager
+</code></pre></td></tr></table>
+</div>
+</div><p>是不是十分直观，<code>Authenticator</code>、<code>Authorizer</code>和<code>SessionManager</code>分别代表了认证器、授权器、会话管理器</p>
 </li>
 <li>
 <p><code>Session</code>. <strong>会话</strong>，这个在http相关的面试题当中经常出现。<code>Session</code>是一个与当前用户相关的<code>Map</code>，能够通过它暂存/获取用户的数据，在web中它的最大优点就是能够保存用户的状态，并且用它能够保存的数据能够跨越request</p>
@@ -87,17 +336,245 @@
 <p><code>SecurityUtils</code>. 这是一个<code>Static</code>工具类，它为我们开发获取相应的shiro对象提供了十分友好的接口，可以通过它获取<code>Subject</code>、获取<code>Session</code>或绑定<code>SecurityManager</code>等操作。</p>
 </li>
 </ol>
-<p><img  src="/img/shiro-basic-arch.png"
-        alt="shiro-basic-arch"/></p>
+<p><img src="/img/shiro-basic-arch.png" alt="shiro-basic-arch"></p>
 <p>这张图就表现了整体的调用过程，以<code>Subject</code>为入口，通过<code>SecurityManager</code>协调和控制，最终通过<code>Realm</code>逻辑获得认证和授权数据。</p>
 <h2 id="总结">总结</h2>
 <p>shiro的使用简单且直观。而从设计上来看，在上述代码中，如果你点进去看看源码，你就会发现这些全部都是接口。通过接口定义组件，然后通过这些组件的不同实现进行组合，从而获得丰富的功能，我认为这就是优秀的源码设计。</p>
-</article><section class="article labels"><a class="category" href=/categories/Java/>Java</a><a class="tag" href=/tags/Java/>Java</a><a class="tag" href=/tags/Security/>Security</a><a class="tag" href=/tags/Shiro/>Shiro</a></section></div>
-<div class="article bottom"><section class="article navigation"><p><a class="link" href="/post/java-enum/"><span class="iconfont icon-article"></span>Java - 枚举</a></p><p><a class="link" href="/post/java-reflection/"><span class="iconfont icon-article"></span>Java - 反射</a></p></section></div></section><section id="footer"><div class="footer-wrap">
-    <p class="copyright">©2019 Notepadium.</p>
-    <p class="powerby"><span>Powered by </span><a href="https://gohugo.io" 
-        target="_blank">Hugo</a><span> and the </span><a href="https://themes.gohugo.io/hugo-notepadium/" 
-        target="_blank">Notepadium</a></p>
-</div></section></body>
+
+        </div>
+
+        
+
+
+        
+
+<div class="post-archive">
+    <h2>See Also</h2>
+    <ul class="listing">
+        
+        <li><a href="/post/java-reflection/">Java - 反射</a></li>
+        
+        <li><a href="/post/guava-talk-4/">Guava杂谈 - ImmutableCollections</a></li>
+        
+        <li><a href="/post/guava-talk-3/">Guava杂谈 - LoadingCache</a></li>
+        
+        <li><a href="/post/guava-talk-2/">Guava杂谈 - EventBus</a></li>
+        
+        <li><a href="/post/guava-talk-1/">Guava杂谈 - ComparisonChain</a></li>
+        
+    </ul>
+</div>
+
+
+        <div class="post-meta meta-tags">
+            
+            <ul class="clearfix">
+                
+                <li><a href='https://ilixiang.github.io/tags/Java'>Java</a></li>
+                
+                <li><a href='https://ilixiang.github.io/tags/Security'>Security</a></li>
+                
+                <li><a href='https://ilixiang.github.io/tags/Shiro'>Shiro</a></li>
+                
+            </ul>
+            
+        </div>
+    </article>
+    
+    <div id="disqus_thread"></div>
+<script type="application/javascript">
+    var disqus_config = function () {
+    
+    
+    
+    };
+    (function() {
+        if (["localhost", "127.0.0.1"].indexOf(window.location.hostname) != -1) {
+            document.getElementById('disqus_thread').innerHTML = 'Disqus comments not available by default when the website is previewed locally.';
+            return;
+        }
+        var d = document, s = d.createElement('script'); s.async = true;
+        s.src = '//' + "yourdiscussshortname" + '.disqus.com/embed.js';
+        s.setAttribute('data-timestamp', +new Date());
+        (d.head || d.body).appendChild(s);
+    })();
+</script>
+<noscript>Please enable JavaScript to view the <a href="https://disqus.com/?ref_noscript">comments powered by Disqus.</a></noscript>
+<a href="https://disqus.com" class="dsq-brlink">comments powered by <span class="logo-disqus">Disqus</span></a>
+
+    
+    
+    <div class="post bg-white">
+      <script src="https://utteranc.es/client.js"
+            repo= "your github repo"
+            issue-term="pathname"
+            theme="github-light"
+            crossorigin="anonymous"
+            async>
+      </script>
+    </div>
+    
+</div>
+
+                </div>
+
+                <div id="secondary">
+    <section class="widget">
+        <form id="search" action='https://ilixiang.github.io/search/' method="get" accept-charset="utf-8" target="_blank" _lpchecked="1">
+      
+      <input type="text" name="q" maxlength="20" placeholder="Search">
+      <input type="hidden" name="sitesearch" value="https://ilixiang.github.io/">
+      <button type="submit" class="submit icon-search"></button>
+</form>
+    </section>
+    
+    <section class="widget">
+        <h3 class="widget-title">最近文章</h3>
+<ul class="widget-list">
+    
+    <li>
+        <a href="https://ilixiang.github.io/post/java-enum/" title="Java - 枚举">Java - 枚举</a>
+    </li>
+    
+    <li>
+        <a href="https://ilixiang.github.io/post/shiro-1/" title="Apache Shiro - 基本使用和概念">Apache Shiro - 基本使用和概念</a>
+    </li>
+    
+    <li>
+        <a href="https://ilixiang.github.io/post/java-reflection/" title="Java - 反射">Java - 反射</a>
+    </li>
+    
+    <li>
+        <a href="https://ilixiang.github.io/post/regex-note/" title="Regex - 笔记">Regex - 笔记</a>
+    </li>
+    
+    <li>
+        <a href="https://ilixiang.github.io/post/guava-talk-4/" title="Guava杂谈 - ImmutableCollections">Guava杂谈 - ImmutableCollections</a>
+    </li>
+    
+    <li>
+        <a href="https://ilixiang.github.io/post/guava-talk-3/" title="Guava杂谈 - LoadingCache">Guava杂谈 - LoadingCache</a>
+    </li>
+    
+    <li>
+        <a href="https://ilixiang.github.io/post/guava-talk-2/" title="Guava杂谈 - EventBus">Guava杂谈 - EventBus</a>
+    </li>
+    
+    <li>
+        <a href="https://ilixiang.github.io/post/guava-talk-1/" title="Guava杂谈 - ComparisonChain">Guava杂谈 - ComparisonChain</a>
+    </li>
+    
+    <li>
+        <a href="https://ilixiang.github.io/post/bash-variable/" title="bash - 变量及变量操作">bash - 变量及变量操作</a>
+    </li>
+    
+    <li>
+        <a href="https://ilixiang.github.io/post/sed/" title="sed学习笔记">sed学习笔记</a>
+    </li>
+    
+</ul>
+    </section>
+
+    
+
+    <section class="widget">
+        <h3 class="widget-title">分类</h3>
+<ul class="widget-list">
+    
+    <li><a href="https://ilixiang.github.io/categories/Java/">Java (7)</a></li>
+    
+    <li><a href="https://ilixiang.github.io/categories/shell/">shell (4)</a></li>
+    
+</ul>
+    </section>
+
+    <section class="widget">
+        <h3 class="widget-title">标签</h3>
+<div class="tagcloud">
+    
+    <a href="https://ilixiang.github.io/tags/Collection/">Collection</a>
+    
+    <a href="https://ilixiang.github.io/tags/ComparisonChain/">ComparisonChain</a>
+    
+    <a href="https://ilixiang.github.io/tags/EventBus/">EventBus</a>
+    
+    <a href="https://ilixiang.github.io/tags/Guava/">Guava</a>
+    
+    <a href="https://ilixiang.github.io/tags/ImmutableCollection/">ImmutableCollection</a>
+    
+    <a href="https://ilixiang.github.io/tags/Java/">Java</a>
+    
+    <a href="https://ilixiang.github.io/tags/LoadingCache/">LoadingCache</a>
+    
+    <a href="https://ilixiang.github.io/tags/Security/">Security</a>
+    
+    <a href="https://ilixiang.github.io/tags/Shiro/">Shiro</a>
+    
+    <a href="https://ilixiang.github.io/tags/awk/">awk</a>
+    
+    <a href="https://ilixiang.github.io/tags/bash/">bash</a>
+    
+    <a href="https://ilixiang.github.io/tags/enum/">enum</a>
+    
+    <a href="https://ilixiang.github.io/tags/note/">note</a>
+    
+    <a href="https://ilixiang.github.io/tags/reflection/">reflection</a>
+    
+    <a href="https://ilixiang.github.io/tags/regex/">regex</a>
+    
+    <a href="https://ilixiang.github.io/tags/sed/">sed</a>
+    
+    <a href="https://ilixiang.github.io/tags/shell/">shell</a>
+    
+</div>
+    </section>
+
+    
+
+    <section class="widget">
+        <h3 class="widget-title">其它</h3>
+        <ul class="widget-list">
+            <li><a href="https://ilixiang.github.io/index.xml">文章 RSS</a></li>
+        </ul>
+    </section>
+</div>
+            </div>
+        </div>
+    </div>
+    <footer id="footer">
+    <div class="container">
+        &copy; 2020 <a href="https://ilixiang.github.io/">三斜求积术 By 石不转</a>.
+        Powered by <a rel="nofollow noreferer noopener" href="https://gohugo.io" target="_blank">Hugo</a>.
+        <a href="https://www.flysnow.org/" target="_blank">Theme</a> based on <a href="https://github.com/flysnow-org/maupassant-hugo" target="_blank">maupassant</a>.
+        
+    </div>
+</footer>
+
+
+    
+    <script type="text/javascript">
+        window.MathJax = {
+            tex2jax: {
+                inlineMath: [['$', '$']],
+                processEscapes: true
+                }
+            };
+    </script>
+    <script src='https://cdnjs.cloudflare.com/ajax/libs/mathjax/2.7.5/MathJax.js?config=TeX-MML-AM_CHTML' async></script>
+
+
+<a id="rocket" href="#top"></a>
+<script type="text/javascript" src='/js/totop.js?v=0.0.0' async=""></script>
+
+
+
+    <script type="text/javascript" src="//busuanzi.ibruce.info/busuanzi/2.3/busuanzi.pure.mini.js" async></script>
+
+
+
+
+    <script src='/js/douban.js'></script>
+
+</body>
 
 </html>

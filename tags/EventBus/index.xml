@@ -1,25 +1,23 @@
-<?xml version="1.0" encoding="utf-8" standalone="yes" ?>
-<rss version="2.0" xmlns:atom="http://www.w3.org/2005/Atom" xmlns:content="http://purl.org/rss/1.0/modules/content/">
+<?xml version="1.0" encoding="utf-8" standalone="yes"?>
+<rss version="2.0" xmlns:atom="http://www.w3.org/2005/Atom">
   <channel>
     <title>EventBus on 三斜求积术</title>
-    <link>/tags/EventBus/</link>
+    <link>https://ilixiang.github.io/tags/EventBus/</link>
     <description>Recent content in EventBus on 三斜求积术</description>
     <generator>Hugo -- gohugo.io</generator>
-    <language>zh-cn</language>
-    <copyright>©2019 Notepadium.</copyright>
+    <language>zh-CN</language>
     <lastBuildDate>Tue, 23 Jun 2020 13:28:12 +0800</lastBuildDate>
     
-        <atom:link href="/tags/EventBus/index.xml" rel="self" type="application/rss+xml" />
+	<atom:link href="https://ilixiang.github.io/tags/EventBus/index.xml" rel="self" type="application/rss+xml" />
     
     
     <item>
       <title>Guava杂谈 - EventBus</title>
-      <link>/post/guava-talk-2/</link>
+      <link>https://ilixiang.github.io/post/guava-talk-2/</link>
       <pubDate>Tue, 23 Jun 2020 13:28:12 +0800</pubDate>
       
-      <guid>/post/guava-talk-2/</guid>
+      <guid>https://ilixiang.github.io/post/guava-talk-2/</guid>
       <description>EventBus俗称“事件总线”。它的作用方式就如上图所示，能够将数据推送到所有需要它的人订阅者手上。它的行为总共分为4步： Subscriber向EventBus订阅某种Event Publisher向EventBus发送某种Event EventBus将Event送到订阅了它的Su</description>
-      
     </item>
     
   </channel>

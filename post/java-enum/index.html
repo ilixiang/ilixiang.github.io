@@ -1,83 +1,361 @@
-<!DOCTYPE html>
-<html lang="en"><meta charset="utf-8"><meta name="generator" content="Hugo 0.68.3" /><meta name="viewport" content="width=device-width,initial-scale=1,viewport-fit=cover">
-<meta name="color-scheme" content="light dark">
-<meta name="supported-color-schemes" content="light dark"><title>Java - 枚举&nbsp;&ndash;&nbsp;三斜求积术</title><link rel="stylesheet" href="/css/core.min.802aa67397694ca5d7cacc2140e5e8fcb52d3add493941c161a3c4d2d5da57e3ca230e49da9cc38312e9698b71ef4c3a.css" integrity="sha384-gCqmc5dpTKXXyswhQOXo/LUtOt1JOUHBYaPE0tXaV&#43;PKIw5J2pzDgxLpaYtx70w6"><meta name="twitter:card" content="summary" />
-<meta name="twitter:title" content="Java - 枚举" /><body><section id="header">
-    <div class="header wrap"><span class="header left-side"><a class="site home" href="/"><span class="site name">三斜求积术</span></a></span>
-        <span class="header right-side"><div class="nav wrap"><nav class="nav"><a class="nav item" href="/categories/">Categories</a><a class="nav item" href="/tags/">Tags</a><a class="nav item" href="/about">About</a><a class="nav item" href="https://gohugo%2eio/"target="_blank">Hugo</a></nav></div></span></div><div class="site slogan"><span class="title">Slow is Fast. Less is More. Code for Fun.</span></div></section><section id="content"><div class="article-container"><section class="article header">
-    <h1 class="article title">Java - 枚举</h1><p class="article date">Tuesday, July 14, 2020</p></section><article class="article markdown-body"><p><img  src="/img/java-enum.png"
-        alt="java-enum"/></p>
+<!doctype html>
+<html lang="zh-CN">
+<head>
+
+    <meta charset="utf-8">
+    <meta http-equiv="X-UA-Compatible" content="IE=edge">
+    <meta name="viewport" content="width=device-width, initial-scale=1">
+
+    <title>Java - 枚举 | 三斜求积术</title>
+    <meta property="og:title" content="Java - 枚举 - 三斜求积术">
+    <meta property="og:type" content="article">
+        
+    <meta property="article:published_time" content='2020-07-14T16:45:06&#43;08:00'>
+        
+        
+    <meta property="article:modified_time" content='2020-07-14T16:45:06&#43;08:00'>
+        
+    <meta name="Keywords" content="Java、shell、web">
+    <meta name="description" content="Java - 枚举">
+        
+    <meta name="author" content="石不转">
+    <meta property="og:url" content="https://ilixiang.github.io/post/java-enum/">
+    <link rel="shortcut icon" href="/favicon.ico" type="image/x-icon">
+
+    <link rel="stylesheet" href='/css/normalize.css'>
+    <link rel="stylesheet" href='/css/style.css'>
+    <script type="text/javascript" src="//cdnjs.cloudflare.com/ajax/libs/jquery/3.4.1/jquery.min.js"></script>
+
+    
+    <script async src="//pagead2.googlesyndication.com/pagead/js/adsbygoogle.js"></script>
+    <script>
+    (adsbygoogle = window.adsbygoogle || []).push({
+        google_ad_client: "ca-pub-4031353640611810",
+        enable_page_level_ads: true
+    });
+    </script>
+    
+
+
+    
+    
+        <link rel="stylesheet" href='/css/douban.css'>
+    
+        <link rel="stylesheet" href='/css/other.css'>
+    
+</head>
+
+
+<body>
+    <header id="header" class="clearfix">
+    <div class="container">
+        <div class="col-group">
+            <div class="site-name ">
+                
+                    <a id="logo" href="https://ilixiang.github.io/">
+                        三斜求积术
+                    </a>
+                
+                <p class="description">Code for fun. Code for better</p>
+            </div>
+            <div>
+                <nav id="nav-menu" class="clearfix">
+                    <a class="current" href="https://ilixiang.github.io/">首页</a>
+                    
+                    <a  href="https://ilixiang.github.io/archives/" title="归档">归档</a>
+                    
+                    <a  href="https://ilixiang.github.io/about/" title="关于">关于</a>
+                    
+                </nav>
+            </div>
+        </div>
+    </div>
+</header>
+
+    <div id="body">
+        <div class="container">
+            <div class="col-group">
+
+                <div class="col-8" id="main">
+                    
+<div class="res-cons">
+    <style type="text/css">
+    .post-toc {
+        position: fixed;
+        width: 200px;
+        margin-left: -210px;
+        padding: 5px 10px;
+        font-family: Athelas, STHeiti, Microsoft Yahei, serif;
+        font-size: 12px;
+        border: 1px solid rgba(0, 0, 0, .07);
+        border-radius: 5px;
+        background-color: rgba(255, 255, 255, 0.98);
+        background-clip: padding-box;
+        -webkit-box-shadow: 1px 1px 2px rgba(0, 0, 0, .125);
+        box-shadow: 1px 1px 2px rgba(0, 0, 0, .125);
+        word-wrap: break-word;
+        white-space: nowrap;
+        -webkit-box-sizing: border-box;
+        box-sizing: border-box;
+        z-index: 999;
+        cursor: pointer;
+        max-height: 70%;
+        overflow-y: auto;
+        overflow-x: hidden;
+    }
+
+    .post-toc .post-toc-title {
+        width: 100%;
+        margin: 0 auto;
+        font-size: 20px;
+        font-weight: 400;
+        text-transform: uppercase;
+        text-align: center;
+    }
+
+    .post-toc .post-toc-content {
+        font-size: 15px;
+    }
+
+    .post-toc .post-toc-content>nav>ul {
+        margin: 10px 0;
+    }
+
+    .post-toc .post-toc-content ul {
+        padding-left: 20px;
+        list-style: square;
+        margin: 0.5em;
+        line-height: 1.8em;
+    }
+
+    .post-toc .post-toc-content ul ul {
+        padding-left: 15px;
+        display: none;
+    }
+
+    @media print,
+    screen and (max-width:1057px) {
+        .post-toc {
+            display: none;
+        }
+    }
+</style>
+<div class="post-toc" style="position: absolute; top: 188px;">
+    <h2 class="post-toc-title">文章目录</h2>
+    <div class="post-toc-content">
+        <nav id="TableOfContents">
+  <ul>
+    <li><a href="#枚举的本质-">枚举的本质</a></li>
+    <li><a href="#枚举和成员-">枚举和成员</a></li>
+    <li><a href="#枚举和抽象方法-">枚举和抽象方法</a></li>
+    <li><a href="#枚举和接口-">枚举和接口</a></li>
+    <li><a href="#枚举和集合-">枚举和集合</a></li>
+    <li><a href="#总结-">总结</a></li>
+  </ul>
+</nav>
+    </div>
+</div>
+<script type="text/javascript">
+    $(document).ready(function () {
+        var postToc = $(".post-toc");
+        if (postToc.length) {
+            var leftPos = $("#main").offset().left;
+            if(leftPos<220){
+                postToc.css({"width":leftPos-10,"margin-left":(0-leftPos)})
+            }
+
+            var t = postToc.offset().top - 20,
+                a = {
+                    start: {
+                        position: "absolute",
+                        top: t
+                    },
+                    process: {
+                        position: "fixed",
+                        top: 20
+                    },
+                };
+            $(window).scroll(function () {
+                var e = $(window).scrollTop();
+                e < t ? postToc.css(a.start) : postToc.css(a.process)
+            })
+        }
+    })
+</script>
+    <article class="post">
+        <header>
+            <h1 class="post-title">Java - 枚举</h1>
+        </header>
+        <date class="post-meta meta-date">
+            2020年7月14日
+        </date>
+        
+        <div class="post-meta">
+            <span>|</span>
+            
+            <span class="meta-category"><a href='https://ilixiang.github.io/categories/Java'>Java</a></span>
+            
+        </div>
+        
+        
+        <div class="post-meta">
+            <span id="busuanzi_container_page_pv">|<span id="busuanzi_value_page_pv"></span><span>
+                    阅读</span></span>
+        </div>
+        
+        
+        <div class="post-content">
+            <p><img src="/img/java-enum.png" alt="java-enum"></p>
 <p>枚举，是Java中一中比较特殊的类型。我个人而言，它是一种有穷集合，因而它的成员都是它自己的某一个元素。枚举的关键字是<code>enum</code>，并且在各种语言中枚举的行为并不相同。在C中，枚举的元素对应一个整型数字，虽然其变量能够作为左值，但却并不安全，能够被任意的其他枚举元素以及整型赋值。</p>
-<div class="highlight"><pre class="chroma"><code class="language-c" data-lang="c"><span class="cp">#include</span> <span class="cpf">&lt;stdio.h&gt;</span><span class="cp">
-</span><span class="cp"></span>
-<span class="c1">// 季节枚举
-</span><span class="c1"></span><span class="k">typedef</span> <span class="k">enum</span> <span class="p">{</span>
-	<span class="n">SPRING</span><span class="p">,</span>
-	<span class="n">SUMMER</span><span class="p">,</span>
-	<span class="n">AUTUMN</span><span class="p">,</span>
-	<span class="n">WINTER</span>
-<span class="p">}</span> <span class="n">EnumSeason</span><span class="p">;</span>
+<div class="highlight"><div style="background-color:#fff;-moz-tab-size:4;-o-tab-size:4;tab-size:4">
+<table style="border-spacing:0;padding:0;margin:0;border:0;width:auto;overflow:auto;display:block;"><tr><td style="vertical-align:top;padding:0;margin:0;border:0;">
+<pre style="background-color:#fff;-moz-tab-size:4;-o-tab-size:4;tab-size:4"><code><span style="margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f"> 1
+</span><span style="margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f"> 2
+</span><span style="margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f"> 3
+</span><span style="margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f"> 4
+</span><span style="margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f"> 5
+</span><span style="margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f"> 6
+</span><span style="margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f"> 7
+</span><span style="margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f"> 8
+</span><span style="margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f"> 9
+</span><span style="margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f">10
+</span><span style="margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f">11
+</span><span style="margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f">12
+</span><span style="margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f">13
+</span><span style="margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f">14
+</span><span style="margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f">15
+</span><span style="margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f">16
+</span><span style="margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f">17
+</span><span style="margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f">18
+</span><span style="margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f">19
+</span><span style="margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f">20
+</span><span style="margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f">21
+</span><span style="margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f">22
+</span><span style="margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f">23
+</span><span style="margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f">24
+</span><span style="margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f">25
+</span><span style="margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f">26
+</span><span style="margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f">27
+</span><span style="margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f">28
+</span><span style="margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f">29
+</span></code></pre></td>
+<td style="vertical-align:top;padding:0;margin:0;border:0;;width:100%">
+<pre style="background-color:#fff;-moz-tab-size:4;-o-tab-size:4;tab-size:4"><code class="language-c" data-lang="c"><span style="color:#999;font-weight:bold;font-style:italic">#include</span> <span style="color:#999;font-weight:bold;font-style:italic">&lt;stdio.h&gt;</span><span style="color:#999;font-weight:bold;font-style:italic">
+</span><span style="color:#999;font-weight:bold;font-style:italic"></span>
+<span style="color:#998;font-style:italic">// 季节枚举
+</span><span style="color:#998;font-style:italic"></span><span style="color:#000;font-weight:bold">typedef</span> <span style="color:#000;font-weight:bold">enum</span> {
+	SPRING,
+	SUMMER,
+	AUTUMN,
+	WINTER
+} EnumSeason;
 
-<span class="c1">// 颜色枚举
-</span><span class="c1"></span><span class="k">typedef</span> <span class="k">enum</span> <span class="p">{</span>
-	<span class="n">RED</span><span class="p">,</span>
-	<span class="n">BLUE</span>
-<span class="p">}</span> <span class="n">EnumColor</span><span class="p">;</span>
+<span style="color:#998;font-style:italic">// 颜色枚举
+</span><span style="color:#998;font-style:italic"></span><span style="color:#000;font-weight:bold">typedef</span> <span style="color:#000;font-weight:bold">enum</span> {
+	RED,
+	BLUE
+} EnumColor;
 
-<span class="kt">int</span> <span class="nf">main</span><span class="p">()</span> <span class="p">{</span>
-    <span class="n">EnumSeason</span> <span class="n">known_season</span> <span class="o">=</span> <span class="n">SPRING</span><span class="p">;</span>
-    <span class="c1">// 使用100赋值
-</span><span class="c1"></span>	<span class="n">EnumSeason</span> <span class="n">unknown_season</span> <span class="o">=</span> <span class="mi">100</span><span class="p">;</span>
-    <span class="c1">// 使用color_enum的元素赋值
-</span><span class="c1"></span>	<span class="n">EnumSeason</span> <span class="n">color_season</span> <span class="o">=</span> <span class="n">BLUE</span><span class="p">;</span> 
-	<span class="n">printf</span><span class="p">(</span><span class="s">&#34;%d</span><span class="se">\n</span><span class="s">%d</span><span class="se">\n</span><span class="s">%d</span><span class="se">\n</span><span class="s">&#34;</span><span class="p">,</span> <span class="n">known_season</span><span class="p">,</span> <span class="n">unknown_season</span><span class="p">,</span> <span class="n">color_season</span><span class="p">);</span>
-	<span class="k">return</span> <span class="mi">0</span><span class="p">;</span>
-<span class="p">}</span>
-<span class="c1">// ----- 输出 ------
-</span><span class="c1"></span><span class="mi">0</span>
-<span class="mi">100</span>
-<span class="mi">1</span>
-</code></pre></div><p>Java中的枚举类型与C不同，Java为其提供了几个比较方便的特性：</p>
+<span style="color:#458;font-weight:bold">int</span> <span style="color:#900;font-weight:bold">main</span>() {
+    EnumSeason known_season <span style="color:#000;font-weight:bold">=</span> SPRING;
+    <span style="color:#998;font-style:italic">// 使用100赋值
+</span><span style="color:#998;font-style:italic"></span>	EnumSeason unknown_season <span style="color:#000;font-weight:bold">=</span> <span style="color:#099">100</span>;
+    <span style="color:#998;font-style:italic">// 使用color_enum的元素赋值
+</span><span style="color:#998;font-style:italic"></span>	EnumSeason color_season <span style="color:#000;font-weight:bold">=</span> BLUE; 
+	printf(<span style="color:#d14">&#34;%d</span><span style="color:#d14">\n</span><span style="color:#d14">%d</span><span style="color:#d14">\n</span><span style="color:#d14">%d</span><span style="color:#d14">\n</span><span style="color:#d14">&#34;</span>, known_season, unknown_season, color_season);
+	<span style="color:#000;font-weight:bold">return</span> <span style="color:#099">0</span>;
+}
+<span style="color:#998;font-style:italic">// ----- 输出 ------
+</span><span style="color:#998;font-style:italic"></span><span style="color:#099">0</span>
+<span style="color:#099">100</span>
+<span style="color:#099">1</span>
+</code></pre></td></tr></table>
+</div>
+</div><p>Java中的枚举类型与C不同，Java为其提供了几个比较方便的特性：</p>
 <ul>
 <li>编译时检查。能够避免上述的安全性问题，不同的<code>enum</code>之间无法赋值，整型和<code>enum</code>之间无法赋值</li>
 <li>特殊的<code>toString()</code>。<code>enum</code>类型的<code>toString()</code>方法的结果默认为该枚举的元素名称，而并非整型数字</li>
 <li><code>values()</code>获取元素数组。通过调用枚举类型的<code>values()</code>方法能够获取该枚举的全部元素构成的数组，方便迭代操作</li>
 </ul>
-<div class="highlight"><pre class="chroma"><code class="language-java" data-lang="java">    <span class="nd">@Test</span>
-    <span class="kd">public</span> <span class="kt">void</span> <span class="nf">testEnum</span><span class="o">()</span> <span class="o">{</span>
-        <span class="n">ColorEnum</span> <span class="n">color</span> <span class="o">=</span> <span class="n">ColorEnum</span><span class="o">.</span><span class="na">BLUE</span><span class="o">;</span>
-        <span class="c1">// 编译器报错 incompatible types: se.SeasonEnum cannot be converted to se.ColorEnum
-</span><span class="c1"></span>        <span class="c1">// color = SeasonEnum.AUTUMN;
-</span><span class="c1"></span>        <span class="c1">// 获取元素名称
-</span><span class="c1"></span>        <span class="n">System</span><span class="o">.</span><span class="na">out</span><span class="o">.</span><span class="na">println</span><span class="o">(</span><span class="n">color</span><span class="o">);</span>
-        <span class="c1">// 通过values()迭代操作全部元素
-</span><span class="c1"></span>        <span class="k">for</span><span class="o">(</span><span class="n">ColorEnum</span> <span class="n">element</span><span class="o">:</span> <span class="n">ColorEnum</span><span class="o">.</span><span class="na">values</span><span class="o">())</span> <span class="o">{</span>
-            <span class="n">System</span><span class="o">.</span><span class="na">out</span><span class="o">.</span><span class="na">println</span><span class="o">(</span><span class="n">element</span><span class="o">);</span>
-        <span class="o">}</span>
-    <span class="o">}</span>
-<span class="c1">// ----- 输出 -----
-</span><span class="c1"></span><span class="n">BLUE</span>
-<span class="n">RED</span>
-<span class="n">BLUE</span>
-</code></pre></div><h2 id="枚举的本质-">枚举的本质</h2>
+<div class="highlight"><div style="background-color:#fff;-moz-tab-size:4;-o-tab-size:4;tab-size:4">
+<table style="border-spacing:0;padding:0;margin:0;border:0;width:auto;overflow:auto;display:block;"><tr><td style="vertical-align:top;padding:0;margin:0;border:0;">
+<pre style="background-color:#fff;-moz-tab-size:4;-o-tab-size:4;tab-size:4"><code><span style="margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f"> 1
+</span><span style="margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f"> 2
+</span><span style="margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f"> 3
+</span><span style="margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f"> 4
+</span><span style="margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f"> 5
+</span><span style="margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f"> 6
+</span><span style="margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f"> 7
+</span><span style="margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f"> 8
+</span><span style="margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f"> 9
+</span><span style="margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f">10
+</span><span style="margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f">11
+</span><span style="margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f">12
+</span><span style="margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f">13
+</span><span style="margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f">14
+</span><span style="margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f">15
+</span><span style="margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f">16
+</span></code></pre></td>
+<td style="vertical-align:top;padding:0;margin:0;border:0;;width:100%">
+<pre style="background-color:#fff;-moz-tab-size:4;-o-tab-size:4;tab-size:4"><code class="language-java" data-lang="java">    <span style="color:#3c5d5d;font-weight:bold">@Test</span>
+    <span style="color:#000;font-weight:bold">public</span> <span style="color:#458;font-weight:bold">void</span> <span style="color:#900;font-weight:bold">testEnum</span><span style="color:#000;font-weight:bold">()</span> <span style="color:#000;font-weight:bold">{</span>
+        ColorEnum color <span style="color:#000;font-weight:bold">=</span> ColorEnum<span style="color:#000;font-weight:bold">.</span><span style="color:#008080">BLUE</span><span style="color:#000;font-weight:bold">;</span>
+        <span style="color:#998;font-style:italic">// 编译器报错 incompatible types: se.SeasonEnum cannot be converted to se.ColorEnum
+</span><span style="color:#998;font-style:italic"></span>        <span style="color:#998;font-style:italic">// color = SeasonEnum.AUTUMN;
+</span><span style="color:#998;font-style:italic"></span>        <span style="color:#998;font-style:italic">// 获取元素名称
+</span><span style="color:#998;font-style:italic"></span>        System<span style="color:#000;font-weight:bold">.</span><span style="color:#008080">out</span><span style="color:#000;font-weight:bold">.</span><span style="color:#008080">println</span><span style="color:#000;font-weight:bold">(</span>color<span style="color:#000;font-weight:bold">);</span>
+        <span style="color:#998;font-style:italic">// 通过values()迭代操作全部元素
+</span><span style="color:#998;font-style:italic"></span>        <span style="color:#000;font-weight:bold">for</span><span style="color:#000;font-weight:bold">(</span>ColorEnum element<span style="color:#000;font-weight:bold">:</span> ColorEnum<span style="color:#000;font-weight:bold">.</span><span style="color:#008080">values</span><span style="color:#000;font-weight:bold">())</span> <span style="color:#000;font-weight:bold">{</span>
+            System<span style="color:#000;font-weight:bold">.</span><span style="color:#008080">out</span><span style="color:#000;font-weight:bold">.</span><span style="color:#008080">println</span><span style="color:#000;font-weight:bold">(</span>element<span style="color:#000;font-weight:bold">);</span>
+        <span style="color:#000;font-weight:bold">}</span>
+    <span style="color:#000;font-weight:bold">}</span>
+<span style="color:#998;font-style:italic">// ----- 输出 -----
+</span><span style="color:#998;font-style:italic"></span>BLUE
+RED
+BLUE
+</code></pre></td></tr></table>
+</div>
+</div><h2 id="枚举的本质-">枚举的本质</h2>
 <p>Java中的枚举本质上还是类和其对象，这通过反编译就能够得到答案</p>
-<div class="highlight"><pre class="chroma"><code class="language-java" data-lang="java"><span class="c1">// 源文件SeasonEnum.java
-</span><span class="c1"></span><span class="kd">public</span> <span class="kd">enum</span> <span class="n">SeasonEnum</span> <span class="o">{</span>
-    <span class="n">SPRING</span><span class="o">,</span> <span class="n">SUMMER</span><span class="o">,</span> <span class="n">AUTUMN</span><span class="o">,</span> <span class="n">WINTER</span><span class="o">;</span>
-<span class="o">}</span>
-<span class="c1">// 反编译SeasonEnum.class
-</span><span class="c1"></span><span class="kd">public</span> <span class="kd">final</span> <span class="kd">class</span> <span class="nc">se</span><span class="o">.</span><span class="na">SeasonEnum</span> <span class="kd">extends</span> <span class="n">java</span><span class="o">.</span><span class="na">lang</span><span class="o">.</span><span class="na">Enum</span><span class="o">&lt;</span><span class="n">se</span><span class="o">.</span><span class="na">SeasonEnum</span><span class="o">&gt;</span> <span class="o">{</span>
-  <span class="kd">public</span> <span class="kd">static</span> <span class="kd">final</span> <span class="n">se</span><span class="o">.</span><span class="na">SeasonEnum</span> <span class="n">SPRING</span><span class="o">;</span>
-  <span class="kd">public</span> <span class="kd">static</span> <span class="kd">final</span> <span class="n">se</span><span class="o">.</span><span class="na">SeasonEnum</span> <span class="n">SUMMER</span><span class="o">;</span>
-  <span class="kd">public</span> <span class="kd">static</span> <span class="kd">final</span> <span class="n">se</span><span class="o">.</span><span class="na">SeasonEnum</span> <span class="n">AUTUMN</span><span class="o">;</span>
-  <span class="kd">public</span> <span class="kd">static</span> <span class="kd">final</span> <span class="n">se</span><span class="o">.</span><span class="na">SeasonEnum</span> <span class="n">WINTER</span><span class="o">;</span>
-  <span class="kd">private</span> <span class="kd">static</span> <span class="kd">final</span> <span class="n">se</span><span class="o">.</span><span class="na">SeasonEnum</span><span class="o">[]</span> <span class="n">$VALUES</span><span class="o">;</span>
-  <span class="kd">public</span> <span class="kd">static</span> <span class="n">se</span><span class="o">.</span><span class="na">SeasonEnum</span><span class="o">[]</span> <span class="nf">values</span><span class="o">();</span>
-  <span class="kd">public</span> <span class="kd">static</span> <span class="n">se</span><span class="o">.</span><span class="na">SeasonEnum</span> <span class="nf">valueOf</span><span class="o">(</span><span class="n">java</span><span class="o">.</span><span class="na">lang</span><span class="o">.</span><span class="na">String</span><span class="o">);</span>
-  <span class="kd">private</span> <span class="n">se</span><span class="o">.</span><span class="na">SeasonEnum</span><span class="o">();</span>
-  <span class="kd">static</span> <span class="o">{};</span>
-<span class="o">}</span>
-</code></pre></div><p>我们仔细瞧一瞧反编译的内容：</p>
+<div class="highlight"><div style="background-color:#fff;-moz-tab-size:4;-o-tab-size:4;tab-size:4">
+<table style="border-spacing:0;padding:0;margin:0;border:0;width:auto;overflow:auto;display:block;"><tr><td style="vertical-align:top;padding:0;margin:0;border:0;">
+<pre style="background-color:#fff;-moz-tab-size:4;-o-tab-size:4;tab-size:4"><code><span style="margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f"> 1
+</span><span style="margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f"> 2
+</span><span style="margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f"> 3
+</span><span style="margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f"> 4
+</span><span style="margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f"> 5
+</span><span style="margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f"> 6
+</span><span style="margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f"> 7
+</span><span style="margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f"> 8
+</span><span style="margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f"> 9
+</span><span style="margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f">10
+</span><span style="margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f">11
+</span><span style="margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f">12
+</span><span style="margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f">13
+</span><span style="margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f">14
+</span><span style="margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f">15
+</span><span style="margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f">16
+</span></code></pre></td>
+<td style="vertical-align:top;padding:0;margin:0;border:0;;width:100%">
+<pre style="background-color:#fff;-moz-tab-size:4;-o-tab-size:4;tab-size:4"><code class="language-java" data-lang="java"><span style="color:#998;font-style:italic">// 源文件SeasonEnum.java
+</span><span style="color:#998;font-style:italic"></span><span style="color:#000;font-weight:bold">public</span> <span style="color:#000;font-weight:bold">enum</span> SeasonEnum <span style="color:#000;font-weight:bold">{</span>
+    SPRING<span style="color:#000;font-weight:bold">,</span> SUMMER<span style="color:#000;font-weight:bold">,</span> AUTUMN<span style="color:#000;font-weight:bold">,</span> WINTER<span style="color:#000;font-weight:bold">;</span>
+<span style="color:#000;font-weight:bold">}</span>
+<span style="color:#998;font-style:italic">// 反编译SeasonEnum.class
+</span><span style="color:#998;font-style:italic"></span><span style="color:#000;font-weight:bold">public</span> <span style="color:#000;font-weight:bold">final</span> <span style="color:#000;font-weight:bold">class</span> <span style="color:#458;font-weight:bold">se</span><span style="color:#000;font-weight:bold">.</span><span style="color:#008080">SeasonEnum</span> <span style="color:#000;font-weight:bold">extends</span> java<span style="color:#000;font-weight:bold">.</span><span style="color:#008080">lang</span><span style="color:#000;font-weight:bold">.</span><span style="color:#008080">Enum</span><span style="color:#000;font-weight:bold">&lt;</span>se<span style="color:#000;font-weight:bold">.</span><span style="color:#008080">SeasonEnum</span><span style="color:#000;font-weight:bold">&gt;</span> <span style="color:#000;font-weight:bold">{</span>
+  <span style="color:#000;font-weight:bold">public</span> <span style="color:#000;font-weight:bold">static</span> <span style="color:#000;font-weight:bold">final</span> se<span style="color:#000;font-weight:bold">.</span><span style="color:#008080">SeasonEnum</span> SPRING<span style="color:#000;font-weight:bold">;</span>
+  <span style="color:#000;font-weight:bold">public</span> <span style="color:#000;font-weight:bold">static</span> <span style="color:#000;font-weight:bold">final</span> se<span style="color:#000;font-weight:bold">.</span><span style="color:#008080">SeasonEnum</span> SUMMER<span style="color:#000;font-weight:bold">;</span>
+  <span style="color:#000;font-weight:bold">public</span> <span style="color:#000;font-weight:bold">static</span> <span style="color:#000;font-weight:bold">final</span> se<span style="color:#000;font-weight:bold">.</span><span style="color:#008080">SeasonEnum</span> AUTUMN<span style="color:#000;font-weight:bold">;</span>
+  <span style="color:#000;font-weight:bold">public</span> <span style="color:#000;font-weight:bold">static</span> <span style="color:#000;font-weight:bold">final</span> se<span style="color:#000;font-weight:bold">.</span><span style="color:#008080">SeasonEnum</span> WINTER<span style="color:#000;font-weight:bold">;</span>
+  <span style="color:#000;font-weight:bold">private</span> <span style="color:#000;font-weight:bold">static</span> <span style="color:#000;font-weight:bold">final</span> se<span style="color:#000;font-weight:bold">.</span><span style="color:#008080">SeasonEnum</span><span style="color:#000;font-weight:bold">[]</span> $VALUES<span style="color:#000;font-weight:bold">;</span>
+  <span style="color:#000;font-weight:bold">public</span> <span style="color:#000;font-weight:bold">static</span> se<span style="color:#000;font-weight:bold">.</span><span style="color:#008080">SeasonEnum</span><span style="color:#000;font-weight:bold">[]</span> <span style="color:#900;font-weight:bold">values</span><span style="color:#000;font-weight:bold">();</span>
+  <span style="color:#000;font-weight:bold">public</span> <span style="color:#000;font-weight:bold">static</span> se<span style="color:#000;font-weight:bold">.</span><span style="color:#008080">SeasonEnum</span> <span style="color:#900;font-weight:bold">valueOf</span><span style="color:#000;font-weight:bold">(</span>java<span style="color:#000;font-weight:bold">.</span><span style="color:#008080">lang</span><span style="color:#000;font-weight:bold">.</span><span style="color:#008080">String</span><span style="color:#000;font-weight:bold">);</span>
+  <span style="color:#000;font-weight:bold">private</span> se<span style="color:#000;font-weight:bold">.</span><span style="color:#008080">SeasonEnum</span><span style="color:#000;font-weight:bold">();</span>
+  <span style="color:#000;font-weight:bold">static</span> <span style="color:#000;font-weight:bold">{};</span>
+<span style="color:#000;font-weight:bold">}</span>
+</code></pre></td></tr></table>
+</div>
+</div><p>我们仔细瞧一瞧反编译的内容：</p>
 <ul>
 <li>该类通过<code>final</code>修饰，因而无法被继承</li>
 <li>该类继承自<code>Enum</code>，因此无法继承其他的类</li>
@@ -89,36 +367,71 @@
 <h2 id="枚举和成员-">枚举和成员</h2>
 <p>这大概是使用最多的特性了吧，一般使用<code>enum</code>都会在其中包含一些该元素的详细信息，比如实在开发中比较常用的错误枚举，通常就会在定义枚举的时候其错误码以及该错误的具体描述这2个成员。</p>
 <p>例如，上述的<code>Season</code>，我希望相应枚举包含对应季节的农历月份以及中文描述。</p>
-<div class="highlight"><pre class="chroma"><code class="language-java" data-lang="java"><span class="c1">// Season.java
-</span><span class="c1"></span><span class="kd">public</span> <span class="kd">enum</span> <span class="n">SeasonEnum</span> <span class="o">{</span>
-    <span class="n">SPRING</span><span class="o">(</span><span class="n">1</span><span class="o">,</span> <span class="n">3</span><span class="o">,</span> <span class="s">&#34;春&#34;</span><span class="o">),</span>
-    <span class="n">SUMMER</span><span class="o">(</span><span class="n">4</span><span class="o">,</span> <span class="n">6</span><span class="o">,</span> <span class="s">&#34;夏&#34;</span><span class="o">),</span>
-    <span class="n">AUTUMN</span><span class="o">(</span><span class="n">7</span><span class="o">,</span> <span class="n">9</span><span class="o">,</span> <span class="s">&#34;秋&#34;</span><span class="o">),</span>
-    <span class="n">WINTER</span><span class="o">(</span><span class="n">10</span><span class="o">,</span> <span class="n">12</span><span class="o">,</span> <span class="s">&#34;冬&#34;</span><span class="o">);</span>
+<div class="highlight"><div style="background-color:#fff;-moz-tab-size:4;-o-tab-size:4;tab-size:4">
+<table style="border-spacing:0;padding:0;margin:0;border:0;width:auto;overflow:auto;display:block;"><tr><td style="vertical-align:top;padding:0;margin:0;border:0;">
+<pre style="background-color:#fff;-moz-tab-size:4;-o-tab-size:4;tab-size:4"><code><span style="margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f"> 1
+</span><span style="margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f"> 2
+</span><span style="margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f"> 3
+</span><span style="margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f"> 4
+</span><span style="margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f"> 5
+</span><span style="margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f"> 6
+</span><span style="margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f"> 7
+</span><span style="margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f"> 8
+</span><span style="margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f"> 9
+</span><span style="margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f">10
+</span><span style="margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f">11
+</span><span style="margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f">12
+</span><span style="margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f">13
+</span><span style="margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f">14
+</span><span style="margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f">15
+</span><span style="margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f">16
+</span><span style="margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f">17
+</span><span style="margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f">18
+</span><span style="margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f">19
+</span><span style="margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f">20
+</span><span style="margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f">21
+</span><span style="margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f">22
+</span><span style="margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f">23
+</span><span style="margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f">24
+</span><span style="margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f">25
+</span><span style="margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f">26
+</span><span style="margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f">27
+</span><span style="margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f">28
+</span><span style="margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f">29
+</span></code></pre></td>
+<td style="vertical-align:top;padding:0;margin:0;border:0;;width:100%">
+<pre style="background-color:#fff;-moz-tab-size:4;-o-tab-size:4;tab-size:4"><code class="language-java" data-lang="java"><span style="color:#998;font-style:italic">// Season.java
+</span><span style="color:#998;font-style:italic"></span><span style="color:#000;font-weight:bold">public</span> <span style="color:#000;font-weight:bold">enum</span> SeasonEnum <span style="color:#000;font-weight:bold">{</span>
+    SPRING<span style="color:#000;font-weight:bold">(</span>1<span style="color:#000;font-weight:bold">,</span> 3<span style="color:#000;font-weight:bold">,</span> <span style="color:#d14">&#34;春&#34;</span><span style="color:#000;font-weight:bold">),</span>
+    SUMMER<span style="color:#000;font-weight:bold">(</span>4<span style="color:#000;font-weight:bold">,</span> 6<span style="color:#000;font-weight:bold">,</span> <span style="color:#d14">&#34;夏&#34;</span><span style="color:#000;font-weight:bold">),</span>
+    AUTUMN<span style="color:#000;font-weight:bold">(</span>7<span style="color:#000;font-weight:bold">,</span> 9<span style="color:#000;font-weight:bold">,</span> <span style="color:#d14">&#34;秋&#34;</span><span style="color:#000;font-weight:bold">),</span>
+    WINTER<span style="color:#000;font-weight:bold">(</span>10<span style="color:#000;font-weight:bold">,</span> 12<span style="color:#000;font-weight:bold">,</span> <span style="color:#d14">&#34;冬&#34;</span><span style="color:#000;font-weight:bold">);</span>
 
-    <span class="kd">private</span> <span class="kd">final</span> <span class="kt">int</span> <span class="n">fromMonth</span><span class="o">;</span>
-    <span class="kd">private</span> <span class="kd">final</span> <span class="kt">int</span> <span class="n">toMonth</span><span class="o">;</span>
-    <span class="kd">private</span> <span class="kd">final</span> <span class="n">String</span> <span class="n">desc</span><span class="o">;</span>
+    <span style="color:#000;font-weight:bold">private</span> <span style="color:#000;font-weight:bold">final</span> <span style="color:#458;font-weight:bold">int</span> fromMonth<span style="color:#000;font-weight:bold">;</span>
+    <span style="color:#000;font-weight:bold">private</span> <span style="color:#000;font-weight:bold">final</span> <span style="color:#458;font-weight:bold">int</span> toMonth<span style="color:#000;font-weight:bold">;</span>
+    <span style="color:#000;font-weight:bold">private</span> <span style="color:#000;font-weight:bold">final</span> String desc<span style="color:#000;font-weight:bold">;</span>
 
-    <span class="n">SeasonEnum</span><span class="o">(</span><span class="kt">int</span> <span class="n">fromMonth</span><span class="o">,</span> <span class="kt">int</span> <span class="n">toMonth</span><span class="o">,</span> <span class="n">String</span> <span class="n">desc</span><span class="o">)</span> <span class="o">{</span>
-        <span class="k">this</span><span class="o">.</span><span class="na">fromMonth</span> <span class="o">=</span> <span class="n">fromMonth</span><span class="o">;</span>
-        <span class="k">this</span><span class="o">.</span><span class="na">toMonth</span> <span class="o">=</span> <span class="n">toMonth</span><span class="o">;</span>
-        <span class="k">this</span><span class="o">.</span><span class="na">desc</span> <span class="o">=</span> <span class="n">desc</span><span class="o">;</span>
-    <span class="o">}</span>
+    SeasonEnum<span style="color:#000;font-weight:bold">(</span><span style="color:#458;font-weight:bold">int</span> fromMonth<span style="color:#000;font-weight:bold">,</span> <span style="color:#458;font-weight:bold">int</span> toMonth<span style="color:#000;font-weight:bold">,</span> String desc<span style="color:#000;font-weight:bold">)</span> <span style="color:#000;font-weight:bold">{</span>
+        <span style="color:#000;font-weight:bold">this</span><span style="color:#000;font-weight:bold">.</span><span style="color:#008080">fromMonth</span> <span style="color:#000;font-weight:bold">=</span> fromMonth<span style="color:#000;font-weight:bold">;</span>
+        <span style="color:#000;font-weight:bold">this</span><span style="color:#000;font-weight:bold">.</span><span style="color:#008080">toMonth</span> <span style="color:#000;font-weight:bold">=</span> toMonth<span style="color:#000;font-weight:bold">;</span>
+        <span style="color:#000;font-weight:bold">this</span><span style="color:#000;font-weight:bold">.</span><span style="color:#008080">desc</span> <span style="color:#000;font-weight:bold">=</span> desc<span style="color:#000;font-weight:bold">;</span>
+    <span style="color:#000;font-weight:bold">}</span>
 
-    <span class="kd">public</span> <span class="kt">int</span> <span class="nf">getFromMonth</span><span class="o">()</span> <span class="o">{</span>
-        <span class="k">return</span> <span class="n">fromMonth</span><span class="o">;</span>
-    <span class="o">}</span>
+    <span style="color:#000;font-weight:bold">public</span> <span style="color:#458;font-weight:bold">int</span> <span style="color:#900;font-weight:bold">getFromMonth</span><span style="color:#000;font-weight:bold">()</span> <span style="color:#000;font-weight:bold">{</span>
+        <span style="color:#000;font-weight:bold">return</span> fromMonth<span style="color:#000;font-weight:bold">;</span>
+    <span style="color:#000;font-weight:bold">}</span>
 
-    <span class="kd">public</span> <span class="kt">int</span> <span class="nf">getToMonth</span><span class="o">()</span> <span class="o">{</span>
-        <span class="k">return</span> <span class="n">toMonth</span><span class="o">;</span>
-    <span class="o">}</span>
+    <span style="color:#000;font-weight:bold">public</span> <span style="color:#458;font-weight:bold">int</span> <span style="color:#900;font-weight:bold">getToMonth</span><span style="color:#000;font-weight:bold">()</span> <span style="color:#000;font-weight:bold">{</span>
+        <span style="color:#000;font-weight:bold">return</span> toMonth<span style="color:#000;font-weight:bold">;</span>
+    <span style="color:#000;font-weight:bold">}</span>
 
-    <span class="kd">public</span> <span class="n">String</span> <span class="nf">getDesc</span><span class="o">()</span> <span class="o">{</span>
-        <span class="k">return</span> <span class="n">desc</span><span class="o">;</span>
-    <span class="o">}</span>
-<span class="o">}</span>
-</code></pre></div><p>之后，就很明了了：</p>
+    <span style="color:#000;font-weight:bold">public</span> String <span style="color:#900;font-weight:bold">getDesc</span><span style="color:#000;font-weight:bold">()</span> <span style="color:#000;font-weight:bold">{</span>
+        <span style="color:#000;font-weight:bold">return</span> desc<span style="color:#000;font-weight:bold">;</span>
+    <span style="color:#000;font-weight:bold">}</span>
+<span style="color:#000;font-weight:bold">}</span>
+</code></pre></td></tr></table>
+</div>
+</div><p>之后，就很明了了：</p>
 <ul>
 <li>4个枚举元素相当与使用了全参构造方法进行构造</li>
 <li>因为枚举元素是该类的实例，因此可以调用相应的方法获取成员变量</li>
@@ -126,41 +439,81 @@
 <h2 id="枚举和抽象方法-">枚举和抽象方法</h2>
 <p>如果从“枚举是一个类”来看，这个特性确实并不怎么让人吃惊。它的使用场景是当你需要通过枚举的元素不同进行不同的逻辑分支时使用的，相比使用抽象方法更加朴实和笨拙的方式是使用<code>switch...case...</code>。但这样的代码并不优雅，而且也并不利于拓展。</p>
 <p>举一个Effective Java中的例子，四则运算。</p>
-<div class="highlight"><pre class="chroma"><code class="language-java" data-lang="java"><span class="kd">public</span> <span class="kd">enum</span> <span class="n">BasicOperation</span> <span class="o">{</span>
-    <span class="n">PLUS</span><span class="o">(</span><span class="s">&#34;+&#34;</span><span class="o">)</span> <span class="o">{</span><span class="c1">// 加法
-</span><span class="c1"></span>        <span class="nd">@Override</span>
-        <span class="kd">public</span> <span class="kt">int</span> <span class="nf">apply</span><span class="o">(</span><span class="kt">int</span> <span class="n">left</span><span class="o">,</span> <span class="kt">int</span> <span class="n">right</span><span class="o">)</span> <span class="o">{</span>
-            <span class="k">return</span> <span class="n">left</span> <span class="o">+</span> <span class="n">right</span><span class="o">;</span>
-        <span class="o">}</span>
-    <span class="o">},</span>
-    <span class="n">MINUS</span><span class="o">(</span><span class="s">&#34;-&#34;</span><span class="o">)</span> <span class="o">{</span><span class="c1">// 减法
-</span><span class="c1"></span>        <span class="nd">@Override</span>
-        <span class="kd">public</span> <span class="kt">int</span> <span class="nf">apply</span><span class="o">(</span><span class="kt">int</span> <span class="n">left</span><span class="o">,</span> <span class="kt">int</span> <span class="n">right</span><span class="o">)</span> <span class="o">{</span>
-            <span class="k">return</span> <span class="n">left</span> <span class="o">-</span> <span class="n">right</span><span class="o">;</span>
-        <span class="o">}</span>
-    <span class="o">},</span>
-    <span class="n">MULTIPLY</span><span class="o">(</span><span class="s">&#34;*&#34;</span><span class="o">)</span> <span class="o">{</span><span class="c1">// 乘法
-</span><span class="c1"></span>        <span class="nd">@Override</span>
-        <span class="kd">public</span> <span class="kt">int</span> <span class="nf">apply</span><span class="o">(</span><span class="kt">int</span> <span class="n">left</span><span class="o">,</span> <span class="kt">int</span> <span class="n">right</span><span class="o">)</span> <span class="o">{</span>
-            <span class="k">return</span> <span class="n">left</span> <span class="o">*</span> <span class="n">right</span><span class="o">;</span>
-        <span class="o">}</span>
-    <span class="o">},</span>
-    <span class="n">DIVIDE</span><span class="o">(</span><span class="s">&#34;/&#34;</span><span class="o">)</span> <span class="o">{</span><span class="c1">// 除法
-</span><span class="c1"></span>        <span class="nd">@Override</span>
-        <span class="kd">public</span> <span class="kt">int</span> <span class="nf">apply</span><span class="o">(</span><span class="kt">int</span> <span class="n">left</span><span class="o">,</span> <span class="kt">int</span> <span class="n">right</span><span class="o">)</span> <span class="o">{</span>
-            <span class="k">return</span> <span class="n">left</span> <span class="o">/</span> <span class="n">right</span><span class="o">;</span>
-        <span class="o">}</span>
-    <span class="o">};</span>
+<div class="highlight"><div style="background-color:#fff;-moz-tab-size:4;-o-tab-size:4;tab-size:4">
+<table style="border-spacing:0;padding:0;margin:0;border:0;width:auto;overflow:auto;display:block;"><tr><td style="vertical-align:top;padding:0;margin:0;border:0;">
+<pre style="background-color:#fff;-moz-tab-size:4;-o-tab-size:4;tab-size:4"><code><span style="margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f"> 1
+</span><span style="margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f"> 2
+</span><span style="margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f"> 3
+</span><span style="margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f"> 4
+</span><span style="margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f"> 5
+</span><span style="margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f"> 6
+</span><span style="margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f"> 7
+</span><span style="margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f"> 8
+</span><span style="margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f"> 9
+</span><span style="margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f">10
+</span><span style="margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f">11
+</span><span style="margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f">12
+</span><span style="margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f">13
+</span><span style="margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f">14
+</span><span style="margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f">15
+</span><span style="margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f">16
+</span><span style="margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f">17
+</span><span style="margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f">18
+</span><span style="margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f">19
+</span><span style="margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f">20
+</span><span style="margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f">21
+</span><span style="margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f">22
+</span><span style="margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f">23
+</span><span style="margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f">24
+</span><span style="margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f">25
+</span><span style="margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f">26
+</span><span style="margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f">27
+</span><span style="margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f">28
+</span><span style="margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f">29
+</span><span style="margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f">30
+</span><span style="margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f">31
+</span><span style="margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f">32
+</span><span style="margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f">33
+</span><span style="margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f">34
+</span></code></pre></td>
+<td style="vertical-align:top;padding:0;margin:0;border:0;;width:100%">
+<pre style="background-color:#fff;-moz-tab-size:4;-o-tab-size:4;tab-size:4"><code class="language-java" data-lang="java"><span style="color:#000;font-weight:bold">public</span> <span style="color:#000;font-weight:bold">enum</span> BasicOperation <span style="color:#000;font-weight:bold">{</span>
+    PLUS<span style="color:#000;font-weight:bold">(</span><span style="color:#d14">&#34;+&#34;</span><span style="color:#000;font-weight:bold">)</span> <span style="color:#000;font-weight:bold">{</span><span style="color:#998;font-style:italic">// 加法
+</span><span style="color:#998;font-style:italic"></span>        <span style="color:#3c5d5d;font-weight:bold">@Override</span>
+        <span style="color:#000;font-weight:bold">public</span> <span style="color:#458;font-weight:bold">int</span> <span style="color:#900;font-weight:bold">apply</span><span style="color:#000;font-weight:bold">(</span><span style="color:#458;font-weight:bold">int</span> left<span style="color:#000;font-weight:bold">,</span> <span style="color:#458;font-weight:bold">int</span> right<span style="color:#000;font-weight:bold">)</span> <span style="color:#000;font-weight:bold">{</span>
+            <span style="color:#000;font-weight:bold">return</span> left <span style="color:#000;font-weight:bold">+</span> right<span style="color:#000;font-weight:bold">;</span>
+        <span style="color:#000;font-weight:bold">}</span>
+    <span style="color:#000;font-weight:bold">},</span>
+    MINUS<span style="color:#000;font-weight:bold">(</span><span style="color:#d14">&#34;-&#34;</span><span style="color:#000;font-weight:bold">)</span> <span style="color:#000;font-weight:bold">{</span><span style="color:#998;font-style:italic">// 减法
+</span><span style="color:#998;font-style:italic"></span>        <span style="color:#3c5d5d;font-weight:bold">@Override</span>
+        <span style="color:#000;font-weight:bold">public</span> <span style="color:#458;font-weight:bold">int</span> <span style="color:#900;font-weight:bold">apply</span><span style="color:#000;font-weight:bold">(</span><span style="color:#458;font-weight:bold">int</span> left<span style="color:#000;font-weight:bold">,</span> <span style="color:#458;font-weight:bold">int</span> right<span style="color:#000;font-weight:bold">)</span> <span style="color:#000;font-weight:bold">{</span>
+            <span style="color:#000;font-weight:bold">return</span> left <span style="color:#000;font-weight:bold">-</span> right<span style="color:#000;font-weight:bold">;</span>
+        <span style="color:#000;font-weight:bold">}</span>
+    <span style="color:#000;font-weight:bold">},</span>
+    MULTIPLY<span style="color:#000;font-weight:bold">(</span><span style="color:#d14">&#34;*&#34;</span><span style="color:#000;font-weight:bold">)</span> <span style="color:#000;font-weight:bold">{</span><span style="color:#998;font-style:italic">// 乘法
+</span><span style="color:#998;font-style:italic"></span>        <span style="color:#3c5d5d;font-weight:bold">@Override</span>
+        <span style="color:#000;font-weight:bold">public</span> <span style="color:#458;font-weight:bold">int</span> <span style="color:#900;font-weight:bold">apply</span><span style="color:#000;font-weight:bold">(</span><span style="color:#458;font-weight:bold">int</span> left<span style="color:#000;font-weight:bold">,</span> <span style="color:#458;font-weight:bold">int</span> right<span style="color:#000;font-weight:bold">)</span> <span style="color:#000;font-weight:bold">{</span>
+            <span style="color:#000;font-weight:bold">return</span> left <span style="color:#000;font-weight:bold">*</span> right<span style="color:#000;font-weight:bold">;</span>
+        <span style="color:#000;font-weight:bold">}</span>
+    <span style="color:#000;font-weight:bold">},</span>
+    DIVIDE<span style="color:#000;font-weight:bold">(</span><span style="color:#d14">&#34;/&#34;</span><span style="color:#000;font-weight:bold">)</span> <span style="color:#000;font-weight:bold">{</span><span style="color:#998;font-style:italic">// 除法
+</span><span style="color:#998;font-style:italic"></span>        <span style="color:#3c5d5d;font-weight:bold">@Override</span>
+        <span style="color:#000;font-weight:bold">public</span> <span style="color:#458;font-weight:bold">int</span> <span style="color:#900;font-weight:bold">apply</span><span style="color:#000;font-weight:bold">(</span><span style="color:#458;font-weight:bold">int</span> left<span style="color:#000;font-weight:bold">,</span> <span style="color:#458;font-weight:bold">int</span> right<span style="color:#000;font-weight:bold">)</span> <span style="color:#000;font-weight:bold">{</span>
+            <span style="color:#000;font-weight:bold">return</span> left <span style="color:#000;font-weight:bold">/</span> right<span style="color:#000;font-weight:bold">;</span>
+        <span style="color:#000;font-weight:bold">}</span>
+    <span style="color:#000;font-weight:bold">};</span>
 
-    <span class="kd">private</span> <span class="kd">final</span> <span class="n">String</span> <span class="n">symbol</span><span class="o">;</span>
+    <span style="color:#000;font-weight:bold">private</span> <span style="color:#000;font-weight:bold">final</span> String symbol<span style="color:#000;font-weight:bold">;</span>
 
-    <span class="n">Operation</span><span class="o">(</span><span class="n">String</span> <span class="n">symbol</span><span class="o">)</span> <span class="o">{</span>
-        <span class="k">this</span><span class="o">.</span><span class="na">symbol</span> <span class="o">=</span> <span class="n">symbol</span><span class="o">;</span>
-    <span class="o">}</span>
+    Operation<span style="color:#000;font-weight:bold">(</span>String symbol<span style="color:#000;font-weight:bold">)</span> <span style="color:#000;font-weight:bold">{</span>
+        <span style="color:#000;font-weight:bold">this</span><span style="color:#000;font-weight:bold">.</span><span style="color:#008080">symbol</span> <span style="color:#000;font-weight:bold">=</span> symbol<span style="color:#000;font-weight:bold">;</span>
+    <span style="color:#000;font-weight:bold">}</span>
 
-    <span class="kd">public</span> <span class="kd">abstract</span> <span class="kt">int</span> <span class="nf">apply</span><span class="o">(</span><span class="kt">int</span> <span class="n">left</span><span class="o">,</span> <span class="kt">int</span> <span class="n">right</span><span class="o">);</span>
-<span class="o">}</span>
-</code></pre></div><p>使用抽象方法能够让枚举在方法层面进行抽象，但它的拓展却是封闭的，由于枚举最终是<code>final</code>类，因此它无法通过继承的方式进行拓展，只能够增加新的枚举元素进行拓展。</p>
+    <span style="color:#000;font-weight:bold">public</span> <span style="color:#000;font-weight:bold">abstract</span> <span style="color:#458;font-weight:bold">int</span> <span style="color:#900;font-weight:bold">apply</span><span style="color:#000;font-weight:bold">(</span><span style="color:#458;font-weight:bold">int</span> left<span style="color:#000;font-weight:bold">,</span> <span style="color:#458;font-weight:bold">int</span> right<span style="color:#000;font-weight:bold">);</span>
+<span style="color:#000;font-weight:bold">}</span>
+</code></pre></td></tr></table>
+</div>
+</div><p>使用抽象方法能够让枚举在方法层面进行抽象，但它的拓展却是封闭的，由于枚举最终是<code>final</code>类，因此它无法通过继承的方式进行拓展，只能够增加新的枚举元素进行拓展。</p>
 <p>与此想对应的，直接编写抽象类，通过该抽象类统筹其实现子类也能达到<code>enum</code>的效果，这在实际的源码中使用的更加频繁。这种情况下，往往抽象类会做以下几件事：</p>
 <ul>
 <li>
@@ -173,90 +526,401 @@
 <p>抽象类统筹实现的好处在于你能够通过抽象类提供的工厂方法，得到所有你可以使用的子类实例，而不需要去了解复杂的继承关系。</p>
 <h2 id="枚举和接口-">枚举和接口</h2>
 <p>由于<code>enum</code>是默认继承了<code>Enum</code>的，因此无法继承其他类，但依然可以继承接口。</p>
-<div class="highlight"><pre class="chroma"><code class="language-java" data-lang="java"><span class="c1">// Operation接口只有一个apply()方法
-</span><span class="c1"></span><span class="kd">public</span> <span class="kd">enum</span> <span class="n">BasicOperation</span> <span class="kd">implements</span> <span class="n">Operation</span> <span class="o">{</span>
-    <span class="n">PLUS</span><span class="o">(</span><span class="s">&#34;+&#34;</span><span class="o">)</span> <span class="o">{</span>
-        <span class="nd">@Override</span>
-        <span class="kd">public</span> <span class="kt">int</span> <span class="nf">apply</span><span class="o">(</span><span class="kt">int</span> <span class="n">left</span><span class="o">,</span> <span class="kt">int</span> <span class="n">right</span><span class="o">)</span> <span class="o">{</span>
-            <span class="k">return</span> <span class="n">left</span> <span class="o">+</span> <span class="n">right</span><span class="o">;</span>
-        <span class="o">}</span>
-    <span class="o">},</span>
-    <span class="n">MINUS</span><span class="o">(</span><span class="s">&#34;-&#34;</span><span class="o">)</span> <span class="o">{</span>
-        <span class="nd">@Override</span>
-        <span class="kd">public</span> <span class="kt">int</span> <span class="nf">apply</span><span class="o">(</span><span class="kt">int</span> <span class="n">left</span><span class="o">,</span> <span class="kt">int</span> <span class="n">right</span><span class="o">)</span> <span class="o">{</span>
-            <span class="k">return</span> <span class="n">left</span> <span class="o">-</span> <span class="n">right</span><span class="o">;</span>
-        <span class="o">}</span>
-    <span class="o">},</span>
-    <span class="n">MULTIPLY</span><span class="o">(</span><span class="s">&#34;*&#34;</span><span class="o">)</span> <span class="o">{</span>
-        <span class="nd">@Override</span>
-        <span class="kd">public</span> <span class="kt">int</span> <span class="nf">apply</span><span class="o">(</span><span class="kt">int</span> <span class="n">left</span><span class="o">,</span> <span class="kt">int</span> <span class="n">right</span><span class="o">)</span> <span class="o">{</span>
-            <span class="k">return</span> <span class="n">left</span> <span class="o">*</span> <span class="n">right</span><span class="o">;</span>
-        <span class="o">}</span>
-    <span class="o">},</span>
-    <span class="n">DIVIDE</span><span class="o">(</span><span class="s">&#34;/&#34;</span><span class="o">)</span> <span class="o">{</span>
-        <span class="nd">@Override</span>
-        <span class="kd">public</span> <span class="kt">int</span> <span class="nf">apply</span><span class="o">(</span><span class="kt">int</span> <span class="n">left</span><span class="o">,</span> <span class="kt">int</span> <span class="n">right</span><span class="o">)</span> <span class="o">{</span>
-            <span class="k">return</span> <span class="n">left</span> <span class="o">/</span> <span class="n">right</span><span class="o">;</span>
-        <span class="o">}</span>
-    <span class="o">};</span>
+<div class="highlight"><div style="background-color:#fff;-moz-tab-size:4;-o-tab-size:4;tab-size:4">
+<table style="border-spacing:0;padding:0;margin:0;border:0;width:auto;overflow:auto;display:block;"><tr><td style="vertical-align:top;padding:0;margin:0;border:0;">
+<pre style="background-color:#fff;-moz-tab-size:4;-o-tab-size:4;tab-size:4"><code><span style="margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f"> 1
+</span><span style="margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f"> 2
+</span><span style="margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f"> 3
+</span><span style="margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f"> 4
+</span><span style="margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f"> 5
+</span><span style="margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f"> 6
+</span><span style="margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f"> 7
+</span><span style="margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f"> 8
+</span><span style="margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f"> 9
+</span><span style="margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f">10
+</span><span style="margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f">11
+</span><span style="margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f">12
+</span><span style="margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f">13
+</span><span style="margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f">14
+</span><span style="margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f">15
+</span><span style="margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f">16
+</span><span style="margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f">17
+</span><span style="margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f">18
+</span><span style="margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f">19
+</span><span style="margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f">20
+</span><span style="margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f">21
+</span><span style="margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f">22
+</span><span style="margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f">23
+</span><span style="margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f">24
+</span><span style="margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f">25
+</span><span style="margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f">26
+</span><span style="margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f">27
+</span><span style="margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f">28
+</span><span style="margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f">29
+</span><span style="margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f">30
+</span><span style="margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f">31
+</span><span style="margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f">32
+</span><span style="margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f">33
+</span></code></pre></td>
+<td style="vertical-align:top;padding:0;margin:0;border:0;;width:100%">
+<pre style="background-color:#fff;-moz-tab-size:4;-o-tab-size:4;tab-size:4"><code class="language-java" data-lang="java"><span style="color:#998;font-style:italic">// Operation接口只有一个apply()方法
+</span><span style="color:#998;font-style:italic"></span><span style="color:#000;font-weight:bold">public</span> <span style="color:#000;font-weight:bold">enum</span> BasicOperation <span style="color:#000;font-weight:bold">implements</span> Operation <span style="color:#000;font-weight:bold">{</span>
+    PLUS<span style="color:#000;font-weight:bold">(</span><span style="color:#d14">&#34;+&#34;</span><span style="color:#000;font-weight:bold">)</span> <span style="color:#000;font-weight:bold">{</span>
+        <span style="color:#3c5d5d;font-weight:bold">@Override</span>
+        <span style="color:#000;font-weight:bold">public</span> <span style="color:#458;font-weight:bold">int</span> <span style="color:#900;font-weight:bold">apply</span><span style="color:#000;font-weight:bold">(</span><span style="color:#458;font-weight:bold">int</span> left<span style="color:#000;font-weight:bold">,</span> <span style="color:#458;font-weight:bold">int</span> right<span style="color:#000;font-weight:bold">)</span> <span style="color:#000;font-weight:bold">{</span>
+            <span style="color:#000;font-weight:bold">return</span> left <span style="color:#000;font-weight:bold">+</span> right<span style="color:#000;font-weight:bold">;</span>
+        <span style="color:#000;font-weight:bold">}</span>
+    <span style="color:#000;font-weight:bold">},</span>
+    MINUS<span style="color:#000;font-weight:bold">(</span><span style="color:#d14">&#34;-&#34;</span><span style="color:#000;font-weight:bold">)</span> <span style="color:#000;font-weight:bold">{</span>
+        <span style="color:#3c5d5d;font-weight:bold">@Override</span>
+        <span style="color:#000;font-weight:bold">public</span> <span style="color:#458;font-weight:bold">int</span> <span style="color:#900;font-weight:bold">apply</span><span style="color:#000;font-weight:bold">(</span><span style="color:#458;font-weight:bold">int</span> left<span style="color:#000;font-weight:bold">,</span> <span style="color:#458;font-weight:bold">int</span> right<span style="color:#000;font-weight:bold">)</span> <span style="color:#000;font-weight:bold">{</span>
+            <span style="color:#000;font-weight:bold">return</span> left <span style="color:#000;font-weight:bold">-</span> right<span style="color:#000;font-weight:bold">;</span>
+        <span style="color:#000;font-weight:bold">}</span>
+    <span style="color:#000;font-weight:bold">},</span>
+    MULTIPLY<span style="color:#000;font-weight:bold">(</span><span style="color:#d14">&#34;*&#34;</span><span style="color:#000;font-weight:bold">)</span> <span style="color:#000;font-weight:bold">{</span>
+        <span style="color:#3c5d5d;font-weight:bold">@Override</span>
+        <span style="color:#000;font-weight:bold">public</span> <span style="color:#458;font-weight:bold">int</span> <span style="color:#900;font-weight:bold">apply</span><span style="color:#000;font-weight:bold">(</span><span style="color:#458;font-weight:bold">int</span> left<span style="color:#000;font-weight:bold">,</span> <span style="color:#458;font-weight:bold">int</span> right<span style="color:#000;font-weight:bold">)</span> <span style="color:#000;font-weight:bold">{</span>
+            <span style="color:#000;font-weight:bold">return</span> left <span style="color:#000;font-weight:bold">*</span> right<span style="color:#000;font-weight:bold">;</span>
+        <span style="color:#000;font-weight:bold">}</span>
+    <span style="color:#000;font-weight:bold">},</span>
+    DIVIDE<span style="color:#000;font-weight:bold">(</span><span style="color:#d14">&#34;/&#34;</span><span style="color:#000;font-weight:bold">)</span> <span style="color:#000;font-weight:bold">{</span>
+        <span style="color:#3c5d5d;font-weight:bold">@Override</span>
+        <span style="color:#000;font-weight:bold">public</span> <span style="color:#458;font-weight:bold">int</span> <span style="color:#900;font-weight:bold">apply</span><span style="color:#000;font-weight:bold">(</span><span style="color:#458;font-weight:bold">int</span> left<span style="color:#000;font-weight:bold">,</span> <span style="color:#458;font-weight:bold">int</span> right<span style="color:#000;font-weight:bold">)</span> <span style="color:#000;font-weight:bold">{</span>
+            <span style="color:#000;font-weight:bold">return</span> left <span style="color:#000;font-weight:bold">/</span> right<span style="color:#000;font-weight:bold">;</span>
+        <span style="color:#000;font-weight:bold">}</span>
+    <span style="color:#000;font-weight:bold">};</span>
 
-    <span class="kd">private</span> <span class="kd">final</span> <span class="n">String</span> <span class="n">symbol</span><span class="o">;</span>
+    <span style="color:#000;font-weight:bold">private</span> <span style="color:#000;font-weight:bold">final</span> String symbol<span style="color:#000;font-weight:bold">;</span>
 
-    <span class="n">BasicOperation</span><span class="o">(</span><span class="n">String</span> <span class="n">symbol</span><span class="o">)</span> <span class="o">{</span>
-        <span class="k">this</span><span class="o">.</span><span class="na">symbol</span> <span class="o">=</span> <span class="n">symbol</span><span class="o">;</span>
-    <span class="o">}</span>
-<span class="o">}</span>
-</code></pre></div><p>使用接口的好处是你虽然不能拓展<code>BasicOperation</code>，但能够拓展<code>Operation</code>。由于<code>BasicOperation</code>的所有元素是该类的实例之外，也是<code>Operation</code>的实例。因此，当你仅仅需要使用<code>apply()</code>方法时，能够使用<code>Operation</code>作为类型传递枚举对象。这样，你就能定义第2个枚举拓展实现该接口进行拓展了。</p>
+    BasicOperation<span style="color:#000;font-weight:bold">(</span>String symbol<span style="color:#000;font-weight:bold">)</span> <span style="color:#000;font-weight:bold">{</span>
+        <span style="color:#000;font-weight:bold">this</span><span style="color:#000;font-weight:bold">.</span><span style="color:#008080">symbol</span> <span style="color:#000;font-weight:bold">=</span> symbol<span style="color:#000;font-weight:bold">;</span>
+    <span style="color:#000;font-weight:bold">}</span>
+<span style="color:#000;font-weight:bold">}</span>
+</code></pre></td></tr></table>
+</div>
+</div><p>使用接口的好处是你虽然不能拓展<code>BasicOperation</code>，但能够拓展<code>Operation</code>。由于<code>BasicOperation</code>的所有元素是该类的实例之外，也是<code>Operation</code>的实例。因此，当你仅仅需要使用<code>apply()</code>方法时，能够使用<code>Operation</code>作为类型传递枚举对象。这样，你就能定义第2个枚举拓展实现该接口进行拓展了。</p>
 <p>我个人感觉，这其实是接口的应用，和枚举关系并不大。如果<code>Operation</code>的拓展能力十分强，那么或许不使用枚举是最好的方式。</p>
 <h2 id="枚举和集合-">枚举和集合</h2>
 <p>Java提供了2种专门为<code>enum</code>设计的集合类型，<code>EnumSet</code>和<code>EnumMap</code>。其中<code>EnumMap</code>是将<code>enum</code>类型作为key进行存储的<code>Map</code>。</p>
 <p>这两种集合对<code>enum</code>进行了特殊的优化，通常的<code>HashSet</code>和<code>HashMap</code>存储内容是通过数组和<code>hashCode()</code>获取散列值确定存储位置的，这是因为冲突的存在无法单纯通过<code>hashCode()</code>直接判断2个元素相等。</p>
 <p>然而，<code>enum</code>的元素有着天生独有的哈希值，那就是通过<code>ordinal()</code>获取的<strong>序数</strong>，序数是绝对不会冲突的哈希值，因为进需要使用位操作和一个数便能够完成通常情况数组才能完成的事。</p>
-<div class="highlight"><pre class="chroma"><code class="language-java" data-lang="java">	<span class="c1">// RegularEnumSet
-</span><span class="c1"></span>    <span class="kd">public</span> <span class="kt">boolean</span> <span class="nf">contains</span><span class="o">(</span><span class="n">Object</span> <span class="n">var1</span><span class="o">)</span> <span class="o">{</span>
-        <span class="k">if</span> <span class="o">(</span><span class="n">var1</span> <span class="o">==</span> <span class="kc">null</span><span class="o">)</span> <span class="o">{</span>
-            <span class="k">return</span> <span class="kc">false</span><span class="o">;</span>
-        <span class="o">}</span> <span class="k">else</span> <span class="o">{</span>
-            <span class="c1">// 类型判断
-</span><span class="c1"></span>            <span class="n">Class</span> <span class="n">var2</span> <span class="o">=</span> <span class="n">var1</span><span class="o">.</span><span class="na">getClass</span><span class="o">();</span>
-            <span class="k">if</span> <span class="o">(</span><span class="n">var2</span> <span class="o">!=</span> <span class="k">this</span><span class="o">.</span><span class="na">elementType</span> <span class="o">&amp;&amp;</span> <span class="n">var2</span><span class="o">.</span><span class="na">getSuperclass</span><span class="o">()</span> <span class="o">!=</span> <span class="k">this</span><span class="o">.</span><span class="na">elementType</span><span class="o">)</span> <span class="o">{</span>
-                <span class="k">return</span> <span class="kc">false</span><span class="o">;</span>
-            <span class="o">}</span> <span class="k">else</span> <span class="o">{</span>
-                <span class="c1">// 通用位操作检查是否存在该元素
-</span><span class="c1"></span>                <span class="k">return</span> <span class="o">(</span><span class="k">this</span><span class="o">.</span><span class="na">elements</span> <span class="o">&amp;</span> <span class="n">1L</span> <span class="o">&lt;&lt;</span> <span class="o">((</span><span class="n">Enum</span><span class="o">)</span><span class="n">var1</span><span class="o">).</span><span class="na">ordinal</span><span class="o">())</span> <span class="o">!=</span> <span class="n">0L</span><span class="o">;</span>
-            <span class="o">}</span>
-        <span class="o">}</span>
-    <span class="o">}</span>
-    <span class="kd">public</span> <span class="kt">boolean</span> <span class="nf">add</span><span class="o">(</span><span class="n">E</span> <span class="n">var1</span><span class="o">)</span> <span class="o">{</span>
-        <span class="c1">// 类型检查
-</span><span class="c1"></span>        <span class="k">this</span><span class="o">.</span><span class="na">typeCheck</span><span class="o">(</span><span class="n">var1</span><span class="o">);</span>
-        <span class="kt">long</span> <span class="n">var2</span> <span class="o">=</span> <span class="k">this</span><span class="o">.</span><span class="na">elements</span><span class="o">;</span>
-        <span class="c1">// 调用ordinal()获取序数并使用位操作存储该序数元素的存在状态
-</span><span class="c1"></span>        <span class="k">this</span><span class="o">.</span><span class="na">elements</span> <span class="o">|=</span> <span class="n">1L</span> <span class="o">&lt;&lt;</span> <span class="n">var1</span><span class="o">.</span><span class="na">ordinal</span><span class="o">();</span>
-        <span class="c1">// 通过判断操作前后的数是否相同判断是否添加成功
-</span><span class="c1"></span>        <span class="k">return</span> <span class="k">this</span><span class="o">.</span><span class="na">elements</span> <span class="o">!=</span> <span class="n">var2</span><span class="o">;</span>
-    <span class="o">}</span>
-</code></pre></div><p>类型检查的原因是<code>contains()</code>的参数类型是<code>Object</code>，因此必须使用类型判断，否则会产生不同的<code>enum</code>类型传入返回<code>true</code>的情况。</p>
-<div class="highlight"><pre class="chroma"><code class="language-java" data-lang="java">    <span class="nd">@Test</span>
-    <span class="kd">public</span> <span class="kt">void</span> <span class="nf">testEnumConversion</span><span class="o">()</span> <span class="o">{</span>        
-        <span class="n">BasicOperation</span> <span class="n">op</span> <span class="o">=</span> <span class="n">BasicOperation</span><span class="o">.</span><span class="na">PLUS</span><span class="o">;</span>
-        <span class="n">Enum</span> <span class="n">e</span> <span class="o">=</span> <span class="n">op</span><span class="o">;</span>
-        <span class="n">EnumSet</span><span class="o">&lt;</span><span class="n">SeasonEnum</span><span class="o">&gt;</span> <span class="n">set</span> <span class="o">=</span> <span class="n">EnumSet</span><span class="o">.</span><span class="na">of</span><span class="o">(</span><span class="n">SeasonEnum</span><span class="o">.</span><span class="na">SPRING</span><span class="o">,</span> <span class="n">SeasonEnum</span><span class="o">.</span><span class="na">SUMMER</span><span class="o">);</span>
-        <span class="n">System</span><span class="o">.</span><span class="na">out</span><span class="o">.</span><span class="na">println</span><span class="o">(</span><span class="n">set</span><span class="o">.</span><span class="na">contains</span><span class="o">(</span><span class="n">e</span><span class="o">));</span>
-    <span class="o">}</span>
-<span class="c1">// ----- 输出 -----
-</span><span class="c1"></span><span class="kc">false</span>
-</code></pre></div><p>因此，使用<code>EnumSet</code>和<code>EnumMap</code>不仅仅能够加速查询，并且能够节约内存空间并省去有关负载因子及扩容的大量代码。</p>
+<div class="highlight"><div style="background-color:#fff;-moz-tab-size:4;-o-tab-size:4;tab-size:4">
+<table style="border-spacing:0;padding:0;margin:0;border:0;width:auto;overflow:auto;display:block;"><tr><td style="vertical-align:top;padding:0;margin:0;border:0;">
+<pre style="background-color:#fff;-moz-tab-size:4;-o-tab-size:4;tab-size:4"><code><span style="margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f"> 1
+</span><span style="margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f"> 2
+</span><span style="margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f"> 3
+</span><span style="margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f"> 4
+</span><span style="margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f"> 5
+</span><span style="margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f"> 6
+</span><span style="margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f"> 7
+</span><span style="margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f"> 8
+</span><span style="margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f"> 9
+</span><span style="margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f">10
+</span><span style="margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f">11
+</span><span style="margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f">12
+</span><span style="margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f">13
+</span><span style="margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f">14
+</span><span style="margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f">15
+</span><span style="margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f">16
+</span><span style="margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f">17
+</span><span style="margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f">18
+</span><span style="margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f">19
+</span><span style="margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f">20
+</span><span style="margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f">21
+</span><span style="margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f">22
+</span><span style="margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f">23
+</span><span style="margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f">24
+</span></code></pre></td>
+<td style="vertical-align:top;padding:0;margin:0;border:0;;width:100%">
+<pre style="background-color:#fff;-moz-tab-size:4;-o-tab-size:4;tab-size:4"><code class="language-java" data-lang="java">	<span style="color:#998;font-style:italic">// RegularEnumSet
+</span><span style="color:#998;font-style:italic"></span>    <span style="color:#000;font-weight:bold">public</span> <span style="color:#458;font-weight:bold">boolean</span> <span style="color:#900;font-weight:bold">contains</span><span style="color:#000;font-weight:bold">(</span>Object var1<span style="color:#000;font-weight:bold">)</span> <span style="color:#000;font-weight:bold">{</span>
+        <span style="color:#000;font-weight:bold">if</span> <span style="color:#000;font-weight:bold">(</span>var1 <span style="color:#000;font-weight:bold">==</span> <span style="color:#000;font-weight:bold">null</span><span style="color:#000;font-weight:bold">)</span> <span style="color:#000;font-weight:bold">{</span>
+            <span style="color:#000;font-weight:bold">return</span> <span style="color:#000;font-weight:bold">false</span><span style="color:#000;font-weight:bold">;</span>
+        <span style="color:#000;font-weight:bold">}</span> <span style="color:#000;font-weight:bold">else</span> <span style="color:#000;font-weight:bold">{</span>
+            <span style="color:#998;font-style:italic">// 类型判断
+</span><span style="color:#998;font-style:italic"></span>            Class var2 <span style="color:#000;font-weight:bold">=</span> var1<span style="color:#000;font-weight:bold">.</span><span style="color:#008080">getClass</span><span style="color:#000;font-weight:bold">();</span>
+            <span style="color:#000;font-weight:bold">if</span> <span style="color:#000;font-weight:bold">(</span>var2 <span style="color:#000;font-weight:bold">!=</span> <span style="color:#000;font-weight:bold">this</span><span style="color:#000;font-weight:bold">.</span><span style="color:#008080">elementType</span> <span style="color:#000;font-weight:bold">&amp;&amp;</span> var2<span style="color:#000;font-weight:bold">.</span><span style="color:#008080">getSuperclass</span><span style="color:#000;font-weight:bold">()</span> <span style="color:#000;font-weight:bold">!=</span> <span style="color:#000;font-weight:bold">this</span><span style="color:#000;font-weight:bold">.</span><span style="color:#008080">elementType</span><span style="color:#000;font-weight:bold">)</span> <span style="color:#000;font-weight:bold">{</span>
+                <span style="color:#000;font-weight:bold">return</span> <span style="color:#000;font-weight:bold">false</span><span style="color:#000;font-weight:bold">;</span>
+            <span style="color:#000;font-weight:bold">}</span> <span style="color:#000;font-weight:bold">else</span> <span style="color:#000;font-weight:bold">{</span>
+                <span style="color:#998;font-style:italic">// 通用位操作检查是否存在该元素
+</span><span style="color:#998;font-style:italic"></span>                <span style="color:#000;font-weight:bold">return</span> <span style="color:#000;font-weight:bold">(</span><span style="color:#000;font-weight:bold">this</span><span style="color:#000;font-weight:bold">.</span><span style="color:#008080">elements</span> <span style="color:#000;font-weight:bold">&amp;</span> 1L <span style="color:#000;font-weight:bold">&lt;&lt;</span> <span style="color:#000;font-weight:bold">((</span>Enum<span style="color:#000;font-weight:bold">)</span>var1<span style="color:#000;font-weight:bold">).</span><span style="color:#008080">ordinal</span><span style="color:#000;font-weight:bold">())</span> <span style="color:#000;font-weight:bold">!=</span> 0L<span style="color:#000;font-weight:bold">;</span>
+            <span style="color:#000;font-weight:bold">}</span>
+        <span style="color:#000;font-weight:bold">}</span>
+    <span style="color:#000;font-weight:bold">}</span>
+    <span style="color:#000;font-weight:bold">public</span> <span style="color:#458;font-weight:bold">boolean</span> <span style="color:#900;font-weight:bold">add</span><span style="color:#000;font-weight:bold">(</span>E var1<span style="color:#000;font-weight:bold">)</span> <span style="color:#000;font-weight:bold">{</span>
+        <span style="color:#998;font-style:italic">// 类型检查
+</span><span style="color:#998;font-style:italic"></span>        <span style="color:#000;font-weight:bold">this</span><span style="color:#000;font-weight:bold">.</span><span style="color:#008080">typeCheck</span><span style="color:#000;font-weight:bold">(</span>var1<span style="color:#000;font-weight:bold">);</span>
+        <span style="color:#458;font-weight:bold">long</span> var2 <span style="color:#000;font-weight:bold">=</span> <span style="color:#000;font-weight:bold">this</span><span style="color:#000;font-weight:bold">.</span><span style="color:#008080">elements</span><span style="color:#000;font-weight:bold">;</span>
+        <span style="color:#998;font-style:italic">// 调用ordinal()获取序数并使用位操作存储该序数元素的存在状态
+</span><span style="color:#998;font-style:italic"></span>        <span style="color:#000;font-weight:bold">this</span><span style="color:#000;font-weight:bold">.</span><span style="color:#008080">elements</span> <span style="color:#000;font-weight:bold">|=</span> 1L <span style="color:#000;font-weight:bold">&lt;&lt;</span> var1<span style="color:#000;font-weight:bold">.</span><span style="color:#008080">ordinal</span><span style="color:#000;font-weight:bold">();</span>
+        <span style="color:#998;font-style:italic">// 通过判断操作前后的数是否相同判断是否添加成功
+</span><span style="color:#998;font-style:italic"></span>        <span style="color:#000;font-weight:bold">return</span> <span style="color:#000;font-weight:bold">this</span><span style="color:#000;font-weight:bold">.</span><span style="color:#008080">elements</span> <span style="color:#000;font-weight:bold">!=</span> var2<span style="color:#000;font-weight:bold">;</span>
+    <span style="color:#000;font-weight:bold">}</span>
+</code></pre></td></tr></table>
+</div>
+</div><p>类型检查的原因是<code>contains()</code>的参数类型是<code>Object</code>，因此必须使用类型判断，否则会产生不同的<code>enum</code>类型传入返回<code>true</code>的情况。</p>
+<div class="highlight"><div style="background-color:#fff;-moz-tab-size:4;-o-tab-size:4;tab-size:4">
+<table style="border-spacing:0;padding:0;margin:0;border:0;width:auto;overflow:auto;display:block;"><tr><td style="vertical-align:top;padding:0;margin:0;border:0;">
+<pre style="background-color:#fff;-moz-tab-size:4;-o-tab-size:4;tab-size:4"><code><span style="margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f">1
+</span><span style="margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f">2
+</span><span style="margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f">3
+</span><span style="margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f">4
+</span><span style="margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f">5
+</span><span style="margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f">6
+</span><span style="margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f">7
+</span><span style="margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f">8
+</span><span style="margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f">9
+</span></code></pre></td>
+<td style="vertical-align:top;padding:0;margin:0;border:0;;width:100%">
+<pre style="background-color:#fff;-moz-tab-size:4;-o-tab-size:4;tab-size:4"><code class="language-java" data-lang="java">    <span style="color:#3c5d5d;font-weight:bold">@Test</span>
+    <span style="color:#000;font-weight:bold">public</span> <span style="color:#458;font-weight:bold">void</span> <span style="color:#900;font-weight:bold">testEnumConversion</span><span style="color:#000;font-weight:bold">()</span> <span style="color:#000;font-weight:bold">{</span>        
+        BasicOperation op <span style="color:#000;font-weight:bold">=</span> BasicOperation<span style="color:#000;font-weight:bold">.</span><span style="color:#008080">PLUS</span><span style="color:#000;font-weight:bold">;</span>
+        Enum e <span style="color:#000;font-weight:bold">=</span> op<span style="color:#000;font-weight:bold">;</span>
+        EnumSet<span style="color:#000;font-weight:bold">&lt;</span>SeasonEnum<span style="color:#000;font-weight:bold">&gt;</span> set <span style="color:#000;font-weight:bold">=</span> EnumSet<span style="color:#000;font-weight:bold">.</span><span style="color:#008080">of</span><span style="color:#000;font-weight:bold">(</span>SeasonEnum<span style="color:#000;font-weight:bold">.</span><span style="color:#008080">SPRING</span><span style="color:#000;font-weight:bold">,</span> SeasonEnum<span style="color:#000;font-weight:bold">.</span><span style="color:#008080">SUMMER</span><span style="color:#000;font-weight:bold">);</span>
+        System<span style="color:#000;font-weight:bold">.</span><span style="color:#008080">out</span><span style="color:#000;font-weight:bold">.</span><span style="color:#008080">println</span><span style="color:#000;font-weight:bold">(</span>set<span style="color:#000;font-weight:bold">.</span><span style="color:#008080">contains</span><span style="color:#000;font-weight:bold">(</span>e<span style="color:#000;font-weight:bold">));</span>
+    <span style="color:#000;font-weight:bold">}</span>
+<span style="color:#998;font-style:italic">// ----- 输出 -----
+</span><span style="color:#998;font-style:italic"></span><span style="color:#000;font-weight:bold">false</span>
+</code></pre></td></tr></table>
+</div>
+</div><p>因此，使用<code>EnumSet</code>和<code>EnumMap</code>不仅仅能够加速查询，并且能够节约内存空间并省去有关负载因子及扩容的大量代码。</p>
 <h2 id="总结-">总结</h2>
 <p>Java中的枚举并没有C中那么简单，其本质是类这一特点就决定了它能够胜任一些其他方面的工作，但同时也代表了它比C当中的枚举更加消耗资源。</p>
 <p>枚举的虽然能够使用抽象方法进行一定程度的抽象，但无法被继承这一特点也使得它只能够通过修改源码进行拓展。所以，枚举的使用仅在元素可枚举的前提下进行是最佳的。</p>
 <p>最后，尽量使用<code>EnumSet</code>和<code>EnumMap</code>。</p>
-</article><section class="article labels"><a class="category" href=/categories/Java/>Java</a><a class="tag" href=/tags/Java/>Java</a><a class="tag" href=/tags/enum/>enum</a></section></div>
-<div class="article bottom"><section class="article navigation"><p><a class="link" href="/post/shiro-1/"><span class="iconfont icon-article"></span>Apache Shiro - 基本使用和概念</a></p></section></div></section><section id="footer"><div class="footer-wrap">
-    <p class="copyright">©2019 Notepadium.</p>
-    <p class="powerby"><span>Powered by </span><a href="https://gohugo.io" 
-        target="_blank">Hugo</a><span> and the </span><a href="https://themes.gohugo.io/hugo-notepadium/" 
-        target="_blank">Notepadium</a></p>
-</div></section></body>
+
+        </div>
+
+        
+
+
+        
+
+<div class="post-archive">
+    <h2>See Also</h2>
+    <ul class="listing">
+        
+        <li><a href="/post/shiro-1/">Apache Shiro - 基本使用和概念</a></li>
+        
+        <li><a href="/post/java-reflection/">Java - 反射</a></li>
+        
+        <li><a href="/post/guava-talk-4/">Guava杂谈 - ImmutableCollections</a></li>
+        
+        <li><a href="/post/guava-talk-3/">Guava杂谈 - LoadingCache</a></li>
+        
+        <li><a href="/post/guava-talk-2/">Guava杂谈 - EventBus</a></li>
+        
+    </ul>
+</div>
+
+
+        <div class="post-meta meta-tags">
+            
+            <ul class="clearfix">
+                
+                <li><a href='https://ilixiang.github.io/tags/Java'>Java</a></li>
+                
+                <li><a href='https://ilixiang.github.io/tags/enum'>enum</a></li>
+                
+            </ul>
+            
+        </div>
+    </article>
+    
+    <div id="disqus_thread"></div>
+<script type="application/javascript">
+    var disqus_config = function () {
+    
+    
+    
+    };
+    (function() {
+        if (["localhost", "127.0.0.1"].indexOf(window.location.hostname) != -1) {
+            document.getElementById('disqus_thread').innerHTML = 'Disqus comments not available by default when the website is previewed locally.';
+            return;
+        }
+        var d = document, s = d.createElement('script'); s.async = true;
+        s.src = '//' + "yourdiscussshortname" + '.disqus.com/embed.js';
+        s.setAttribute('data-timestamp', +new Date());
+        (d.head || d.body).appendChild(s);
+    })();
+</script>
+<noscript>Please enable JavaScript to view the <a href="https://disqus.com/?ref_noscript">comments powered by Disqus.</a></noscript>
+<a href="https://disqus.com" class="dsq-brlink">comments powered by <span class="logo-disqus">Disqus</span></a>
+
+    
+    
+    <div class="post bg-white">
+      <script src="https://utteranc.es/client.js"
+            repo= "your github repo"
+            issue-term="pathname"
+            theme="github-light"
+            crossorigin="anonymous"
+            async>
+      </script>
+    </div>
+    
+</div>
+
+                </div>
+
+                <div id="secondary">
+    <section class="widget">
+        <form id="search" action='https://ilixiang.github.io/search/' method="get" accept-charset="utf-8" target="_blank" _lpchecked="1">
+      
+      <input type="text" name="q" maxlength="20" placeholder="Search">
+      <input type="hidden" name="sitesearch" value="https://ilixiang.github.io/">
+      <button type="submit" class="submit icon-search"></button>
+</form>
+    </section>
+    
+    <section class="widget">
+        <h3 class="widget-title">最近文章</h3>
+<ul class="widget-list">
+    
+    <li>
+        <a href="https://ilixiang.github.io/post/java-enum/" title="Java - 枚举">Java - 枚举</a>
+    </li>
+    
+    <li>
+        <a href="https://ilixiang.github.io/post/shiro-1/" title="Apache Shiro - 基本使用和概念">Apache Shiro - 基本使用和概念</a>
+    </li>
+    
+    <li>
+        <a href="https://ilixiang.github.io/post/java-reflection/" title="Java - 反射">Java - 反射</a>
+    </li>
+    
+    <li>
+        <a href="https://ilixiang.github.io/post/regex-note/" title="Regex - 笔记">Regex - 笔记</a>
+    </li>
+    
+    <li>
+        <a href="https://ilixiang.github.io/post/guava-talk-4/" title="Guava杂谈 - ImmutableCollections">Guava杂谈 - ImmutableCollections</a>
+    </li>
+    
+    <li>
+        <a href="https://ilixiang.github.io/post/guava-talk-3/" title="Guava杂谈 - LoadingCache">Guava杂谈 - LoadingCache</a>
+    </li>
+    
+    <li>
+        <a href="https://ilixiang.github.io/post/guava-talk-2/" title="Guava杂谈 - EventBus">Guava杂谈 - EventBus</a>
+    </li>
+    
+    <li>
+        <a href="https://ilixiang.github.io/post/guava-talk-1/" title="Guava杂谈 - ComparisonChain">Guava杂谈 - ComparisonChain</a>
+    </li>
+    
+    <li>
+        <a href="https://ilixiang.github.io/post/bash-variable/" title="bash - 变量及变量操作">bash - 变量及变量操作</a>
+    </li>
+    
+    <li>
+        <a href="https://ilixiang.github.io/post/sed/" title="sed学习笔记">sed学习笔记</a>
+    </li>
+    
+</ul>
+    </section>
+
+    
+
+    <section class="widget">
+        <h3 class="widget-title">分类</h3>
+<ul class="widget-list">
+    
+    <li><a href="https://ilixiang.github.io/categories/Java/">Java (7)</a></li>
+    
+    <li><a href="https://ilixiang.github.io/categories/shell/">shell (4)</a></li>
+    
+</ul>
+    </section>
+
+    <section class="widget">
+        <h3 class="widget-title">标签</h3>
+<div class="tagcloud">
+    
+    <a href="https://ilixiang.github.io/tags/Collection/">Collection</a>
+    
+    <a href="https://ilixiang.github.io/tags/ComparisonChain/">ComparisonChain</a>
+    
+    <a href="https://ilixiang.github.io/tags/EventBus/">EventBus</a>
+    
+    <a href="https://ilixiang.github.io/tags/Guava/">Guava</a>
+    
+    <a href="https://ilixiang.github.io/tags/ImmutableCollection/">ImmutableCollection</a>
+    
+    <a href="https://ilixiang.github.io/tags/Java/">Java</a>
+    
+    <a href="https://ilixiang.github.io/tags/LoadingCache/">LoadingCache</a>
+    
+    <a href="https://ilixiang.github.io/tags/Security/">Security</a>
+    
+    <a href="https://ilixiang.github.io/tags/Shiro/">Shiro</a>
+    
+    <a href="https://ilixiang.github.io/tags/awk/">awk</a>
+    
+    <a href="https://ilixiang.github.io/tags/bash/">bash</a>
+    
+    <a href="https://ilixiang.github.io/tags/enum/">enum</a>
+    
+    <a href="https://ilixiang.github.io/tags/note/">note</a>
+    
+    <a href="https://ilixiang.github.io/tags/reflection/">reflection</a>
+    
+    <a href="https://ilixiang.github.io/tags/regex/">regex</a>
+    
+    <a href="https://ilixiang.github.io/tags/sed/">sed</a>
+    
+    <a href="https://ilixiang.github.io/tags/shell/">shell</a>
+    
+</div>
+    </section>
+
+    
+
+    <section class="widget">
+        <h3 class="widget-title">其它</h3>
+        <ul class="widget-list">
+            <li><a href="https://ilixiang.github.io/index.xml">文章 RSS</a></li>
+        </ul>
+    </section>
+</div>
+            </div>
+        </div>
+    </div>
+    <footer id="footer">
+    <div class="container">
+        &copy; 2020 <a href="https://ilixiang.github.io/">三斜求积术 By 石不转</a>.
+        Powered by <a rel="nofollow noreferer noopener" href="https://gohugo.io" target="_blank">Hugo</a>.
+        <a href="https://www.flysnow.org/" target="_blank">Theme</a> based on <a href="https://github.com/flysnow-org/maupassant-hugo" target="_blank">maupassant</a>.
+        
+    </div>
+</footer>
+
+
+    
+    <script type="text/javascript">
+        window.MathJax = {
+            tex2jax: {
+                inlineMath: [['$', '$']],
+                processEscapes: true
+                }
+            };
+    </script>
+    <script src='https://cdnjs.cloudflare.com/ajax/libs/mathjax/2.7.5/MathJax.js?config=TeX-MML-AM_CHTML' async></script>
+
+
+<a id="rocket" href="#top"></a>
+<script type="text/javascript" src='/js/totop.js?v=0.0.0' async=""></script>
+
+
+
+    <script type="text/javascript" src="//busuanzi.ibruce.info/busuanzi/2.3/busuanzi.pure.mini.js" async></script>
+
+
+
+
+    <script src='/js/douban.js'></script>
+
+</body>
 
 </html>

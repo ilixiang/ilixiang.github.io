@@ -1,25 +1,23 @@
-<?xml version="1.0" encoding="utf-8" standalone="yes" ?>
-<rss version="2.0" xmlns:atom="http://www.w3.org/2005/Atom" xmlns:content="http://purl.org/rss/1.0/modules/content/">
+<?xml version="1.0" encoding="utf-8" standalone="yes"?>
+<rss version="2.0" xmlns:atom="http://www.w3.org/2005/Atom">
   <channel>
     <title>Collection on 三斜求积术</title>
-    <link>/tags/Collection/</link>
+    <link>https://ilixiang.github.io/tags/Collection/</link>
     <description>Recent content in Collection on 三斜求积术</description>
     <generator>Hugo -- gohugo.io</generator>
-    <language>zh-cn</language>
-    <copyright>©2019 Notepadium.</copyright>
+    <language>zh-CN</language>
     <lastBuildDate>Fri, 03 Jul 2020 10:36:09 +0800</lastBuildDate>
     
-        <atom:link href="/tags/Collection/index.xml" rel="self" type="application/rss+xml" />
+	<atom:link href="https://ilixiang.github.io/tags/Collection/index.xml" rel="self" type="application/rss+xml" />
     
     
     <item>
       <title>Guava杂谈 - ImmutableCollections</title>
-      <link>/post/guava-talk-4/</link>
+      <link>https://ilixiang.github.io/post/guava-talk-4/</link>
       <pubDate>Fri, 03 Jul 2020 10:36:09 +0800</pubDate>
       
-      <guid>/post/guava-talk-4/</guid>
+      <guid>https://ilixiang.github.io/post/guava-talk-4/</guid>
       <description>Guava的ImmutableCollection意为不可变集合框架，它的存在弥补了JDK的UnmodifiableCollection的2个缺陷： UnmodifiableCollection在持有原生集合引用时可以修改集合内容，不安全 UnmodifiableCollection</description>
-      
     </item>
     
   </channel>
