@@ -49,7 +49,7 @@
 <meta itemprop="description" content="如上篇所言，Realm是用以沟通和获取安全数据的组件，而需要自定义认证过程就需要自己写Realm的实现逻辑，因此我们今天就来看一看Realm">
 <meta itemprop="datePublished" content="2020-08-06T15:49:38&#43;08:00" />
 <meta itemprop="dateModified" content="2020-08-06T15:49:38&#43;08:00" />
-<meta itemprop="wordCount" content="2587">
+<meta itemprop="wordCount" content="2513">
 
 
 
@@ -242,8 +242,9 @@
 </code></pre></td></tr></table>
 </div>
 </div><p>上面给出了实现<code>AuthorizingRealm</code>的例子，</p>
-<p>题外话，<code>Realm</code>作为获取安全数据的组件，接口本身的设计是不具备认证或者授权等功能的，实际上重写<code>AuthorizingRealm</code>进行操作其实是接口之间耦合的结果。但即使如此，<code>AuthorizingRealm</code>事实上也只继承了<code>Authorizor</code>接口，即只拥有授权的功能，因此即使重写<code>doGetAuthenticationInfo()</code>单纯根据<code>AuthenticationToken</code>所给的principal获取安全数据返回，credential不对依然会使得<code>login()</code>失败。</p>
-<p>但事实上大部分网上的实现会在<code>doGetAuthenticationInfo()</code>中加入credential的判断，这并不能说错，但不太符合这个接口的隔离性罢了，真正进行credential验证的是<code>CredentialsMatcher</code>接口进行的，有兴趣的可以自己去看看，后面的文章也会提及到。</p>
+<p>题外话，<code>Realm</code>作为获取安全数据的组件，接口本身的设计是不具备认证或者授权等功能的，实际上重写<code>AuthorizingRealm</code>进行操作其实是接口之间耦合的结果。</p>
+<p>事实上大部分网上的实现会在<code>doGetAuthenticationInfo()</code>中加入credential的判断，这并不能说错，但事实上这个方法只是负责获取<code>AuthenticationInfo</code>罢了，后续<code>AuthorizingRealm</code>中通过模板方法还会进行credential验证，如果自己写了验证逻辑相当与验证了2遍。</p>
+<p>shiro中验证credential是由<code>CredentialsMatcher</code>接口进行的，有兴趣的可以自己去看看，后面的文章也会提及到。</p>
 <h2 id="2-authenticationtoken和authenticationinfo">2. <code>AuthenticationToken</code>和<code>AuthenticationInfo</code></h2>
 <p>上面的<code>Realm</code>接口中<code>getAuthenticationInfo()</code>方法涉及到了2部分内容：</p>
 <ol>
