@@ -1,0 +1,24 @@
+<?xml version="1.0" encoding="utf-8" standalone="yes"?>
+<rss version="2.0" xmlns:atom="http://www.w3.org/2005/Atom">
+  <channel>
+    <title>Collection on 三斜求积术 - Code fun. Code better</title>
+    <link>https://ilixiang.github.io/tags/collection/</link>
+    <description>Recent content in Collection on 三斜求积术 - Code fun. Code better</description>
+    <generator>Hugo -- gohugo.io</generator>
+    <language>en</language>
+    <lastBuildDate>Fri, 03 Jul 2020 10:36:09 +0800</lastBuildDate>
+    
+	<atom:link href="https://ilixiang.github.io/tags/collection/index.xml" rel="self" type="application/rss+xml" />
+    
+    
+    <item>
+      <title>Guava杂谈 - ImmutableCollections</title>
+      <link>https://ilixiang.github.io/post/guava-talk-4/</link>
+      <pubDate>Fri, 03 Jul 2020 10:36:09 +0800</pubDate>
+      
+      <guid>https://ilixiang.github.io/post/guava-talk-4/</guid>
+      <description>Guava的ImmutableCollection意为不可变集合框架，它的存在弥补了JDK的UnmodifiableCollection的2</description>
+    </item>
+    
+  </channel>
+</rss>

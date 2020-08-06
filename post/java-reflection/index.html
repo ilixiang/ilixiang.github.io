@@ -1,275 +1,191 @@
-<!doctype html>
-<html lang="zh-CN">
+<!DOCTYPE html>
+<html lang="zh-cn">
 <head>
+  <meta charset="utf-8">
+  <meta http-equiv="X-UA-Compatible" content="IE=edge,chrome=1">
+  <title>Java - 反射 - 三斜求积术 - Code fun. Code better</title>
+  <meta name="renderer" content="webkit" />
+<meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=1"/>
 
-    <meta charset="utf-8">
-    <meta http-equiv="X-UA-Compatible" content="IE=edge">
-    <meta name="viewport" content="width=device-width, initial-scale=1">
+<meta http-equiv="Cache-Control" content="no-transform" />
+<meta http-equiv="Cache-Control" content="no-siteapp" />
 
-    <title>Java - 反射 | 三斜求积术</title>
-    <meta property="og:title" content="Java - 反射 - 三斜求积术">
-    <meta property="og:type" content="article">
-        
-    <meta property="article:published_time" content='2020-07-03T13:29:04&#43;08:00'>
-        
-        
-    <meta property="article:modified_time" content='2020-07-03T13:29:04&#43;08:00'>
-        
-    <meta name="Keywords" content="Java、shell、web">
-    <meta name="description" content="Java - 反射">
-        
-    <meta name="author" content="石不转">
-    <meta property="og:url" content="https://ilixiang.github.io/post/java-reflection/">
-    <link rel="shortcut icon" href="/favicon.ico" type="image/x-icon">
-
-    <link rel="stylesheet" href='/css/normalize.css'>
-    <link rel="stylesheet" href='/css/style.css'>
-    <script type="text/javascript" src="//cdnjs.cloudflare.com/ajax/libs/jquery/3.4.1/jquery.min.js"></script>
-
-    
-    <script async src="//pagead2.googlesyndication.com/pagead/js/adsbygoogle.js"></script>
-    <script>
-    (adsbygoogle = window.adsbygoogle || []).push({
-        google_ad_client: "ca-pub-4031353640611810",
-        enable_page_level_ads: true
-    });
-    </script>
-    
+<meta name="theme-color" content="#f8f5ec" />
+<meta name="msapplication-navbutton-color" content="#f8f5ec">
+<meta name="apple-mobile-web-app-capable" content="yes">
+<meta name="apple-mobile-web-app-status-bar-style" content="#f8f5ec">
 
 
-    
-    
-        <link rel="stylesheet" href='/css/douban.css'>
-    
-        <link rel="stylesheet" href='/css/other.css'>
-    
+<meta name="author" content="石不转" /><meta name="description" content="反射是Java的一大特点，能够在运行时获取类的全部信息，因此，在许多的框架中都有其应用。其中我们最熟悉的当属spring了，它的核心两大功能" /><meta name="keywords" content="Hugo, theme, even" />
+
+
+
+
+
+
+<meta name="generator" content="Hugo 0.68.3 with theme even" />
+
+
+<link rel="canonical" href="https://ilixiang.github.io/post/java-reflection/" />
+<link rel="apple-touch-icon" sizes="180x180" href="/apple-touch-icon.png">
+<link rel="icon" type="image/png" sizes="32x32" href="/favicon-32x32.png">
+<link rel="icon" type="image/png" sizes="16x16" href="/favicon-16x16.png">
+<link rel="manifest" href="/manifest.json">
+<link rel="mask-icon" href="/safari-pinned-tab.svg" color="#5bbad5">
+
+
+
+<link href="/sass/main.min.651e6917abb0239242daa570c2bec9867267bbcd83646da5a850afe573347b44.css" rel="stylesheet">
+<link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/@fancyapps/fancybox@3.1.20/dist/jquery.fancybox.min.css" integrity="sha256-7TyXnr2YU040zfSP+rEcz29ggW4j56/ujTPwjMzyqFY=" crossorigin="anonymous">
+
+
+<meta property="og:title" content="Java - 反射" />
+<meta property="og:description" content="反射是Java的一大特点，能够在运行时获取类的全部信息，因此，在许多的框架中都有其应用。其中我们最熟悉的当属spring了，它的核心两大功能" />
+<meta property="og:type" content="article" />
+<meta property="og:url" content="https://ilixiang.github.io/post/java-reflection/" />
+<meta property="article:published_time" content="2020-07-03T13:29:04+08:00" />
+<meta property="article:modified_time" content="2020-07-03T13:29:04+08:00" />
+<meta itemprop="name" content="Java - 反射">
+<meta itemprop="description" content="反射是Java的一大特点，能够在运行时获取类的全部信息，因此，在许多的框架中都有其应用。其中我们最熟悉的当属spring了，它的核心两大功能">
+<meta itemprop="datePublished" content="2020-07-03T13:29:04&#43;08:00" />
+<meta itemprop="dateModified" content="2020-07-03T13:29:04&#43;08:00" />
+<meta itemprop="wordCount" content="3764">
+
+
+
+<meta itemprop="keywords" content="Java,reflection," /><meta name="twitter:card" content="summary"/>
+<meta name="twitter:title" content="Java - 反射"/>
+<meta name="twitter:description" content="反射是Java的一大特点，能够在运行时获取类的全部信息，因此，在许多的框架中都有其应用。其中我们最熟悉的当属spring了，它的核心两大功能"/>
+
+<!--[if lte IE 9]>
+  <script src="https://cdnjs.cloudflare.com/ajax/libs/classlist/1.1.20170427/classList.min.js"></script>
+<![endif]-->
+
+<!--[if lt IE 9]>
+  <script src="https://cdn.jsdelivr.net/npm/html5shiv@3.7.3/dist/html5shiv.min.js"></script>
+  <script src="https://cdn.jsdelivr.net/npm/respond.js@1.4.2/dest/respond.min.js"></script>
+<![endif]-->
+
 </head>
-
-
 <body>
-    <header id="header" class="clearfix">
-    <div class="container">
-        <div class="col-group">
-            <div class="site-name ">
-                
-                    <a id="logo" href="https://ilixiang.github.io/">
-                        三斜求积术
-                    </a>
-                
-                <p class="description">Code for fun. Code for better</p>
-            </div>
-            <div>
-                <nav id="nav-menu" class="clearfix">
-                    <a class="current" href="https://ilixiang.github.io/">首页</a>
-                    
-                    <a  href="https://ilixiang.github.io/archives/" title="归档">归档</a>
-                    
-                    <a  href="https://ilixiang.github.io/about/" title="关于">关于</a>
-                    
-                </nav>
-            </div>
-        </div>
-    </div>
-</header>
-
-    <div id="body">
-        <div class="container">
-            <div class="col-group">
-
-                <div class="col-8" id="main">
-                    
-<div class="res-cons">
-    <style type="text/css">
-    .post-toc {
-        position: fixed;
-        width: 200px;
-        margin-left: -210px;
-        padding: 5px 10px;
-        font-family: Athelas, STHeiti, Microsoft Yahei, serif;
-        font-size: 12px;
-        border: 1px solid rgba(0, 0, 0, .07);
-        border-radius: 5px;
-        background-color: rgba(255, 255, 255, 0.98);
-        background-clip: padding-box;
-        -webkit-box-shadow: 1px 1px 2px rgba(0, 0, 0, .125);
-        box-shadow: 1px 1px 2px rgba(0, 0, 0, .125);
-        word-wrap: break-word;
-        white-space: nowrap;
-        -webkit-box-sizing: border-box;
-        box-sizing: border-box;
-        z-index: 999;
-        cursor: pointer;
-        max-height: 70%;
-        overflow-y: auto;
-        overflow-x: hidden;
-    }
-
-    .post-toc .post-toc-title {
-        width: 100%;
-        margin: 0 auto;
-        font-size: 20px;
-        font-weight: 400;
-        text-transform: uppercase;
-        text-align: center;
-    }
-
-    .post-toc .post-toc-content {
-        font-size: 15px;
-    }
-
-    .post-toc .post-toc-content>nav>ul {
-        margin: 10px 0;
-    }
-
-    .post-toc .post-toc-content ul {
-        padding-left: 20px;
-        list-style: square;
-        margin: 0.5em;
-        line-height: 1.8em;
-    }
-
-    .post-toc .post-toc-content ul ul {
-        padding-left: 15px;
-        display: none;
-    }
-
-    @media print,
-    screen and (max-width:1057px) {
-        .post-toc {
-            display: none;
-        }
-    }
-</style>
-<div class="post-toc" style="position: absolute; top: 188px;">
-    <h2 class="post-toc-title">文章目录</h2>
-    <div class="post-toc-content">
-        <nav id="TableOfContents">
-  <ul>
-    <li><a href="#简单使用-">简单使用</a></li>
-    <li><a href="#反射的代价-">反射的代价</a>
-      <ul>
-        <li><a href="#异常代价-">异常代价</a></li>
-        <li><a href="#性能代价-">性能代价</a></li>
-        <li><a href="#破坏封装性-">破坏封装性</a></li>
-      </ul>
-    </li>
-    <li><a href="#反射的应用-">反射的应用</a>
-      <ul>
-        <li><a href="#接口和实现分离-">接口和实现分离</a></li>
-        <li><a href="#动态代理-">动态代理</a></li>
-        <li><a href="#注解-">注解</a></li>
-      </ul>
-    </li>
-    <li><a href="#总结-">总结</a></li>
+  <div id="mobile-navbar" class="mobile-navbar">
+  <div class="mobile-header-logo">
+    <a href="/" class="logo">三斜求积术</a>
+  </div>
+  <div class="mobile-navbar-icon">
+    <span></span>
+    <span></span>
+    <span></span>
+  </div>
+</div>
+<nav id="mobile-menu" class="mobile-menu slideout-menu">
+  <ul class="mobile-menu-list">
+    <a href="/">
+        <li class="mobile-menu-item">主页</li>
+      </a><a href="/post/">
+        <li class="mobile-menu-item">归档</li>
+      </a><a href="/tags/">
+        <li class="mobile-menu-item">标签</li>
+      </a><a href="/categories/">
+        <li class="mobile-menu-item">分类</li>
+      </a>
   </ul>
 </nav>
-    </div>
+  <div class="container" id="mobile-panel">
+    <header id="header" class="header">
+        <div class="logo-wrapper">
+  <a href="/" class="logo">三斜求积术</a>
 </div>
-<script type="text/javascript">
-    $(document).ready(function () {
-        var postToc = $(".post-toc");
-        if (postToc.length) {
-            var leftPos = $("#main").offset().left;
-            if(leftPos<220){
-                postToc.css({"width":leftPos-10,"margin-left":(0-leftPos)})
-            }
 
-            var t = postToc.offset().top - 20,
-                a = {
-                    start: {
-                        position: "absolute",
-                        top: t
-                    },
-                    process: {
-                        position: "fixed",
-                        top: 20
-                    },
-                };
-            $(window).scroll(function () {
-                var e = $(window).scrollTop();
-                e < t ? postToc.css(a.start) : postToc.css(a.process)
-            })
-        }
-    })
-</script>
-    <article class="post">
-        <header>
-            <h1 class="post-title">Java - 反射</h1>
-        </header>
-        <date class="post-meta meta-date">
-            2020年7月3日
-        </date>
+<nav class="site-navbar">
+  <ul id="menu" class="menu">
+    <li class="menu-item">
+        <a class="menu-item-link" href="/">主页</a>
+      </li><li class="menu-item">
+        <a class="menu-item-link" href="/post/">归档</a>
+      </li><li class="menu-item">
+        <a class="menu-item-link" href="/tags/">标签</a>
+      </li><li class="menu-item">
+        <a class="menu-item-link" href="/categories/">分类</a>
+      </li>
+  </ul>
+</nav>
+    </header>
+
+    <main id="main" class="main">
+      <div class="content-wrapper">
+        <div id="content" class="content">
+          <article class="post">
+    
+    <header class="post-header">
+      <h1 class="post-title">Java - 反射</h1>
+
+      <div class="post-meta">
+        <span class="post-time"> 2020-07-03 </span>
+        <div class="post-category">
+            <a href="/categories/java/"> Java </a>
+            </div>
         
-        <div class="post-meta">
-            <span>|</span>
-            
-            <span class="meta-category"><a href='https://ilixiang.github.io/categories/Java'>Java</a></span>
-            
-        </div>
-        
-        
-        <div class="post-meta">
-            <span id="busuanzi_container_page_pv">|<span id="busuanzi_value_page_pv"></span><span>
-                    阅读</span></span>
-        </div>
-        
-        
-        <div class="post-content">
-            <p><img src="/img/java-reflection.png" alt="java-reflection"></p>
+      </div>
+    </header>
+
+    
+    <div class="post-content">
+      <p><img src="/img/java-reflection.png" alt="java-reflection"></p>
 <p>反射是Java的一大特点，能够在运行时获取类的全部信息，因此，在许多的框架中都有其应用。其中我们最熟悉的当属spring了，它的核心两大功能ioc和aop都有使用反射机制，今天我们就来聊一聊反射机制。</p>
 <h2 id="简单使用-">简单使用</h2>
 <p>反射是通过获取<code>Class</code>对象，进而在运行时获取类的全部成员、方法、注解、父类等信息，因而首先需要做的，就是获取<code>Class</code>对象。</p>
-<div class="highlight"><div style="background-color:#fff;-moz-tab-size:4;-o-tab-size:4;tab-size:4">
-<table style="border-spacing:0;padding:0;margin:0;border:0;width:auto;overflow:auto;display:block;"><tr><td style="vertical-align:top;padding:0;margin:0;border:0;">
-<pre style="background-color:#fff;-moz-tab-size:4;-o-tab-size:4;tab-size:4"><code><span style="margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f"> 1
-</span><span style="margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f"> 2
-</span><span style="margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f"> 3
-</span><span style="margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f"> 4
-</span><span style="margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f"> 5
-</span><span style="margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f"> 6
-</span><span style="margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f"> 7
-</span><span style="margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f"> 8
-</span><span style="margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f"> 9
-</span><span style="margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f">10
+<div class="highlight"><div class="chroma">
+<table class="lntable"><tr><td class="lntd">
+<pre class="chroma"><code><span class="lnt"> 1
+</span><span class="lnt"> 2
+</span><span class="lnt"> 3
+</span><span class="lnt"> 4
+</span><span class="lnt"> 5
+</span><span class="lnt"> 6
+</span><span class="lnt"> 7
+</span><span class="lnt"> 8
+</span><span class="lnt"> 9
+</span><span class="lnt">10
 </span></code></pre></td>
-<td style="vertical-align:top;padding:0;margin:0;border:0;;width:100%">
-<pre style="background-color:#fff;-moz-tab-size:4;-o-tab-size:4;tab-size:4"><code class="language-java" data-lang="java">    <span style="color:#3c5d5d;font-weight:bold">@Test</span>
-    <span style="color:#000;font-weight:bold">public</span> <span style="color:#458;font-weight:bold">void</span> <span style="color:#900;font-weight:bold">testGetClazz</span><span style="color:#000;font-weight:bold">()</span> <span style="color:#000;font-weight:bold">throws</span> ClassNotFoundException <span style="color:#000;font-weight:bold">{</span>
-        <span style="color:#998;font-style:italic">// 直接通过类.class获得
-</span><span style="color:#998;font-style:italic"></span>        Class<span style="color:#000;font-weight:bold">&lt;?&gt;</span> clazz1 <span style="color:#000;font-weight:bold">=</span> HelloWorld<span style="color:#000;font-weight:bold">.</span><span style="color:#008080">class</span><span style="color:#000;font-weight:bold">;</span>
-        <span style="color:#998;font-style:italic">// 通过对象调用getClass()获得
-</span><span style="color:#998;font-style:italic"></span>        HelloWorld helloWorld <span style="color:#000;font-weight:bold">=</span> <span style="color:#000;font-weight:bold">new</span> HelloWorld<span style="color:#000;font-weight:bold">();</span>
-        Class<span style="color:#000;font-weight:bold">&lt;?&gt;</span> clazz2 <span style="color:#000;font-weight:bold">=</span> helloWorld<span style="color:#000;font-weight:bold">.</span><span style="color:#008080">getClass</span><span style="color:#000;font-weight:bold">();</span>
-        <span style="color:#998;font-style:italic">// 通过Class.forName，传入类的完全限定名获得
-</span><span style="color:#998;font-style:italic"></span>        Class<span style="color:#000;font-weight:bold">&lt;?&gt;</span> clazz3 <span style="color:#000;font-weight:bold">=</span> Class<span style="color:#000;font-weight:bold">.</span><span style="color:#008080">forName</span><span style="color:#000;font-weight:bold">(</span><span style="color:#d14">&#34;se.HelloWorld&#34;</span><span style="color:#000;font-weight:bold">);</span>
-    <span style="color:#000;font-weight:bold">}</span>
+<td class="lntd">
+<pre class="chroma"><code class="language-java" data-lang="java">    <span class="nd">@Test</span>
+    <span class="kd">public</span> <span class="kt">void</span> <span class="nf">testGetClazz</span><span class="o">()</span> <span class="kd">throws</span> <span class="n">ClassNotFoundException</span> <span class="o">{</span>
+        <span class="c1">// 直接通过类.class获得
+</span><span class="c1"></span>        <span class="n">Class</span><span class="o">&lt;?&gt;</span> <span class="n">clazz1</span> <span class="o">=</span> <span class="n">HelloWorld</span><span class="o">.</span><span class="na">class</span><span class="o">;</span>
+        <span class="c1">// 通过对象调用getClass()获得
+</span><span class="c1"></span>        <span class="n">HelloWorld</span> <span class="n">helloWorld</span> <span class="o">=</span> <span class="k">new</span> <span class="n">HelloWorld</span><span class="o">();</span>
+        <span class="n">Class</span><span class="o">&lt;?&gt;</span> <span class="n">clazz2</span> <span class="o">=</span> <span class="n">helloWorld</span><span class="o">.</span><span class="na">getClass</span><span class="o">();</span>
+        <span class="c1">// 通过Class.forName，传入类的完全限定名获得
+</span><span class="c1"></span>        <span class="n">Class</span><span class="o">&lt;?&gt;</span> <span class="n">clazz3</span> <span class="o">=</span> <span class="n">Class</span><span class="o">.</span><span class="na">forName</span><span class="o">(</span><span class="s">&#34;se.HelloWorld&#34;</span><span class="o">);</span>
+    <span class="o">}</span>
 </code></pre></td></tr></table>
 </div>
 </div><p>上述的3种方法各有其用途，但我印象最深的是第三种，它拥有能够将<strong>字符串</strong>转换为类并创建实例的能力，这在C和C++中是难以想象的，只能通过手动实现类似工厂方法的途径做到。</p>
-<div class="highlight"><div style="background-color:#fff;-moz-tab-size:4;-o-tab-size:4;tab-size:4">
-<table style="border-spacing:0;padding:0;margin:0;border:0;width:auto;overflow:auto;display:block;"><tr><td style="vertical-align:top;padding:0;margin:0;border:0;">
-<pre style="background-color:#fff;-moz-tab-size:4;-o-tab-size:4;tab-size:4"><code><span style="margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f"> 1
-</span><span style="margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f"> 2
-</span><span style="margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f"> 3
-</span><span style="margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f"> 4
-</span><span style="margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f"> 5
-</span><span style="margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f"> 6
-</span><span style="margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f"> 7
-</span><span style="margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f"> 8
-</span><span style="margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f"> 9
-</span><span style="margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f">10
+<div class="highlight"><div class="chroma">
+<table class="lntable"><tr><td class="lntd">
+<pre class="chroma"><code><span class="lnt"> 1
+</span><span class="lnt"> 2
+</span><span class="lnt"> 3
+</span><span class="lnt"> 4
+</span><span class="lnt"> 5
+</span><span class="lnt"> 6
+</span><span class="lnt"> 7
+</span><span class="lnt"> 8
+</span><span class="lnt"> 9
+</span><span class="lnt">10
 </span></code></pre></td>
-<td style="vertical-align:top;padding:0;margin:0;border:0;;width:100%">
-<pre style="background-color:#fff;-moz-tab-size:4;-o-tab-size:4;tab-size:4"><code class="language-java" data-lang="java">    <span style="color:#3c5d5d;font-weight:bold">@Test</span>
-    <span style="color:#000;font-weight:bold">public</span> <span style="color:#458;font-weight:bold">void</span> <span style="color:#900;font-weight:bold">testGetMethods</span><span style="color:#000;font-weight:bold">()</span> <span style="color:#000;font-weight:bold">throws</span> NoSuchMethodException<span style="color:#000;font-weight:bold">,</span> InvocationTargetException<span style="color:#000;font-weight:bold">,</span> IllegalAccessException <span style="color:#000;font-weight:bold">{</span>
-        <span style="color:#998;font-style:italic">// 获取Class对象
-</span><span style="color:#998;font-style:italic"></span>        Class<span style="color:#000;font-weight:bold">&lt;?&gt;</span> clazz <span style="color:#000;font-weight:bold">=</span> HelloWorld<span style="color:#000;font-weight:bold">.</span><span style="color:#008080">class</span><span style="color:#000;font-weight:bold">;</span>
-        HelloWorld helloWorld <span style="color:#000;font-weight:bold">=</span> <span style="color:#000;font-weight:bold">new</span> HelloWorld<span style="color:#000;font-weight:bold">();</span>
-        <span style="color:#998;font-style:italic">// 获取sayHello()方法
-</span><span style="color:#998;font-style:italic"></span>        Method method <span style="color:#000;font-weight:bold">=</span> clazz<span style="color:#000;font-weight:bold">.</span><span style="color:#008080">getMethod</span><span style="color:#000;font-weight:bold">(</span><span style="color:#d14">&#34;sayHello&#34;</span><span style="color:#000;font-weight:bold">);</span>
-        <span style="color:#998;font-style:italic">// 使用Method对象调用方法
-</span><span style="color:#998;font-style:italic"></span>        method<span style="color:#000;font-weight:bold">.</span><span style="color:#008080">invoke</span><span style="color:#000;font-weight:bold">(</span>helloWorld<span style="color:#000;font-weight:bold">);</span>
-    <span style="color:#000;font-weight:bold">}</span>
+<td class="lntd">
+<pre class="chroma"><code class="language-java" data-lang="java">    <span class="nd">@Test</span>
+    <span class="kd">public</span> <span class="kt">void</span> <span class="nf">testGetMethods</span><span class="o">()</span> <span class="kd">throws</span> <span class="n">NoSuchMethodException</span><span class="o">,</span> <span class="n">InvocationTargetException</span><span class="o">,</span> <span class="n">IllegalAccessException</span> <span class="o">{</span>
+        <span class="c1">// 获取Class对象
+</span><span class="c1"></span>        <span class="n">Class</span><span class="o">&lt;?&gt;</span> <span class="n">clazz</span> <span class="o">=</span> <span class="n">HelloWorld</span><span class="o">.</span><span class="na">class</span><span class="o">;</span>
+        <span class="n">HelloWorld</span> <span class="n">helloWorld</span> <span class="o">=</span> <span class="k">new</span> <span class="n">HelloWorld</span><span class="o">();</span>
+        <span class="c1">// 获取sayHello()方法
+</span><span class="c1"></span>        <span class="n">Method</span> <span class="n">method</span> <span class="o">=</span> <span class="n">clazz</span><span class="o">.</span><span class="na">getMethod</span><span class="o">(</span><span class="s">&#34;sayHello&#34;</span><span class="o">);</span>
+        <span class="c1">// 使用Method对象调用方法
+</span><span class="c1"></span>        <span class="n">method</span><span class="o">.</span><span class="na">invoke</span><span class="o">(</span><span class="n">helloWorld</span><span class="o">);</span>
+    <span class="o">}</span>
 </code></pre></td></tr></table>
 </div>
 </div><p>通过<code>Class</code>获取<code>Method</code>对象从而调用相应的方法，这也属于相对比较常见的操作。</p>
@@ -277,211 +193,211 @@
 <h3 id="异常代价-">异常代价</h3>
 <p>上面的2个例子中，所有的方法名后面都抛出了异常，这便是反射的代价之一。反射的api在赋予你运行时获取类相关信息能力的同时，也使得JVM放弃了它自己在编译时期对你代码的纠错能力，因此，你必须在代码中处理自己在运行时使用反射可能产生的异常。</p>
 <p>这是因为你在运行时期所决定的东西，编译器在编译时期无法知晓。编译器不知道你会调用什么方法，也就不知道你调用方法的访问修饰符，更不知道调用方法的对象是否属于这个类。或许你会觉得“就这？”，为了处理这些异常，你就很容易写出下面这样的代码。</p>
-<div class="highlight"><div style="background-color:#fff;-moz-tab-size:4;-o-tab-size:4;tab-size:4">
-<table style="border-spacing:0;padding:0;margin:0;border:0;width:auto;overflow:auto;display:block;"><tr><td style="vertical-align:top;padding:0;margin:0;border:0;">
-<pre style="background-color:#fff;-moz-tab-size:4;-o-tab-size:4;tab-size:4"><code><span style="margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f"> 1
-</span><span style="margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f"> 2
-</span><span style="margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f"> 3
-</span><span style="margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f"> 4
-</span><span style="margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f"> 5
-</span><span style="margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f"> 6
-</span><span style="margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f"> 7
-</span><span style="margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f"> 8
-</span><span style="margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f"> 9
-</span><span style="margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f">10
-</span><span style="margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f">11
-</span><span style="margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f">12
-</span><span style="margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f">13
-</span><span style="margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f">14
-</span><span style="margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f">15
-</span><span style="margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f">16
-</span><span style="margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f">17
-</span><span style="margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f">18
-</span><span style="margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f">19
+<div class="highlight"><div class="chroma">
+<table class="lntable"><tr><td class="lntd">
+<pre class="chroma"><code><span class="lnt"> 1
+</span><span class="lnt"> 2
+</span><span class="lnt"> 3
+</span><span class="lnt"> 4
+</span><span class="lnt"> 5
+</span><span class="lnt"> 6
+</span><span class="lnt"> 7
+</span><span class="lnt"> 8
+</span><span class="lnt"> 9
+</span><span class="lnt">10
+</span><span class="lnt">11
+</span><span class="lnt">12
+</span><span class="lnt">13
+</span><span class="lnt">14
+</span><span class="lnt">15
+</span><span class="lnt">16
+</span><span class="lnt">17
+</span><span class="lnt">18
+</span><span class="lnt">19
 </span></code></pre></td>
-<td style="vertical-align:top;padding:0;margin:0;border:0;;width:100%">
-<pre style="background-color:#fff;-moz-tab-size:4;-o-tab-size:4;tab-size:4"><code class="language-java" data-lang="java">    <span style="color:#3c5d5d;font-weight:bold">@Test</span>
-    <span style="color:#000;font-weight:bold">public</span> <span style="color:#458;font-weight:bold">void</span> <span style="color:#900;font-weight:bold">testGetMethods</span><span style="color:#000;font-weight:bold">()</span> <span style="color:#000;font-weight:bold">{</span>
-        <span style="color:#998;font-style:italic">// 获取Class对象
-</span><span style="color:#998;font-style:italic"></span>        Class<span style="color:#000;font-weight:bold">&lt;?&gt;</span> clazz <span style="color:#000;font-weight:bold">=</span> HelloWorld<span style="color:#000;font-weight:bold">.</span><span style="color:#008080">class</span><span style="color:#000;font-weight:bold">;</span>
-        HelloWorld helloWorld <span style="color:#000;font-weight:bold">=</span> <span style="color:#000;font-weight:bold">new</span> HelloWorld<span style="color:#000;font-weight:bold">();</span>
-        <span style="color:#000;font-weight:bold">try</span><span style="color:#000;font-weight:bold">{</span>
-        	Method method <span style="color:#000;font-weight:bold">=</span> clazz<span style="color:#000;font-weight:bold">.</span><span style="color:#008080">getMethod</span><span style="color:#000;font-weight:bold">(</span><span style="color:#d14">&#34;sayHello&#34;</span><span style="color:#000;font-weight:bold">);</span>
-        	method<span style="color:#000;font-weight:bold">.</span><span style="color:#008080">invoke</span><span style="color:#000;font-weight:bold">(</span>helloWorld<span style="color:#000;font-weight:bold">);</span>
-        <span style="color:#000;font-weight:bold">}</span><span style="color:#000;font-weight:bold">catch</span><span style="color:#000;font-weight:bold">(</span>NoSuchMethodException e<span style="color:#000;font-weight:bold">)</span> <span style="color:#000;font-weight:bold">{</span>
-            log<span style="color:#000;font-weight:bold">.</span><span style="color:#008080">error</span><span style="color:#000;font-weight:bold">(</span><span style="color:#d14">&#34;...&#34;</span><span style="color:#000;font-weight:bold">);</span>
-            <span style="color:#000;font-weight:bold">...</span>
-        <span style="color:#000;font-weight:bold">}</span><span style="color:#000;font-weight:bold">catch</span><span style="color:#000;font-weight:bold">(</span>InvocationTargetException e<span style="color:#000;font-weight:bold">)</span> <span style="color:#000;font-weight:bold">{</span>
-            log<span style="color:#000;font-weight:bold">.</span><span style="color:#008080">error</span><span style="color:#000;font-weight:bold">(</span><span style="color:#d14">&#34;...&#34;</span><span style="color:#000;font-weight:bold">);</span>
-            <span style="color:#000;font-weight:bold">...</span>
-        <span style="color:#000;font-weight:bold">}</span><span style="color:#000;font-weight:bold">catch</span><span style="color:#000;font-weight:bold">(</span>IllegalAccessException e<span style="color:#000;font-weight:bold">)</span> <span style="color:#000;font-weight:bold">{</span>
-            log<span style="color:#000;font-weight:bold">.</span><span style="color:#008080">error</span><span style="color:#000;font-weight:bold">(</span><span style="color:#d14">&#34;...&#34;</span><span style="color:#000;font-weight:bold">);</span>
-            <span style="color:#000;font-weight:bold">...</span>
-        <span style="color:#000;font-weight:bold">}</span>
-    <span style="color:#000;font-weight:bold">}</span>
+<td class="lntd">
+<pre class="chroma"><code class="language-java" data-lang="java">    <span class="nd">@Test</span>
+    <span class="kd">public</span> <span class="kt">void</span> <span class="nf">testGetMethods</span><span class="o">()</span> <span class="o">{</span>
+        <span class="c1">// 获取Class对象
+</span><span class="c1"></span>        <span class="n">Class</span><span class="o">&lt;?&gt;</span> <span class="n">clazz</span> <span class="o">=</span> <span class="n">HelloWorld</span><span class="o">.</span><span class="na">class</span><span class="o">;</span>
+        <span class="n">HelloWorld</span> <span class="n">helloWorld</span> <span class="o">=</span> <span class="k">new</span> <span class="n">HelloWorld</span><span class="o">();</span>
+        <span class="k">try</span><span class="o">{</span>
+        	<span class="n">Method</span> <span class="n">method</span> <span class="o">=</span> <span class="n">clazz</span><span class="o">.</span><span class="na">getMethod</span><span class="o">(</span><span class="s">&#34;sayHello&#34;</span><span class="o">);</span>
+        	<span class="n">method</span><span class="o">.</span><span class="na">invoke</span><span class="o">(</span><span class="n">helloWorld</span><span class="o">);</span>
+        <span class="o">}</span><span class="k">catch</span><span class="o">(</span><span class="n">NoSuchMethodException</span> <span class="n">e</span><span class="o">)</span> <span class="o">{</span>
+            <span class="n">log</span><span class="o">.</span><span class="na">error</span><span class="o">(</span><span class="s">&#34;...&#34;</span><span class="o">);</span>
+            <span class="o">...</span>
+        <span class="o">}</span><span class="k">catch</span><span class="o">(</span><span class="n">InvocationTargetException</span> <span class="n">e</span><span class="o">)</span> <span class="o">{</span>
+            <span class="n">log</span><span class="o">.</span><span class="na">error</span><span class="o">(</span><span class="s">&#34;...&#34;</span><span class="o">);</span>
+            <span class="o">...</span>
+        <span class="o">}</span><span class="k">catch</span><span class="o">(</span><span class="n">IllegalAccessException</span> <span class="n">e</span><span class="o">)</span> <span class="o">{</span>
+            <span class="n">log</span><span class="o">.</span><span class="na">error</span><span class="o">(</span><span class="s">&#34;...&#34;</span><span class="o">);</span>
+            <span class="o">...</span>
+        <span class="o">}</span>
+    <span class="o">}</span>
 </code></pre></td></tr></table>
 </div>
 </div><p>上述代码将所有的异常都进行了处理，但回过头来你就会发现，你处理异常所使用的代码行数超过了你的业务逻辑。这就导致了你所写的代码变得十分的杂乱，业务逻辑不清晰，也就影响了代码的可读性。</p>
 <h3 id="性能代价-">性能代价</h3>
 <p>除去需要处理异常而带来的代码的复杂性，性能也是使用反射所必须要注意的。</p>
-<div class="highlight"><div style="background-color:#fff;-moz-tab-size:4;-o-tab-size:4;tab-size:4">
-<table style="border-spacing:0;padding:0;margin:0;border:0;width:auto;overflow:auto;display:block;"><tr><td style="vertical-align:top;padding:0;margin:0;border:0;">
-<pre style="background-color:#fff;-moz-tab-size:4;-o-tab-size:4;tab-size:4"><code><span style="margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f"> 1
-</span><span style="margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f"> 2
-</span><span style="margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f"> 3
-</span><span style="margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f"> 4
-</span><span style="margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f"> 5
-</span><span style="margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f"> 6
-</span><span style="margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f"> 7
-</span><span style="margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f"> 8
-</span><span style="margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f"> 9
-</span><span style="margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f">10
-</span><span style="margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f">11
-</span><span style="margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f">12
-</span><span style="margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f">13
-</span><span style="margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f">14
-</span><span style="margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f">15
-</span><span style="margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f">16
-</span><span style="margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f">17
-</span><span style="margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f">18
-</span><span style="margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f">19
-</span><span style="margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f">20
-</span><span style="margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f">21
-</span><span style="margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f">22
-</span><span style="margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f">23
-</span><span style="margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f">24
-</span><span style="margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f">25
-</span><span style="margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f">26
-</span><span style="margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f">27
-</span><span style="margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f">28
-</span><span style="margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f">29
-</span><span style="margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f">30
-</span><span style="margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f">31
-</span><span style="margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f">32
-</span><span style="margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f">33
-</span><span style="margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f">34
-</span><span style="margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f">35
-</span><span style="margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f">36
+<div class="highlight"><div class="chroma">
+<table class="lntable"><tr><td class="lntd">
+<pre class="chroma"><code><span class="lnt"> 1
+</span><span class="lnt"> 2
+</span><span class="lnt"> 3
+</span><span class="lnt"> 4
+</span><span class="lnt"> 5
+</span><span class="lnt"> 6
+</span><span class="lnt"> 7
+</span><span class="lnt"> 8
+</span><span class="lnt"> 9
+</span><span class="lnt">10
+</span><span class="lnt">11
+</span><span class="lnt">12
+</span><span class="lnt">13
+</span><span class="lnt">14
+</span><span class="lnt">15
+</span><span class="lnt">16
+</span><span class="lnt">17
+</span><span class="lnt">18
+</span><span class="lnt">19
+</span><span class="lnt">20
+</span><span class="lnt">21
+</span><span class="lnt">22
+</span><span class="lnt">23
+</span><span class="lnt">24
+</span><span class="lnt">25
+</span><span class="lnt">26
+</span><span class="lnt">27
+</span><span class="lnt">28
+</span><span class="lnt">29
+</span><span class="lnt">30
+</span><span class="lnt">31
+</span><span class="lnt">32
+</span><span class="lnt">33
+</span><span class="lnt">34
+</span><span class="lnt">35
+</span><span class="lnt">36
 </span></code></pre></td>
-<td style="vertical-align:top;padding:0;margin:0;border:0;;width:100%">
-<pre style="background-color:#fff;-moz-tab-size:4;-o-tab-size:4;tab-size:4"><code class="language-java" data-lang="java">    <span style="color:#3c5d5d;font-weight:bold">@Test</span>
-    <span style="color:#000;font-weight:bold">public</span> <span style="color:#458;font-weight:bold">void</span> <span style="color:#900;font-weight:bold">methodPerformanceTest</span><span style="color:#000;font-weight:bold">()</span> <span style="color:#000;font-weight:bold">throws</span> ClassNotFoundException<span style="color:#000;font-weight:bold">,</span> NoSuchMethodException<span style="color:#000;font-weight:bold">,</span> InvocationTargetException<span style="color:#000;font-weight:bold">,</span> IllegalAccessException <span style="color:#000;font-weight:bold">{</span>
-        <span style="color:#000;font-weight:bold">final</span> <span style="color:#458;font-weight:bold">long</span> CIRCLES <span style="color:#000;font-weight:bold">=</span> 1000000<span style="color:#000;font-weight:bold">;</span>
-        HelloWorld helloWorld <span style="color:#000;font-weight:bold">=</span> <span style="color:#000;font-weight:bold">new</span> HelloWorld<span style="color:#000;font-weight:bold">();</span>
-        Stopwatch stopwatch <span style="color:#000;font-weight:bold">=</span> Stopwatch<span style="color:#000;font-weight:bold">.</span><span style="color:#008080">createUnstarted</span><span style="color:#000;font-weight:bold">();</span>
+<td class="lntd">
+<pre class="chroma"><code class="language-java" data-lang="java">    <span class="nd">@Test</span>
+    <span class="kd">public</span> <span class="kt">void</span> <span class="nf">methodPerformanceTest</span><span class="o">()</span> <span class="kd">throws</span> <span class="n">ClassNotFoundException</span><span class="o">,</span> <span class="n">NoSuchMethodException</span><span class="o">,</span> <span class="n">InvocationTargetException</span><span class="o">,</span> <span class="n">IllegalAccessException</span> <span class="o">{</span>
+        <span class="kd">final</span> <span class="kt">long</span> <span class="n">CIRCLES</span> <span class="o">=</span> <span class="n">1000000</span><span class="o">;</span>
+        <span class="n">HelloWorld</span> <span class="n">helloWorld</span> <span class="o">=</span> <span class="k">new</span> <span class="n">HelloWorld</span><span class="o">();</span>
+        <span class="n">Stopwatch</span> <span class="n">stopwatch</span> <span class="o">=</span> <span class="n">Stopwatch</span><span class="o">.</span><span class="na">createUnstarted</span><span class="o">();</span>
 
-        <span style="color:#998;font-style:italic">// 通过Class.forName()调用
-</span><span style="color:#998;font-style:italic"></span>        stopwatch<span style="color:#000;font-weight:bold">.</span><span style="color:#008080">start</span><span style="color:#000;font-weight:bold">();</span>
-        <span style="color:#000;font-weight:bold">for</span><span style="color:#000;font-weight:bold">(</span><span style="color:#458;font-weight:bold">int</span> i <span style="color:#000;font-weight:bold">=</span> 0<span style="color:#000;font-weight:bold">;</span> i <span style="color:#000;font-weight:bold">&lt;</span> CIRCLES<span style="color:#000;font-weight:bold">;</span> <span style="color:#000;font-weight:bold">++</span>i<span style="color:#000;font-weight:bold">)</span> <span style="color:#000;font-weight:bold">{</span>
-            Class<span style="color:#000;font-weight:bold">.</span><span style="color:#008080">forName</span><span style="color:#000;font-weight:bold">(</span><span style="color:#d14">&#34;se.HelloWorld&#34;</span><span style="color:#000;font-weight:bold">).</span><span style="color:#008080">getMethod</span><span style="color:#000;font-weight:bold">(</span><span style="color:#d14">&#34;sayHello&#34;</span><span style="color:#000;font-weight:bold">).</span><span style="color:#008080">invoke</span><span style="color:#000;font-weight:bold">(</span>helloWorld<span style="color:#000;font-weight:bold">);</span>
-        <span style="color:#000;font-weight:bold">}</span>
-        stopwatch<span style="color:#000;font-weight:bold">.</span><span style="color:#008080">stop</span><span style="color:#000;font-weight:bold">();</span>
-        System<span style="color:#000;font-weight:bold">.</span><span style="color:#008080">out</span><span style="color:#000;font-weight:bold">.</span><span style="color:#008080">println</span><span style="color:#000;font-weight:bold">(</span>stopwatch<span style="color:#000;font-weight:bold">.</span><span style="color:#008080">elapsed</span><span style="color:#000;font-weight:bold">(</span>TimeUnit<span style="color:#000;font-weight:bold">.</span><span style="color:#008080">MILLISECONDS</span><span style="color:#000;font-weight:bold">));</span>
+        <span class="c1">// 通过Class.forName()调用
+</span><span class="c1"></span>        <span class="n">stopwatch</span><span class="o">.</span><span class="na">start</span><span class="o">();</span>
+        <span class="k">for</span><span class="o">(</span><span class="kt">int</span> <span class="n">i</span> <span class="o">=</span> <span class="n">0</span><span class="o">;</span> <span class="n">i</span> <span class="o">&lt;</span> <span class="n">CIRCLES</span><span class="o">;</span> <span class="o">++</span><span class="n">i</span><span class="o">)</span> <span class="o">{</span>
+            <span class="n">Class</span><span class="o">.</span><span class="na">forName</span><span class="o">(</span><span class="s">&#34;se.HelloWorld&#34;</span><span class="o">).</span><span class="na">getMethod</span><span class="o">(</span><span class="s">&#34;sayHello&#34;</span><span class="o">).</span><span class="na">invoke</span><span class="o">(</span><span class="n">helloWorld</span><span class="o">);</span>
+        <span class="o">}</span>
+        <span class="n">stopwatch</span><span class="o">.</span><span class="na">stop</span><span class="o">();</span>
+        <span class="n">System</span><span class="o">.</span><span class="na">out</span><span class="o">.</span><span class="na">println</span><span class="o">(</span><span class="n">stopwatch</span><span class="o">.</span><span class="na">elapsed</span><span class="o">(</span><span class="n">TimeUnit</span><span class="o">.</span><span class="na">MILLISECONDS</span><span class="o">));</span>
 
-        <span style="color:#998;font-style:italic">// 通过HelloWorld.class调用
-</span><span style="color:#998;font-style:italic"></span>        stopwatch<span style="color:#000;font-weight:bold">.</span><span style="color:#008080">reset</span><span style="color:#000;font-weight:bold">();</span>
-        stopwatch<span style="color:#000;font-weight:bold">.</span><span style="color:#008080">start</span><span style="color:#000;font-weight:bold">();</span>
-        <span style="color:#000;font-weight:bold">for</span><span style="color:#000;font-weight:bold">(</span><span style="color:#458;font-weight:bold">int</span> i <span style="color:#000;font-weight:bold">=</span> 0<span style="color:#000;font-weight:bold">;</span> i <span style="color:#000;font-weight:bold">&lt;</span> CIRCLES<span style="color:#000;font-weight:bold">;</span> <span style="color:#000;font-weight:bold">++</span>i<span style="color:#000;font-weight:bold">)</span> <span style="color:#000;font-weight:bold">{</span>
-            HelloWorld<span style="color:#000;font-weight:bold">.</span><span style="color:#008080">class</span><span style="color:#000;font-weight:bold">.</span><span style="color:#008080">getMethod</span><span style="color:#000;font-weight:bold">(</span><span style="color:#d14">&#34;sayHello&#34;</span><span style="color:#000;font-weight:bold">).</span><span style="color:#008080">invoke</span><span style="color:#000;font-weight:bold">(</span>helloWorld<span style="color:#000;font-weight:bold">);</span>
-        <span style="color:#000;font-weight:bold">}</span>
-        stopwatch<span style="color:#000;font-weight:bold">.</span><span style="color:#008080">stop</span><span style="color:#000;font-weight:bold">();</span>
-        System<span style="color:#000;font-weight:bold">.</span><span style="color:#008080">out</span><span style="color:#000;font-weight:bold">.</span><span style="color:#008080">println</span><span style="color:#000;font-weight:bold">(</span>stopwatch<span style="color:#000;font-weight:bold">.</span><span style="color:#008080">elapsed</span><span style="color:#000;font-weight:bold">(</span>TimeUnit<span style="color:#000;font-weight:bold">.</span><span style="color:#008080">MILLISECONDS</span><span style="color:#000;font-weight:bold">));</span>
+        <span class="c1">// 通过HelloWorld.class调用
+</span><span class="c1"></span>        <span class="n">stopwatch</span><span class="o">.</span><span class="na">reset</span><span class="o">();</span>
+        <span class="n">stopwatch</span><span class="o">.</span><span class="na">start</span><span class="o">();</span>
+        <span class="k">for</span><span class="o">(</span><span class="kt">int</span> <span class="n">i</span> <span class="o">=</span> <span class="n">0</span><span class="o">;</span> <span class="n">i</span> <span class="o">&lt;</span> <span class="n">CIRCLES</span><span class="o">;</span> <span class="o">++</span><span class="n">i</span><span class="o">)</span> <span class="o">{</span>
+            <span class="n">HelloWorld</span><span class="o">.</span><span class="na">class</span><span class="o">.</span><span class="na">getMethod</span><span class="o">(</span><span class="s">&#34;sayHello&#34;</span><span class="o">).</span><span class="na">invoke</span><span class="o">(</span><span class="n">helloWorld</span><span class="o">);</span>
+        <span class="o">}</span>
+        <span class="n">stopwatch</span><span class="o">.</span><span class="na">stop</span><span class="o">();</span>
+        <span class="n">System</span><span class="o">.</span><span class="na">out</span><span class="o">.</span><span class="na">println</span><span class="o">(</span><span class="n">stopwatch</span><span class="o">.</span><span class="na">elapsed</span><span class="o">(</span><span class="n">TimeUnit</span><span class="o">.</span><span class="na">MILLISECONDS</span><span class="o">));</span>
 
-        <span style="color:#998;font-style:italic">// 直接调用
-</span><span style="color:#998;font-style:italic"></span>        stopwatch<span style="color:#000;font-weight:bold">.</span><span style="color:#008080">reset</span><span style="color:#000;font-weight:bold">();</span>
-        stopwatch<span style="color:#000;font-weight:bold">.</span><span style="color:#008080">start</span><span style="color:#000;font-weight:bold">();</span>
-        <span style="color:#000;font-weight:bold">for</span><span style="color:#000;font-weight:bold">(</span><span style="color:#458;font-weight:bold">int</span> i <span style="color:#000;font-weight:bold">=</span> 0<span style="color:#000;font-weight:bold">;</span> i <span style="color:#000;font-weight:bold">&lt;</span> CIRCLES<span style="color:#000;font-weight:bold">;</span> <span style="color:#000;font-weight:bold">++</span>i<span style="color:#000;font-weight:bold">)</span> <span style="color:#000;font-weight:bold">{</span>
-            helloWorld<span style="color:#000;font-weight:bold">.</span><span style="color:#008080">sayHello</span><span style="color:#000;font-weight:bold">();</span>
-        <span style="color:#000;font-weight:bold">}</span>
-        stopwatch<span style="color:#000;font-weight:bold">.</span><span style="color:#008080">stop</span><span style="color:#000;font-weight:bold">();</span>
-        System<span style="color:#000;font-weight:bold">.</span><span style="color:#008080">out</span><span style="color:#000;font-weight:bold">.</span><span style="color:#008080">println</span><span style="color:#000;font-weight:bold">(</span>stopwatch<span style="color:#000;font-weight:bold">.</span><span style="color:#008080">elapsed</span><span style="color:#000;font-weight:bold">(</span>TimeUnit<span style="color:#000;font-weight:bold">.</span><span style="color:#008080">MILLISECONDS</span><span style="color:#000;font-weight:bold">));</span>
-    <span style="color:#000;font-weight:bold">}</span>
-<span style="color:#998;font-style:italic">// ----- 输出 -----
-</span><span style="color:#998;font-style:italic"></span>680
-137
-4
+        <span class="c1">// 直接调用
+</span><span class="c1"></span>        <span class="n">stopwatch</span><span class="o">.</span><span class="na">reset</span><span class="o">();</span>
+        <span class="n">stopwatch</span><span class="o">.</span><span class="na">start</span><span class="o">();</span>
+        <span class="k">for</span><span class="o">(</span><span class="kt">int</span> <span class="n">i</span> <span class="o">=</span> <span class="n">0</span><span class="o">;</span> <span class="n">i</span> <span class="o">&lt;</span> <span class="n">CIRCLES</span><span class="o">;</span> <span class="o">++</span><span class="n">i</span><span class="o">)</span> <span class="o">{</span>
+            <span class="n">helloWorld</span><span class="o">.</span><span class="na">sayHello</span><span class="o">();</span>
+        <span class="o">}</span>
+        <span class="n">stopwatch</span><span class="o">.</span><span class="na">stop</span><span class="o">();</span>
+        <span class="n">System</span><span class="o">.</span><span class="na">out</span><span class="o">.</span><span class="na">println</span><span class="o">(</span><span class="n">stopwatch</span><span class="o">.</span><span class="na">elapsed</span><span class="o">(</span><span class="n">TimeUnit</span><span class="o">.</span><span class="na">MILLISECONDS</span><span class="o">));</span>
+    <span class="o">}</span>
+<span class="c1">// ----- 输出 -----
+</span><span class="c1"></span><span class="n">680</span>
+<span class="n">137</span>
+<span class="n">4</span>
 </code></pre></td></tr></table>
 </div>
 </div><p>上述代码通过3种方式调用<code>sayHello()</code>方法，最终在我的机器上得到的结果。<code>Class.forName()</code>的代价极高，在实际使用时反复调用会极大的影响程序的性能。而即使使用<code>HelloWorld.class</code>直接获取方法，与直接调用相比依然相差的30倍以上（实际上这个差距并不是固定的，可能换一个类或者换一个环境就会有所变化)。</p>
 <p>对于需要反复调用的方法而言，这是无法接受的，因此，比较好的优化方案是通过保存<code>Method</code>对象，这样就不需要从<code>Class</code>对象中获取了。</p>
-<div class="highlight"><div style="background-color:#fff;-moz-tab-size:4;-o-tab-size:4;tab-size:4">
-<table style="border-spacing:0;padding:0;margin:0;border:0;width:auto;overflow:auto;display:block;"><tr><td style="vertical-align:top;padding:0;margin:0;border:0;">
-<pre style="background-color:#fff;-moz-tab-size:4;-o-tab-size:4;tab-size:4"><code><span style="margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f"> 1
-</span><span style="margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f"> 2
-</span><span style="margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f"> 3
-</span><span style="margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f"> 4
-</span><span style="margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f"> 5
-</span><span style="margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f"> 6
-</span><span style="margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f"> 7
-</span><span style="margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f"> 8
-</span><span style="margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f"> 9
-</span><span style="margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f">10
-</span><span style="margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f">11
-</span><span style="margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f">12
-</span><span style="margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f">13
-</span><span style="margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f">14
-</span><span style="margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f">15
-</span><span style="margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f">16
-</span><span style="margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f">17
-</span><span style="margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f">18
-</span><span style="margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f">19
-</span><span style="margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f">20
-</span><span style="margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f">21
-</span><span style="margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f">22
-</span><span style="margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f">23
-</span><span style="margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f">24
-</span><span style="margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f">25
-</span><span style="margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f">26
-</span><span style="margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f">27
-</span><span style="margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f">28
-</span><span style="margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f">29
-</span><span style="margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f">30
-</span><span style="margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f">31
-</span><span style="margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f">32
-</span><span style="margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f">33
-</span><span style="margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f">34
-</span><span style="margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f">35
-</span><span style="margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f">36
-</span><span style="margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f">37
+<div class="highlight"><div class="chroma">
+<table class="lntable"><tr><td class="lntd">
+<pre class="chroma"><code><span class="lnt"> 1
+</span><span class="lnt"> 2
+</span><span class="lnt"> 3
+</span><span class="lnt"> 4
+</span><span class="lnt"> 5
+</span><span class="lnt"> 6
+</span><span class="lnt"> 7
+</span><span class="lnt"> 8
+</span><span class="lnt"> 9
+</span><span class="lnt">10
+</span><span class="lnt">11
+</span><span class="lnt">12
+</span><span class="lnt">13
+</span><span class="lnt">14
+</span><span class="lnt">15
+</span><span class="lnt">16
+</span><span class="lnt">17
+</span><span class="lnt">18
+</span><span class="lnt">19
+</span><span class="lnt">20
+</span><span class="lnt">21
+</span><span class="lnt">22
+</span><span class="lnt">23
+</span><span class="lnt">24
+</span><span class="lnt">25
+</span><span class="lnt">26
+</span><span class="lnt">27
+</span><span class="lnt">28
+</span><span class="lnt">29
+</span><span class="lnt">30
+</span><span class="lnt">31
+</span><span class="lnt">32
+</span><span class="lnt">33
+</span><span class="lnt">34
+</span><span class="lnt">35
+</span><span class="lnt">36
+</span><span class="lnt">37
 </span></code></pre></td>
-<td style="vertical-align:top;padding:0;margin:0;border:0;;width:100%">
-<pre style="background-color:#fff;-moz-tab-size:4;-o-tab-size:4;tab-size:4"><code class="language-java" data-lang="java">    <span style="color:#3c5d5d;font-weight:bold">@Test</span>
-    <span style="color:#000;font-weight:bold">public</span> <span style="color:#458;font-weight:bold">void</span> <span style="color:#900;font-weight:bold">methodPerformanceTest</span><span style="color:#000;font-weight:bold">()</span> <span style="color:#000;font-weight:bold">throws</span> ClassNotFoundException<span style="color:#000;font-weight:bold">,</span> NoSuchMethodException<span style="color:#000;font-weight:bold">,</span> InvocationTargetException<span style="color:#000;font-weight:bold">,</span> IllegalAccessException <span style="color:#000;font-weight:bold">{</span>
-        <span style="color:#000;font-weight:bold">final</span> <span style="color:#458;font-weight:bold">long</span> CIRCLES <span style="color:#000;font-weight:bold">=</span> 1000000<span style="color:#000;font-weight:bold">;</span>
-        HelloWorld helloWorld <span style="color:#000;font-weight:bold">=</span> <span style="color:#000;font-weight:bold">new</span> HelloWorld<span style="color:#000;font-weight:bold">();</span>
-        Stopwatch stopwatch <span style="color:#000;font-weight:bold">=</span> Stopwatch<span style="color:#000;font-weight:bold">.</span><span style="color:#008080">createUnstarted</span><span style="color:#000;font-weight:bold">();</span>
+<td class="lntd">
+<pre class="chroma"><code class="language-java" data-lang="java">    <span class="nd">@Test</span>
+    <span class="kd">public</span> <span class="kt">void</span> <span class="nf">methodPerformanceTest</span><span class="o">()</span> <span class="kd">throws</span> <span class="n">ClassNotFoundException</span><span class="o">,</span> <span class="n">NoSuchMethodException</span><span class="o">,</span> <span class="n">InvocationTargetException</span><span class="o">,</span> <span class="n">IllegalAccessException</span> <span class="o">{</span>
+        <span class="kd">final</span> <span class="kt">long</span> <span class="n">CIRCLES</span> <span class="o">=</span> <span class="n">1000000</span><span class="o">;</span>
+        <span class="n">HelloWorld</span> <span class="n">helloWorld</span> <span class="o">=</span> <span class="k">new</span> <span class="n">HelloWorld</span><span class="o">();</span>
+        <span class="n">Stopwatch</span> <span class="n">stopwatch</span> <span class="o">=</span> <span class="n">Stopwatch</span><span class="o">.</span><span class="na">createUnstarted</span><span class="o">();</span>
 
-        <span style="color:#998;font-style:italic">// 从Class对象中获取Method对象
-</span><span style="color:#998;font-style:italic"></span>        stopwatch<span style="color:#000;font-weight:bold">.</span><span style="color:#008080">start</span><span style="color:#000;font-weight:bold">();</span>
-        <span style="color:#000;font-weight:bold">for</span><span style="color:#000;font-weight:bold">(</span><span style="color:#458;font-weight:bold">int</span> i <span style="color:#000;font-weight:bold">=</span> 0<span style="color:#000;font-weight:bold">;</span> i <span style="color:#000;font-weight:bold">&lt;</span> CIRCLES<span style="color:#000;font-weight:bold">;</span> <span style="color:#000;font-weight:bold">++</span>i<span style="color:#000;font-weight:bold">)</span> <span style="color:#000;font-weight:bold">{</span>
-            HelloWorld<span style="color:#000;font-weight:bold">.</span><span style="color:#008080">class</span><span style="color:#000;font-weight:bold">.</span><span style="color:#008080">getMethod</span><span style="color:#000;font-weight:bold">(</span><span style="color:#d14">&#34;sayHello&#34;</span><span style="color:#000;font-weight:bold">).</span><span style="color:#008080">invoke</span><span style="color:#000;font-weight:bold">(</span>helloWorld<span style="color:#000;font-weight:bold">);</span>
-        <span style="color:#000;font-weight:bold">}</span>
-        stopwatch<span style="color:#000;font-weight:bold">.</span><span style="color:#008080">stop</span><span style="color:#000;font-weight:bold">();</span>
-        System<span style="color:#000;font-weight:bold">.</span><span style="color:#008080">out</span><span style="color:#000;font-weight:bold">.</span><span style="color:#008080">println</span><span style="color:#000;font-weight:bold">(</span>stopwatch<span style="color:#000;font-weight:bold">.</span><span style="color:#008080">elapsed</span><span style="color:#000;font-weight:bold">(</span>TimeUnit<span style="color:#000;font-weight:bold">.</span><span style="color:#008080">MILLISECONDS</span><span style="color:#000;font-weight:bold">));</span>
+        <span class="c1">// 从Class对象中获取Method对象
+</span><span class="c1"></span>        <span class="n">stopwatch</span><span class="o">.</span><span class="na">start</span><span class="o">();</span>
+        <span class="k">for</span><span class="o">(</span><span class="kt">int</span> <span class="n">i</span> <span class="o">=</span> <span class="n">0</span><span class="o">;</span> <span class="n">i</span> <span class="o">&lt;</span> <span class="n">CIRCLES</span><span class="o">;</span> <span class="o">++</span><span class="n">i</span><span class="o">)</span> <span class="o">{</span>
+            <span class="n">HelloWorld</span><span class="o">.</span><span class="na">class</span><span class="o">.</span><span class="na">getMethod</span><span class="o">(</span><span class="s">&#34;sayHello&#34;</span><span class="o">).</span><span class="na">invoke</span><span class="o">(</span><span class="n">helloWorld</span><span class="o">);</span>
+        <span class="o">}</span>
+        <span class="n">stopwatch</span><span class="o">.</span><span class="na">stop</span><span class="o">();</span>
+        <span class="n">System</span><span class="o">.</span><span class="na">out</span><span class="o">.</span><span class="na">println</span><span class="o">(</span><span class="n">stopwatch</span><span class="o">.</span><span class="na">elapsed</span><span class="o">(</span><span class="n">TimeUnit</span><span class="o">.</span><span class="na">MILLISECONDS</span><span class="o">));</span>
 
-        <span style="color:#998;font-style:italic">// 保存Method对象
-</span><span style="color:#998;font-style:italic"></span>        Method helloMethod <span style="color:#000;font-weight:bold">=</span> Class<span style="color:#000;font-weight:bold">.</span><span style="color:#008080">forName</span><span style="color:#000;font-weight:bold">(</span><span style="color:#d14">&#34;se.HelloWorld&#34;</span><span style="color:#000;font-weight:bold">).</span><span style="color:#008080">getMethod</span><span style="color:#000;font-weight:bold">(</span><span style="color:#d14">&#34;sayHello&#34;</span><span style="color:#000;font-weight:bold">);</span>
-        stopwatch<span style="color:#000;font-weight:bold">.</span><span style="color:#008080">reset</span><span style="color:#000;font-weight:bold">();</span>
-        stopwatch<span style="color:#000;font-weight:bold">.</span><span style="color:#008080">start</span><span style="color:#000;font-weight:bold">();</span>
-        <span style="color:#000;font-weight:bold">for</span><span style="color:#000;font-weight:bold">(</span><span style="color:#458;font-weight:bold">int</span> i <span style="color:#000;font-weight:bold">=</span> 0<span style="color:#000;font-weight:bold">;</span> i <span style="color:#000;font-weight:bold">&lt;</span> CIRCLES<span style="color:#000;font-weight:bold">;</span> <span style="color:#000;font-weight:bold">++</span>i<span style="color:#000;font-weight:bold">)</span> <span style="color:#000;font-weight:bold">{</span>
-            helloMethod<span style="color:#000;font-weight:bold">.</span><span style="color:#008080">invoke</span><span style="color:#000;font-weight:bold">(</span>helloWorld<span style="color:#000;font-weight:bold">);</span>
-        <span style="color:#000;font-weight:bold">}</span>
-        stopwatch<span style="color:#000;font-weight:bold">.</span><span style="color:#008080">stop</span><span style="color:#000;font-weight:bold">();</span>
-        System<span style="color:#000;font-weight:bold">.</span><span style="color:#008080">out</span><span style="color:#000;font-weight:bold">.</span><span style="color:#008080">println</span><span style="color:#000;font-weight:bold">(</span>stopwatch<span style="color:#000;font-weight:bold">.</span><span style="color:#008080">elapsed</span><span style="color:#000;font-weight:bold">(</span>TimeUnit<span style="color:#000;font-weight:bold">.</span><span style="color:#008080">MILLISECONDS</span><span style="color:#000;font-weight:bold">));</span>
+        <span class="c1">// 保存Method对象
+</span><span class="c1"></span>        <span class="n">Method</span> <span class="n">helloMethod</span> <span class="o">=</span> <span class="n">Class</span><span class="o">.</span><span class="na">forName</span><span class="o">(</span><span class="s">&#34;se.HelloWorld&#34;</span><span class="o">).</span><span class="na">getMethod</span><span class="o">(</span><span class="s">&#34;sayHello&#34;</span><span class="o">);</span>
+        <span class="n">stopwatch</span><span class="o">.</span><span class="na">reset</span><span class="o">();</span>
+        <span class="n">stopwatch</span><span class="o">.</span><span class="na">start</span><span class="o">();</span>
+        <span class="k">for</span><span class="o">(</span><span class="kt">int</span> <span class="n">i</span> <span class="o">=</span> <span class="n">0</span><span class="o">;</span> <span class="n">i</span> <span class="o">&lt;</span> <span class="n">CIRCLES</span><span class="o">;</span> <span class="o">++</span><span class="n">i</span><span class="o">)</span> <span class="o">{</span>
+            <span class="n">helloMethod</span><span class="o">.</span><span class="na">invoke</span><span class="o">(</span><span class="n">helloWorld</span><span class="o">);</span>
+        <span class="o">}</span>
+        <span class="n">stopwatch</span><span class="o">.</span><span class="na">stop</span><span class="o">();</span>
+        <span class="n">System</span><span class="o">.</span><span class="na">out</span><span class="o">.</span><span class="na">println</span><span class="o">(</span><span class="n">stopwatch</span><span class="o">.</span><span class="na">elapsed</span><span class="o">(</span><span class="n">TimeUnit</span><span class="o">.</span><span class="na">MILLISECONDS</span><span class="o">));</span>
 
-        <span style="color:#998;font-style:italic">// 直接调用
-</span><span style="color:#998;font-style:italic"></span>        stopwatch<span style="color:#000;font-weight:bold">.</span><span style="color:#008080">reset</span><span style="color:#000;font-weight:bold">();</span>
-        stopwatch<span style="color:#000;font-weight:bold">.</span><span style="color:#008080">start</span><span style="color:#000;font-weight:bold">();</span>
-        <span style="color:#000;font-weight:bold">for</span><span style="color:#000;font-weight:bold">(</span><span style="color:#458;font-weight:bold">int</span> i <span style="color:#000;font-weight:bold">=</span> 0<span style="color:#000;font-weight:bold">;</span> i <span style="color:#000;font-weight:bold">&lt;</span> CIRCLES<span style="color:#000;font-weight:bold">;</span> <span style="color:#000;font-weight:bold">++</span>i<span style="color:#000;font-weight:bold">)</span> <span style="color:#000;font-weight:bold">{</span>
-            helloWorld<span style="color:#000;font-weight:bold">.</span><span style="color:#008080">sayHello</span><span style="color:#000;font-weight:bold">();</span>
-        <span style="color:#000;font-weight:bold">}</span>
-        stopwatch<span style="color:#000;font-weight:bold">.</span><span style="color:#008080">stop</span><span style="color:#000;font-weight:bold">();</span>
-        System<span style="color:#000;font-weight:bold">.</span><span style="color:#008080">out</span><span style="color:#000;font-weight:bold">.</span><span style="color:#008080">println</span><span style="color:#000;font-weight:bold">(</span>stopwatch<span style="color:#000;font-weight:bold">.</span><span style="color:#008080">elapsed</span><span style="color:#000;font-weight:bold">(</span>TimeUnit<span style="color:#000;font-weight:bold">.</span><span style="color:#008080">MILLISECONDS</span><span style="color:#000;font-weight:bold">));</span>
-    <span style="color:#000;font-weight:bold">}</span>
-<span style="color:#998;font-style:italic">// ----- 输出 -----
-</span><span style="color:#998;font-style:italic"></span>146
-7
-4
+        <span class="c1">// 直接调用
+</span><span class="c1"></span>        <span class="n">stopwatch</span><span class="o">.</span><span class="na">reset</span><span class="o">();</span>
+        <span class="n">stopwatch</span><span class="o">.</span><span class="na">start</span><span class="o">();</span>
+        <span class="k">for</span><span class="o">(</span><span class="kt">int</span> <span class="n">i</span> <span class="o">=</span> <span class="n">0</span><span class="o">;</span> <span class="n">i</span> <span class="o">&lt;</span> <span class="n">CIRCLES</span><span class="o">;</span> <span class="o">++</span><span class="n">i</span><span class="o">)</span> <span class="o">{</span>
+            <span class="n">helloWorld</span><span class="o">.</span><span class="na">sayHello</span><span class="o">();</span>
+        <span class="o">}</span>
+        <span class="n">stopwatch</span><span class="o">.</span><span class="na">stop</span><span class="o">();</span>
+        <span class="n">System</span><span class="o">.</span><span class="na">out</span><span class="o">.</span><span class="na">println</span><span class="o">(</span><span class="n">stopwatch</span><span class="o">.</span><span class="na">elapsed</span><span class="o">(</span><span class="n">TimeUnit</span><span class="o">.</span><span class="na">MILLISECONDS</span><span class="o">));</span>
+    <span class="o">}</span>
+<span class="c1">// ----- 输出 -----
+</span><span class="c1"></span><span class="n">146</span>
+<span class="n">7</span>
+<span class="n">4</span>
 </code></pre></td></tr></table>
 </div>
 </div><p>这次的结果我们相对满意，差距在2倍不到。但如果在多线程环境下，缓存<code>Method</code>对象需要付出的努力并不低</p>
@@ -491,28 +407,28 @@
 </ul>
 <p>这就是Guava的<code>BusEvent</code>在使用注解和反射进行消息路由时所做的额外工作。因此，在业务逻辑中使用反射在大部分时候并不合适，一般其实可以思考更好的解决方法。</p>
 <h3 id="破坏封装性-">破坏封装性</h3>
-<div class="highlight"><div style="background-color:#fff;-moz-tab-size:4;-o-tab-size:4;tab-size:4">
-<table style="border-spacing:0;padding:0;margin:0;border:0;width:auto;overflow:auto;display:block;"><tr><td style="vertical-align:top;padding:0;margin:0;border:0;">
-<pre style="background-color:#fff;-moz-tab-size:4;-o-tab-size:4;tab-size:4"><code><span style="margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f">1
-</span><span style="margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f">2
-</span><span style="margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f">3
-</span><span style="margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f">4
-</span><span style="margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f">5
-</span><span style="margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f">6
-</span><span style="margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f">7
-</span><span style="margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f">8
-</span><span style="margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f">9
+<div class="highlight"><div class="chroma">
+<table class="lntable"><tr><td class="lntd">
+<pre class="chroma"><code><span class="lnt">1
+</span><span class="lnt">2
+</span><span class="lnt">3
+</span><span class="lnt">4
+</span><span class="lnt">5
+</span><span class="lnt">6
+</span><span class="lnt">7
+</span><span class="lnt">8
+</span><span class="lnt">9
 </span></code></pre></td>
-<td style="vertical-align:top;padding:0;margin:0;border:0;;width:100%">
-<pre style="background-color:#fff;-moz-tab-size:4;-o-tab-size:4;tab-size:4"><code class="language-java" data-lang="java">    <span style="color:#3c5d5d;font-weight:bold">@Test</span>
-    <span style="color:#000;font-weight:bold">public</span> <span style="color:#458;font-weight:bold">void</span> <span style="color:#900;font-weight:bold">testPrivateMethod</span><span style="color:#000;font-weight:bold">()</span> <span style="color:#000;font-weight:bold">throws</span> NoSuchMethodException<span style="color:#000;font-weight:bold">,</span> InvocationTargetException<span style="color:#000;font-weight:bold">,</span> IllegalAccessException <span style="color:#000;font-weight:bold">{</span>
-        HelloWorld helloWorld <span style="color:#000;font-weight:bold">=</span> <span style="color:#000;font-weight:bold">new</span> HelloWorld<span style="color:#000;font-weight:bold">();</span>
-        <span style="color:#998;font-style:italic">// inaccessibleMethod是一个private方法
-</span><span style="color:#998;font-style:italic"></span>        Method inaccessibleMethod <span style="color:#000;font-weight:bold">=</span> HelloWorld<span style="color:#000;font-weight:bold">.</span><span style="color:#008080">class</span><span style="color:#000;font-weight:bold">.</span><span style="color:#008080">getDeclaredMethod</span><span style="color:#000;font-weight:bold">(</span><span style="color:#d14">&#34;inaccessibleMethod&#34;</span><span style="color:#000;font-weight:bold">);</span>
-        inaccessibleMethod<span style="color:#000;font-weight:bold">.</span><span style="color:#008080">setAccessible</span><span style="color:#000;font-weight:bold">(</span><span style="color:#000;font-weight:bold">true</span><span style="color:#000;font-weight:bold">);</span>
-        <span style="color:#998;font-style:italic">// 通过反射调用
-</span><span style="color:#998;font-style:italic"></span>        System<span style="color:#000;font-weight:bold">.</span><span style="color:#008080">out</span><span style="color:#000;font-weight:bold">.</span><span style="color:#008080">println</span><span style="color:#000;font-weight:bold">(</span>inaccessibleMethod<span style="color:#000;font-weight:bold">.</span><span style="color:#008080">invoke</span><span style="color:#000;font-weight:bold">(</span>helloWorld<span style="color:#000;font-weight:bold">));</span>
-    <span style="color:#000;font-weight:bold">}</span>
+<td class="lntd">
+<pre class="chroma"><code class="language-java" data-lang="java">    <span class="nd">@Test</span>
+    <span class="kd">public</span> <span class="kt">void</span> <span class="nf">testPrivateMethod</span><span class="o">()</span> <span class="kd">throws</span> <span class="n">NoSuchMethodException</span><span class="o">,</span> <span class="n">InvocationTargetException</span><span class="o">,</span> <span class="n">IllegalAccessException</span> <span class="o">{</span>
+        <span class="n">HelloWorld</span> <span class="n">helloWorld</span> <span class="o">=</span> <span class="k">new</span> <span class="n">HelloWorld</span><span class="o">();</span>
+        <span class="c1">// inaccessibleMethod是一个private方法
+</span><span class="c1"></span>        <span class="n">Method</span> <span class="n">inaccessibleMethod</span> <span class="o">=</span> <span class="n">HelloWorld</span><span class="o">.</span><span class="na">class</span><span class="o">.</span><span class="na">getDeclaredMethod</span><span class="o">(</span><span class="s">&#34;inaccessibleMethod&#34;</span><span class="o">);</span>
+        <span class="n">inaccessibleMethod</span><span class="o">.</span><span class="na">setAccessible</span><span class="o">(</span><span class="kc">true</span><span class="o">);</span>
+        <span class="c1">// 通过反射调用
+</span><span class="c1"></span>        <span class="n">System</span><span class="o">.</span><span class="na">out</span><span class="o">.</span><span class="na">println</span><span class="o">(</span><span class="n">inaccessibleMethod</span><span class="o">.</span><span class="na">invoke</span><span class="o">(</span><span class="n">helloWorld</span><span class="o">));</span>
+    <span class="o">}</span>
 </code></pre></td></tr></table>
 </div>
 </div><p>在通常情况下，用户是无法访问类的私有成员和方法的，但在反射下这一限制形同虚设。</p>
@@ -521,65 +437,65 @@
 <h2 id="反射的应用-">反射的应用</h2>
 <h3 id="接口和实现分离-">接口和实现分离</h3>
 <p>比较常见的一个例子就是日志类slf4j，它定义了日志接口<code>Logger</code>，但没有定义任何实现。这原本是极为常见的，但我们获取日志实现的方式却并非创建<code>Logger</code>的实现类对象，并将之赋值给<code>Logger</code>引用，而是通过以下方式。</p>
-<div class="highlight"><div style="background-color:#fff;-moz-tab-size:4;-o-tab-size:4;tab-size:4">
-<table style="border-spacing:0;padding:0;margin:0;border:0;width:auto;overflow:auto;display:block;"><tr><td style="vertical-align:top;padding:0;margin:0;border:0;">
-<pre style="background-color:#fff;-moz-tab-size:4;-o-tab-size:4;tab-size:4"><code><span style="margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f">1
+<div class="highlight"><div class="chroma">
+<table class="lntable"><tr><td class="lntd">
+<pre class="chroma"><code><span class="lnt">1
 </span></code></pre></td>
-<td style="vertical-align:top;padding:0;margin:0;border:0;;width:100%">
-<pre style="background-color:#fff;-moz-tab-size:4;-o-tab-size:4;tab-size:4"><code class="language-java" data-lang="java">	<span style="color:#000;font-weight:bold">private</span> <span style="color:#000;font-weight:bold">static</span> <span style="color:#000;font-weight:bold">final</span> Logger log <span style="color:#000;font-weight:bold">=</span> LoggerFactory<span style="color:#000;font-weight:bold">.</span><span style="color:#008080">getLogger</span><span style="color:#000;font-weight:bold">(</span>xxxController<span style="color:#000;font-weight:bold">.</span><span style="color:#008080">class</span><span style="color:#000;font-weight:bold">);</span>
+<td class="lntd">
+<pre class="chroma"><code class="language-java" data-lang="java">	<span class="kd">private</span> <span class="kd">static</span> <span class="kd">final</span> <span class="n">Logger</span> <span class="n">log</span> <span class="o">=</span> <span class="n">LoggerFactory</span><span class="o">.</span><span class="na">getLogger</span><span class="o">(</span><span class="n">xxxController</span><span class="o">.</span><span class="na">class</span><span class="o">);</span>
 </code></pre></td></tr></table>
 </div>
 </div><p>那么，问题就是由slf4j所定义的<code>LoggerFactory</code>是如何获取其他类库实现的<code>Logger</code>对象？答案便是通过反射</p>
-<div class="highlight"><div style="background-color:#fff;-moz-tab-size:4;-o-tab-size:4;tab-size:4">
-<table style="border-spacing:0;padding:0;margin:0;border:0;width:auto;overflow:auto;display:block;"><tr><td style="vertical-align:top;padding:0;margin:0;border:0;">
-<pre style="background-color:#fff;-moz-tab-size:4;-o-tab-size:4;tab-size:4"><code><span style="margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f"> 1
-</span><span style="margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f"> 2
-</span><span style="margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f"> 3
-</span><span style="margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f"> 4
-</span><span style="margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f"> 5
-</span><span style="margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f"> 6
-</span><span style="margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f"> 7
-</span><span style="margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f"> 8
-</span><span style="margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f"> 9
-</span><span style="margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f">10
-</span><span style="margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f">11
-</span><span style="margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f">12
-</span><span style="margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f">13
-</span><span style="margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f">14
-</span><span style="margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f">15
-</span><span style="margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f">16
-</span><span style="margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f">17
-</span><span style="margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f">18
-</span><span style="margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f">19
-</span><span style="margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f">20
-</span><span style="margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f">21
-</span><span style="margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f">22
-</span><span style="margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f">23
+<div class="highlight"><div class="chroma">
+<table class="lntable"><tr><td class="lntd">
+<pre class="chroma"><code><span class="lnt"> 1
+</span><span class="lnt"> 2
+</span><span class="lnt"> 3
+</span><span class="lnt"> 4
+</span><span class="lnt"> 5
+</span><span class="lnt"> 6
+</span><span class="lnt"> 7
+</span><span class="lnt"> 8
+</span><span class="lnt"> 9
+</span><span class="lnt">10
+</span><span class="lnt">11
+</span><span class="lnt">12
+</span><span class="lnt">13
+</span><span class="lnt">14
+</span><span class="lnt">15
+</span><span class="lnt">16
+</span><span class="lnt">17
+</span><span class="lnt">18
+</span><span class="lnt">19
+</span><span class="lnt">20
+</span><span class="lnt">21
+</span><span class="lnt">22
+</span><span class="lnt">23
 </span></code></pre></td>
-<td style="vertical-align:top;padding:0;margin:0;border:0;;width:100%">
-<pre style="background-color:#fff;-moz-tab-size:4;-o-tab-size:4;tab-size:4"><code class="language-java" data-lang="java">    <span style="color:#000;font-weight:bold">static</span> Set<span style="color:#000;font-weight:bold">&lt;</span>URL<span style="color:#000;font-weight:bold">&gt;</span> <span style="color:#900;font-weight:bold">findPossibleStaticLoggerBinderPathSet</span><span style="color:#000;font-weight:bold">()</span> <span style="color:#000;font-weight:bold">{</span>
-        LinkedHashSet staticLoggerBinderPathSet <span style="color:#000;font-weight:bold">=</span> <span style="color:#000;font-weight:bold">new</span> LinkedHashSet<span style="color:#000;font-weight:bold">();</span>
+<td class="lntd">
+<pre class="chroma"><code class="language-java" data-lang="java">    <span class="kd">static</span> <span class="n">Set</span><span class="o">&lt;</span><span class="n">URL</span><span class="o">&gt;</span> <span class="nf">findPossibleStaticLoggerBinderPathSet</span><span class="o">()</span> <span class="o">{</span>
+        <span class="n">LinkedHashSet</span> <span class="n">staticLoggerBinderPathSet</span> <span class="o">=</span> <span class="k">new</span> <span class="n">LinkedHashSet</span><span class="o">();</span>
 
-        <span style="color:#000;font-weight:bold">try</span> <span style="color:#000;font-weight:bold">{</span>
-            ClassLoader loggerFactoryClassLoader <span style="color:#000;font-weight:bold">=</span> LoggerFactory<span style="color:#000;font-weight:bold">.</span><span style="color:#008080">class</span><span style="color:#000;font-weight:bold">.</span><span style="color:#008080">getClassLoader</span><span style="color:#000;font-weight:bold">();</span>
-            Enumeration paths<span style="color:#000;font-weight:bold">;</span>
-            <span style="color:#000;font-weight:bold">if</span> <span style="color:#000;font-weight:bold">(</span>loggerFactoryClassLoader <span style="color:#000;font-weight:bold">==</span> <span style="color:#000;font-weight:bold">null</span><span style="color:#000;font-weight:bold">)</span> <span style="color:#000;font-weight:bold">{</span>
-                <span style="color:#998;font-style:italic">// STATIC_LOGGER_BINDER_PATH = &#34;org/slf4j/impl/StaticLoggerBinder.class&#34;;
-</span><span style="color:#998;font-style:italic"></span>                paths <span style="color:#000;font-weight:bold">=</span> ClassLoader<span style="color:#000;font-weight:bold">.</span><span style="color:#008080">getSystemResources</span><span style="color:#000;font-weight:bold">(</span>STATIC_LOGGER_BINDER_PATH<span style="color:#000;font-weight:bold">);</span>
-            <span style="color:#000;font-weight:bold">}</span> <span style="color:#000;font-weight:bold">else</span> <span style="color:#000;font-weight:bold">{</span>
-                paths <span style="color:#000;font-weight:bold">=</span> loggerFactoryClassLoader<span style="color:#000;font-weight:bold">.</span><span style="color:#008080">getResources</span><span style="color:#000;font-weight:bold">(</span>STATIC_LOGGER_BINDER_PATH<span style="color:#000;font-weight:bold">);</span>
-            <span style="color:#000;font-weight:bold">}</span>
+        <span class="k">try</span> <span class="o">{</span>
+            <span class="n">ClassLoader</span> <span class="n">loggerFactoryClassLoader</span> <span class="o">=</span> <span class="n">LoggerFactory</span><span class="o">.</span><span class="na">class</span><span class="o">.</span><span class="na">getClassLoader</span><span class="o">();</span>
+            <span class="n">Enumeration</span> <span class="n">paths</span><span class="o">;</span>
+            <span class="k">if</span> <span class="o">(</span><span class="n">loggerFactoryClassLoader</span> <span class="o">==</span> <span class="kc">null</span><span class="o">)</span> <span class="o">{</span>
+                <span class="c1">// STATIC_LOGGER_BINDER_PATH = &#34;org/slf4j/impl/StaticLoggerBinder.class&#34;;
+</span><span class="c1"></span>                <span class="n">paths</span> <span class="o">=</span> <span class="n">ClassLoader</span><span class="o">.</span><span class="na">getSystemResources</span><span class="o">(</span><span class="n">STATIC_LOGGER_BINDER_PATH</span><span class="o">);</span>
+            <span class="o">}</span> <span class="k">else</span> <span class="o">{</span>
+                <span class="n">paths</span> <span class="o">=</span> <span class="n">loggerFactoryClassLoader</span><span class="o">.</span><span class="na">getResources</span><span class="o">(</span><span class="n">STATIC_LOGGER_BINDER_PATH</span><span class="o">);</span>
+            <span class="o">}</span>
 
-            <span style="color:#000;font-weight:bold">while</span><span style="color:#000;font-weight:bold">(</span>paths<span style="color:#000;font-weight:bold">.</span><span style="color:#008080">hasMoreElements</span><span style="color:#000;font-weight:bold">())</span> <span style="color:#000;font-weight:bold">{</span>
-                URL path <span style="color:#000;font-weight:bold">=</span> <span style="color:#000;font-weight:bold">(</span>URL<span style="color:#000;font-weight:bold">)</span>paths<span style="color:#000;font-weight:bold">.</span><span style="color:#008080">nextElement</span><span style="color:#000;font-weight:bold">();</span>
-                staticLoggerBinderPathSet<span style="color:#000;font-weight:bold">.</span><span style="color:#008080">add</span><span style="color:#000;font-weight:bold">(</span>path<span style="color:#000;font-weight:bold">);</span>
-            <span style="color:#000;font-weight:bold">}</span>
-        <span style="color:#000;font-weight:bold">}</span> <span style="color:#000;font-weight:bold">catch</span> <span style="color:#000;font-weight:bold">(</span>IOException var4<span style="color:#000;font-weight:bold">)</span> <span style="color:#000;font-weight:bold">{</span>
-            Util<span style="color:#000;font-weight:bold">.</span><span style="color:#008080">report</span><span style="color:#000;font-weight:bold">(</span><span style="color:#d14">&#34;Error getting resources from path&#34;</span><span style="color:#000;font-weight:bold">,</span> var4<span style="color:#000;font-weight:bold">);</span>
-        <span style="color:#000;font-weight:bold">}</span>
+            <span class="k">while</span><span class="o">(</span><span class="n">paths</span><span class="o">.</span><span class="na">hasMoreElements</span><span class="o">())</span> <span class="o">{</span>
+                <span class="n">URL</span> <span class="n">path</span> <span class="o">=</span> <span class="o">(</span><span class="n">URL</span><span class="o">)</span><span class="n">paths</span><span class="o">.</span><span class="na">nextElement</span><span class="o">();</span>
+                <span class="n">staticLoggerBinderPathSet</span><span class="o">.</span><span class="na">add</span><span class="o">(</span><span class="n">path</span><span class="o">);</span>
+            <span class="o">}</span>
+        <span class="o">}</span> <span class="k">catch</span> <span class="o">(</span><span class="n">IOException</span> <span class="n">var4</span><span class="o">)</span> <span class="o">{</span>
+            <span class="n">Util</span><span class="o">.</span><span class="na">report</span><span class="o">(</span><span class="s">&#34;Error getting resources from path&#34;</span><span class="o">,</span> <span class="n">var4</span><span class="o">);</span>
+        <span class="o">}</span>
 
-        <span style="color:#000;font-weight:bold">return</span> staticLoggerBinderPathSet<span style="color:#000;font-weight:bold">;</span>
-    <span style="color:#000;font-weight:bold">}</span>
+        <span class="k">return</span> <span class="n">staticLoggerBinderPathSet</span><span class="o">;</span>
+    <span class="o">}</span>
 </code></pre></td></tr></table>
 </div>
 </div><p>反射能够通过JVM获取已经载入的类的信息，如果你在自己的代码中引入了<code>Logger</code>实现的以来，那么就能够被JVM找到。这也就是为什么能够统一的方法<code>LoggerFactory.getLogger()</code>获取不同日志实现，而我们自己的代码并不需要做任何修改。</p>
@@ -587,68 +503,68 @@
 <p>反射的这种使用方式改变了工厂方法、接口、实现类之间的关系，使得前工厂方法的实现不需要依赖实现类来完成，最终的效果就是简化了我们的使用。</p>
 <h3 id="动态代理-">动态代理</h3>
 <p>动态代理也是利用反射的原理，不过JDK的动态代理不需要直接使用反射，而是通过<code>InvocationHandler</code>拦截代理对象的所有方法调用，然后在<code>invoke()</code>方法添加你想在方法调用前后添加的操作。例子如下</p>
-<div class="highlight"><div style="background-color:#fff;-moz-tab-size:4;-o-tab-size:4;tab-size:4">
-<table style="border-spacing:0;padding:0;margin:0;border:0;width:auto;overflow:auto;display:block;"><tr><td style="vertical-align:top;padding:0;margin:0;border:0;">
-<pre style="background-color:#fff;-moz-tab-size:4;-o-tab-size:4;tab-size:4"><code><span style="margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f"> 1
-</span><span style="margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f"> 2
-</span><span style="margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f"> 3
-</span><span style="margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f"> 4
-</span><span style="margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f"> 5
-</span><span style="margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f"> 6
-</span><span style="margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f"> 7
-</span><span style="margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f"> 8
-</span><span style="margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f"> 9
-</span><span style="margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f">10
-</span><span style="margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f">11
-</span><span style="margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f">12
-</span><span style="margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f">13
-</span><span style="margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f">14
-</span><span style="margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f">15
-</span><span style="margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f">16
-</span><span style="margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f">17
-</span><span style="margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f">18
-</span><span style="margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f">19
-</span><span style="margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f">20
-</span><span style="margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f">21
-</span><span style="margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f">22
-</span><span style="margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f">23
-</span><span style="margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f">24
-</span><span style="margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f">25
-</span><span style="margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f">26
-</span><span style="margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f">27
-</span><span style="margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f">28
-</span><span style="margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f">29
+<div class="highlight"><div class="chroma">
+<table class="lntable"><tr><td class="lntd">
+<pre class="chroma"><code><span class="lnt"> 1
+</span><span class="lnt"> 2
+</span><span class="lnt"> 3
+</span><span class="lnt"> 4
+</span><span class="lnt"> 5
+</span><span class="lnt"> 6
+</span><span class="lnt"> 7
+</span><span class="lnt"> 8
+</span><span class="lnt"> 9
+</span><span class="lnt">10
+</span><span class="lnt">11
+</span><span class="lnt">12
+</span><span class="lnt">13
+</span><span class="lnt">14
+</span><span class="lnt">15
+</span><span class="lnt">16
+</span><span class="lnt">17
+</span><span class="lnt">18
+</span><span class="lnt">19
+</span><span class="lnt">20
+</span><span class="lnt">21
+</span><span class="lnt">22
+</span><span class="lnt">23
+</span><span class="lnt">24
+</span><span class="lnt">25
+</span><span class="lnt">26
+</span><span class="lnt">27
+</span><span class="lnt">28
+</span><span class="lnt">29
 </span></code></pre></td>
-<td style="vertical-align:top;padding:0;margin:0;border:0;;width:100%">
-<pre style="background-color:#fff;-moz-tab-size:4;-o-tab-size:4;tab-size:4"><code class="language-java" data-lang="java"><span style="color:#998;font-style:italic">// 方法调用拦截
-</span><span style="color:#998;font-style:italic"></span><span style="color:#000;font-weight:bold">public</span> <span style="color:#000;font-weight:bold">class</span> <span style="color:#458;font-weight:bold">HelloInvocationHandler</span> <span style="color:#000;font-weight:bold">implements</span> InvocationHandler <span style="color:#000;font-weight:bold">{</span>
+<td class="lntd">
+<pre class="chroma"><code class="language-java" data-lang="java"><span class="c1">// 方法调用拦截
+</span><span class="c1"></span><span class="kd">public</span> <span class="kd">class</span> <span class="nc">HelloInvocationHandler</span> <span class="kd">implements</span> <span class="n">InvocationHandler</span> <span class="o">{</span>
 
-    <span style="color:#000;font-weight:bold">private</span> Hello hello<span style="color:#000;font-weight:bold">;</span>
+    <span class="kd">private</span> <span class="n">Hello</span> <span class="n">hello</span><span class="o">;</span>
 
-    <span style="color:#000;font-weight:bold">public</span> <span style="color:#900;font-weight:bold">HelloInvocationHandler</span><span style="color:#000;font-weight:bold">(</span>Hello hello<span style="color:#000;font-weight:bold">)</span> <span style="color:#000;font-weight:bold">{</span>
-        <span style="color:#000;font-weight:bold">this</span><span style="color:#000;font-weight:bold">.</span><span style="color:#008080">hello</span> <span style="color:#000;font-weight:bold">=</span> hello<span style="color:#000;font-weight:bold">;</span>
-    <span style="color:#000;font-weight:bold">}</span>
+    <span class="kd">public</span> <span class="nf">HelloInvocationHandler</span><span class="o">(</span><span class="n">Hello</span> <span class="n">hello</span><span class="o">)</span> <span class="o">{</span>
+        <span class="k">this</span><span class="o">.</span><span class="na">hello</span> <span class="o">=</span> <span class="n">hello</span><span class="o">;</span>
+    <span class="o">}</span>
 
-    <span style="color:#000;font-weight:bold">public</span> Object <span style="color:#900;font-weight:bold">invoke</span><span style="color:#000;font-weight:bold">(</span>Object o<span style="color:#000;font-weight:bold">,</span> Method method<span style="color:#000;font-weight:bold">,</span> Object<span style="color:#000;font-weight:bold">[]</span> objects<span style="color:#000;font-weight:bold">)</span> <span style="color:#000;font-weight:bold">throws</span> Throwable <span style="color:#000;font-weight:bold">{</span>
-        System<span style="color:#000;font-weight:bold">.</span><span style="color:#008080">out</span><span style="color:#000;font-weight:bold">.</span><span style="color:#008080">println</span><span style="color:#000;font-weight:bold">(</span><span style="color:#d14">&#34;Before &#34;</span> <span style="color:#000;font-weight:bold">+</span> method<span style="color:#000;font-weight:bold">.</span><span style="color:#008080">getName</span><span style="color:#000;font-weight:bold">());</span>
-        Object result <span style="color:#000;font-weight:bold">=</span> method<span style="color:#000;font-weight:bold">.</span><span style="color:#008080">invoke</span><span style="color:#000;font-weight:bold">(</span>hello<span style="color:#000;font-weight:bold">,</span> objects<span style="color:#000;font-weight:bold">);</span>
-        System<span style="color:#000;font-weight:bold">.</span><span style="color:#008080">out</span><span style="color:#000;font-weight:bold">.</span><span style="color:#008080">println</span><span style="color:#000;font-weight:bold">(</span><span style="color:#d14">&#34;After &#34;</span> <span style="color:#000;font-weight:bold">+</span> method<span style="color:#000;font-weight:bold">.</span><span style="color:#008080">getName</span><span style="color:#000;font-weight:bold">());</span>
-        <span style="color:#000;font-weight:bold">return</span> result<span style="color:#000;font-weight:bold">;</span>
-    <span style="color:#000;font-weight:bold">}</span>
-<span style="color:#000;font-weight:bold">}</span>
-<span style="color:#998;font-style:italic">// 测试类
-</span><span style="color:#998;font-style:italic"></span><span style="color:#000;font-weight:bold">public</span> <span style="color:#000;font-weight:bold">class</span> <span style="color:#458;font-weight:bold">JdkProxyTest</span> <span style="color:#000;font-weight:bold">{</span>
-    <span style="color:#3c5d5d;font-weight:bold">@Test</span>
-    <span style="color:#000;font-weight:bold">public</span> <span style="color:#458;font-weight:bold">void</span> <span style="color:#900;font-weight:bold">proxyTest</span><span style="color:#000;font-weight:bold">()</span> <span style="color:#000;font-weight:bold">throws</span> NoSuchMethodException <span style="color:#000;font-weight:bold">{</span>
-        Hello helloProxy <span style="color:#000;font-weight:bold">=</span> <span style="color:#000;font-weight:bold">(</span>Hello<span style="color:#000;font-weight:bold">)</span> Proxy<span style="color:#000;font-weight:bold">.</span><span style="color:#008080">newProxyInstance</span><span style="color:#000;font-weight:bold">(</span>
-                Hello<span style="color:#000;font-weight:bold">.</span><span style="color:#008080">class</span><span style="color:#000;font-weight:bold">.</span><span style="color:#008080">getClassLoader</span><span style="color:#000;font-weight:bold">(),</span>
-                <span style="color:#000;font-weight:bold">new</span> Class<span style="color:#000;font-weight:bold">&lt;?&gt;[]</span> <span style="color:#000;font-weight:bold">{</span>Hello<span style="color:#000;font-weight:bold">.</span><span style="color:#008080">class</span><span style="color:#000;font-weight:bold">},</span>
-                <span style="color:#000;font-weight:bold">new</span> HelloInvocationHandler<span style="color:#000;font-weight:bold">(</span><span style="color:#000;font-weight:bold">new</span> HelloWorld<span style="color:#000;font-weight:bold">())</span>
-        <span style="color:#000;font-weight:bold">);</span>
-        <span style="color:#998;font-style:italic">// sayHello()打印&#34;Hello world&#34;
-</span><span style="color:#998;font-style:italic"></span>        helloProxy<span style="color:#000;font-weight:bold">.</span><span style="color:#008080">sayHello</span><span style="color:#000;font-weight:bold">();</span>
-    <span style="color:#000;font-weight:bold">}</span>
-<span style="color:#000;font-weight:bold">}</span>
+    <span class="kd">public</span> <span class="n">Object</span> <span class="nf">invoke</span><span class="o">(</span><span class="n">Object</span> <span class="n">o</span><span class="o">,</span> <span class="n">Method</span> <span class="n">method</span><span class="o">,</span> <span class="n">Object</span><span class="o">[]</span> <span class="n">objects</span><span class="o">)</span> <span class="kd">throws</span> <span class="n">Throwable</span> <span class="o">{</span>
+        <span class="n">System</span><span class="o">.</span><span class="na">out</span><span class="o">.</span><span class="na">println</span><span class="o">(</span><span class="s">&#34;Before &#34;</span> <span class="o">+</span> <span class="n">method</span><span class="o">.</span><span class="na">getName</span><span class="o">());</span>
+        <span class="n">Object</span> <span class="n">result</span> <span class="o">=</span> <span class="n">method</span><span class="o">.</span><span class="na">invoke</span><span class="o">(</span><span class="n">hello</span><span class="o">,</span> <span class="n">objects</span><span class="o">);</span>
+        <span class="n">System</span><span class="o">.</span><span class="na">out</span><span class="o">.</span><span class="na">println</span><span class="o">(</span><span class="s">&#34;After &#34;</span> <span class="o">+</span> <span class="n">method</span><span class="o">.</span><span class="na">getName</span><span class="o">());</span>
+        <span class="k">return</span> <span class="n">result</span><span class="o">;</span>
+    <span class="o">}</span>
+<span class="o">}</span>
+<span class="c1">// 测试类
+</span><span class="c1"></span><span class="kd">public</span> <span class="kd">class</span> <span class="nc">JdkProxyTest</span> <span class="o">{</span>
+    <span class="nd">@Test</span>
+    <span class="kd">public</span> <span class="kt">void</span> <span class="nf">proxyTest</span><span class="o">()</span> <span class="kd">throws</span> <span class="n">NoSuchMethodException</span> <span class="o">{</span>
+        <span class="n">Hello</span> <span class="n">helloProxy</span> <span class="o">=</span> <span class="o">(</span><span class="n">Hello</span><span class="o">)</span> <span class="n">Proxy</span><span class="o">.</span><span class="na">newProxyInstance</span><span class="o">(</span>
+                <span class="n">Hello</span><span class="o">.</span><span class="na">class</span><span class="o">.</span><span class="na">getClassLoader</span><span class="o">(),</span>
+                <span class="k">new</span> <span class="n">Class</span><span class="o">&lt;?&gt;[]</span> <span class="o">{</span><span class="n">Hello</span><span class="o">.</span><span class="na">class</span><span class="o">},</span>
+                <span class="k">new</span> <span class="n">HelloInvocationHandler</span><span class="o">(</span><span class="k">new</span> <span class="n">HelloWorld</span><span class="o">())</span>
+        <span class="o">);</span>
+        <span class="c1">// sayHello()打印&#34;Hello world&#34;
+</span><span class="c1"></span>        <span class="n">helloProxy</span><span class="o">.</span><span class="na">sayHello</span><span class="o">();</span>
+    <span class="o">}</span>
+<span class="o">}</span>
 </code></pre></td></tr></table>
 </div>
 </div><p>动态代理更上层的一个应用就是aop，通过定义切点、切面和通知类型就能够完成代理类的生成。而更上层的应用包括我们所熟知的spring声明式事务、Controller统一异常处理以及参数校验等功能。</p>
@@ -665,70 +581,70 @@
 <ul>
 <li>JUnit的单元测试方法</li>
 </ul>
-<div class="highlight"><div style="background-color:#fff;-moz-tab-size:4;-o-tab-size:4;tab-size:4">
-<table style="border-spacing:0;padding:0;margin:0;border:0;width:auto;overflow:auto;display:block;"><tr><td style="vertical-align:top;padding:0;margin:0;border:0;">
-<pre style="background-color:#fff;-moz-tab-size:4;-o-tab-size:4;tab-size:4"><code><span style="margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f">1
-</span><span style="margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f">2
-</span><span style="margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f">3
-</span><span style="margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f">4
+<div class="highlight"><div class="chroma">
+<table class="lntable"><tr><td class="lntd">
+<pre class="chroma"><code><span class="lnt">1
+</span><span class="lnt">2
+</span><span class="lnt">3
+</span><span class="lnt">4
 </span></code></pre></td>
-<td style="vertical-align:top;padding:0;margin:0;border:0;;width:100%">
-<pre style="background-color:#fff;-moz-tab-size:4;-o-tab-size:4;tab-size:4"><code class="language-java" data-lang="java"><span style="color:#000;font-weight:bold">public</span> <span style="color:#000;font-weight:bold">class</span> <span style="color:#458;font-weight:bold">JdkProxyTest</span> <span style="color:#000;font-weight:bold">{</span>
-    <span style="color:#3c5d5d;font-weight:bold">@Test</span>
-    <span style="color:#000;font-weight:bold">public</span> <span style="color:#458;font-weight:bold">void</span> <span style="color:#900;font-weight:bold">proxyTest</span><span style="color:#000;font-weight:bold">()</span> <span style="color:#000;font-weight:bold">throws</span> NoSuchMethodException <span style="color:#000;font-weight:bold">{}</span>
-<span style="color:#000;font-weight:bold">}</span>
+<td class="lntd">
+<pre class="chroma"><code class="language-java" data-lang="java"><span class="kd">public</span> <span class="kd">class</span> <span class="nc">JdkProxyTest</span> <span class="o">{</span>
+    <span class="nd">@Test</span>
+    <span class="kd">public</span> <span class="kt">void</span> <span class="nf">proxyTest</span><span class="o">()</span> <span class="kd">throws</span> <span class="n">NoSuchMethodException</span> <span class="o">{}</span>
+<span class="o">}</span>
 </code></pre></td></tr></table>
 </div>
 </div><ul>
 <li>Validation的参数校验</li>
 </ul>
-<div class="highlight"><div style="background-color:#fff;-moz-tab-size:4;-o-tab-size:4;tab-size:4">
-<table style="border-spacing:0;padding:0;margin:0;border:0;width:auto;overflow:auto;display:block;"><tr><td style="vertical-align:top;padding:0;margin:0;border:0;">
-<pre style="background-color:#fff;-moz-tab-size:4;-o-tab-size:4;tab-size:4"><code><span style="margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f"> 1
-</span><span style="margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f"> 2
-</span><span style="margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f"> 3
-</span><span style="margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f"> 4
-</span><span style="margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f"> 5
-</span><span style="margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f"> 6
-</span><span style="margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f"> 7
-</span><span style="margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f"> 8
-</span><span style="margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f"> 9
-</span><span style="margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f">10
+<div class="highlight"><div class="chroma">
+<table class="lntable"><tr><td class="lntd">
+<pre class="chroma"><code><span class="lnt"> 1
+</span><span class="lnt"> 2
+</span><span class="lnt"> 3
+</span><span class="lnt"> 4
+</span><span class="lnt"> 5
+</span><span class="lnt"> 6
+</span><span class="lnt"> 7
+</span><span class="lnt"> 8
+</span><span class="lnt"> 9
+</span><span class="lnt">10
 </span></code></pre></td>
-<td style="vertical-align:top;padding:0;margin:0;border:0;;width:100%">
-<pre style="background-color:#fff;-moz-tab-size:4;-o-tab-size:4;tab-size:4"><code class="language-java" data-lang="java"><span style="color:#000;font-weight:bold">public</span> <span style="color:#000;font-weight:bold">class</span> <span style="color:#458;font-weight:bold">ValidateEntity</span> <span style="color:#000;font-weight:bold">{</span>
-    <span style="color:#3c5d5d;font-weight:bold">@NotNull</span><span style="color:#000;font-weight:bold">(</span>message <span style="color:#000;font-weight:bold">=</span> <span style="color:#d14">&#34;描述信息不能为空&#34;</span><span style="color:#000;font-weight:bold">)</span>
-    <span style="color:#000;font-weight:bold">private</span> String desc<span style="color:#000;font-weight:bold">;</span>
+<td class="lntd">
+<pre class="chroma"><code class="language-java" data-lang="java"><span class="kd">public</span> <span class="kd">class</span> <span class="nc">ValidateEntity</span> <span class="o">{</span>
+    <span class="nd">@NotNull</span><span class="o">(</span><span class="n">message</span> <span class="o">=</span> <span class="s">&#34;描述信息不能为空&#34;</span><span class="o">)</span>
+    <span class="kd">private</span> <span class="n">String</span> <span class="n">desc</span><span class="o">;</span>
 
-    <span style="color:#3c5d5d;font-weight:bold">@Email</span><span style="color:#000;font-weight:bold">(</span>message <span style="color:#000;font-weight:bold">=</span> <span style="color:#d14">&#34;Email格式错误&#34;</span><span style="color:#000;font-weight:bold">)</span>
-    <span style="color:#000;font-weight:bold">private</span> String email<span style="color:#000;font-weight:bold">;</span>
+    <span class="nd">@Email</span><span class="o">(</span><span class="n">message</span> <span class="o">=</span> <span class="s">&#34;Email格式错误&#34;</span><span class="o">)</span>
+    <span class="kd">private</span> <span class="n">String</span> <span class="n">email</span><span class="o">;</span>
 
-    <span style="color:#000;font-weight:bold">private</span> List<span style="color:#000;font-weight:bold">&lt;</span><span style="color:#3c5d5d;font-weight:bold">@Max</span><span style="color:#000;font-weight:bold">(</span>value <span style="color:#000;font-weight:bold">=</span> 5<span style="color:#000;font-weight:bold">,</span> message <span style="color:#000;font-weight:bold">=</span> <span style="color:#d14">&#34;数字不能大于5&#34;</span><span style="color:#000;font-weight:bold">)</span> Integer<span style="color:#000;font-weight:bold">&gt;</span> list<span style="color:#000;font-weight:bold">;</span>
+    <span class="kd">private</span> <span class="n">List</span><span class="o">&lt;</span><span class="nd">@Max</span><span class="o">(</span><span class="n">value</span> <span class="o">=</span> <span class="n">5</span><span class="o">,</span> <span class="n">message</span> <span class="o">=</span> <span class="s">&#34;数字不能大于5&#34;</span><span class="o">)</span> <span class="n">Integer</span><span class="o">&gt;</span> <span class="n">list</span><span class="o">;</span>
 
-<span style="color:#000;font-weight:bold">}</span>
+<span class="o">}</span>
 </code></pre></td></tr></table>
 </div>
 </div><ul>
 <li>Lombok的代码生成</li>
 </ul>
-<div class="highlight"><div style="background-color:#fff;-moz-tab-size:4;-o-tab-size:4;tab-size:4">
-<table style="border-spacing:0;padding:0;margin:0;border:0;width:auto;overflow:auto;display:block;"><tr><td style="vertical-align:top;padding:0;margin:0;border:0;">
-<pre style="background-color:#fff;-moz-tab-size:4;-o-tab-size:4;tab-size:4"><code><span style="margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f">1
-</span><span style="margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f">2
-</span><span style="margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f">3
-</span><span style="margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f">4
-</span><span style="margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f">5
-</span><span style="margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f">6
-</span><span style="margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f">7
+<div class="highlight"><div class="chroma">
+<table class="lntable"><tr><td class="lntd">
+<pre class="chroma"><code><span class="lnt">1
+</span><span class="lnt">2
+</span><span class="lnt">3
+</span><span class="lnt">4
+</span><span class="lnt">5
+</span><span class="lnt">6
+</span><span class="lnt">7
 </span></code></pre></td>
-<td style="vertical-align:top;padding:0;margin:0;border:0;;width:100%">
-<pre style="background-color:#fff;-moz-tab-size:4;-o-tab-size:4;tab-size:4"><code class="language-java" data-lang="java"><span style="color:#3c5d5d;font-weight:bold">@Data</span>
-<span style="color:#3c5d5d;font-weight:bold">@Builder</span>
-<span style="color:#3c5d5d;font-weight:bold">@AllArgsConstructor</span>
-<span style="color:#000;font-weight:bold">public</span> <span style="color:#000;font-weight:bold">class</span> <span style="color:#458;font-weight:bold">Person</span> <span style="color:#000;font-weight:bold">implements</span> Comparable<span style="color:#000;font-weight:bold">&lt;</span>Person<span style="color:#000;font-weight:bold">&gt;</span> <span style="color:#000;font-weight:bold">{</span>
-    <span style="color:#000;font-weight:bold">private</span> String name<span style="color:#000;font-weight:bold">;</span>
-    <span style="color:#000;font-weight:bold">private</span> Integer age<span style="color:#000;font-weight:bold">;</span>
-<span style="color:#000;font-weight:bold">}</span>
+<td class="lntd">
+<pre class="chroma"><code class="language-java" data-lang="java"><span class="nd">@Data</span>
+<span class="nd">@Builder</span>
+<span class="nd">@AllArgsConstructor</span>
+<span class="kd">public</span> <span class="kd">class</span> <span class="nc">Person</span> <span class="kd">implements</span> <span class="n">Comparable</span><span class="o">&lt;</span><span class="n">Person</span><span class="o">&gt;</span> <span class="o">{</span>
+    <span class="kd">private</span> <span class="n">String</span> <span class="n">name</span><span class="o">;</span>
+    <span class="kd">private</span> <span class="n">Integer</span> <span class="n">age</span><span class="o">;</span>
+<span class="o">}</span>
 </code></pre></td></tr></table>
 </div>
 </div><p>等等，这无疑说明了注解的灵活和便利。</p>
@@ -736,238 +652,99 @@
 <p>首先，反射作为使用Java解决问题的一个可选方案，不应该在任何需要解决问题的时候第一时间想到它，它所带来巨大灵活性的前提是需要考虑更多的细节以及付出相应的性能代价。因此，在能够使用其他不太复杂的方法解决问题的情况下应当避免使用反射。</p>
 <p>其次，如果需要使用反射也需要避免直接使用。Java有着许多底层使用反射的上层方案，它们的存在能保证你在解决问题的同时不需要思考底层可能出现的问题，并且代码简洁和可读，把脏活累活交给别人，何乐而不为。</p>
 
-        </div>
-
-        
-
-
-        
-
-<div class="post-archive">
-    <h2>See Also</h2>
-    <ul class="listing">
-        
-        <li><a href="/post/guava-talk-4/">Guava杂谈 - ImmutableCollections</a></li>
-        
-        <li><a href="/post/guava-talk-3/">Guava杂谈 - LoadingCache</a></li>
-        
-        <li><a href="/post/guava-talk-2/">Guava杂谈 - EventBus</a></li>
-        
-        <li><a href="/post/guava-talk-1/">Guava杂谈 - ComparisonChain</a></li>
-        
-        <li><a href="/post/regex-note/">Regex - 笔记</a></li>
-        
-    </ul>
-</div>
-
-
-        <div class="post-meta meta-tags">
-            
-            <ul class="clearfix">
-                
-                <li><a href='https://ilixiang.github.io/tags/Java'>Java</a></li>
-                
-                <li><a href='https://ilixiang.github.io/tags/reflection'>reflection</a></li>
-                
-            </ul>
-            
-        </div>
-    </article>
-    
-    <div id="disqus_thread"></div>
-<script type="application/javascript">
-    var disqus_config = function () {
-    
-    
-    
-    };
-    (function() {
-        if (["localhost", "127.0.0.1"].indexOf(window.location.hostname) != -1) {
-            document.getElementById('disqus_thread').innerHTML = 'Disqus comments not available by default when the website is previewed locally.';
-            return;
-        }
-        var d = document, s = d.createElement('script'); s.async = true;
-        s.src = '//' + "yourdiscussshortname" + '.disqus.com/embed.js';
-        s.setAttribute('data-timestamp', +new Date());
-        (d.head || d.body).appendChild(s);
-    })();
-</script>
-<noscript>Please enable JavaScript to view the <a href="https://disqus.com/?ref_noscript">comments powered by Disqus.</a></noscript>
-<a href="https://disqus.com" class="dsq-brlink">comments powered by <span class="logo-disqus">Disqus</span></a>
-
-    
-    
-    <div class="post bg-white">
-      <script src="https://utteranc.es/client.js"
-            repo= "your github repo"
-            issue-term="pathname"
-            theme="github-light"
-            crossorigin="anonymous"
-            async>
-      </script>
     </div>
-    
-</div>
 
-                </div>
-
-                <div id="secondary">
-    <section class="widget">
-        <form id="search" action='https://ilixiang.github.io/search/' method="get" accept-charset="utf-8" target="_blank" _lpchecked="1">
-      
-      <input type="text" name="q" maxlength="20" placeholder="Search">
-      <input type="hidden" name="sitesearch" value="https://ilixiang.github.io/">
-      <button type="submit" class="submit icon-search"></button>
-</form>
-    </section>
-    
-    <section class="widget">
-        <h3 class="widget-title">最近文章</h3>
-<ul class="widget-list">
-    
-    <li>
-        <a href="https://ilixiang.github.io/post/java-enum/" title="Java - 枚举">Java - 枚举</a>
-    </li>
-    
-    <li>
-        <a href="https://ilixiang.github.io/post/shiro-1/" title="Apache Shiro - 基本使用和概念">Apache Shiro - 基本使用和概念</a>
-    </li>
-    
-    <li>
-        <a href="https://ilixiang.github.io/post/java-reflection/" title="Java - 反射">Java - 反射</a>
-    </li>
-    
-    <li>
-        <a href="https://ilixiang.github.io/post/regex-note/" title="Regex - 笔记">Regex - 笔记</a>
-    </li>
-    
-    <li>
-        <a href="https://ilixiang.github.io/post/guava-talk-4/" title="Guava杂谈 - ImmutableCollections">Guava杂谈 - ImmutableCollections</a>
-    </li>
-    
-    <li>
-        <a href="https://ilixiang.github.io/post/guava-talk-3/" title="Guava杂谈 - LoadingCache">Guava杂谈 - LoadingCache</a>
-    </li>
-    
-    <li>
-        <a href="https://ilixiang.github.io/post/guava-talk-2/" title="Guava杂谈 - EventBus">Guava杂谈 - EventBus</a>
-    </li>
-    
-    <li>
-        <a href="https://ilixiang.github.io/post/guava-talk-1/" title="Guava杂谈 - ComparisonChain">Guava杂谈 - ComparisonChain</a>
-    </li>
-    
-    <li>
-        <a href="https://ilixiang.github.io/post/bash-variable/" title="bash - 变量及变量操作">bash - 变量及变量操作</a>
-    </li>
-    
-    <li>
-        <a href="https://ilixiang.github.io/post/sed/" title="sed学习笔记">sed学习笔记</a>
-    </li>
-    
-</ul>
-    </section>
-
-    
-
-    <section class="widget">
-        <h3 class="widget-title">分类</h3>
-<ul class="widget-list">
-    
-    <li><a href="https://ilixiang.github.io/categories/Java/">Java (7)</a></li>
-    
-    <li><a href="https://ilixiang.github.io/categories/shell/">shell (4)</a></li>
-    
-</ul>
-    </section>
-
-    <section class="widget">
-        <h3 class="widget-title">标签</h3>
-<div class="tagcloud">
-    
-    <a href="https://ilixiang.github.io/tags/Collection/">Collection</a>
-    
-    <a href="https://ilixiang.github.io/tags/ComparisonChain/">ComparisonChain</a>
-    
-    <a href="https://ilixiang.github.io/tags/EventBus/">EventBus</a>
-    
-    <a href="https://ilixiang.github.io/tags/Guava/">Guava</a>
-    
-    <a href="https://ilixiang.github.io/tags/ImmutableCollection/">ImmutableCollection</a>
-    
-    <a href="https://ilixiang.github.io/tags/Java/">Java</a>
-    
-    <a href="https://ilixiang.github.io/tags/LoadingCache/">LoadingCache</a>
-    
-    <a href="https://ilixiang.github.io/tags/Security/">Security</a>
-    
-    <a href="https://ilixiang.github.io/tags/Shiro/">Shiro</a>
-    
-    <a href="https://ilixiang.github.io/tags/awk/">awk</a>
-    
-    <a href="https://ilixiang.github.io/tags/bash/">bash</a>
-    
-    <a href="https://ilixiang.github.io/tags/enum/">enum</a>
-    
-    <a href="https://ilixiang.github.io/tags/note/">note</a>
-    
-    <a href="https://ilixiang.github.io/tags/reflection/">reflection</a>
-    
-    <a href="https://ilixiang.github.io/tags/regex/">regex</a>
-    
-    <a href="https://ilixiang.github.io/tags/sed/">sed</a>
-    
-    <a href="https://ilixiang.github.io/tags/shell/">shell</a>
-    
-</div>
-    </section>
-
-    
-
-    <section class="widget">
-        <h3 class="widget-title">其它</h3>
-        <ul class="widget-list">
-            <li><a href="https://ilixiang.github.io/index.xml">文章 RSS</a></li>
-        </ul>
-    </section>
-</div>
-            </div>
-        </div>
-    </div>
-    <footer id="footer">
-    <div class="container">
-        &copy; 2020 <a href="https://ilixiang.github.io/">三斜求积术 By 石不转</a>.
-        Powered by <a rel="nofollow noreferer noopener" href="https://gohugo.io" target="_blank">Hugo</a>.
-        <a href="https://www.flysnow.org/" target="_blank">Theme</a> based on <a href="https://github.com/flysnow-org/maupassant-hugo" target="_blank">maupassant</a>.
+    <div class="post-copyright">
+  <p class="copyright-item">
+    <span class="item-title">文章作者</span>
+    <span class="item-content">石不转</span>
+  </p>
+  <p class="copyright-item">
+    <span class="item-title">上次更新</span>
+    <span class="item-content">
+        2020-07-03
         
+    </span>
+  </p>
+  
+  
+</div>
+<footer class="post-footer">
+      <div class="post-tags">
+          <a href="/tags/java/">Java</a>
+          <a href="/tags/reflection/">reflection</a>
+          </div>
+      <nav class="post-nav">
+        <a class="prev" href="/post/shiro-1/">
+            <i class="iconfont icon-left"></i>
+            <span class="prev-text nav-default">Apache Shiro - 基本使用和概念</span>
+            <span class="prev-text nav-mobile">上一篇</span>
+          </a>
+        <a class="next" href="/post/guava-talk-4/">
+            <span class="next-text nav-default">Guava杂谈 - ImmutableCollections</span>
+            <span class="next-text nav-mobile">下一篇</span>
+            <i class="iconfont icon-right"></i>
+          </a>
+      </nav>
+    </footer>
+  </article>
+        </div>
+        
+
+  
+
+  
+
+      </div>
+    </main>
+
+    <footer id="footer" class="footer">
+      <div class="social-links">
+  <a href="https://ilixiang.github.io/index.xml" type="application/rss+xml" class="iconfont icon-rss" title="rss"></a>
+</div>
+
+<div class="copyright">
+  <span class="power-by">
+    由 <a class="hexo-link" href="https://gohugo.io">Hugo</a> 强力驱动
+  </span>
+  <span class="division">|</span>
+  <span class="theme-info">
+    主题 - 
+    <a class="theme-link" href="https://github.com/olOwOlo/hugo-theme-even">Even</a>
+  </span>
+
+  
+
+  <span class="copyright-year">
+    &copy; 
+    2020
+    <span class="heart">
+      <i class="iconfont icon-heart"></i>
+    </span>
+    <span class="author">石不转</span>
+  </span>
+</div>
+    </footer>
+
+    <div class="back-to-top" id="back-to-top">
+      <i class="iconfont icon-up"></i>
     </div>
-</footer>
-
-
-    
-    <script type="text/javascript">
-        window.MathJax = {
-            tex2jax: {
-                inlineMath: [['$', '$']],
-                processEscapes: true
-                }
-            };
-    </script>
-    <script src='https://cdnjs.cloudflare.com/ajax/libs/mathjax/2.7.5/MathJax.js?config=TeX-MML-AM_CHTML' async></script>
-
-
-<a id="rocket" href="#top"></a>
-<script type="text/javascript" src='/js/totop.js?v=0.0.0' async=""></script>
+  </div>
+  
+  <script src="https://cdn.jsdelivr.net/npm/jquery@3.2.1/dist/jquery.min.js" integrity="sha256-hwg4gsxgFZhOsEEamdOYGBf13FyQuiTwlAQgxVSNgt4=" crossorigin="anonymous"></script>
+  <script src="https://cdn.jsdelivr.net/npm/slideout@1.0.1/dist/slideout.min.js" integrity="sha256-t+zJ/g8/KXIJMjSVQdnibt4dlaDxc9zXr/9oNPeWqdg=" crossorigin="anonymous"></script>
+  <script src="https://cdn.jsdelivr.net/npm/@fancyapps/fancybox@3.1.20/dist/jquery.fancybox.min.js" integrity="sha256-XVLffZaxoWfGUEbdzuLi7pwaUJv1cecsQJQqGLe7axY=" crossorigin="anonymous"></script>
 
 
 
-    <script type="text/javascript" src="//busuanzi.ibruce.info/busuanzi/2.3/busuanzi.pure.mini.js" async></script>
+<script type="text/javascript" src="/js/main.min.d7b7ada643c9c1a983026e177f141f7363b4640d619caf01d8831a6718cd44ea.js"></script>
 
 
 
 
-    <script src='/js/douban.js'></script>
+
+
+
 
 </body>
-
 </html>

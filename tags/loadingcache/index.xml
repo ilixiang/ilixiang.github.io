@@ -1,0 +1,24 @@
+<?xml version="1.0" encoding="utf-8" standalone="yes"?>
+<rss version="2.0" xmlns:atom="http://www.w3.org/2005/Atom">
+  <channel>
+    <title>LoadingCache on 三斜求积术 - Code fun. Code better</title>
+    <link>https://ilixiang.github.io/tags/loadingcache/</link>
+    <description>Recent content in LoadingCache on 三斜求积术 - Code fun. Code better</description>
+    <generator>Hugo -- gohugo.io</generator>
+    <language>en</language>
+    <lastBuildDate>Wed, 01 Jul 2020 14:26:00 +0800</lastBuildDate>
+    
+	<atom:link href="https://ilixiang.github.io/tags/loadingcache/index.xml" rel="self" type="application/rss+xml" />
+    
+    
+    <item>
+      <title>Guava杂谈 - LoadingCache</title>
+      <link>https://ilixiang.github.io/post/guava-talk-3/</link>
+      <pubDate>Wed, 01 Jul 2020 14:26:00 +0800</pubDate>
+      
+      <guid>https://ilixiang.github.io/post/guava-talk-3/</guid>
+      <description>我与Cache这个词第一次相遇是在本科的《计算机组成原理》这门课上，这门课当时上起来那是满头问号。Cache是用于存储数据的一种组件，它存在</description>
+    </item>
+    
+  </channel>
+</rss>

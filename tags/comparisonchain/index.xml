@@ -1,0 +1,24 @@
+<?xml version="1.0" encoding="utf-8" standalone="yes"?>
+<rss version="2.0" xmlns:atom="http://www.w3.org/2005/Atom">
+  <channel>
+    <title>ComparisonChain on 三斜求积术 - Code fun. Code better</title>
+    <link>https://ilixiang.github.io/tags/comparisonchain/</link>
+    <description>Recent content in ComparisonChain on 三斜求积术 - Code fun. Code better</description>
+    <generator>Hugo -- gohugo.io</generator>
+    <language>en</language>
+    <lastBuildDate>Sat, 13 Jun 2020 10:33:25 +0800</lastBuildDate>
+    
+	<atom:link href="https://ilixiang.github.io/tags/comparisonchain/index.xml" rel="self" type="application/rss+xml" />
+    
+    
+    <item>
+      <title>Guava杂谈 - ComparisonChain</title>
+      <link>https://ilixiang.github.io/post/guava-talk-1/</link>
+      <pubDate>Sat, 13 Jun 2020 10:33:25 +0800</pubDate>
+      
+      <guid>https://ilixiang.github.io/post/guava-talk-1/</guid>
+      <description>单例、状态与链式 ComparisonChain这个类的作用是辅助我们去实现compareTo()方法的，使用方法极为简单 1 2 3 4 5 6 7 8 9 10</description>
+    </item>
+    
+  </channel>
+</rss>

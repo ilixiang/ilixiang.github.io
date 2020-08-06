@@ -1,15 +1,69 @@
 <?xml version="1.0" encoding="utf-8" standalone="yes"?>
 <rss version="2.0" xmlns:atom="http://www.w3.org/2005/Atom">
   <channel>
-    <title>Tags on 三斜求积术</title>
+    <title>Tags on 三斜求积术 - Code fun. Code better</title>
     <link>https://ilixiang.github.io/tags/</link>
-    <description>Recent content in Tags on 三斜求积术</description>
+    <description>Recent content in Tags on 三斜求积术 - Code fun. Code better</description>
     <generator>Hugo -- gohugo.io</generator>
-    <language>zh-CN</language>
-    <lastBuildDate>Tue, 14 Jul 2020 16:45:06 +0800</lastBuildDate>
+    <language>en</language>
+    <lastBuildDate>Thu, 06 Aug 2020 15:49:38 +0800</lastBuildDate>
     
 	<atom:link href="https://ilixiang.github.io/tags/index.xml" rel="self" type="application/rss+xml" />
     
+    
+    <item>
+      <title>Java</title>
+      <link>https://ilixiang.github.io/tags/java/</link>
+      <pubDate>Thu, 06 Aug 2020 15:49:38 +0800</pubDate>
+      
+      <guid>https://ilixiang.github.io/tags/java/</guid>
+      <description></description>
+    </item>
+    
+    <item>
+      <title>Security</title>
+      <link>https://ilixiang.github.io/tags/security/</link>
+      <pubDate>Thu, 06 Aug 2020 15:49:38 +0800</pubDate>
+      
+      <guid>https://ilixiang.github.io/tags/security/</guid>
+      <description></description>
+    </item>
+    
+    <item>
+      <title>Shiro</title>
+      <link>https://ilixiang.github.io/tags/shiro/</link>
+      <pubDate>Thu, 06 Aug 2020 15:49:38 +0800</pubDate>
+      
+      <guid>https://ilixiang.github.io/tags/shiro/</guid>
+      <description></description>
+    </item>
+    
+    <item>
+      <title>note</title>
+      <link>https://ilixiang.github.io/tags/note/</link>
+      <pubDate>Mon, 03 Aug 2020 13:29:04 +0800</pubDate>
+      
+      <guid>https://ilixiang.github.io/tags/note/</guid>
+      <description></description>
+    </item>
+    
+    <item>
+      <title>regex</title>
+      <link>https://ilixiang.github.io/tags/regex/</link>
+      <pubDate>Mon, 03 Aug 2020 13:29:04 +0800</pubDate>
+      
+      <guid>https://ilixiang.github.io/tags/regex/</guid>
+      <description></description>
+    </item>
+    
+    <item>
+      <title>shell</title>
+      <link>https://ilixiang.github.io/tags/shell/</link>
+      <pubDate>Mon, 03 Aug 2020 13:29:04 +0800</pubDate>
+      
+      <guid>https://ilixiang.github.io/tags/shell/</guid>
+      <description></description>
+    </item>
     
     <item>
       <title>enum</title>
@@ -17,42 +71,6 @@
       <pubDate>Tue, 14 Jul 2020 16:45:06 +0800</pubDate>
       
       <guid>https://ilixiang.github.io/tags/enum/</guid>
-      <description></description>
-    </item>
-    
-    <item>
-      <title>Java</title>
-      <link>https://ilixiang.github.io/tags/Java/</link>
-      <pubDate>Tue, 14 Jul 2020 16:45:06 +0800</pubDate>
-      
-      <guid>https://ilixiang.github.io/tags/Java/</guid>
-      <description></description>
-    </item>
-    
-    <item>
-      <title>Security</title>
-      <link>https://ilixiang.github.io/tags/Security/</link>
-      <pubDate>Wed, 08 Jul 2020 15:49:38 +0800</pubDate>
-      
-      <guid>https://ilixiang.github.io/tags/Security/</guid>
-      <description></description>
-    </item>
-    
-    <item>
-      <title>Shiro</title>
-      <link>https://ilixiang.github.io/tags/Shiro/</link>
-      <pubDate>Wed, 08 Jul 2020 15:49:38 +0800</pubDate>
-      
-      <guid>https://ilixiang.github.io/tags/Shiro/</guid>
-      <description></description>
-    </item>
-    
-    <item>
-      <title>note</title>
-      <link>https://ilixiang.github.io/tags/note/</link>
-      <pubDate>Fri, 03 Jul 2020 13:29:04 +0800</pubDate>
-      
-      <guid>https://ilixiang.github.io/tags/note/</guid>
       <description></description>
     </item>
     
@@ -66,74 +84,56 @@
     </item>
     
     <item>
-      <title>regex</title>
-      <link>https://ilixiang.github.io/tags/regex/</link>
-      <pubDate>Fri, 03 Jul 2020 13:29:04 +0800</pubDate>
-      
-      <guid>https://ilixiang.github.io/tags/regex/</guid>
-      <description></description>
-    </item>
-    
-    <item>
-      <title>shell</title>
-      <link>https://ilixiang.github.io/tags/shell/</link>
-      <pubDate>Fri, 03 Jul 2020 13:29:04 +0800</pubDate>
-      
-      <guid>https://ilixiang.github.io/tags/shell/</guid>
-      <description></description>
-    </item>
-    
-    <item>
       <title>Collection</title>
-      <link>https://ilixiang.github.io/tags/Collection/</link>
+      <link>https://ilixiang.github.io/tags/collection/</link>
       <pubDate>Fri, 03 Jul 2020 10:36:09 +0800</pubDate>
       
-      <guid>https://ilixiang.github.io/tags/Collection/</guid>
+      <guid>https://ilixiang.github.io/tags/collection/</guid>
       <description></description>
     </item>
     
     <item>
       <title>Guava</title>
-      <link>https://ilixiang.github.io/tags/Guava/</link>
+      <link>https://ilixiang.github.io/tags/guava/</link>
       <pubDate>Fri, 03 Jul 2020 10:36:09 +0800</pubDate>
       
-      <guid>https://ilixiang.github.io/tags/Guava/</guid>
+      <guid>https://ilixiang.github.io/tags/guava/</guid>
       <description></description>
     </item>
     
     <item>
       <title>ImmutableCollection</title>
-      <link>https://ilixiang.github.io/tags/ImmutableCollection/</link>
+      <link>https://ilixiang.github.io/tags/immutablecollection/</link>
       <pubDate>Fri, 03 Jul 2020 10:36:09 +0800</pubDate>
       
-      <guid>https://ilixiang.github.io/tags/ImmutableCollection/</guid>
+      <guid>https://ilixiang.github.io/tags/immutablecollection/</guid>
       <description></description>
     </item>
     
     <item>
       <title>LoadingCache</title>
-      <link>https://ilixiang.github.io/tags/LoadingCache/</link>
+      <link>https://ilixiang.github.io/tags/loadingcache/</link>
       <pubDate>Wed, 01 Jul 2020 14:26:00 +0800</pubDate>
       
-      <guid>https://ilixiang.github.io/tags/LoadingCache/</guid>
+      <guid>https://ilixiang.github.io/tags/loadingcache/</guid>
       <description></description>
     </item>
     
     <item>
       <title>EventBus</title>
-      <link>https://ilixiang.github.io/tags/EventBus/</link>
+      <link>https://ilixiang.github.io/tags/eventbus/</link>
       <pubDate>Tue, 23 Jun 2020 13:28:12 +0800</pubDate>
       
-      <guid>https://ilixiang.github.io/tags/EventBus/</guid>
+      <guid>https://ilixiang.github.io/tags/eventbus/</guid>
       <description></description>
     </item>
     
     <item>
       <title>ComparisonChain</title>
-      <link>https://ilixiang.github.io/tags/ComparisonChain/</link>
+      <link>https://ilixiang.github.io/tags/comparisonchain/</link>
       <pubDate>Sat, 13 Jun 2020 10:33:25 +0800</pubDate>
       
-      <guid>https://ilixiang.github.io/tags/ComparisonChain/</guid>
+      <guid>https://ilixiang.github.io/tags/comparisonchain/</guid>
       <description></description>
     </item>
     

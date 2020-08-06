@@ -1,222 +1,137 @@
-<!doctype html>
-<html lang="zh-CN">
+<!DOCTYPE html>
+<html lang="zh-cn">
 <head>
+  <meta charset="utf-8">
+  <meta http-equiv="X-UA-Compatible" content="IE=edge,chrome=1">
+  <title>Guava杂谈 - LoadingCache - 三斜求积术 - Code fun. Code better</title>
+  <meta name="renderer" content="webkit" />
+<meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=1"/>
 
-    <meta charset="utf-8">
-    <meta http-equiv="X-UA-Compatible" content="IE=edge">
-    <meta name="viewport" content="width=device-width, initial-scale=1">
+<meta http-equiv="Cache-Control" content="no-transform" />
+<meta http-equiv="Cache-Control" content="no-siteapp" />
 
-    <title>Guava杂谈 - LoadingCache | 三斜求积术</title>
-    <meta property="og:title" content="Guava杂谈 - LoadingCache - 三斜求积术">
-    <meta property="og:type" content="article">
-        
-    <meta property="article:published_time" content='2020-07-01T14:26:00&#43;08:00'>
-        
-        
-    <meta property="article:modified_time" content='2020-07-01T14:26:00&#43;08:00'>
-        
-    <meta name="Keywords" content="Java、shell、web">
-    <meta name="description" content="Guava杂谈 - LoadingCache">
-        
-    <meta name="author" content="石不转">
-    <meta property="og:url" content="https://ilixiang.github.io/post/guava-talk-3/">
-    <link rel="shortcut icon" href="/favicon.ico" type="image/x-icon">
-
-    <link rel="stylesheet" href='/css/normalize.css'>
-    <link rel="stylesheet" href='/css/style.css'>
-    <script type="text/javascript" src="//cdnjs.cloudflare.com/ajax/libs/jquery/3.4.1/jquery.min.js"></script>
-
-    
-    <script async src="//pagead2.googlesyndication.com/pagead/js/adsbygoogle.js"></script>
-    <script>
-    (adsbygoogle = window.adsbygoogle || []).push({
-        google_ad_client: "ca-pub-4031353640611810",
-        enable_page_level_ads: true
-    });
-    </script>
-    
+<meta name="theme-color" content="#f8f5ec" />
+<meta name="msapplication-navbutton-color" content="#f8f5ec">
+<meta name="apple-mobile-web-app-capable" content="yes">
+<meta name="apple-mobile-web-app-status-bar-style" content="#f8f5ec">
 
 
-    
-    
-        <link rel="stylesheet" href='/css/douban.css'>
-    
-        <link rel="stylesheet" href='/css/other.css'>
-    
+<meta name="author" content="石不转" /><meta name="description" content="我与Cache这个词第一次相遇是在本科的《计算机组成原理》这门课上，这门课当时上起来那是满头问号。Cache是用于存储数据的一种组件，它存在" /><meta name="keywords" content="Hugo, theme, even" />
+
+
+
+
+
+
+<meta name="generator" content="Hugo 0.68.3 with theme even" />
+
+
+<link rel="canonical" href="https://ilixiang.github.io/post/guava-talk-3/" />
+<link rel="apple-touch-icon" sizes="180x180" href="/apple-touch-icon.png">
+<link rel="icon" type="image/png" sizes="32x32" href="/favicon-32x32.png">
+<link rel="icon" type="image/png" sizes="16x16" href="/favicon-16x16.png">
+<link rel="manifest" href="/manifest.json">
+<link rel="mask-icon" href="/safari-pinned-tab.svg" color="#5bbad5">
+
+
+
+<link href="/sass/main.min.651e6917abb0239242daa570c2bec9867267bbcd83646da5a850afe573347b44.css" rel="stylesheet">
+<link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/@fancyapps/fancybox@3.1.20/dist/jquery.fancybox.min.css" integrity="sha256-7TyXnr2YU040zfSP+rEcz29ggW4j56/ujTPwjMzyqFY=" crossorigin="anonymous">
+
+
+<meta property="og:title" content="Guava杂谈 - LoadingCache" />
+<meta property="og:description" content="我与Cache这个词第一次相遇是在本科的《计算机组成原理》这门课上，这门课当时上起来那是满头问号。Cache是用于存储数据的一种组件，它存在" />
+<meta property="og:type" content="article" />
+<meta property="og:url" content="https://ilixiang.github.io/post/guava-talk-3/" />
+<meta property="article:published_time" content="2020-07-01T14:26:00+08:00" />
+<meta property="article:modified_time" content="2020-07-01T14:26:00+08:00" />
+<meta itemprop="name" content="Guava杂谈 - LoadingCache">
+<meta itemprop="description" content="我与Cache这个词第一次相遇是在本科的《计算机组成原理》这门课上，这门课当时上起来那是满头问号。Cache是用于存储数据的一种组件，它存在">
+<meta itemprop="datePublished" content="2020-07-01T14:26:00&#43;08:00" />
+<meta itemprop="dateModified" content="2020-07-01T14:26:00&#43;08:00" />
+<meta itemprop="wordCount" content="6290">
+
+
+
+<meta itemprop="keywords" content="Java,Guava,LoadingCache," /><meta name="twitter:card" content="summary"/>
+<meta name="twitter:title" content="Guava杂谈 - LoadingCache"/>
+<meta name="twitter:description" content="我与Cache这个词第一次相遇是在本科的《计算机组成原理》这门课上，这门课当时上起来那是满头问号。Cache是用于存储数据的一种组件，它存在"/>
+
+<!--[if lte IE 9]>
+  <script src="https://cdnjs.cloudflare.com/ajax/libs/classlist/1.1.20170427/classList.min.js"></script>
+<![endif]-->
+
+<!--[if lt IE 9]>
+  <script src="https://cdn.jsdelivr.net/npm/html5shiv@3.7.3/dist/html5shiv.min.js"></script>
+  <script src="https://cdn.jsdelivr.net/npm/respond.js@1.4.2/dest/respond.min.js"></script>
+<![endif]-->
+
 </head>
-
-
 <body>
-    <header id="header" class="clearfix">
-    <div class="container">
-        <div class="col-group">
-            <div class="site-name ">
-                
-                    <a id="logo" href="https://ilixiang.github.io/">
-                        三斜求积术
-                    </a>
-                
-                <p class="description">Code for fun. Code for better</p>
-            </div>
-            <div>
-                <nav id="nav-menu" class="clearfix">
-                    <a class="current" href="https://ilixiang.github.io/">首页</a>
-                    
-                    <a  href="https://ilixiang.github.io/archives/" title="归档">归档</a>
-                    
-                    <a  href="https://ilixiang.github.io/about/" title="关于">关于</a>
-                    
-                </nav>
-            </div>
-        </div>
-    </div>
-</header>
-
-    <div id="body">
-        <div class="container">
-            <div class="col-group">
-
-                <div class="col-8" id="main">
-                    
-<div class="res-cons">
-    <style type="text/css">
-    .post-toc {
-        position: fixed;
-        width: 200px;
-        margin-left: -210px;
-        padding: 5px 10px;
-        font-family: Athelas, STHeiti, Microsoft Yahei, serif;
-        font-size: 12px;
-        border: 1px solid rgba(0, 0, 0, .07);
-        border-radius: 5px;
-        background-color: rgba(255, 255, 255, 0.98);
-        background-clip: padding-box;
-        -webkit-box-shadow: 1px 1px 2px rgba(0, 0, 0, .125);
-        box-shadow: 1px 1px 2px rgba(0, 0, 0, .125);
-        word-wrap: break-word;
-        white-space: nowrap;
-        -webkit-box-sizing: border-box;
-        box-sizing: border-box;
-        z-index: 999;
-        cursor: pointer;
-        max-height: 70%;
-        overflow-y: auto;
-        overflow-x: hidden;
-    }
-
-    .post-toc .post-toc-title {
-        width: 100%;
-        margin: 0 auto;
-        font-size: 20px;
-        font-weight: 400;
-        text-transform: uppercase;
-        text-align: center;
-    }
-
-    .post-toc .post-toc-content {
-        font-size: 15px;
-    }
-
-    .post-toc .post-toc-content>nav>ul {
-        margin: 10px 0;
-    }
-
-    .post-toc .post-toc-content ul {
-        padding-left: 20px;
-        list-style: square;
-        margin: 0.5em;
-        line-height: 1.8em;
-    }
-
-    .post-toc .post-toc-content ul ul {
-        padding-left: 15px;
-        display: none;
-    }
-
-    @media print,
-    screen and (max-width:1057px) {
-        .post-toc {
-            display: none;
-        }
-    }
-</style>
-<div class="post-toc" style="position: absolute; top: 188px;">
-    <h2 class="post-toc-title">文章目录</h2>
-    <div class="post-toc-content">
-        <nav id="TableOfContents">
-  <ul>
-    <li><a href="#cache和concurrentmap-"><code>Cache</code>和<code>ConcurrentMap</code></a></li>
-    <li><a href="#cache的基本使用-"><code>Cache</code>的基本使用</a>
-      <ul>
-        <li><a href="#载入数据-">载入数据</a></li>
-        <li><a href="#最大容量-">最大容量</a></li>
-        <li><a href="#时间淘汰策略-">时间淘汰策略</a></li>
-        <li><a href="#引用淘汰策略-">引用淘汰策略</a></li>
-      </ul>
-    </li>
-    <li><a href="#引用淘汰设计-">引用淘汰设计</a>
-      <ul>
-        <li><a href="#strength和entryfactory-"><code>Strength</code>和<code>EntryFactory</code></a></li>
-        <li><a href="#referenceentry结构-"><code>ReferenceEntry</code>结构</a></li>
-        <li><a href="#weakreference和referencequeue"><code>WeakReference</code>和<code>ReferenceQueue</code></a></li>
-      </ul>
-    </li>
-    <li><a href="#总结-">总结</a></li>
+  <div id="mobile-navbar" class="mobile-navbar">
+  <div class="mobile-header-logo">
+    <a href="/" class="logo">三斜求积术</a>
+  </div>
+  <div class="mobile-navbar-icon">
+    <span></span>
+    <span></span>
+    <span></span>
+  </div>
+</div>
+<nav id="mobile-menu" class="mobile-menu slideout-menu">
+  <ul class="mobile-menu-list">
+    <a href="/">
+        <li class="mobile-menu-item">主页</li>
+      </a><a href="/post/">
+        <li class="mobile-menu-item">归档</li>
+      </a><a href="/tags/">
+        <li class="mobile-menu-item">标签</li>
+      </a><a href="/categories/">
+        <li class="mobile-menu-item">分类</li>
+      </a>
   </ul>
 </nav>
-    </div>
+  <div class="container" id="mobile-panel">
+    <header id="header" class="header">
+        <div class="logo-wrapper">
+  <a href="/" class="logo">三斜求积术</a>
 </div>
-<script type="text/javascript">
-    $(document).ready(function () {
-        var postToc = $(".post-toc");
-        if (postToc.length) {
-            var leftPos = $("#main").offset().left;
-            if(leftPos<220){
-                postToc.css({"width":leftPos-10,"margin-left":(0-leftPos)})
-            }
 
-            var t = postToc.offset().top - 20,
-                a = {
-                    start: {
-                        position: "absolute",
-                        top: t
-                    },
-                    process: {
-                        position: "fixed",
-                        top: 20
-                    },
-                };
-            $(window).scroll(function () {
-                var e = $(window).scrollTop();
-                e < t ? postToc.css(a.start) : postToc.css(a.process)
-            })
-        }
-    })
-</script>
-    <article class="post">
-        <header>
-            <h1 class="post-title">Guava杂谈 - LoadingCache</h1>
-        </header>
-        <date class="post-meta meta-date">
-            2020年7月1日
-        </date>
+<nav class="site-navbar">
+  <ul id="menu" class="menu">
+    <li class="menu-item">
+        <a class="menu-item-link" href="/">主页</a>
+      </li><li class="menu-item">
+        <a class="menu-item-link" href="/post/">归档</a>
+      </li><li class="menu-item">
+        <a class="menu-item-link" href="/tags/">标签</a>
+      </li><li class="menu-item">
+        <a class="menu-item-link" href="/categories/">分类</a>
+      </li>
+  </ul>
+</nav>
+    </header>
+
+    <main id="main" class="main">
+      <div class="content-wrapper">
+        <div id="content" class="content">
+          <article class="post">
+    
+    <header class="post-header">
+      <h1 class="post-title">Guava杂谈 - LoadingCache</h1>
+
+      <div class="post-meta">
+        <span class="post-time"> 2020-07-01 </span>
+        <div class="post-category">
+            <a href="/categories/java/"> Java </a>
+            </div>
         
-        <div class="post-meta">
-            <span>|</span>
-            
-            <span class="meta-category"><a href='https://ilixiang.github.io/categories/Java'>Java</a></span>
-            
-        </div>
-        
-        
-        <div class="post-meta">
-            <span id="busuanzi_container_page_pv">|<span id="busuanzi_value_page_pv"></span><span>
-                    阅读</span></span>
-        </div>
-        
-        
-        <div class="post-content">
-            <p><img src="/img/cache.jpg" alt="cache"></p>
+      </div>
+    </header>
+
+    
+    <div class="post-content">
+      <p><img src="/img/cache.jpg" alt="cache"></p>
 <p>我与<code>Cache</code>这个词第一次相遇是在本科的《计算机组成原理》这门课上，这门课当时上起来那是满头问号。<code>Cache</code>是用于存储数据的一种组件，它存在的目的是让获取数据的速度更快。在集成Web服务时，使用比较广泛的<code>Cache</code>服务器应该是redis了，它作为跨进程甚至跨网络的缓存系统提供了十分丰富的功能。而今天谈论的Guava中的<code>LoadingCache</code>是仅在单个JVM实例中使用的缓存，而作为本地<code>Cache</code>，当存储数据量十分小并且没有持久化需求时可以在不增加整个应用复杂性的前提下进行使用。</p>
 <h2 id="cache和concurrentmap-"><code>Cache</code>和<code>ConcurrentMap</code></h2>
 <p>单纯从存储结构而言，<code>Cache</code>的一部分就是<code>ConcurrentMap</code>，这是由于后者提供了前者所需要的几个功能：</p>
@@ -256,52 +171,52 @@
 <h2 id="cache的基本使用-"><code>Cache</code>的基本使用</h2>
 <p>Guava的<code>Cache</code>实现中最常使用的是<code>LoadingCache</code>，意为可以自动load数据的缓存。</p>
 <h3 id="载入数据-">载入数据</h3>
-<div class="highlight"><div style="background-color:#fff;-moz-tab-size:4;-o-tab-size:4;tab-size:4">
-<table style="border-spacing:0;padding:0;margin:0;border:0;width:auto;overflow:auto;display:block;"><tr><td style="vertical-align:top;padding:0;margin:0;border:0;">
-<pre style="background-color:#fff;-moz-tab-size:4;-o-tab-size:4;tab-size:4"><code><span style="margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f"> 1
-</span><span style="margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f"> 2
-</span><span style="margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f"> 3
-</span><span style="margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f"> 4
-</span><span style="margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f"> 5
-</span><span style="margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f"> 6
-</span><span style="margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f"> 7
-</span><span style="margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f"> 8
-</span><span style="margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f"> 9
-</span><span style="margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f">10
-</span><span style="margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f">11
-</span><span style="margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f">12
-</span><span style="margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f">13
-</span><span style="margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f">14
-</span><span style="margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f">15
-</span><span style="margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f">16
-</span><span style="margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f">17
-</span><span style="margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f">18
-</span><span style="margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f">19
-</span><span style="margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f">20
-</span><span style="margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f">21
+<div class="highlight"><div class="chroma">
+<table class="lntable"><tr><td class="lntd">
+<pre class="chroma"><code><span class="lnt"> 1
+</span><span class="lnt"> 2
+</span><span class="lnt"> 3
+</span><span class="lnt"> 4
+</span><span class="lnt"> 5
+</span><span class="lnt"> 6
+</span><span class="lnt"> 7
+</span><span class="lnt"> 8
+</span><span class="lnt"> 9
+</span><span class="lnt">10
+</span><span class="lnt">11
+</span><span class="lnt">12
+</span><span class="lnt">13
+</span><span class="lnt">14
+</span><span class="lnt">15
+</span><span class="lnt">16
+</span><span class="lnt">17
+</span><span class="lnt">18
+</span><span class="lnt">19
+</span><span class="lnt">20
+</span><span class="lnt">21
 </span></code></pre></td>
-<td style="vertical-align:top;padding:0;margin:0;border:0;;width:100%">
-<pre style="background-color:#fff;-moz-tab-size:4;-o-tab-size:4;tab-size:4"><code class="language-java" data-lang="java"><span style="color:#3c5d5d;font-weight:bold">@Test</span>
-<span style="color:#000;font-weight:bold">public</span> <span style="color:#458;font-weight:bold">void</span> <span style="color:#900;font-weight:bold">testLoad</span><span style="color:#000;font-weight:bold">()</span> <span style="color:#000;font-weight:bold">throws</span> Exception<span style="color:#000;font-weight:bold">{</span>
-    LoadingCache<span style="color:#000;font-weight:bold">&lt;</span>Integer<span style="color:#000;font-weight:bold">,</span> String<span style="color:#000;font-weight:bold">&gt;</span> loadingCache <span style="color:#000;font-weight:bold">=</span> CacheBuilder<span style="color:#000;font-weight:bold">.</span><span style="color:#008080">newBuilder</span><span style="color:#000;font-weight:bold">()</span>
-            <span style="color:#000;font-weight:bold">.</span><span style="color:#008080">build</span><span style="color:#000;font-weight:bold">(</span><span style="color:#000;font-weight:bold">new</span> CacheLoader<span style="color:#000;font-weight:bold">&lt;</span>Integer<span style="color:#000;font-weight:bold">,</span> String<span style="color:#000;font-weight:bold">&gt;()</span> <span style="color:#000;font-weight:bold">{</span>
-                <span style="color:#3c5d5d;font-weight:bold">@Override</span>
-                <span style="color:#000;font-weight:bold">public</span> String <span style="color:#900;font-weight:bold">load</span><span style="color:#000;font-weight:bold">(</span>Integer key<span style="color:#000;font-weight:bold">)</span> <span style="color:#000;font-weight:bold">throws</span> Exception <span style="color:#000;font-weight:bold">{</span>
-                    <span style="color:#000;font-weight:bold">return</span> System<span style="color:#000;font-weight:bold">.</span><span style="color:#008080">currentTimeMillis</span><span style="color:#000;font-weight:bold">()</span> <span style="color:#000;font-weight:bold">+</span> <span style="color:#d14">&#34; Value &#34;</span> <span style="color:#000;font-weight:bold">+</span> key<span style="color:#000;font-weight:bold">;</span>
-                <span style="color:#000;font-weight:bold">}</span>
-            <span style="color:#000;font-weight:bold">});</span>
-    <span style="color:#998;font-style:italic">// manually put
-</span><span style="color:#998;font-style:italic"></span>    System<span style="color:#000;font-weight:bold">.</span><span style="color:#008080">out</span><span style="color:#000;font-weight:bold">.</span><span style="color:#008080">println</span><span style="color:#000;font-weight:bold">(</span><span style="color:#d14">&#34;-------------- 手动载入数据 ------------&#34;</span><span style="color:#000;font-weight:bold">);</span>
-    loadingCache<span style="color:#000;font-weight:bold">.</span><span style="color:#008080">put</span><span style="color:#000;font-weight:bold">(</span>1<span style="color:#000;font-weight:bold">,</span> <span style="color:#d14">&#34;Manual Value 1&#34;</span><span style="color:#000;font-weight:bold">);</span>
-    System<span style="color:#000;font-weight:bold">.</span><span style="color:#008080">out</span><span style="color:#000;font-weight:bold">.</span><span style="color:#008080">println</span><span style="color:#000;font-weight:bold">(</span>String<span style="color:#000;font-weight:bold">.</span><span style="color:#008080">format</span><span style="color:#000;font-weight:bold">(</span><span style="color:#d14">&#34;The value of key %d is %s&#34;</span><span style="color:#000;font-weight:bold">,</span> 1<span style="color:#000;font-weight:bold">,</span> loadingCache<span style="color:#000;font-weight:bold">.</span><span style="color:#008080">get</span><span style="color:#000;font-weight:bold">(</span>1<span style="color:#000;font-weight:bold">)));</span>
-    System<span style="color:#000;font-weight:bold">.</span><span style="color:#008080">out</span><span style="color:#000;font-weight:bold">.</span><span style="color:#008080">println</span><span style="color:#000;font-weight:bold">(</span><span style="color:#d14">&#34;-------------- 自动载入数据 ------------&#34;</span><span style="color:#000;font-weight:bold">);</span>
-    System<span style="color:#000;font-weight:bold">.</span><span style="color:#008080">out</span><span style="color:#000;font-weight:bold">.</span><span style="color:#008080">println</span><span style="color:#000;font-weight:bold">(</span>String<span style="color:#000;font-weight:bold">.</span><span style="color:#008080">format</span><span style="color:#000;font-weight:bold">(</span><span style="color:#d14">&#34;The value of key %d is %s&#34;</span><span style="color:#000;font-weight:bold">,</span> 2<span style="color:#000;font-weight:bold">,</span> loadingCache<span style="color:#000;font-weight:bold">.</span><span style="color:#008080">get</span><span style="color:#000;font-weight:bold">(</span>2<span style="color:#000;font-weight:bold">)));</span>
-<span style="color:#000;font-weight:bold">}</span>
-<span style="color:#998;font-style:italic">// ----- 输出 -----
-</span><span style="color:#998;font-style:italic"></span><span style="color:#000;font-weight:bold">--------------</span> 手动载入数据 <span style="color:#000;font-weight:bold">------------</span>
-The value of key 1 is Manual Value 1
-<span style="color:#000;font-weight:bold">--------------</span> 自动载入数据 <span style="color:#000;font-weight:bold">------------</span>
-The value of key 2 is 1594513825523 Value 2
+<td class="lntd">
+<pre class="chroma"><code class="language-java" data-lang="java"><span class="nd">@Test</span>
+<span class="kd">public</span> <span class="kt">void</span> <span class="nf">testLoad</span><span class="o">()</span> <span class="kd">throws</span> <span class="n">Exception</span><span class="o">{</span>
+    <span class="n">LoadingCache</span><span class="o">&lt;</span><span class="n">Integer</span><span class="o">,</span> <span class="n">String</span><span class="o">&gt;</span> <span class="n">loadingCache</span> <span class="o">=</span> <span class="n">CacheBuilder</span><span class="o">.</span><span class="na">newBuilder</span><span class="o">()</span>
+            <span class="o">.</span><span class="na">build</span><span class="o">(</span><span class="k">new</span> <span class="n">CacheLoader</span><span class="o">&lt;</span><span class="n">Integer</span><span class="o">,</span> <span class="n">String</span><span class="o">&gt;()</span> <span class="o">{</span>
+                <span class="nd">@Override</span>
+                <span class="kd">public</span> <span class="n">String</span> <span class="nf">load</span><span class="o">(</span><span class="n">Integer</span> <span class="n">key</span><span class="o">)</span> <span class="kd">throws</span> <span class="n">Exception</span> <span class="o">{</span>
+                    <span class="k">return</span> <span class="n">System</span><span class="o">.</span><span class="na">currentTimeMillis</span><span class="o">()</span> <span class="o">+</span> <span class="s">&#34; Value &#34;</span> <span class="o">+</span> <span class="n">key</span><span class="o">;</span>
+                <span class="o">}</span>
+            <span class="o">});</span>
+    <span class="c1">// manually put
+</span><span class="c1"></span>    <span class="n">System</span><span class="o">.</span><span class="na">out</span><span class="o">.</span><span class="na">println</span><span class="o">(</span><span class="s">&#34;-------------- 手动载入数据 ------------&#34;</span><span class="o">);</span>
+    <span class="n">loadingCache</span><span class="o">.</span><span class="na">put</span><span class="o">(</span><span class="n">1</span><span class="o">,</span> <span class="s">&#34;Manual Value 1&#34;</span><span class="o">);</span>
+    <span class="n">System</span><span class="o">.</span><span class="na">out</span><span class="o">.</span><span class="na">println</span><span class="o">(</span><span class="n">String</span><span class="o">.</span><span class="na">format</span><span class="o">(</span><span class="s">&#34;The value of key %d is %s&#34;</span><span class="o">,</span> <span class="n">1</span><span class="o">,</span> <span class="n">loadingCache</span><span class="o">.</span><span class="na">get</span><span class="o">(</span><span class="n">1</span><span class="o">)));</span>
+    <span class="n">System</span><span class="o">.</span><span class="na">out</span><span class="o">.</span><span class="na">println</span><span class="o">(</span><span class="s">&#34;-------------- 自动载入数据 ------------&#34;</span><span class="o">);</span>
+    <span class="n">System</span><span class="o">.</span><span class="na">out</span><span class="o">.</span><span class="na">println</span><span class="o">(</span><span class="n">String</span><span class="o">.</span><span class="na">format</span><span class="o">(</span><span class="s">&#34;The value of key %d is %s&#34;</span><span class="o">,</span> <span class="n">2</span><span class="o">,</span> <span class="n">loadingCache</span><span class="o">.</span><span class="na">get</span><span class="o">(</span><span class="n">2</span><span class="o">)));</span>
+<span class="o">}</span>
+<span class="c1">// ----- 输出 -----
+</span><span class="c1"></span><span class="o">--------------</span> <span class="n">手动载入数据</span> <span class="o">------------</span>
+<span class="n">The</span> <span class="n">value</span> <span class="n">of</span> <span class="n">key</span> <span class="n">1</span> <span class="n">is</span> <span class="n">Manual</span> <span class="n">Value</span> <span class="n">1</span>
+<span class="o">--------------</span> <span class="n">自动载入数据</span> <span class="o">------------</span>
+<span class="n">The</span> <span class="n">value</span> <span class="n">of</span> <span class="n">key</span> <span class="n">2</span> <span class="n">is</span> <span class="n">1594513825523</span> <span class="n">Value</span> <span class="n">2</span>
 </code></pre></td></tr></table>
 </div>
 </div><p>如上述代码输出所示，<code>LoadingCache</code>插入数据的方式有两种：：</p>
@@ -311,48 +226,48 @@ The value of key 2 is 1594513825523 Value 2
 </ul>
 <p>如果不想要自动载入数据，则可以通过调用<code>getIfPresent()</code>获取</p>
 <h3 id="最大容量-">最大容量</h3>
-<div class="highlight"><div style="background-color:#fff;-moz-tab-size:4;-o-tab-size:4;tab-size:4">
-<table style="border-spacing:0;padding:0;margin:0;border:0;width:auto;overflow:auto;display:block;"><tr><td style="vertical-align:top;padding:0;margin:0;border:0;">
-<pre style="background-color:#fff;-moz-tab-size:4;-o-tab-size:4;tab-size:4"><code><span style="margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f"> 1
-</span><span style="margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f"> 2
-</span><span style="margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f"> 3
-</span><span style="margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f"> 4
-</span><span style="margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f"> 5
-</span><span style="margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f"> 6
-</span><span style="margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f"> 7
-</span><span style="margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f"> 8
-</span><span style="margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f"> 9
-</span><span style="margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f">10
-</span><span style="margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f">11
-</span><span style="margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f">12
-</span><span style="margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f">13
-</span><span style="margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f">14
-</span><span style="margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f">15
-</span><span style="margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f">16
-</span><span style="margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f">17
-</span><span style="margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f">18
-</span><span style="margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f">19
+<div class="highlight"><div class="chroma">
+<table class="lntable"><tr><td class="lntd">
+<pre class="chroma"><code><span class="lnt"> 1
+</span><span class="lnt"> 2
+</span><span class="lnt"> 3
+</span><span class="lnt"> 4
+</span><span class="lnt"> 5
+</span><span class="lnt"> 6
+</span><span class="lnt"> 7
+</span><span class="lnt"> 8
+</span><span class="lnt"> 9
+</span><span class="lnt">10
+</span><span class="lnt">11
+</span><span class="lnt">12
+</span><span class="lnt">13
+</span><span class="lnt">14
+</span><span class="lnt">15
+</span><span class="lnt">16
+</span><span class="lnt">17
+</span><span class="lnt">18
+</span><span class="lnt">19
 </span></code></pre></td>
-<td style="vertical-align:top;padding:0;margin:0;border:0;;width:100%">
-<pre style="background-color:#fff;-moz-tab-size:4;-o-tab-size:4;tab-size:4"><code class="language-java" data-lang="java"><span style="color:#3c5d5d;font-weight:bold">@Test</span>
-<span style="color:#000;font-weight:bold">public</span> <span style="color:#458;font-weight:bold">void</span> <span style="color:#900;font-weight:bold">testMaximumSize</span><span style="color:#000;font-weight:bold">()</span> <span style="color:#000;font-weight:bold">throws</span> Exception<span style="color:#000;font-weight:bold">{</span>
-    LoadingCache<span style="color:#000;font-weight:bold">&lt;</span>Integer<span style="color:#000;font-weight:bold">,</span> String<span style="color:#000;font-weight:bold">&gt;</span> loadingCache <span style="color:#000;font-weight:bold">=</span> CacheBuilder<span style="color:#000;font-weight:bold">.</span><span style="color:#008080">newBuilder</span><span style="color:#000;font-weight:bold">()</span>
-            <span style="color:#000;font-weight:bold">.</span><span style="color:#008080">maximumSize</span><span style="color:#000;font-weight:bold">(</span>2<span style="color:#000;font-weight:bold">)</span>
-            <span style="color:#000;font-weight:bold">.</span><span style="color:#008080">build</span><span style="color:#000;font-weight:bold">(</span><span style="color:#000;font-weight:bold">new</span> CacheLoader<span style="color:#000;font-weight:bold">&lt;</span>Integer<span style="color:#000;font-weight:bold">,</span> String<span style="color:#000;font-weight:bold">&gt;()</span> <span style="color:#000;font-weight:bold">{</span>
-                <span style="color:#3c5d5d;font-weight:bold">@Override</span>
-                <span style="color:#000;font-weight:bold">public</span> String <span style="color:#900;font-weight:bold">load</span><span style="color:#000;font-weight:bold">(</span>Integer key<span style="color:#000;font-weight:bold">)</span> <span style="color:#000;font-weight:bold">throws</span> Exception <span style="color:#000;font-weight:bold">{</span>
-                    <span style="color:#000;font-weight:bold">return</span> System<span style="color:#000;font-weight:bold">.</span><span style="color:#008080">currentTimeMillis</span><span style="color:#000;font-weight:bold">()</span> <span style="color:#000;font-weight:bold">+</span> <span style="color:#d14">&#34; Value &#34;</span> <span style="color:#000;font-weight:bold">+</span> key<span style="color:#000;font-weight:bold">;</span>
-                <span style="color:#000;font-weight:bold">}</span>
-            <span style="color:#000;font-weight:bold">});</span>
-    <span style="color:#998;font-style:italic">// manually put
-</span><span style="color:#998;font-style:italic"></span>    loadingCache<span style="color:#000;font-weight:bold">.</span><span style="color:#008080">put</span><span style="color:#000;font-weight:bold">(</span>1<span style="color:#000;font-weight:bold">,</span> <span style="color:#d14">&#34;Manual Value 1&#34;</span><span style="color:#000;font-weight:bold">);</span>
-    loadingCache<span style="color:#000;font-weight:bold">.</span><span style="color:#008080">put</span><span style="color:#000;font-weight:bold">(</span>2<span style="color:#000;font-weight:bold">,</span> <span style="color:#d14">&#34;Manual Value 2&#34;</span><span style="color:#000;font-weight:bold">);</span>
-    loadingCache<span style="color:#000;font-weight:bold">.</span><span style="color:#008080">get</span><span style="color:#000;font-weight:bold">(</span>1<span style="color:#000;font-weight:bold">);</span>
-    loadingCache<span style="color:#000;font-weight:bold">.</span><span style="color:#008080">put</span><span style="color:#000;font-weight:bold">(</span>3<span style="color:#000;font-weight:bold">,</span> <span style="color:#d14">&#34;Manual Value 3&#34;</span><span style="color:#000;font-weight:bold">);</span>
-    System<span style="color:#000;font-weight:bold">.</span><span style="color:#008080">out</span><span style="color:#000;font-weight:bold">.</span><span style="color:#008080">println</span><span style="color:#000;font-weight:bold">(</span>String<span style="color:#000;font-weight:bold">.</span><span style="color:#008080">format</span><span style="color:#000;font-weight:bold">(</span><span style="color:#d14">&#34;The value of key %d is %s&#34;</span><span style="color:#000;font-weight:bold">,</span> 2<span style="color:#000;font-weight:bold">,</span> loadingCache<span style="color:#000;font-weight:bold">.</span><span style="color:#008080">getIfPresent</span><span style="color:#000;font-weight:bold">(</span>2<span style="color:#000;font-weight:bold">)));</span>
-<span style="color:#000;font-weight:bold">}</span>
-<span style="color:#998;font-style:italic">// ----- 输出 -----
-</span><span style="color:#998;font-style:italic"></span>The value of key 2 is <span style="color:#000;font-weight:bold">null</span>
+<td class="lntd">
+<pre class="chroma"><code class="language-java" data-lang="java"><span class="nd">@Test</span>
+<span class="kd">public</span> <span class="kt">void</span> <span class="nf">testMaximumSize</span><span class="o">()</span> <span class="kd">throws</span> <span class="n">Exception</span><span class="o">{</span>
+    <span class="n">LoadingCache</span><span class="o">&lt;</span><span class="n">Integer</span><span class="o">,</span> <span class="n">String</span><span class="o">&gt;</span> <span class="n">loadingCache</span> <span class="o">=</span> <span class="n">CacheBuilder</span><span class="o">.</span><span class="na">newBuilder</span><span class="o">()</span>
+            <span class="o">.</span><span class="na">maximumSize</span><span class="o">(</span><span class="n">2</span><span class="o">)</span>
+            <span class="o">.</span><span class="na">build</span><span class="o">(</span><span class="k">new</span> <span class="n">CacheLoader</span><span class="o">&lt;</span><span class="n">Integer</span><span class="o">,</span> <span class="n">String</span><span class="o">&gt;()</span> <span class="o">{</span>
+                <span class="nd">@Override</span>
+                <span class="kd">public</span> <span class="n">String</span> <span class="nf">load</span><span class="o">(</span><span class="n">Integer</span> <span class="n">key</span><span class="o">)</span> <span class="kd">throws</span> <span class="n">Exception</span> <span class="o">{</span>
+                    <span class="k">return</span> <span class="n">System</span><span class="o">.</span><span class="na">currentTimeMillis</span><span class="o">()</span> <span class="o">+</span> <span class="s">&#34; Value &#34;</span> <span class="o">+</span> <span class="n">key</span><span class="o">;</span>
+                <span class="o">}</span>
+            <span class="o">});</span>
+    <span class="c1">// manually put
+</span><span class="c1"></span>    <span class="n">loadingCache</span><span class="o">.</span><span class="na">put</span><span class="o">(</span><span class="n">1</span><span class="o">,</span> <span class="s">&#34;Manual Value 1&#34;</span><span class="o">);</span>
+    <span class="n">loadingCache</span><span class="o">.</span><span class="na">put</span><span class="o">(</span><span class="n">2</span><span class="o">,</span> <span class="s">&#34;Manual Value 2&#34;</span><span class="o">);</span>
+    <span class="n">loadingCache</span><span class="o">.</span><span class="na">get</span><span class="o">(</span><span class="n">1</span><span class="o">);</span>
+    <span class="n">loadingCache</span><span class="o">.</span><span class="na">put</span><span class="o">(</span><span class="n">3</span><span class="o">,</span> <span class="s">&#34;Manual Value 3&#34;</span><span class="o">);</span>
+    <span class="n">System</span><span class="o">.</span><span class="na">out</span><span class="o">.</span><span class="na">println</span><span class="o">(</span><span class="n">String</span><span class="o">.</span><span class="na">format</span><span class="o">(</span><span class="s">&#34;The value of key %d is %s&#34;</span><span class="o">,</span> <span class="n">2</span><span class="o">,</span> <span class="n">loadingCache</span><span class="o">.</span><span class="na">getIfPresent</span><span class="o">(</span><span class="n">2</span><span class="o">)));</span>
+<span class="o">}</span>
+<span class="c1">// ----- 输出 -----
+</span><span class="c1"></span><span class="n">The</span> <span class="n">value</span> <span class="n">of</span> <span class="n">key</span> <span class="n">2</span> <span class="n">is</span> <span class="kc">null</span>
 </code></pre></td></tr></table>
 </div>
 </div><p>上述代码的输出说明了：</p>
@@ -361,167 +276,167 @@ The value of key 2 is 1594513825523 Value 2
 <li>淘汰策略为LRU，即由于<code>1</code>在最近被访问了，所以淘汰<code>2</code></li>
 </ul>
 <h3 id="时间淘汰策略-">时间淘汰策略</h3>
-<div class="highlight"><div style="background-color:#fff;-moz-tab-size:4;-o-tab-size:4;tab-size:4">
-<table style="border-spacing:0;padding:0;margin:0;border:0;width:auto;overflow:auto;display:block;"><tr><td style="vertical-align:top;padding:0;margin:0;border:0;">
-<pre style="background-color:#fff;-moz-tab-size:4;-o-tab-size:4;tab-size:4"><code><span style="margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f"> 1
-</span><span style="margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f"> 2
-</span><span style="margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f"> 3
-</span><span style="margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f"> 4
-</span><span style="margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f"> 5
-</span><span style="margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f"> 6
-</span><span style="margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f"> 7
-</span><span style="margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f"> 8
-</span><span style="margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f"> 9
-</span><span style="margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f">10
-</span><span style="margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f">11
-</span><span style="margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f">12
-</span><span style="margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f">13
-</span><span style="margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f">14
-</span><span style="margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f">15
-</span><span style="margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f">16
-</span><span style="margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f">17
-</span><span style="margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f">18
-</span><span style="margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f">19
-</span><span style="margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f">20
-</span><span style="margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f">21
-</span><span style="margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f">22
-</span><span style="margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f">23
+<div class="highlight"><div class="chroma">
+<table class="lntable"><tr><td class="lntd">
+<pre class="chroma"><code><span class="lnt"> 1
+</span><span class="lnt"> 2
+</span><span class="lnt"> 3
+</span><span class="lnt"> 4
+</span><span class="lnt"> 5
+</span><span class="lnt"> 6
+</span><span class="lnt"> 7
+</span><span class="lnt"> 8
+</span><span class="lnt"> 9
+</span><span class="lnt">10
+</span><span class="lnt">11
+</span><span class="lnt">12
+</span><span class="lnt">13
+</span><span class="lnt">14
+</span><span class="lnt">15
+</span><span class="lnt">16
+</span><span class="lnt">17
+</span><span class="lnt">18
+</span><span class="lnt">19
+</span><span class="lnt">20
+</span><span class="lnt">21
+</span><span class="lnt">22
+</span><span class="lnt">23
 </span></code></pre></td>
-<td style="vertical-align:top;padding:0;margin:0;border:0;;width:100%">
-<pre style="background-color:#fff;-moz-tab-size:4;-o-tab-size:4;tab-size:4"><code class="language-java" data-lang="java"><span style="color:#3c5d5d;font-weight:bold">@Test</span>
-<span style="color:#000;font-weight:bold">public</span> <span style="color:#458;font-weight:bold">void</span> <span style="color:#900;font-weight:bold">testExpireAfterAccess</span><span style="color:#000;font-weight:bold">()</span> <span style="color:#000;font-weight:bold">throws</span> Exception<span style="color:#000;font-weight:bold">{</span>
-    LoadingCache<span style="color:#000;font-weight:bold">&lt;</span>Integer<span style="color:#000;font-weight:bold">,</span> String<span style="color:#000;font-weight:bold">&gt;</span> loadingCache <span style="color:#000;font-weight:bold">=</span> CacheBuilder<span style="color:#000;font-weight:bold">.</span><span style="color:#008080">newBuilder</span><span style="color:#000;font-weight:bold">()</span>
-            <span style="color:#000;font-weight:bold">.</span><span style="color:#008080">expireAfterAccess</span><span style="color:#000;font-weight:bold">(</span>1<span style="color:#000;font-weight:bold">,</span> TimeUnit<span style="color:#000;font-weight:bold">.</span><span style="color:#008080">SECONDS</span><span style="color:#000;font-weight:bold">)</span>
-            <span style="color:#000;font-weight:bold">.</span><span style="color:#008080">build</span><span style="color:#000;font-weight:bold">(</span><span style="color:#000;font-weight:bold">new</span> CacheLoader<span style="color:#000;font-weight:bold">&lt;</span>Integer<span style="color:#000;font-weight:bold">,</span> String<span style="color:#000;font-weight:bold">&gt;()</span> <span style="color:#000;font-weight:bold">{</span>
-                <span style="color:#3c5d5d;font-weight:bold">@Override</span>
-                <span style="color:#000;font-weight:bold">public</span> String <span style="color:#900;font-weight:bold">load</span><span style="color:#000;font-weight:bold">(</span>Integer key<span style="color:#000;font-weight:bold">)</span> <span style="color:#000;font-weight:bold">throws</span> Exception <span style="color:#000;font-weight:bold">{</span>
-                    <span style="color:#000;font-weight:bold">return</span> System<span style="color:#000;font-weight:bold">.</span><span style="color:#008080">currentTimeMillis</span><span style="color:#000;font-weight:bold">()</span> <span style="color:#000;font-weight:bold">+</span> <span style="color:#d14">&#34; Value &#34;</span> <span style="color:#000;font-weight:bold">+</span> key<span style="color:#000;font-weight:bold">;</span>
-                <span style="color:#000;font-weight:bold">}</span>
-            <span style="color:#000;font-weight:bold">});</span>
-    <span style="color:#998;font-style:italic">// manually put
-</span><span style="color:#998;font-style:italic"></span>    loadingCache<span style="color:#000;font-weight:bold">.</span><span style="color:#008080">put</span><span style="color:#000;font-weight:bold">(</span>1<span style="color:#000;font-weight:bold">,</span> <span style="color:#d14">&#34;Manual Value 1&#34;</span><span style="color:#000;font-weight:bold">);</span>
-    System<span style="color:#000;font-weight:bold">.</span><span style="color:#008080">out</span><span style="color:#000;font-weight:bold">.</span><span style="color:#008080">println</span><span style="color:#000;font-weight:bold">(</span><span style="color:#d14">&#34;------- 1秒前 --------&#34;</span><span style="color:#000;font-weight:bold">);</span>
-    System<span style="color:#000;font-weight:bold">.</span><span style="color:#008080">out</span><span style="color:#000;font-weight:bold">.</span><span style="color:#008080">println</span><span style="color:#000;font-weight:bold">(</span>String<span style="color:#000;font-weight:bold">.</span><span style="color:#008080">format</span><span style="color:#000;font-weight:bold">(</span><span style="color:#d14">&#34;The value of key %d is %s&#34;</span><span style="color:#000;font-weight:bold">,</span> 1<span style="color:#000;font-weight:bold">,</span> loadingCache<span style="color:#000;font-weight:bold">.</span><span style="color:#008080">getIfPresent</span><span style="color:#000;font-weight:bold">(</span>1<span style="color:#000;font-weight:bold">)));</span>
-    Thread<span style="color:#000;font-weight:bold">.</span><span style="color:#008080">sleep</span><span style="color:#000;font-weight:bold">(</span>1000<span style="color:#000;font-weight:bold">);</span>
-    System<span style="color:#000;font-weight:bold">.</span><span style="color:#008080">out</span><span style="color:#000;font-weight:bold">.</span><span style="color:#008080">println</span><span style="color:#000;font-weight:bold">(</span><span style="color:#d14">&#34;------- 1秒后 --------&#34;</span><span style="color:#000;font-weight:bold">);</span>
-    System<span style="color:#000;font-weight:bold">.</span><span style="color:#008080">out</span><span style="color:#000;font-weight:bold">.</span><span style="color:#008080">println</span><span style="color:#000;font-weight:bold">(</span>String<span style="color:#000;font-weight:bold">.</span><span style="color:#008080">format</span><span style="color:#000;font-weight:bold">(</span><span style="color:#d14">&#34;The value of key %d is %s&#34;</span><span style="color:#000;font-weight:bold">,</span> 1<span style="color:#000;font-weight:bold">,</span> loadingCache<span style="color:#000;font-weight:bold">.</span><span style="color:#008080">getIfPresent</span><span style="color:#000;font-weight:bold">(</span>1<span style="color:#000;font-weight:bold">)));</span>
-<span style="color:#000;font-weight:bold">}</span>
-<span style="color:#998;font-style:italic">// ----- 输出 -----
-</span><span style="color:#998;font-style:italic"></span><span style="color:#000;font-weight:bold">-------</span> 1秒前 <span style="color:#000;font-weight:bold">--------</span>
-The value of key 1 is Manual Value 1
-<span style="color:#000;font-weight:bold">-------</span> 1秒后 <span style="color:#000;font-weight:bold">--------</span>
-The value of key 1 is <span style="color:#000;font-weight:bold">null</span>
+<td class="lntd">
+<pre class="chroma"><code class="language-java" data-lang="java"><span class="nd">@Test</span>
+<span class="kd">public</span> <span class="kt">void</span> <span class="nf">testExpireAfterAccess</span><span class="o">()</span> <span class="kd">throws</span> <span class="n">Exception</span><span class="o">{</span>
+    <span class="n">LoadingCache</span><span class="o">&lt;</span><span class="n">Integer</span><span class="o">,</span> <span class="n">String</span><span class="o">&gt;</span> <span class="n">loadingCache</span> <span class="o">=</span> <span class="n">CacheBuilder</span><span class="o">.</span><span class="na">newBuilder</span><span class="o">()</span>
+            <span class="o">.</span><span class="na">expireAfterAccess</span><span class="o">(</span><span class="n">1</span><span class="o">,</span> <span class="n">TimeUnit</span><span class="o">.</span><span class="na">SECONDS</span><span class="o">)</span>
+            <span class="o">.</span><span class="na">build</span><span class="o">(</span><span class="k">new</span> <span class="n">CacheLoader</span><span class="o">&lt;</span><span class="n">Integer</span><span class="o">,</span> <span class="n">String</span><span class="o">&gt;()</span> <span class="o">{</span>
+                <span class="nd">@Override</span>
+                <span class="kd">public</span> <span class="n">String</span> <span class="nf">load</span><span class="o">(</span><span class="n">Integer</span> <span class="n">key</span><span class="o">)</span> <span class="kd">throws</span> <span class="n">Exception</span> <span class="o">{</span>
+                    <span class="k">return</span> <span class="n">System</span><span class="o">.</span><span class="na">currentTimeMillis</span><span class="o">()</span> <span class="o">+</span> <span class="s">&#34; Value &#34;</span> <span class="o">+</span> <span class="n">key</span><span class="o">;</span>
+                <span class="o">}</span>
+            <span class="o">});</span>
+    <span class="c1">// manually put
+</span><span class="c1"></span>    <span class="n">loadingCache</span><span class="o">.</span><span class="na">put</span><span class="o">(</span><span class="n">1</span><span class="o">,</span> <span class="s">&#34;Manual Value 1&#34;</span><span class="o">);</span>
+    <span class="n">System</span><span class="o">.</span><span class="na">out</span><span class="o">.</span><span class="na">println</span><span class="o">(</span><span class="s">&#34;------- 1秒前 --------&#34;</span><span class="o">);</span>
+    <span class="n">System</span><span class="o">.</span><span class="na">out</span><span class="o">.</span><span class="na">println</span><span class="o">(</span><span class="n">String</span><span class="o">.</span><span class="na">format</span><span class="o">(</span><span class="s">&#34;The value of key %d is %s&#34;</span><span class="o">,</span> <span class="n">1</span><span class="o">,</span> <span class="n">loadingCache</span><span class="o">.</span><span class="na">getIfPresent</span><span class="o">(</span><span class="n">1</span><span class="o">)));</span>
+    <span class="n">Thread</span><span class="o">.</span><span class="na">sleep</span><span class="o">(</span><span class="n">1000</span><span class="o">);</span>
+    <span class="n">System</span><span class="o">.</span><span class="na">out</span><span class="o">.</span><span class="na">println</span><span class="o">(</span><span class="s">&#34;------- 1秒后 --------&#34;</span><span class="o">);</span>
+    <span class="n">System</span><span class="o">.</span><span class="na">out</span><span class="o">.</span><span class="na">println</span><span class="o">(</span><span class="n">String</span><span class="o">.</span><span class="na">format</span><span class="o">(</span><span class="s">&#34;The value of key %d is %s&#34;</span><span class="o">,</span> <span class="n">1</span><span class="o">,</span> <span class="n">loadingCache</span><span class="o">.</span><span class="na">getIfPresent</span><span class="o">(</span><span class="n">1</span><span class="o">)));</span>
+<span class="o">}</span>
+<span class="c1">// ----- 输出 -----
+</span><span class="c1"></span><span class="o">-------</span> <span class="n">1秒前</span> <span class="o">--------</span>
+<span class="n">The</span> <span class="n">value</span> <span class="n">of</span> <span class="n">key</span> <span class="n">1</span> <span class="n">is</span> <span class="n">Manual</span> <span class="n">Value</span> <span class="n">1</span>
+<span class="o">-------</span> <span class="n">1秒后</span> <span class="o">--------</span>
+<span class="n">The</span> <span class="n">value</span> <span class="n">of</span> <span class="n">key</span> <span class="n">1</span> <span class="n">is</span> <span class="kc">null</span>
 </code></pre></td></tr></table>
 </div>
 </div><p>如上述代码输出结果，在经过1s后，存入<code>Cache</code>的数据被淘汰了。</p>
 <p>这里需要注意，Guava并没有通过使用额外的<code>Cache</code>维护线程去淘汰过期数据，而是在访问时检查该数据是否过期。这样做的原因是为了保证<code>Cache</code>的性能以及设计的简单性，不引入过度复杂的机制。</p>
 <h3 id="引用淘汰策略-">引用淘汰策略</h3>
-<div class="highlight"><div style="background-color:#fff;-moz-tab-size:4;-o-tab-size:4;tab-size:4">
-<table style="border-spacing:0;padding:0;margin:0;border:0;width:auto;overflow:auto;display:block;"><tr><td style="vertical-align:top;padding:0;margin:0;border:0;">
-<pre style="background-color:#fff;-moz-tab-size:4;-o-tab-size:4;tab-size:4"><code><span style="margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f"> 1
-</span><span style="margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f"> 2
-</span><span style="margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f"> 3
-</span><span style="margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f"> 4
-</span><span style="margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f"> 5
-</span><span style="margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f"> 6
-</span><span style="margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f"> 7
-</span><span style="margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f"> 8
-</span><span style="margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f"> 9
-</span><span style="margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f">10
-</span><span style="margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f">11
-</span><span style="margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f">12
-</span><span style="margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f">13
-</span><span style="margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f">14
-</span><span style="margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f">15
-</span><span style="margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f">16
-</span><span style="margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f">17
-</span><span style="margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f">18
-</span><span style="margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f">19
-</span><span style="margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f">20
-</span><span style="margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f">21
-</span><span style="margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f">22
-</span><span style="margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f">23
+<div class="highlight"><div class="chroma">
+<table class="lntable"><tr><td class="lntd">
+<pre class="chroma"><code><span class="lnt"> 1
+</span><span class="lnt"> 2
+</span><span class="lnt"> 3
+</span><span class="lnt"> 4
+</span><span class="lnt"> 5
+</span><span class="lnt"> 6
+</span><span class="lnt"> 7
+</span><span class="lnt"> 8
+</span><span class="lnt"> 9
+</span><span class="lnt">10
+</span><span class="lnt">11
+</span><span class="lnt">12
+</span><span class="lnt">13
+</span><span class="lnt">14
+</span><span class="lnt">15
+</span><span class="lnt">16
+</span><span class="lnt">17
+</span><span class="lnt">18
+</span><span class="lnt">19
+</span><span class="lnt">20
+</span><span class="lnt">21
+</span><span class="lnt">22
+</span><span class="lnt">23
 </span></code></pre></td>
-<td style="vertical-align:top;padding:0;margin:0;border:0;;width:100%">
-<pre style="background-color:#fff;-moz-tab-size:4;-o-tab-size:4;tab-size:4"><code class="language-java" data-lang="java"><span style="color:#3c5d5d;font-weight:bold">@Test</span>
-<span style="color:#000;font-weight:bold">public</span> <span style="color:#458;font-weight:bold">void</span> <span style="color:#900;font-weight:bold">testValueReferenceEvict</span><span style="color:#000;font-weight:bold">()</span> <span style="color:#000;font-weight:bold">throws</span> Exception<span style="color:#000;font-weight:bold">{</span>
-    LoadingCache<span style="color:#000;font-weight:bold">&lt;</span>Integer<span style="color:#000;font-weight:bold">,</span> String<span style="color:#000;font-weight:bold">&gt;</span> loadingCache <span style="color:#000;font-weight:bold">=</span> CacheBuilder<span style="color:#000;font-weight:bold">.</span><span style="color:#008080">newBuilder</span><span style="color:#000;font-weight:bold">()</span>
-            <span style="color:#000;font-weight:bold">.</span><span style="color:#008080">weakValues</span><span style="color:#000;font-weight:bold">()</span>
-            <span style="color:#000;font-weight:bold">.</span><span style="color:#008080">build</span><span style="color:#000;font-weight:bold">(</span><span style="color:#000;font-weight:bold">new</span> CacheLoader<span style="color:#000;font-weight:bold">&lt;</span>Integer<span style="color:#000;font-weight:bold">,</span> String<span style="color:#000;font-weight:bold">&gt;()</span> <span style="color:#000;font-weight:bold">{</span>
-                <span style="color:#3c5d5d;font-weight:bold">@Override</span>
-                <span style="color:#000;font-weight:bold">public</span> String <span style="color:#900;font-weight:bold">load</span><span style="color:#000;font-weight:bold">(</span>Integer key<span style="color:#000;font-weight:bold">)</span> <span style="color:#000;font-weight:bold">throws</span> Exception <span style="color:#000;font-weight:bold">{</span>
-                    <span style="color:#000;font-weight:bold">return</span> System<span style="color:#000;font-weight:bold">.</span><span style="color:#008080">currentTimeMillis</span><span style="color:#000;font-weight:bold">()</span> <span style="color:#000;font-weight:bold">+</span> <span style="color:#d14">&#34; Value &#34;</span> <span style="color:#000;font-weight:bold">+</span> key<span style="color:#000;font-weight:bold">;</span>
-                <span style="color:#000;font-weight:bold">}</span>
-            <span style="color:#000;font-weight:bold">});</span>
-    <span style="color:#998;font-style:italic">// manually put
-</span><span style="color:#998;font-style:italic"></span>    loadingCache<span style="color:#000;font-weight:bold">.</span><span style="color:#008080">put</span><span style="color:#000;font-weight:bold">(</span>128<span style="color:#000;font-weight:bold">,</span> <span style="color:#000;font-weight:bold">new</span> String<span style="color:#000;font-weight:bold">(</span><span style="color:#d14">&#34;Manual Value 128&#34;</span><span style="color:#000;font-weight:bold">));</span>
-    System<span style="color:#000;font-weight:bold">.</span><span style="color:#008080">out</span><span style="color:#000;font-weight:bold">.</span><span style="color:#008080">println</span><span style="color:#000;font-weight:bold">(</span><span style="color:#d14">&#34;------- GC前 --------&#34;</span><span style="color:#000;font-weight:bold">);</span>
-    System<span style="color:#000;font-weight:bold">.</span><span style="color:#008080">out</span><span style="color:#000;font-weight:bold">.</span><span style="color:#008080">println</span><span style="color:#000;font-weight:bold">(</span>String<span style="color:#000;font-weight:bold">.</span><span style="color:#008080">format</span><span style="color:#000;font-weight:bold">(</span><span style="color:#d14">&#34;The value of key %d is %s&#34;</span><span style="color:#000;font-weight:bold">,</span> 128<span style="color:#000;font-weight:bold">,</span> loadingCache<span style="color:#000;font-weight:bold">.</span><span style="color:#008080">getIfPresent</span><span style="color:#000;font-weight:bold">(</span>128<span style="color:#000;font-weight:bold">)));</span>
-    System<span style="color:#000;font-weight:bold">.</span><span style="color:#008080">gc</span><span style="color:#000;font-weight:bold">();</span>
-    System<span style="color:#000;font-weight:bold">.</span><span style="color:#008080">out</span><span style="color:#000;font-weight:bold">.</span><span style="color:#008080">println</span><span style="color:#000;font-weight:bold">(</span><span style="color:#d14">&#34;------- GC后 --------&#34;</span><span style="color:#000;font-weight:bold">);</span>
-    System<span style="color:#000;font-weight:bold">.</span><span style="color:#008080">out</span><span style="color:#000;font-weight:bold">.</span><span style="color:#008080">println</span><span style="color:#000;font-weight:bold">(</span>String<span style="color:#000;font-weight:bold">.</span><span style="color:#008080">format</span><span style="color:#000;font-weight:bold">(</span><span style="color:#d14">&#34;The value of key %d is %s&#34;</span><span style="color:#000;font-weight:bold">,</span> 128<span style="color:#000;font-weight:bold">,</span> loadingCache<span style="color:#000;font-weight:bold">.</span><span style="color:#008080">getIfPresent</span><span style="color:#000;font-weight:bold">(</span>128<span style="color:#000;font-weight:bold">)));</span>
-<span style="color:#000;font-weight:bold">}</span>
-<span style="color:#998;font-style:italic">// ----- 输出 -----
-</span><span style="color:#998;font-style:italic"></span><span style="color:#000;font-weight:bold">-------</span> GC前 <span style="color:#000;font-weight:bold">--------</span>
-The value of key 128 is Manual Value 128
-<span style="color:#000;font-weight:bold">-------</span> GC后 <span style="color:#000;font-weight:bold">--------</span>
-The value of key 128 is <span style="color:#000;font-weight:bold">null</span>
+<td class="lntd">
+<pre class="chroma"><code class="language-java" data-lang="java"><span class="nd">@Test</span>
+<span class="kd">public</span> <span class="kt">void</span> <span class="nf">testValueReferenceEvict</span><span class="o">()</span> <span class="kd">throws</span> <span class="n">Exception</span><span class="o">{</span>
+    <span class="n">LoadingCache</span><span class="o">&lt;</span><span class="n">Integer</span><span class="o">,</span> <span class="n">String</span><span class="o">&gt;</span> <span class="n">loadingCache</span> <span class="o">=</span> <span class="n">CacheBuilder</span><span class="o">.</span><span class="na">newBuilder</span><span class="o">()</span>
+            <span class="o">.</span><span class="na">weakValues</span><span class="o">()</span>
+            <span class="o">.</span><span class="na">build</span><span class="o">(</span><span class="k">new</span> <span class="n">CacheLoader</span><span class="o">&lt;</span><span class="n">Integer</span><span class="o">,</span> <span class="n">String</span><span class="o">&gt;()</span> <span class="o">{</span>
+                <span class="nd">@Override</span>
+                <span class="kd">public</span> <span class="n">String</span> <span class="nf">load</span><span class="o">(</span><span class="n">Integer</span> <span class="n">key</span><span class="o">)</span> <span class="kd">throws</span> <span class="n">Exception</span> <span class="o">{</span>
+                    <span class="k">return</span> <span class="n">System</span><span class="o">.</span><span class="na">currentTimeMillis</span><span class="o">()</span> <span class="o">+</span> <span class="s">&#34; Value &#34;</span> <span class="o">+</span> <span class="n">key</span><span class="o">;</span>
+                <span class="o">}</span>
+            <span class="o">});</span>
+    <span class="c1">// manually put
+</span><span class="c1"></span>    <span class="n">loadingCache</span><span class="o">.</span><span class="na">put</span><span class="o">(</span><span class="n">128</span><span class="o">,</span> <span class="k">new</span> <span class="n">String</span><span class="o">(</span><span class="s">&#34;Manual Value 128&#34;</span><span class="o">));</span>
+    <span class="n">System</span><span class="o">.</span><span class="na">out</span><span class="o">.</span><span class="na">println</span><span class="o">(</span><span class="s">&#34;------- GC前 --------&#34;</span><span class="o">);</span>
+    <span class="n">System</span><span class="o">.</span><span class="na">out</span><span class="o">.</span><span class="na">println</span><span class="o">(</span><span class="n">String</span><span class="o">.</span><span class="na">format</span><span class="o">(</span><span class="s">&#34;The value of key %d is %s&#34;</span><span class="o">,</span> <span class="n">128</span><span class="o">,</span> <span class="n">loadingCache</span><span class="o">.</span><span class="na">getIfPresent</span><span class="o">(</span><span class="n">128</span><span class="o">)));</span>
+    <span class="n">System</span><span class="o">.</span><span class="na">gc</span><span class="o">();</span>
+    <span class="n">System</span><span class="o">.</span><span class="na">out</span><span class="o">.</span><span class="na">println</span><span class="o">(</span><span class="s">&#34;------- GC后 --------&#34;</span><span class="o">);</span>
+    <span class="n">System</span><span class="o">.</span><span class="na">out</span><span class="o">.</span><span class="na">println</span><span class="o">(</span><span class="n">String</span><span class="o">.</span><span class="na">format</span><span class="o">(</span><span class="s">&#34;The value of key %d is %s&#34;</span><span class="o">,</span> <span class="n">128</span><span class="o">,</span> <span class="n">loadingCache</span><span class="o">.</span><span class="na">getIfPresent</span><span class="o">(</span><span class="n">128</span><span class="o">)));</span>
+<span class="o">}</span>
+<span class="c1">// ----- 输出 -----
+</span><span class="c1"></span><span class="o">-------</span> <span class="n">GC前</span> <span class="o">--------</span>
+<span class="n">The</span> <span class="n">value</span> <span class="n">of</span> <span class="n">key</span> <span class="n">128</span> <span class="n">is</span> <span class="n">Manual</span> <span class="n">Value</span> <span class="n">128</span>
+<span class="o">-------</span> <span class="n">GC后</span> <span class="o">--------</span>
+<span class="n">The</span> <span class="n">value</span> <span class="n">of</span> <span class="n">key</span> <span class="n">128</span> <span class="n">is</span> <span class="kc">null</span>
 </code></pre></td></tr></table>
 </div>
 </div><p>上述代码是使用<code>weakValues()</code>将值引用设置为弱引用，因此在GC前能够正常获取，而在GC后值会被回收，而整个<code>ReferenceEntry</code>会被<code>Cache</code>回收。</p>
 <p>上面的代码使用<code>new String()</code>而不是直接使用字符串的原因是为了防止字符串常量池一直持有引用对结果的影响。同样，如果使用基本类型的包装类，需要防止包装类缓存了一定范围的数值，比如<code>Integer</code>缓存了<code>-128</code>至<code>127</code>的<code>Integer</code>对象，这样的对象是一直被强引用的。</p>
-<div class="highlight"><div style="background-color:#fff;-moz-tab-size:4;-o-tab-size:4;tab-size:4">
-<table style="border-spacing:0;padding:0;margin:0;border:0;width:auto;overflow:auto;display:block;"><tr><td style="vertical-align:top;padding:0;margin:0;border:0;">
-<pre style="background-color:#fff;-moz-tab-size:4;-o-tab-size:4;tab-size:4"><code><span style="margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f"> 1
-</span><span style="margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f"> 2
-</span><span style="margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f"> 3
-</span><span style="margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f"> 4
-</span><span style="margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f"> 5
-</span><span style="margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f"> 6
-</span><span style="margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f"> 7
-</span><span style="margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f"> 8
-</span><span style="margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f"> 9
-</span><span style="margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f">10
-</span><span style="margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f">11
-</span><span style="margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f">12
-</span><span style="margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f">13
-</span><span style="margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f">14
-</span><span style="margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f">15
-</span><span style="margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f">16
-</span><span style="margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f">17
-</span><span style="margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f">18
-</span><span style="margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f">19
-</span><span style="margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f">20
-</span><span style="margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f">21
-</span><span style="margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f">22
-</span><span style="margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f">23
-</span><span style="margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f">24
+<div class="highlight"><div class="chroma">
+<table class="lntable"><tr><td class="lntd">
+<pre class="chroma"><code><span class="lnt"> 1
+</span><span class="lnt"> 2
+</span><span class="lnt"> 3
+</span><span class="lnt"> 4
+</span><span class="lnt"> 5
+</span><span class="lnt"> 6
+</span><span class="lnt"> 7
+</span><span class="lnt"> 8
+</span><span class="lnt"> 9
+</span><span class="lnt">10
+</span><span class="lnt">11
+</span><span class="lnt">12
+</span><span class="lnt">13
+</span><span class="lnt">14
+</span><span class="lnt">15
+</span><span class="lnt">16
+</span><span class="lnt">17
+</span><span class="lnt">18
+</span><span class="lnt">19
+</span><span class="lnt">20
+</span><span class="lnt">21
+</span><span class="lnt">22
+</span><span class="lnt">23
+</span><span class="lnt">24
 </span></code></pre></td>
-<td style="vertical-align:top;padding:0;margin:0;border:0;;width:100%">
-<pre style="background-color:#fff;-moz-tab-size:4;-o-tab-size:4;tab-size:4"><code class="language-java" data-lang="java"><span style="color:#3c5d5d;font-weight:bold">@Test</span>
-<span style="color:#000;font-weight:bold">public</span> <span style="color:#458;font-weight:bold">void</span> <span style="color:#900;font-weight:bold">testKeyReferenceEvict</span><span style="color:#000;font-weight:bold">()</span> <span style="color:#000;font-weight:bold">throws</span> Exception<span style="color:#000;font-weight:bold">{</span>
-    LoadingCache<span style="color:#000;font-weight:bold">&lt;</span>Integer<span style="color:#000;font-weight:bold">,</span> String<span style="color:#000;font-weight:bold">&gt;</span> loadingCache <span style="color:#000;font-weight:bold">=</span> CacheBuilder<span style="color:#000;font-weight:bold">.</span><span style="color:#008080">newBuilder</span><span style="color:#000;font-weight:bold">()</span>
-            <span style="color:#000;font-weight:bold">.</span><span style="color:#008080">weakKeys</span><span style="color:#000;font-weight:bold">()</span>
-            <span style="color:#000;font-weight:bold">.</span><span style="color:#008080">build</span><span style="color:#000;font-weight:bold">(</span><span style="color:#000;font-weight:bold">new</span> CacheLoader<span style="color:#000;font-weight:bold">&lt;</span>Integer<span style="color:#000;font-weight:bold">,</span> String<span style="color:#000;font-weight:bold">&gt;()</span> <span style="color:#000;font-weight:bold">{</span>
-                <span style="color:#3c5d5d;font-weight:bold">@Override</span>
-                <span style="color:#000;font-weight:bold">public</span> String <span style="color:#900;font-weight:bold">load</span><span style="color:#000;font-weight:bold">(</span>Integer key<span style="color:#000;font-weight:bold">)</span> <span style="color:#000;font-weight:bold">throws</span> Exception <span style="color:#000;font-weight:bold">{</span>
-                    <span style="color:#000;font-weight:bold">return</span> System<span style="color:#000;font-weight:bold">.</span><span style="color:#008080">currentTimeMillis</span><span style="color:#000;font-weight:bold">()</span> <span style="color:#000;font-weight:bold">+</span> <span style="color:#d14">&#34; Value &#34;</span> <span style="color:#000;font-weight:bold">+</span> key<span style="color:#000;font-weight:bold">;</span>
-                <span style="color:#000;font-weight:bold">}</span>
-            <span style="color:#000;font-weight:bold">});</span>
-    <span style="color:#998;font-style:italic">// manually put
-</span><span style="color:#998;font-style:italic"></span>    Integer key <span style="color:#000;font-weight:bold">=</span> 128<span style="color:#000;font-weight:bold">;</span>
-    loadingCache<span style="color:#000;font-weight:bold">.</span><span style="color:#008080">put</span><span style="color:#000;font-weight:bold">(</span>key<span style="color:#000;font-weight:bold">,</span> <span style="color:#d14">&#34;Manual Value 128&#34;</span><span style="color:#000;font-weight:bold">);</span>
-    System<span style="color:#000;font-weight:bold">.</span><span style="color:#008080">out</span><span style="color:#000;font-weight:bold">.</span><span style="color:#008080">println</span><span style="color:#000;font-weight:bold">(</span><span style="color:#d14">&#34;------- 持有引用 --------&#34;</span><span style="color:#000;font-weight:bold">);</span>
-    System<span style="color:#000;font-weight:bold">.</span><span style="color:#008080">out</span><span style="color:#000;font-weight:bold">.</span><span style="color:#008080">println</span><span style="color:#000;font-weight:bold">(</span>String<span style="color:#000;font-weight:bold">.</span><span style="color:#008080">format</span><span style="color:#000;font-weight:bold">(</span><span style="color:#d14">&#34;The value of key %d is %s&#34;</span><span style="color:#000;font-weight:bold">,</span> key<span style="color:#000;font-weight:bold">,</span> loadingCache<span style="color:#000;font-weight:bold">.</span><span style="color:#008080">getIfPresent</span><span style="color:#000;font-weight:bold">(</span>key<span style="color:#000;font-weight:bold">)));</span>
-    key <span style="color:#000;font-weight:bold">=</span> 128<span style="color:#000;font-weight:bold">;</span>
-    System<span style="color:#000;font-weight:bold">.</span><span style="color:#008080">out</span><span style="color:#000;font-weight:bold">.</span><span style="color:#008080">println</span><span style="color:#000;font-weight:bold">(</span><span style="color:#d14">&#34;------- 不持有引用 --------&#34;</span><span style="color:#000;font-weight:bold">);</span>
-    System<span style="color:#000;font-weight:bold">.</span><span style="color:#008080">out</span><span style="color:#000;font-weight:bold">.</span><span style="color:#008080">println</span><span style="color:#000;font-weight:bold">(</span>String<span style="color:#000;font-weight:bold">.</span><span style="color:#008080">format</span><span style="color:#000;font-weight:bold">(</span><span style="color:#d14">&#34;The value of key %d is %s&#34;</span><span style="color:#000;font-weight:bold">,</span> key<span style="color:#000;font-weight:bold">,</span> loadingCache<span style="color:#000;font-weight:bold">.</span><span style="color:#008080">getIfPresent</span><span style="color:#000;font-weight:bold">(</span>key<span style="color:#000;font-weight:bold">)));</span>
-<span style="color:#000;font-weight:bold">}</span>
-<span style="color:#998;font-style:italic">// ----- 输出 -----
-</span><span style="color:#998;font-style:italic"></span><span style="color:#000;font-weight:bold">-------</span> 持有引用 <span style="color:#000;font-weight:bold">--------</span>
-The value of key 128 is Manual Value 128
-<span style="color:#000;font-weight:bold">-------</span> 不持有引用 <span style="color:#000;font-weight:bold">--------</span>
-The value of key 128 is <span style="color:#000;font-weight:bold">null</span>
+<td class="lntd">
+<pre class="chroma"><code class="language-java" data-lang="java"><span class="nd">@Test</span>
+<span class="kd">public</span> <span class="kt">void</span> <span class="nf">testKeyReferenceEvict</span><span class="o">()</span> <span class="kd">throws</span> <span class="n">Exception</span><span class="o">{</span>
+    <span class="n">LoadingCache</span><span class="o">&lt;</span><span class="n">Integer</span><span class="o">,</span> <span class="n">String</span><span class="o">&gt;</span> <span class="n">loadingCache</span> <span class="o">=</span> <span class="n">CacheBuilder</span><span class="o">.</span><span class="na">newBuilder</span><span class="o">()</span>
+            <span class="o">.</span><span class="na">weakKeys</span><span class="o">()</span>
+            <span class="o">.</span><span class="na">build</span><span class="o">(</span><span class="k">new</span> <span class="n">CacheLoader</span><span class="o">&lt;</span><span class="n">Integer</span><span class="o">,</span> <span class="n">String</span><span class="o">&gt;()</span> <span class="o">{</span>
+                <span class="nd">@Override</span>
+                <span class="kd">public</span> <span class="n">String</span> <span class="nf">load</span><span class="o">(</span><span class="n">Integer</span> <span class="n">key</span><span class="o">)</span> <span class="kd">throws</span> <span class="n">Exception</span> <span class="o">{</span>
+                    <span class="k">return</span> <span class="n">System</span><span class="o">.</span><span class="na">currentTimeMillis</span><span class="o">()</span> <span class="o">+</span> <span class="s">&#34; Value &#34;</span> <span class="o">+</span> <span class="n">key</span><span class="o">;</span>
+                <span class="o">}</span>
+            <span class="o">});</span>
+    <span class="c1">// manually put
+</span><span class="c1"></span>    <span class="n">Integer</span> <span class="n">key</span> <span class="o">=</span> <span class="n">128</span><span class="o">;</span>
+    <span class="n">loadingCache</span><span class="o">.</span><span class="na">put</span><span class="o">(</span><span class="n">key</span><span class="o">,</span> <span class="s">&#34;Manual Value 128&#34;</span><span class="o">);</span>
+    <span class="n">System</span><span class="o">.</span><span class="na">out</span><span class="o">.</span><span class="na">println</span><span class="o">(</span><span class="s">&#34;------- 持有引用 --------&#34;</span><span class="o">);</span>
+    <span class="n">System</span><span class="o">.</span><span class="na">out</span><span class="o">.</span><span class="na">println</span><span class="o">(</span><span class="n">String</span><span class="o">.</span><span class="na">format</span><span class="o">(</span><span class="s">&#34;The value of key %d is %s&#34;</span><span class="o">,</span> <span class="n">key</span><span class="o">,</span> <span class="n">loadingCache</span><span class="o">.</span><span class="na">getIfPresent</span><span class="o">(</span><span class="n">key</span><span class="o">)));</span>
+    <span class="n">key</span> <span class="o">=</span> <span class="n">128</span><span class="o">;</span>
+    <span class="n">System</span><span class="o">.</span><span class="na">out</span><span class="o">.</span><span class="na">println</span><span class="o">(</span><span class="s">&#34;------- 不持有引用 --------&#34;</span><span class="o">);</span>
+    <span class="n">System</span><span class="o">.</span><span class="na">out</span><span class="o">.</span><span class="na">println</span><span class="o">(</span><span class="n">String</span><span class="o">.</span><span class="na">format</span><span class="o">(</span><span class="s">&#34;The value of key %d is %s&#34;</span><span class="o">,</span> <span class="n">key</span><span class="o">,</span> <span class="n">loadingCache</span><span class="o">.</span><span class="na">getIfPresent</span><span class="o">(</span><span class="n">key</span><span class="o">)));</span>
+<span class="o">}</span>
+<span class="c1">// ----- 输出 -----
+</span><span class="c1"></span><span class="o">-------</span> <span class="n">持有引用</span> <span class="o">--------</span>
+<span class="n">The</span> <span class="n">value</span> <span class="n">of</span> <span class="n">key</span> <span class="n">128</span> <span class="n">is</span> <span class="n">Manual</span> <span class="n">Value</span> <span class="n">128</span>
+<span class="o">-------</span> <span class="n">不持有引用</span> <span class="o">--------</span>
+<span class="n">The</span> <span class="n">value</span> <span class="n">of</span> <span class="n">key</span> <span class="n">128</span> <span class="n">is</span> <span class="kc">null</span>
 </code></pre></td></tr></table>
 </div>
 </div><p>这里的代码输出结果比较有意思，因为我没有调用<code>System.gc()</code>进行垃圾回收key，但得到的结果依然是<code>null</code>。这是由于Guava的<code>Cache</code>对非强引用的key和value使用的是<code>==</code>比较，而不是<code>equals()</code>。我们获取value通过传递key进行查找，因此单单使用<code>weakValues()</code>我们不会感觉到这点不同，但当我们使用<code>weakKeys()</code>时，由于使用了<code>key = 128</code>替换了对象导致引用不同，所以得到的结果为<code>null</code>。</p>
@@ -536,56 +451,56 @@ The value of key 128 is <span style="color:#000;font-weight:bold">null</span>
 <h3 id="strength和entryfactory-"><code>Strength</code>和<code>EntryFactory</code></h3>
 <p>首先，我们解决第1个问题，如何根据key和value的强度去创建不同的<code>ReferenceEntry</code>。</p>
 <p>我们通过调用<code>CacheBuilder</code>的<code>weakKeys()</code>、<code>weakValues()</code>以及<code>build()</code>3个方法决定引用强度以及<code>Cache</code>的创建，因此首先从这里下手。</p>
-<div class="highlight"><div style="background-color:#fff;-moz-tab-size:4;-o-tab-size:4;tab-size:4">
-<table style="border-spacing:0;padding:0;margin:0;border:0;width:auto;overflow:auto;display:block;"><tr><td style="vertical-align:top;padding:0;margin:0;border:0;">
-<pre style="background-color:#fff;-moz-tab-size:4;-o-tab-size:4;tab-size:4"><code><span style="margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f"> 1
-</span><span style="margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f"> 2
-</span><span style="margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f"> 3
-</span><span style="margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f"> 4
-</span><span style="margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f"> 5
-</span><span style="margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f"> 6
-</span><span style="margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f"> 7
-</span><span style="margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f"> 8
-</span><span style="margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f"> 9
-</span><span style="margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f">10
-</span><span style="margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f">11
-</span><span style="margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f">12
-</span><span style="margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f">13
-</span><span style="margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f">14
-</span><span style="margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f">15
-</span><span style="margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f">16
-</span><span style="margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f">17
-</span><span style="margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f">18
-</span><span style="margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f">19
-</span><span style="margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f">20
-</span><span style="margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f">21
-</span><span style="margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f">22
-</span><span style="margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f">23
+<div class="highlight"><div class="chroma">
+<table class="lntable"><tr><td class="lntd">
+<pre class="chroma"><code><span class="lnt"> 1
+</span><span class="lnt"> 2
+</span><span class="lnt"> 3
+</span><span class="lnt"> 4
+</span><span class="lnt"> 5
+</span><span class="lnt"> 6
+</span><span class="lnt"> 7
+</span><span class="lnt"> 8
+</span><span class="lnt"> 9
+</span><span class="lnt">10
+</span><span class="lnt">11
+</span><span class="lnt">12
+</span><span class="lnt">13
+</span><span class="lnt">14
+</span><span class="lnt">15
+</span><span class="lnt">16
+</span><span class="lnt">17
+</span><span class="lnt">18
+</span><span class="lnt">19
+</span><span class="lnt">20
+</span><span class="lnt">21
+</span><span class="lnt">22
+</span><span class="lnt">23
 </span></code></pre></td>
-<td style="vertical-align:top;padding:0;margin:0;border:0;;width:100%">
-<pre style="background-color:#fff;-moz-tab-size:4;-o-tab-size:4;tab-size:4"><code class="language-java" data-lang="java"><span style="color:#998;font-style:italic">// value强度设置
-</span><span style="color:#998;font-style:italic"></span><span style="color:#000;font-weight:bold">public</span> CacheBuilder<span style="color:#000;font-weight:bold">&lt;</span>K<span style="color:#000;font-weight:bold">,</span> V<span style="color:#000;font-weight:bold">&gt;</span> <span style="color:#900;font-weight:bold">weakValues</span><span style="color:#000;font-weight:bold">()</span> <span style="color:#000;font-weight:bold">{</span>
-    <span style="color:#000;font-weight:bold">return</span> setValueStrength<span style="color:#000;font-weight:bold">(</span>Strength<span style="color:#000;font-weight:bold">.</span><span style="color:#008080">WEAK</span><span style="color:#000;font-weight:bold">);</span>
-<span style="color:#000;font-weight:bold">}</span>
-<span style="color:#998;font-style:italic">// key强度设置
-</span><span style="color:#998;font-style:italic"></span><span style="color:#000;font-weight:bold">public</span> CacheBuilder<span style="color:#000;font-weight:bold">&lt;</span>K<span style="color:#000;font-weight:bold">,</span> V<span style="color:#000;font-weight:bold">&gt;</span> <span style="color:#900;font-weight:bold">weakKeys</span><span style="color:#000;font-weight:bold">()</span> <span style="color:#000;font-weight:bold">{</span>
-    <span style="color:#000;font-weight:bold">return</span> setKeyStrength<span style="color:#000;font-weight:bold">(</span>Strength<span style="color:#000;font-weight:bold">.</span><span style="color:#008080">WEAK</span><span style="color:#000;font-weight:bold">);</span>
-<span style="color:#000;font-weight:bold">}</span>
-<span style="color:#998;font-style:italic">// Cache创建，最终调用了LocalCache的构造方法
-</span><span style="color:#998;font-style:italic"></span>LocalCache<span style="color:#000;font-weight:bold">(</span>CacheBuilder<span style="color:#000;font-weight:bold">&lt;?</span> <span style="color:#000;font-weight:bold">super</span> K<span style="color:#000;font-weight:bold">,</span> <span style="color:#000;font-weight:bold">?</span> <span style="color:#000;font-weight:bold">super</span> V<span style="color:#000;font-weight:bold">&gt;</span> builder<span style="color:#000;font-weight:bold">,</span> <span style="color:#3c5d5d;font-weight:bold">@Nullable</span> CacheLoader<span style="color:#000;font-weight:bold">&lt;?</span> <span style="color:#000;font-weight:bold">super</span> K<span style="color:#000;font-weight:bold">,</span> V<span style="color:#000;font-weight:bold">&gt;</span> loader<span style="color:#000;font-weight:bold">)</span> <span style="color:#000;font-weight:bold">{</span>
-    <span style="color:#000;font-weight:bold">...</span>
-    <span style="color:#998;font-style:italic">// key和value强度设置
-</span><span style="color:#998;font-style:italic"></span>    keyStrength <span style="color:#000;font-weight:bold">=</span> builder<span style="color:#000;font-weight:bold">.</span><span style="color:#008080">getKeyStrength</span><span style="color:#000;font-weight:bold">();</span>
-    valueStrength <span style="color:#000;font-weight:bold">=</span> builder<span style="color:#000;font-weight:bold">.</span><span style="color:#008080">getValueStrength</span><span style="color:#000;font-weight:bold">();</span>
+<td class="lntd">
+<pre class="chroma"><code class="language-java" data-lang="java"><span class="c1">// value强度设置
+</span><span class="c1"></span><span class="kd">public</span> <span class="n">CacheBuilder</span><span class="o">&lt;</span><span class="n">K</span><span class="o">,</span> <span class="n">V</span><span class="o">&gt;</span> <span class="nf">weakValues</span><span class="o">()</span> <span class="o">{</span>
+    <span class="k">return</span> <span class="n">setValueStrength</span><span class="o">(</span><span class="n">Strength</span><span class="o">.</span><span class="na">WEAK</span><span class="o">);</span>
+<span class="o">}</span>
+<span class="c1">// key强度设置
+</span><span class="c1"></span><span class="kd">public</span> <span class="n">CacheBuilder</span><span class="o">&lt;</span><span class="n">K</span><span class="o">,</span> <span class="n">V</span><span class="o">&gt;</span> <span class="nf">weakKeys</span><span class="o">()</span> <span class="o">{</span>
+    <span class="k">return</span> <span class="n">setKeyStrength</span><span class="o">(</span><span class="n">Strength</span><span class="o">.</span><span class="na">WEAK</span><span class="o">);</span>
+<span class="o">}</span>
+<span class="c1">// Cache创建，最终调用了LocalCache的构造方法
+</span><span class="c1"></span><span class="n">LocalCache</span><span class="o">(</span><span class="n">CacheBuilder</span><span class="o">&lt;?</span> <span class="kd">super</span> <span class="n">K</span><span class="o">,</span> <span class="o">?</span> <span class="kd">super</span> <span class="n">V</span><span class="o">&gt;</span> <span class="n">builder</span><span class="o">,</span> <span class="nd">@Nullable</span> <span class="n">CacheLoader</span><span class="o">&lt;?</span> <span class="kd">super</span> <span class="n">K</span><span class="o">,</span> <span class="n">V</span><span class="o">&gt;</span> <span class="n">loader</span><span class="o">)</span> <span class="o">{</span>
+    <span class="o">...</span>
+    <span class="c1">// key和value强度设置
+</span><span class="c1"></span>    <span class="n">keyStrength</span> <span class="o">=</span> <span class="n">builder</span><span class="o">.</span><span class="na">getKeyStrength</span><span class="o">();</span>
+    <span class="n">valueStrength</span> <span class="o">=</span> <span class="n">builder</span><span class="o">.</span><span class="na">getValueStrength</span><span class="o">();</span>
 
-    <span style="color:#998;font-style:italic">// key和value的比较器
-</span><span style="color:#998;font-style:italic"></span>    keyEquivalence <span style="color:#000;font-weight:bold">=</span> builder<span style="color:#000;font-weight:bold">.</span><span style="color:#008080">getKeyEquivalence</span><span style="color:#000;font-weight:bold">();</span>
-    valueEquivalence <span style="color:#000;font-weight:bold">=</span> builder<span style="color:#000;font-weight:bold">.</span><span style="color:#008080">getValueEquivalence</span><span style="color:#000;font-weight:bold">();</span>
+    <span class="c1">// key和value的比较器
+</span><span class="c1"></span>    <span class="n">keyEquivalence</span> <span class="o">=</span> <span class="n">builder</span><span class="o">.</span><span class="na">getKeyEquivalence</span><span class="o">();</span>
+    <span class="n">valueEquivalence</span> <span class="o">=</span> <span class="n">builder</span><span class="o">.</span><span class="na">getValueEquivalence</span><span class="o">();</span>
 
-    <span style="color:#998;font-style:italic">// Entry工厂
-</span><span style="color:#998;font-style:italic"></span>    entryFactory <span style="color:#000;font-weight:bold">=</span> EntryFactory<span style="color:#000;font-weight:bold">.</span><span style="color:#008080">getFactory</span><span style="color:#000;font-weight:bold">(</span>keyStrength<span style="color:#000;font-weight:bold">,</span> usesAccessEntries<span style="color:#000;font-weight:bold">(),</span> usesWriteEntries<span style="color:#000;font-weight:bold">());</span>
-    <span style="color:#000;font-weight:bold">...</span>
-<span style="color:#000;font-weight:bold">}</span>
+    <span class="c1">// Entry工厂
+</span><span class="c1"></span>    <span class="n">entryFactory</span> <span class="o">=</span> <span class="n">EntryFactory</span><span class="o">.</span><span class="na">getFactory</span><span class="o">(</span><span class="n">keyStrength</span><span class="o">,</span> <span class="n">usesAccessEntries</span><span class="o">(),</span> <span class="n">usesWriteEntries</span><span class="o">());</span>
+    <span class="o">...</span>
+<span class="o">}</span>
 </code></pre></td></tr></table>
 </div>
 </div><p>上述源码中得出的信息有：</p>
@@ -595,70 +510,70 @@ The value of key 128 is <span style="color:#000;font-weight:bold">null</span>
 <li>创建<code>ReferenceEntry</code>的方式是通过<code>EntryFactory</code>获取相应的工厂对象</li>
 </ul>
 <p>那么，我们先看看<code>Strength</code>这个枚举</p>
-<div class="highlight"><div style="background-color:#fff;-moz-tab-size:4;-o-tab-size:4;tab-size:4">
-<table style="border-spacing:0;padding:0;margin:0;border:0;width:auto;overflow:auto;display:block;"><tr><td style="vertical-align:top;padding:0;margin:0;border:0;">
-<pre style="background-color:#fff;-moz-tab-size:4;-o-tab-size:4;tab-size:4"><code><span style="margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f"> 1
-</span><span style="margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f"> 2
-</span><span style="margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f"> 3
-</span><span style="margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f"> 4
-</span><span style="margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f"> 5
-</span><span style="margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f"> 6
-</span><span style="margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f"> 7
-</span><span style="margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f"> 8
-</span><span style="margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f"> 9
-</span><span style="margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f">10
-</span><span style="margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f">11
-</span><span style="margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f">12
-</span><span style="margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f">13
-</span><span style="margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f">14
-</span><span style="margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f">15
-</span><span style="margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f">16
-</span><span style="margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f">17
-</span><span style="margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f">18
-</span><span style="margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f">19
-</span><span style="margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f">20
-</span><span style="margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f">21
-</span><span style="margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f">22
-</span><span style="margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f">23
-</span><span style="margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f">24
-</span><span style="margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f">25
-</span><span style="margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f">26
-</span><span style="margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f">27
-</span><span style="margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f">28
-</span><span style="margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f">29
-</span><span style="margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f">30
+<div class="highlight"><div class="chroma">
+<table class="lntable"><tr><td class="lntd">
+<pre class="chroma"><code><span class="lnt"> 1
+</span><span class="lnt"> 2
+</span><span class="lnt"> 3
+</span><span class="lnt"> 4
+</span><span class="lnt"> 5
+</span><span class="lnt"> 6
+</span><span class="lnt"> 7
+</span><span class="lnt"> 8
+</span><span class="lnt"> 9
+</span><span class="lnt">10
+</span><span class="lnt">11
+</span><span class="lnt">12
+</span><span class="lnt">13
+</span><span class="lnt">14
+</span><span class="lnt">15
+</span><span class="lnt">16
+</span><span class="lnt">17
+</span><span class="lnt">18
+</span><span class="lnt">19
+</span><span class="lnt">20
+</span><span class="lnt">21
+</span><span class="lnt">22
+</span><span class="lnt">23
+</span><span class="lnt">24
+</span><span class="lnt">25
+</span><span class="lnt">26
+</span><span class="lnt">27
+</span><span class="lnt">28
+</span><span class="lnt">29
+</span><span class="lnt">30
 </span></code></pre></td>
-<td style="vertical-align:top;padding:0;margin:0;border:0;;width:100%">
-<pre style="background-color:#fff;-moz-tab-size:4;-o-tab-size:4;tab-size:4"><code class="language-java" data-lang="java"><span style="color:#000;font-weight:bold">enum</span> Strength <span style="color:#000;font-weight:bold">{</span>
-	<span style="color:#998;font-style:italic">// 强引用
-</span><span style="color:#998;font-style:italic"></span>	STRONG <span style="color:#000;font-weight:bold">{</span>
-	    <span style="color:#3c5d5d;font-weight:bold">@Override</span>
-	    <span style="color:#000;font-weight:bold">&lt;</span>K<span style="color:#000;font-weight:bold">,</span> V<span style="color:#000;font-weight:bold">&gt;</span> ValueReference<span style="color:#000;font-weight:bold">&lt;</span>K<span style="color:#000;font-weight:bold">,</span> V<span style="color:#000;font-weight:bold">&gt;</span> <span style="color:#900;font-weight:bold">referenceValue</span><span style="color:#000;font-weight:bold">(...)</span> <span style="color:#000;font-weight:bold">{...}</span>
-	    <span style="color:#3c5d5d;font-weight:bold">@Override</span>
-	    Equivalence<span style="color:#000;font-weight:bold">&lt;</span>Object<span style="color:#000;font-weight:bold">&gt;</span> <span style="color:#900;font-weight:bold">defaultEquivalence</span><span style="color:#000;font-weight:bold">()</span> <span style="color:#000;font-weight:bold">{...}</span>
-	<span style="color:#000;font-weight:bold">},</span>
-	<span style="color:#998;font-style:italic">// 软引用
-</span><span style="color:#998;font-style:italic"></span>	SOFT <span style="color:#000;font-weight:bold">{</span>
-	    <span style="color:#3c5d5d;font-weight:bold">@Override</span>
-	    <span style="color:#000;font-weight:bold">&lt;</span>K<span style="color:#000;font-weight:bold">,</span> V<span style="color:#000;font-weight:bold">&gt;</span> ValueReference<span style="color:#000;font-weight:bold">&lt;</span>K<span style="color:#000;font-weight:bold">,</span> V<span style="color:#000;font-weight:bold">&gt;</span> <span style="color:#900;font-weight:bold">referenceValue</span><span style="color:#000;font-weight:bold">(...)</span> <span style="color:#000;font-weight:bold">{...}</span>
-	    <span style="color:#3c5d5d;font-weight:bold">@Override</span>
-	    Equivalence<span style="color:#000;font-weight:bold">&lt;</span>Object<span style="color:#000;font-weight:bold">&gt;</span> <span style="color:#900;font-weight:bold">defaultEquivalence</span><span style="color:#000;font-weight:bold">()</span> <span style="color:#000;font-weight:bold">{...}</span>
-	<span style="color:#000;font-weight:bold">},</span>
-	<span style="color:#998;font-style:italic">// 弱引用
-</span><span style="color:#998;font-style:italic"></span>	WEAK <span style="color:#000;font-weight:bold">{</span>
-	    <span style="color:#3c5d5d;font-weight:bold">@Override</span>
-	    <span style="color:#000;font-weight:bold">&lt;</span>K<span style="color:#000;font-weight:bold">,</span> V<span style="color:#000;font-weight:bold">&gt;</span> ValueReference<span style="color:#000;font-weight:bold">&lt;</span>K<span style="color:#000;font-weight:bold">,</span> V<span style="color:#000;font-weight:bold">&gt;</span> <span style="color:#900;font-weight:bold">referenceValue</span><span style="color:#000;font-weight:bold">(...)</span> <span style="color:#000;font-weight:bold">{...}</span>
-	    <span style="color:#3c5d5d;font-weight:bold">@Override</span>
-	    Equivalence<span style="color:#000;font-weight:bold">&lt;</span>Object<span style="color:#000;font-weight:bold">&gt;</span> <span style="color:#900;font-weight:bold">defaultEquivalence</span><span style="color:#000;font-weight:bold">()</span> <span style="color:#000;font-weight:bold">{...}</span>
-	<span style="color:#000;font-weight:bold">};</span>
+<td class="lntd">
+<pre class="chroma"><code class="language-java" data-lang="java"><span class="kd">enum</span> <span class="n">Strength</span> <span class="o">{</span>
+	<span class="c1">// 强引用
+</span><span class="c1"></span>	<span class="n">STRONG</span> <span class="o">{</span>
+	    <span class="nd">@Override</span>
+	    <span class="o">&lt;</span><span class="n">K</span><span class="o">,</span> <span class="n">V</span><span class="o">&gt;</span> <span class="n">ValueReference</span><span class="o">&lt;</span><span class="n">K</span><span class="o">,</span> <span class="n">V</span><span class="o">&gt;</span> <span class="nf">referenceValue</span><span class="o">(...)</span> <span class="o">{...}</span>
+	    <span class="nd">@Override</span>
+	    <span class="n">Equivalence</span><span class="o">&lt;</span><span class="n">Object</span><span class="o">&gt;</span> <span class="nf">defaultEquivalence</span><span class="o">()</span> <span class="o">{...}</span>
+	<span class="o">},</span>
+	<span class="c1">// 软引用
+</span><span class="c1"></span>	<span class="n">SOFT</span> <span class="o">{</span>
+	    <span class="nd">@Override</span>
+	    <span class="o">&lt;</span><span class="n">K</span><span class="o">,</span> <span class="n">V</span><span class="o">&gt;</span> <span class="n">ValueReference</span><span class="o">&lt;</span><span class="n">K</span><span class="o">,</span> <span class="n">V</span><span class="o">&gt;</span> <span class="nf">referenceValue</span><span class="o">(...)</span> <span class="o">{...}</span>
+	    <span class="nd">@Override</span>
+	    <span class="n">Equivalence</span><span class="o">&lt;</span><span class="n">Object</span><span class="o">&gt;</span> <span class="nf">defaultEquivalence</span><span class="o">()</span> <span class="o">{...}</span>
+	<span class="o">},</span>
+	<span class="c1">// 弱引用
+</span><span class="c1"></span>	<span class="n">WEAK</span> <span class="o">{</span>
+	    <span class="nd">@Override</span>
+	    <span class="o">&lt;</span><span class="n">K</span><span class="o">,</span> <span class="n">V</span><span class="o">&gt;</span> <span class="n">ValueReference</span><span class="o">&lt;</span><span class="n">K</span><span class="o">,</span> <span class="n">V</span><span class="o">&gt;</span> <span class="nf">referenceValue</span><span class="o">(...)</span> <span class="o">{...}</span>
+	    <span class="nd">@Override</span>
+	    <span class="n">Equivalence</span><span class="o">&lt;</span><span class="n">Object</span><span class="o">&gt;</span> <span class="nf">defaultEquivalence</span><span class="o">()</span> <span class="o">{...}</span>
+	<span class="o">};</span>
 
-	<span style="color:#998;font-style:italic">// 通过强度决定value所使用的引用类型
-</span><span style="color:#998;font-style:italic"></span>	<span style="color:#000;font-weight:bold">abstract</span> <span style="color:#000;font-weight:bold">&lt;</span>K<span style="color:#000;font-weight:bold">,</span> V<span style="color:#000;font-weight:bold">&gt;</span> ValueReference<span style="color:#000;font-weight:bold">&lt;</span>K<span style="color:#000;font-weight:bold">,</span> V<span style="color:#000;font-weight:bold">&gt;</span> <span style="color:#900;font-weight:bold">referenceValue</span><span style="color:#000;font-weight:bold">(</span>
-		Segment<span style="color:#000;font-weight:bold">&lt;</span>K<span style="color:#000;font-weight:bold">,</span> V<span style="color:#000;font-weight:bold">&gt;</span> segment<span style="color:#000;font-weight:bold">,</span> ReferenceEntry<span style="color:#000;font-weight:bold">&lt;</span>K<span style="color:#000;font-weight:bold">,</span> V<span style="color:#000;font-weight:bold">&gt;</span> entry<span style="color:#000;font-weight:bold">,</span> V value<span style="color:#000;font-weight:bold">,</span> <span style="color:#458;font-weight:bold">int</span> weight<span style="color:#000;font-weight:bold">);</span>
+	<span class="c1">// 通过强度决定value所使用的引用类型
+</span><span class="c1"></span>	<span class="kd">abstract</span> <span class="o">&lt;</span><span class="n">K</span><span class="o">,</span> <span class="n">V</span><span class="o">&gt;</span> <span class="n">ValueReference</span><span class="o">&lt;</span><span class="n">K</span><span class="o">,</span> <span class="n">V</span><span class="o">&gt;</span> <span class="nf">referenceValue</span><span class="o">(</span>
+		<span class="n">Segment</span><span class="o">&lt;</span><span class="n">K</span><span class="o">,</span> <span class="n">V</span><span class="o">&gt;</span> <span class="n">segment</span><span class="o">,</span> <span class="n">ReferenceEntry</span><span class="o">&lt;</span><span class="n">K</span><span class="o">,</span> <span class="n">V</span><span class="o">&gt;</span> <span class="n">entry</span><span class="o">,</span> <span class="n">V</span> <span class="n">value</span><span class="o">,</span> <span class="kt">int</span> <span class="n">weight</span><span class="o">);</span>
 
-	<span style="color:#998;font-style:italic">// 强度所决定的对比器
-</span><span style="color:#998;font-style:italic"></span>	<span style="color:#000;font-weight:bold">abstract</span> Equivalence<span style="color:#000;font-weight:bold">&lt;</span>Object<span style="color:#000;font-weight:bold">&gt;</span> <span style="color:#900;font-weight:bold">defaultEquivalence</span><span style="color:#000;font-weight:bold">();</span>
-<span style="color:#000;font-weight:bold">}</span>
+	<span class="c1">// 强度所决定的对比器
+</span><span class="c1"></span>	<span class="kd">abstract</span> <span class="n">Equivalence</span><span class="o">&lt;</span><span class="n">Object</span><span class="o">&gt;</span> <span class="nf">defaultEquivalence</span><span class="o">();</span>
+<span class="o">}</span>
 </code></pre></td></tr></table>
 </div>
 </div><p>上面的枚举提供了两个抽象方法，根据强度有各自的实现</p>
@@ -674,103 +589,103 @@ The value of key 128 is <span style="color:#000;font-weight:bold">null</span>
 </ul>
 <p>value的引用类型受到<code>Cache</code>是否设置了最大重量淘汰的影响，当设置了该淘汰策略后，会在<code>WeightedxxxValueReference</code>中记录相应的重量信息。</p>
 <p>得到了value的存储方法后，我们回头看一看如何区别key的引用类型。这一部分我们需要从<code>EntryFactory.getFactory()</code>下手，源码如下：</p>
-<div class="highlight"><div style="background-color:#fff;-moz-tab-size:4;-o-tab-size:4;tab-size:4">
-<table style="border-spacing:0;padding:0;margin:0;border:0;width:auto;overflow:auto;display:block;"><tr><td style="vertical-align:top;padding:0;margin:0;border:0;">
-<pre style="background-color:#fff;-moz-tab-size:4;-o-tab-size:4;tab-size:4"><code><span style="margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f"> 1
-</span><span style="margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f"> 2
-</span><span style="margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f"> 3
-</span><span style="margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f"> 4
-</span><span style="margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f"> 5
-</span><span style="margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f"> 6
-</span><span style="margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f"> 7
-</span><span style="margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f"> 8
-</span><span style="margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f"> 9
-</span><span style="margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f">10
-</span><span style="margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f">11
-</span><span style="margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f">12
-</span><span style="margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f">13
-</span><span style="margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f">14
-</span><span style="margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f">15
-</span><span style="margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f">16
-</span><span style="margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f">17
-</span><span style="margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f">18
-</span><span style="margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f">19
-</span><span style="margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f">20
+<div class="highlight"><div class="chroma">
+<table class="lntable"><tr><td class="lntd">
+<pre class="chroma"><code><span class="lnt"> 1
+</span><span class="lnt"> 2
+</span><span class="lnt"> 3
+</span><span class="lnt"> 4
+</span><span class="lnt"> 5
+</span><span class="lnt"> 6
+</span><span class="lnt"> 7
+</span><span class="lnt"> 8
+</span><span class="lnt"> 9
+</span><span class="lnt">10
+</span><span class="lnt">11
+</span><span class="lnt">12
+</span><span class="lnt">13
+</span><span class="lnt">14
+</span><span class="lnt">15
+</span><span class="lnt">16
+</span><span class="lnt">17
+</span><span class="lnt">18
+</span><span class="lnt">19
+</span><span class="lnt">20
 </span></code></pre></td>
-<td style="vertical-align:top;padding:0;margin:0;border:0;;width:100%">
-<pre style="background-color:#fff;-moz-tab-size:4;-o-tab-size:4;tab-size:4"><code class="language-java" data-lang="java"><span style="color:#998;font-style:italic">// EntryFactory查找表
-</span><span style="color:#998;font-style:italic"></span><span style="color:#000;font-weight:bold">static</span> <span style="color:#000;font-weight:bold">final</span> EntryFactory<span style="color:#000;font-weight:bold">[]</span> factories <span style="color:#000;font-weight:bold">=</span> <span style="color:#000;font-weight:bold">{</span>
-    STRONG<span style="color:#000;font-weight:bold">,</span>
-    STRONG_ACCESS<span style="color:#000;font-weight:bold">,</span>
-    STRONG_WRITE<span style="color:#000;font-weight:bold">,</span>
-    STRONG_ACCESS_WRITE<span style="color:#000;font-weight:bold">,</span>
-    WEAK<span style="color:#000;font-weight:bold">,</span>
-    WEAK_ACCESS<span style="color:#000;font-weight:bold">,</span>
-    WEAK_WRITE<span style="color:#000;font-weight:bold">,</span>
-    WEAK_ACCESS_WRITE<span style="color:#000;font-weight:bold">,</span>
-<span style="color:#000;font-weight:bold">}</span>
-<span style="color:#998;font-style:italic">// 通过key的强度和后面两个属性决定使用的EntryFactory
-</span><span style="color:#998;font-style:italic"></span><span style="color:#000;font-weight:bold">static</span> EntryFactory <span style="color:#900;font-weight:bold">getFactory</span><span style="color:#000;font-weight:bold">(</span>
-	Strength keyStrength<span style="color:#000;font-weight:bold">,</span> <span style="color:#458;font-weight:bold">boolean</span> usesAccessQueue<span style="color:#000;font-weight:bold">,</span> <span style="color:#458;font-weight:bold">boolean</span> usesWriteQueue<span style="color:#000;font-weight:bold">)</span> <span style="color:#000;font-weight:bold">{</span>
-	<span style="color:#458;font-weight:bold">int</span> flags <span style="color:#000;font-weight:bold">=</span>
-		<span style="color:#000;font-weight:bold">((</span>keyStrength <span style="color:#000;font-weight:bold">==</span> Strength<span style="color:#000;font-weight:bold">.</span><span style="color:#008080">WEAK</span><span style="color:#000;font-weight:bold">)</span> <span style="color:#000;font-weight:bold">?</span> WEAK_MASK <span style="color:#000;font-weight:bold">:</span> 0<span style="color:#000;font-weight:bold">)</span>
-		    <span style="color:#000;font-weight:bold">|</span> <span style="color:#000;font-weight:bold">(</span>usesAccessQueue <span style="color:#000;font-weight:bold">?</span> ACCESS_MASK <span style="color:#000;font-weight:bold">:</span> 0<span style="color:#000;font-weight:bold">)</span>
-		    <span style="color:#000;font-weight:bold">|</span> <span style="color:#000;font-weight:bold">(</span>usesWriteQueue <span style="color:#000;font-weight:bold">?</span> WRITE_MASK <span style="color:#000;font-weight:bold">:</span> 0<span style="color:#000;font-weight:bold">);</span>
-	<span style="color:#000;font-weight:bold">return</span> factories<span style="color:#000;font-weight:bold">[</span>flags<span style="color:#000;font-weight:bold">];</span>
-<span style="color:#000;font-weight:bold">}</span>
+<td class="lntd">
+<pre class="chroma"><code class="language-java" data-lang="java"><span class="c1">// EntryFactory查找表
+</span><span class="c1"></span><span class="kd">static</span> <span class="kd">final</span> <span class="n">EntryFactory</span><span class="o">[]</span> <span class="n">factories</span> <span class="o">=</span> <span class="o">{</span>
+    <span class="n">STRONG</span><span class="o">,</span>
+    <span class="n">STRONG_ACCESS</span><span class="o">,</span>
+    <span class="n">STRONG_WRITE</span><span class="o">,</span>
+    <span class="n">STRONG_ACCESS_WRITE</span><span class="o">,</span>
+    <span class="n">WEAK</span><span class="o">,</span>
+    <span class="n">WEAK_ACCESS</span><span class="o">,</span>
+    <span class="n">WEAK_WRITE</span><span class="o">,</span>
+    <span class="n">WEAK_ACCESS_WRITE</span><span class="o">,</span>
+<span class="o">}</span>
+<span class="c1">// 通过key的强度和后面两个属性决定使用的EntryFactory
+</span><span class="c1"></span><span class="kd">static</span> <span class="n">EntryFactory</span> <span class="nf">getFactory</span><span class="o">(</span>
+	<span class="n">Strength</span> <span class="n">keyStrength</span><span class="o">,</span> <span class="kt">boolean</span> <span class="n">usesAccessQueue</span><span class="o">,</span> <span class="kt">boolean</span> <span class="n">usesWriteQueue</span><span class="o">)</span> <span class="o">{</span>
+	<span class="kt">int</span> <span class="n">flags</span> <span class="o">=</span>
+		<span class="o">((</span><span class="n">keyStrength</span> <span class="o">==</span> <span class="n">Strength</span><span class="o">.</span><span class="na">WEAK</span><span class="o">)</span> <span class="o">?</span> <span class="n">WEAK_MASK</span> <span class="o">:</span> <span class="n">0</span><span class="o">)</span>
+		    <span class="o">|</span> <span class="o">(</span><span class="n">usesAccessQueue</span> <span class="o">?</span> <span class="n">ACCESS_MASK</span> <span class="o">:</span> <span class="n">0</span><span class="o">)</span>
+		    <span class="o">|</span> <span class="o">(</span><span class="n">usesWriteQueue</span> <span class="o">?</span> <span class="n">WRITE_MASK</span> <span class="o">:</span> <span class="n">0</span><span class="o">);</span>
+	<span class="k">return</span> <span class="n">factories</span><span class="o">[</span><span class="n">flags</span><span class="o">];</span>
+<span class="o">}</span>
 </code></pre></td></tr></table>
 </div>
 </div><p>上面代码的逻辑十分清晰，就是通过key强度、<code>usesAccessQueue</code>以及<code>usesWriteQueue</code>3个属性从表中查出对应的<code>EntryFactory</code>对象。问题在于我们明白key强度所表示的信息，却不明白后面2个属性所代表的含义，这也包含了同一引用强度下工厂对象产生的<code>EntryReference</code>有什么区别，因此看一看传递过来的相关源码：</p>
-<div class="highlight"><div style="background-color:#fff;-moz-tab-size:4;-o-tab-size:4;tab-size:4">
-<table style="border-spacing:0;padding:0;margin:0;border:0;width:auto;overflow:auto;display:block;"><tr><td style="vertical-align:top;padding:0;margin:0;border:0;">
-<pre style="background-color:#fff;-moz-tab-size:4;-o-tab-size:4;tab-size:4"><code><span style="margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f"> 1
-</span><span style="margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f"> 2
-</span><span style="margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f"> 3
-</span><span style="margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f"> 4
-</span><span style="margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f"> 5
-</span><span style="margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f"> 6
-</span><span style="margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f"> 7
-</span><span style="margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f"> 8
-</span><span style="margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f"> 9
-</span><span style="margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f">10
-</span><span style="margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f">11
-</span><span style="margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f">12
-</span><span style="margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f">13
-</span><span style="margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f">14
-</span><span style="margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f">15
-</span><span style="margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f">16
-</span><span style="margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f">17
-</span><span style="margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f">18
-</span><span style="margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f">19
-</span><span style="margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f">20
-</span><span style="margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f">21
-</span><span style="margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f">22
-</span><span style="margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f">23
+<div class="highlight"><div class="chroma">
+<table class="lntable"><tr><td class="lntd">
+<pre class="chroma"><code><span class="lnt"> 1
+</span><span class="lnt"> 2
+</span><span class="lnt"> 3
+</span><span class="lnt"> 4
+</span><span class="lnt"> 5
+</span><span class="lnt"> 6
+</span><span class="lnt"> 7
+</span><span class="lnt"> 8
+</span><span class="lnt"> 9
+</span><span class="lnt">10
+</span><span class="lnt">11
+</span><span class="lnt">12
+</span><span class="lnt">13
+</span><span class="lnt">14
+</span><span class="lnt">15
+</span><span class="lnt">16
+</span><span class="lnt">17
+</span><span class="lnt">18
+</span><span class="lnt">19
+</span><span class="lnt">20
+</span><span class="lnt">21
+</span><span class="lnt">22
+</span><span class="lnt">23
 </span></code></pre></td>
-<td style="vertical-align:top;padding:0;margin:0;border:0;;width:100%">
-<pre style="background-color:#fff;-moz-tab-size:4;-o-tab-size:4;tab-size:4"><code class="language-java" data-lang="java">  <span style="color:#458;font-weight:bold">boolean</span> <span style="color:#900;font-weight:bold">usesAccessEntries</span><span style="color:#000;font-weight:bold">()</span> <span style="color:#000;font-weight:bold">{</span>
-    <span style="color:#000;font-weight:bold">return</span> usesAccessQueue<span style="color:#000;font-weight:bold">()</span> <span style="color:#000;font-weight:bold">||</span> recordsAccess<span style="color:#000;font-weight:bold">();</span>
-  <span style="color:#000;font-weight:bold">}</span>
-  <span style="color:#998;font-style:italic">// 是否使用访问队列
-</span><span style="color:#998;font-style:italic"></span>  <span style="color:#458;font-weight:bold">boolean</span> <span style="color:#900;font-weight:bold">usesAccessQueue</span><span style="color:#000;font-weight:bold">()</span> <span style="color:#000;font-weight:bold">{</span>
-    <span style="color:#000;font-weight:bold">return</span> expiresAfterAccess<span style="color:#000;font-weight:bold">()</span> <span style="color:#000;font-weight:bold">||</span> evictsBySize<span style="color:#000;font-weight:bold">();</span>
-  <span style="color:#000;font-weight:bold">}</span>
-  <span style="color:#998;font-style:italic">// 是否记录访问相关信息
-</span><span style="color:#998;font-style:italic"></span>  <span style="color:#458;font-weight:bold">boolean</span> <span style="color:#900;font-weight:bold">recordsAccess</span><span style="color:#000;font-weight:bold">()</span> <span style="color:#000;font-weight:bold">{</span>
-    <span style="color:#000;font-weight:bold">return</span> expiresAfterAccess<span style="color:#000;font-weight:bold">();</span>
-  <span style="color:#000;font-weight:bold">}</span>
-  <span style="color:#998;font-style:italic">// 是否设置访问时间淘汰
-</span><span style="color:#998;font-style:italic"></span>  <span style="color:#458;font-weight:bold">boolean</span> <span style="color:#900;font-weight:bold">expiresAfterAccess</span><span style="color:#000;font-weight:bold">()</span> <span style="color:#000;font-weight:bold">{</span>
-    <span style="color:#000;font-weight:bold">return</span> expireAfterAccessNanos <span style="color:#000;font-weight:bold">&gt;</span> 0<span style="color:#000;font-weight:bold">;</span>
-  <span style="color:#000;font-weight:bold">}</span>
-  <span style="color:#998;font-style:italic">// 是否设置根据大小淘汰
-</span><span style="color:#998;font-style:italic"></span>  <span style="color:#458;font-weight:bold">boolean</span> <span style="color:#900;font-weight:bold">evictsBySize</span><span style="color:#000;font-weight:bold">()</span> <span style="color:#000;font-weight:bold">{</span>
-    <span style="color:#000;font-weight:bold">return</span> maxWeight <span style="color:#000;font-weight:bold">&gt;=</span> 0<span style="color:#000;font-weight:bold">;</span>
-  <span style="color:#000;font-weight:bold">}</span>
-<span style="color:#998;font-style:italic">// 所有散装方法结合起来就是下面这个
-</span><span style="color:#998;font-style:italic"></span><span style="color:#458;font-weight:bold">boolean</span> <span style="color:#900;font-weight:bold">usersAccessEntries</span><span style="color:#000;font-weight:bold">()</span> <span style="color:#000;font-weight:bold">{</span>
-    <span style="color:#000;font-weight:bold">return</span> <span style="color:#000;font-weight:bold">(</span>expireAfterAccessNanos <span style="color:#000;font-weight:bold">&gt;</span> 0 <span style="color:#000;font-weight:bold">||</span> maxWeight <span style="color:#000;font-weight:bold">&gt;=</span> 0<span style="color:#000;font-weight:bold">)</span> <span style="color:#000;font-weight:bold">||</span> expireAfterAccessNanos <span style="color:#000;font-weight:bold">&gt;</span> 0<span style="color:#000;font-weight:bold">;</span>
-<span style="color:#000;font-weight:bold">}</span>
+<td class="lntd">
+<pre class="chroma"><code class="language-java" data-lang="java">  <span class="kt">boolean</span> <span class="nf">usesAccessEntries</span><span class="o">()</span> <span class="o">{</span>
+    <span class="k">return</span> <span class="n">usesAccessQueue</span><span class="o">()</span> <span class="o">||</span> <span class="n">recordsAccess</span><span class="o">();</span>
+  <span class="o">}</span>
+  <span class="c1">// 是否使用访问队列
+</span><span class="c1"></span>  <span class="kt">boolean</span> <span class="nf">usesAccessQueue</span><span class="o">()</span> <span class="o">{</span>
+    <span class="k">return</span> <span class="n">expiresAfterAccess</span><span class="o">()</span> <span class="o">||</span> <span class="n">evictsBySize</span><span class="o">();</span>
+  <span class="o">}</span>
+  <span class="c1">// 是否记录访问相关信息
+</span><span class="c1"></span>  <span class="kt">boolean</span> <span class="nf">recordsAccess</span><span class="o">()</span> <span class="o">{</span>
+    <span class="k">return</span> <span class="n">expiresAfterAccess</span><span class="o">();</span>
+  <span class="o">}</span>
+  <span class="c1">// 是否设置访问时间淘汰
+</span><span class="c1"></span>  <span class="kt">boolean</span> <span class="nf">expiresAfterAccess</span><span class="o">()</span> <span class="o">{</span>
+    <span class="k">return</span> <span class="n">expireAfterAccessNanos</span> <span class="o">&gt;</span> <span class="n">0</span><span class="o">;</span>
+  <span class="o">}</span>
+  <span class="c1">// 是否设置根据大小淘汰
+</span><span class="c1"></span>  <span class="kt">boolean</span> <span class="nf">evictsBySize</span><span class="o">()</span> <span class="o">{</span>
+    <span class="k">return</span> <span class="n">maxWeight</span> <span class="o">&gt;=</span> <span class="n">0</span><span class="o">;</span>
+  <span class="o">}</span>
+<span class="c1">// 所有散装方法结合起来就是下面这个
+</span><span class="c1"></span><span class="kt">boolean</span> <span class="nf">usersAccessEntries</span><span class="o">()</span> <span class="o">{</span>
+    <span class="k">return</span> <span class="o">(</span><span class="n">expireAfterAccessNanos</span> <span class="o">&gt;</span> <span class="n">0</span> <span class="o">||</span> <span class="n">maxWeight</span> <span class="o">&gt;=</span> <span class="n">0</span><span class="o">)</span> <span class="o">||</span> <span class="n">expireAfterAccessNanos</span> <span class="o">&gt;</span> <span class="n">0</span><span class="o">;</span>
+<span class="o">}</span>
 </code></pre></td></tr></table>
 </div>
 </div><p>这就是<code>usesAccessQueue</code>的决策过程，可以很明显的看出，影响所使用的<code>EntryFactory</code>的是是否设置了访问时间淘汰（<code>expireAfterAccess()</code>）以及重量/容量淘汰策略（<code>maximumSize()</code>或<code>maximumWeight()</code>），这是由于这两种淘汰策略都涉及了LRU，因此访问队列会决定哪个缓存数据会被淘汰。</p>
@@ -778,48 +693,48 @@ The value of key 128 is <span style="color:#000;font-weight:bold">null</span>
 <h3 id="referenceentry结构-"><code>ReferenceEntry</code>结构</h3>
 <p>大概了解了<code>EntryFactory</code>所产生的<code>ReferenceEntry</code>是针对什么变化而作出的区分后，我们就能够去了解相应的<code>ReferenceEntry</code>的结构差别了。</p>
 <p>我们以<code>WEAK_ACCESS_WRITE</code>这个<code>EntryFactory</code>实例为引，来看看它所生产的<code>WeakAccessWriteEntry</code>构成是什么样子</p>
-<div class="highlight"><div style="background-color:#fff;-moz-tab-size:4;-o-tab-size:4;tab-size:4">
-<table style="border-spacing:0;padding:0;margin:0;border:0;width:auto;overflow:auto;display:block;"><tr><td style="vertical-align:top;padding:0;margin:0;border:0;">
-<pre style="background-color:#fff;-moz-tab-size:4;-o-tab-size:4;tab-size:4"><code><span style="margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f"> 1
-</span><span style="margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f"> 2
-</span><span style="margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f"> 3
-</span><span style="margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f"> 4
-</span><span style="margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f"> 5
-</span><span style="margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f"> 6
-</span><span style="margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f"> 7
-</span><span style="margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f"> 8
-</span><span style="margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f"> 9
-</span><span style="margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f">10
-</span><span style="margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f">11
-</span><span style="margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f">12
-</span><span style="margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f">13
-</span><span style="margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f">14
-</span><span style="margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f">15
-</span><span style="margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f">16
-</span><span style="margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f">17
-</span><span style="margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f">18
-</span><span style="margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f">19
+<div class="highlight"><div class="chroma">
+<table class="lntable"><tr><td class="lntd">
+<pre class="chroma"><code><span class="lnt"> 1
+</span><span class="lnt"> 2
+</span><span class="lnt"> 3
+</span><span class="lnt"> 4
+</span><span class="lnt"> 5
+</span><span class="lnt"> 6
+</span><span class="lnt"> 7
+</span><span class="lnt"> 8
+</span><span class="lnt"> 9
+</span><span class="lnt">10
+</span><span class="lnt">11
+</span><span class="lnt">12
+</span><span class="lnt">13
+</span><span class="lnt">14
+</span><span class="lnt">15
+</span><span class="lnt">16
+</span><span class="lnt">17
+</span><span class="lnt">18
+</span><span class="lnt">19
 </span></code></pre></td>
-<td style="vertical-align:top;padding:0;margin:0;border:0;;width:100%">
-<pre style="background-color:#fff;-moz-tab-size:4;-o-tab-size:4;tab-size:4"><code class="language-java" data-lang="java">  <span style="color:#998;font-style:italic">// WeakEntry继承自WeakReference，表示key的强度
-</span><span style="color:#998;font-style:italic"></span>  <span style="color:#000;font-weight:bold">static</span> <span style="color:#000;font-weight:bold">class</span> <span style="color:#458;font-weight:bold">WeakEntry</span><span style="color:#000;font-weight:bold">&lt;</span>K<span style="color:#000;font-weight:bold">,</span> V<span style="color:#000;font-weight:bold">&gt;</span> <span style="color:#000;font-weight:bold">extends</span> WeakReference<span style="color:#000;font-weight:bold">&lt;</span>K<span style="color:#000;font-weight:bold">&gt;</span> <span style="color:#000;font-weight:bold">implements</span> ReferenceEntry<span style="color:#000;font-weight:bold">&lt;</span>K<span style="color:#000;font-weight:bold">,</span> V<span style="color:#000;font-weight:bold">&gt;</span> <span style="color:#000;font-weight:bold">{</span>
-  <span style="color:#000;font-weight:bold">}</span>
+<td class="lntd">
+<pre class="chroma"><code class="language-java" data-lang="java">  <span class="c1">// WeakEntry继承自WeakReference，表示key的强度
+</span><span class="c1"></span>  <span class="kd">static</span> <span class="kd">class</span> <span class="nc">WeakEntry</span><span class="o">&lt;</span><span class="n">K</span><span class="o">,</span> <span class="n">V</span><span class="o">&gt;</span> <span class="kd">extends</span> <span class="n">WeakReference</span><span class="o">&lt;</span><span class="n">K</span><span class="o">&gt;</span> <span class="kd">implements</span> <span class="n">ReferenceEntry</span><span class="o">&lt;</span><span class="n">K</span><span class="o">,</span> <span class="n">V</span><span class="o">&gt;</span> <span class="o">{</span>
+  <span class="o">}</span>
 
-  <span style="color:#000;font-weight:bold">static</span> <span style="color:#000;font-weight:bold">final</span> <span style="color:#000;font-weight:bold">class</span> <span style="color:#458;font-weight:bold">WeakAccessWriteEntry</span><span style="color:#000;font-weight:bold">&lt;</span>K<span style="color:#000;font-weight:bold">,</span> V<span style="color:#000;font-weight:bold">&gt;</span> <span style="color:#000;font-weight:bold">extends</span> WeakEntry<span style="color:#000;font-weight:bold">&lt;</span>K<span style="color:#000;font-weight:bold">,</span> V<span style="color:#000;font-weight:bold">&gt;</span> <span style="color:#000;font-weight:bold">{</span>
-    <span style="color:#998;font-style:italic">// 访问时间，volatile保证多线程的读取一致
-</span><span style="color:#998;font-style:italic"></span>    <span style="color:#000;font-weight:bold">volatile</span> <span style="color:#458;font-weight:bold">long</span> accessTime <span style="color:#000;font-weight:bold">=</span> Long<span style="color:#000;font-weight:bold">.</span><span style="color:#008080">MAX_VALUE</span><span style="color:#000;font-weight:bold">;</span>
-    <span style="color:#998;font-style:italic">// 访问时间队列双向链表，下一个Entrys
-</span><span style="color:#998;font-style:italic"></span>    ReferenceEntry<span style="color:#000;font-weight:bold">&lt;</span>K<span style="color:#000;font-weight:bold">,</span> V<span style="color:#000;font-weight:bold">&gt;</span> nextAccess <span style="color:#000;font-weight:bold">=</span> nullEntry<span style="color:#000;font-weight:bold">();</span>
-    <span style="color:#998;font-style:italic">// 访问时间队列双向链表，上一个Entry
-</span><span style="color:#998;font-style:italic"></span>    ReferenceEntry<span style="color:#000;font-weight:bold">&lt;</span>K<span style="color:#000;font-weight:bold">,</span> V<span style="color:#000;font-weight:bold">&gt;</span> previousAccess <span style="color:#000;font-weight:bold">=</span> nullEntry<span style="color:#000;font-weight:bold">();</span>
+  <span class="kd">static</span> <span class="kd">final</span> <span class="kd">class</span> <span class="nc">WeakAccessWriteEntry</span><span class="o">&lt;</span><span class="n">K</span><span class="o">,</span> <span class="n">V</span><span class="o">&gt;</span> <span class="kd">extends</span> <span class="n">WeakEntry</span><span class="o">&lt;</span><span class="n">K</span><span class="o">,</span> <span class="n">V</span><span class="o">&gt;</span> <span class="o">{</span>
+    <span class="c1">// 访问时间，volatile保证多线程的读取一致
+</span><span class="c1"></span>    <span class="kd">volatile</span> <span class="kt">long</span> <span class="n">accessTime</span> <span class="o">=</span> <span class="n">Long</span><span class="o">.</span><span class="na">MAX_VALUE</span><span class="o">;</span>
+    <span class="c1">// 访问时间队列双向链表，下一个Entrys
+</span><span class="c1"></span>    <span class="n">ReferenceEntry</span><span class="o">&lt;</span><span class="n">K</span><span class="o">,</span> <span class="n">V</span><span class="o">&gt;</span> <span class="n">nextAccess</span> <span class="o">=</span> <span class="n">nullEntry</span><span class="o">();</span>
+    <span class="c1">// 访问时间队列双向链表，上一个Entry
+</span><span class="c1"></span>    <span class="n">ReferenceEntry</span><span class="o">&lt;</span><span class="n">K</span><span class="o">,</span> <span class="n">V</span><span class="o">&gt;</span> <span class="n">previousAccess</span> <span class="o">=</span> <span class="n">nullEntry</span><span class="o">();</span>
 
-    <span style="color:#998;font-style:italic">// 写入时间，volatile保证多线程的读取一致
-</span><span style="color:#998;font-style:italic"></span>    <span style="color:#000;font-weight:bold">volatile</span> <span style="color:#458;font-weight:bold">long</span> writeTime <span style="color:#000;font-weight:bold">=</span> Long<span style="color:#000;font-weight:bold">.</span><span style="color:#008080">MAX_VALUE</span><span style="color:#000;font-weight:bold">;</span>
-    <span style="color:#998;font-style:italic">// 写入时间队列双向链表，下一个Entrys
-</span><span style="color:#998;font-style:italic"></span>    ReferenceEntry<span style="color:#000;font-weight:bold">&lt;</span>K<span style="color:#000;font-weight:bold">,</span> V<span style="color:#000;font-weight:bold">&gt;</span> nextWrite <span style="color:#000;font-weight:bold">=</span> nullEntry<span style="color:#000;font-weight:bold">();</span>
-    <span style="color:#998;font-style:italic">// 写入时间队列双向链表，上一个Entry
-</span><span style="color:#998;font-style:italic"></span>    ReferenceEntry<span style="color:#000;font-weight:bold">&lt;</span>K<span style="color:#000;font-weight:bold">,</span> V<span style="color:#000;font-weight:bold">&gt;</span> previousWrite <span style="color:#000;font-weight:bold">=</span> nullEntry<span style="color:#000;font-weight:bold">();</span>
-  <span style="color:#000;font-weight:bold">}</span>
+    <span class="c1">// 写入时间，volatile保证多线程的读取一致
+</span><span class="c1"></span>    <span class="kd">volatile</span> <span class="kt">long</span> <span class="n">writeTime</span> <span class="o">=</span> <span class="n">Long</span><span class="o">.</span><span class="na">MAX_VALUE</span><span class="o">;</span>
+    <span class="c1">// 写入时间队列双向链表，下一个Entrys
+</span><span class="c1"></span>    <span class="n">ReferenceEntry</span><span class="o">&lt;</span><span class="n">K</span><span class="o">,</span> <span class="n">V</span><span class="o">&gt;</span> <span class="n">nextWrite</span> <span class="o">=</span> <span class="n">nullEntry</span><span class="o">();</span>
+    <span class="c1">// 写入时间队列双向链表，上一个Entry
+</span><span class="c1"></span>    <span class="n">ReferenceEntry</span><span class="o">&lt;</span><span class="n">K</span><span class="o">,</span> <span class="n">V</span><span class="o">&gt;</span> <span class="n">previousWrite</span> <span class="o">=</span> <span class="n">nullEntry</span><span class="o">();</span>
+  <span class="o">}</span>
 </code></pre></td></tr></table>
 </div>
 </div><p>上述代码就表明了<code>WeakAccessWriteEntry</code>对应的结构</p>
@@ -846,125 +761,125 @@ The value of key 128 is <span style="color:#000;font-weight:bold">null</span>
 <li>回收key或者value的是GC，那么如何回收整个<code>ReferenceEntry</code></li>
 </ul>
 <p>之前说过，Guava的<code>Cache</code>并没有使用额外的线程去进行维护。因此，判断缓存数据是否可用是从<code>get()</code>方法中进行的，由于使用了和<code>ConcurrentHashMap</code>相同的分段锁机制，因此最终的调用是<code>Segment.get()</code>中。</p>
-<div class="highlight"><div style="background-color:#fff;-moz-tab-size:4;-o-tab-size:4;tab-size:4">
-<table style="border-spacing:0;padding:0;margin:0;border:0;width:auto;overflow:auto;display:block;"><tr><td style="vertical-align:top;padding:0;margin:0;border:0;">
-<pre style="background-color:#fff;-moz-tab-size:4;-o-tab-size:4;tab-size:4"><code><span style="margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f"> 1
-</span><span style="margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f"> 2
-</span><span style="margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f"> 3
-</span><span style="margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f"> 4
-</span><span style="margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f"> 5
-</span><span style="margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f"> 6
-</span><span style="margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f"> 7
-</span><span style="margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f"> 8
-</span><span style="margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f"> 9
-</span><span style="margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f">10
-</span><span style="margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f">11
-</span><span style="margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f">12
-</span><span style="margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f">13
-</span><span style="margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f">14
-</span><span style="margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f">15
-</span><span style="margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f">16
-</span><span style="margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f">17
-</span><span style="margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f">18
-</span><span style="margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f">19
-</span><span style="margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f">20
-</span><span style="margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f">21
-</span><span style="margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f">22
-</span><span style="margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f">23
-</span><span style="margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f">24
-</span><span style="margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f">25
+<div class="highlight"><div class="chroma">
+<table class="lntable"><tr><td class="lntd">
+<pre class="chroma"><code><span class="lnt"> 1
+</span><span class="lnt"> 2
+</span><span class="lnt"> 3
+</span><span class="lnt"> 4
+</span><span class="lnt"> 5
+</span><span class="lnt"> 6
+</span><span class="lnt"> 7
+</span><span class="lnt"> 8
+</span><span class="lnt"> 9
+</span><span class="lnt">10
+</span><span class="lnt">11
+</span><span class="lnt">12
+</span><span class="lnt">13
+</span><span class="lnt">14
+</span><span class="lnt">15
+</span><span class="lnt">16
+</span><span class="lnt">17
+</span><span class="lnt">18
+</span><span class="lnt">19
+</span><span class="lnt">20
+</span><span class="lnt">21
+</span><span class="lnt">22
+</span><span class="lnt">23
+</span><span class="lnt">24
+</span><span class="lnt">25
 </span></code></pre></td>
-<td style="vertical-align:top;padding:0;margin:0;border:0;;width:100%">
-<pre style="background-color:#fff;-moz-tab-size:4;-o-tab-size:4;tab-size:4"><code class="language-java" data-lang="java">V <span style="color:#900;font-weight:bold">get</span><span style="color:#000;font-weight:bold">(</span>K key<span style="color:#000;font-weight:bold">,</span> <span style="color:#458;font-weight:bold">int</span> hash<span style="color:#000;font-weight:bold">,</span> CacheLoader<span style="color:#000;font-weight:bold">&lt;?</span> <span style="color:#000;font-weight:bold">super</span> K<span style="color:#000;font-weight:bold">,</span> V<span style="color:#000;font-weight:bold">&gt;</span> loader<span style="color:#000;font-weight:bold">)</span> <span style="color:#000;font-weight:bold">throws</span> ExecutionException <span style="color:#000;font-weight:bold">{</span>
-	checkNotNull<span style="color:#000;font-weight:bold">(</span>key<span style="color:#000;font-weight:bold">);</span>
-	checkNotNull<span style="color:#000;font-weight:bold">(</span>loader<span style="color:#000;font-weight:bold">);</span>
-	<span style="color:#000;font-weight:bold">try</span> <span style="color:#000;font-weight:bold">{</span>
-		<span style="color:#998;font-style:italic">// 检查Segment中存在的EntryReference数量
-</span><span style="color:#998;font-style:italic"></span>		<span style="color:#000;font-weight:bold">if</span> <span style="color:#000;font-weight:bold">(</span>count <span style="color:#000;font-weight:bold">!=</span> 0<span style="color:#000;font-weight:bold">)</span> <span style="color:#000;font-weight:bold">{</span> <span style="color:#998;font-style:italic">// read-volatile
-</span><span style="color:#998;font-style:italic"></span>			<span style="color:#998;font-style:italic">// 获取ReferenceEntry
-</span><span style="color:#998;font-style:italic"></span>			ReferenceEntry<span style="color:#000;font-weight:bold">&lt;</span>K<span style="color:#000;font-weight:bold">,</span> V<span style="color:#000;font-weight:bold">&gt;</span> e <span style="color:#000;font-weight:bold">=</span> getEntry<span style="color:#000;font-weight:bold">(</span>key<span style="color:#000;font-weight:bold">,</span> hash<span style="color:#000;font-weight:bold">);</span>
-			<span style="color:#000;font-weight:bold">if</span> <span style="color:#000;font-weight:bold">(</span>e <span style="color:#000;font-weight:bold">!=</span> <span style="color:#000;font-weight:bold">null</span><span style="color:#000;font-weight:bold">)</span> <span style="color:#000;font-weight:bold">{</span>
-				<span style="color:#458;font-weight:bold">long</span> now <span style="color:#000;font-weight:bold">=</span> map<span style="color:#000;font-weight:bold">.</span><span style="color:#008080">ticker</span><span style="color:#000;font-weight:bold">.</span><span style="color:#008080">read</span><span style="color:#000;font-weight:bold">();</span>
-				<span style="color:#998;font-style:italic">// 获取“活的”Value
-</span><span style="color:#998;font-style:italic"></span>				V value <span style="color:#000;font-weight:bold">=</span> getLiveValue<span style="color:#000;font-weight:bold">(</span>e<span style="color:#000;font-weight:bold">,</span> now<span style="color:#000;font-weight:bold">);</span>
-				<span style="color:#000;font-weight:bold">if</span> <span style="color:#000;font-weight:bold">(</span>value <span style="color:#000;font-weight:bold">!=</span> <span style="color:#000;font-weight:bold">null</span><span style="color:#000;font-weight:bold">)</span> <span style="color:#000;font-weight:bold">{</span>
-					recordRead<span style="color:#000;font-weight:bold">(</span>e<span style="color:#000;font-weight:bold">,</span> now<span style="color:#000;font-weight:bold">);</span>
-					statsCounter<span style="color:#000;font-weight:bold">.</span><span style="color:#008080">recordHits</span><span style="color:#000;font-weight:bold">(</span>1<span style="color:#000;font-weight:bold">);</span>
-					<span style="color:#000;font-weight:bold">return</span> scheduleRefresh<span style="color:#000;font-weight:bold">(</span>e<span style="color:#000;font-weight:bold">,</span> key<span style="color:#000;font-weight:bold">,</span> hash<span style="color:#000;font-weight:bold">,</span> value<span style="color:#000;font-weight:bold">,</span> now<span style="color:#000;font-weight:bold">,</span> loader<span style="color:#000;font-weight:bold">);</span>
-				<span style="color:#000;font-weight:bold">}</span>
-				ValueReference<span style="color:#000;font-weight:bold">&lt;</span>K<span style="color:#000;font-weight:bold">,</span> V<span style="color:#000;font-weight:bold">&gt;</span> valueReference <span style="color:#000;font-weight:bold">=</span> e<span style="color:#000;font-weight:bold">.</span><span style="color:#008080">getValueReference</span><span style="color:#000;font-weight:bold">();</span>
-				<span style="color:#000;font-weight:bold">if</span> <span style="color:#000;font-weight:bold">(</span>valueReference<span style="color:#000;font-weight:bold">.</span><span style="color:#008080">isLoading</span><span style="color:#000;font-weight:bold">())</span> <span style="color:#000;font-weight:bold">{</span>
-					<span style="color:#000;font-weight:bold">return</span> waitForLoadingValue<span style="color:#000;font-weight:bold">(</span>e<span style="color:#000;font-weight:bold">,</span> key<span style="color:#000;font-weight:bold">,</span> valueReference<span style="color:#000;font-weight:bold">);</span>
-				<span style="color:#000;font-weight:bold">}</span>
-			<span style="color:#000;font-weight:bold">}</span>
-		<span style="color:#000;font-weight:bold">}</span>
-	<span style="color:#000;font-weight:bold">}</span>
-<span style="color:#000;font-weight:bold">}</span>
+<td class="lntd">
+<pre class="chroma"><code class="language-java" data-lang="java"><span class="n">V</span> <span class="nf">get</span><span class="o">(</span><span class="n">K</span> <span class="n">key</span><span class="o">,</span> <span class="kt">int</span> <span class="n">hash</span><span class="o">,</span> <span class="n">CacheLoader</span><span class="o">&lt;?</span> <span class="kd">super</span> <span class="n">K</span><span class="o">,</span> <span class="n">V</span><span class="o">&gt;</span> <span class="n">loader</span><span class="o">)</span> <span class="kd">throws</span> <span class="n">ExecutionException</span> <span class="o">{</span>
+	<span class="n">checkNotNull</span><span class="o">(</span><span class="n">key</span><span class="o">);</span>
+	<span class="n">checkNotNull</span><span class="o">(</span><span class="n">loader</span><span class="o">);</span>
+	<span class="k">try</span> <span class="o">{</span>
+		<span class="c1">// 检查Segment中存在的EntryReference数量
+</span><span class="c1"></span>		<span class="k">if</span> <span class="o">(</span><span class="n">count</span> <span class="o">!=</span> <span class="n">0</span><span class="o">)</span> <span class="o">{</span> <span class="c1">// read-volatile
+</span><span class="c1"></span>			<span class="c1">// 获取ReferenceEntry
+</span><span class="c1"></span>			<span class="n">ReferenceEntry</span><span class="o">&lt;</span><span class="n">K</span><span class="o">,</span> <span class="n">V</span><span class="o">&gt;</span> <span class="n">e</span> <span class="o">=</span> <span class="n">getEntry</span><span class="o">(</span><span class="n">key</span><span class="o">,</span> <span class="n">hash</span><span class="o">);</span>
+			<span class="k">if</span> <span class="o">(</span><span class="n">e</span> <span class="o">!=</span> <span class="kc">null</span><span class="o">)</span> <span class="o">{</span>
+				<span class="kt">long</span> <span class="n">now</span> <span class="o">=</span> <span class="n">map</span><span class="o">.</span><span class="na">ticker</span><span class="o">.</span><span class="na">read</span><span class="o">();</span>
+				<span class="c1">// 获取“活的”Value
+</span><span class="c1"></span>				<span class="n">V</span> <span class="n">value</span> <span class="o">=</span> <span class="n">getLiveValue</span><span class="o">(</span><span class="n">e</span><span class="o">,</span> <span class="n">now</span><span class="o">);</span>
+				<span class="k">if</span> <span class="o">(</span><span class="n">value</span> <span class="o">!=</span> <span class="kc">null</span><span class="o">)</span> <span class="o">{</span>
+					<span class="n">recordRead</span><span class="o">(</span><span class="n">e</span><span class="o">,</span> <span class="n">now</span><span class="o">);</span>
+					<span class="n">statsCounter</span><span class="o">.</span><span class="na">recordHits</span><span class="o">(</span><span class="n">1</span><span class="o">);</span>
+					<span class="k">return</span> <span class="n">scheduleRefresh</span><span class="o">(</span><span class="n">e</span><span class="o">,</span> <span class="n">key</span><span class="o">,</span> <span class="n">hash</span><span class="o">,</span> <span class="n">value</span><span class="o">,</span> <span class="n">now</span><span class="o">,</span> <span class="n">loader</span><span class="o">);</span>
+				<span class="o">}</span>
+				<span class="n">ValueReference</span><span class="o">&lt;</span><span class="n">K</span><span class="o">,</span> <span class="n">V</span><span class="o">&gt;</span> <span class="n">valueReference</span> <span class="o">=</span> <span class="n">e</span><span class="o">.</span><span class="na">getValueReference</span><span class="o">();</span>
+				<span class="k">if</span> <span class="o">(</span><span class="n">valueReference</span><span class="o">.</span><span class="na">isLoading</span><span class="o">())</span> <span class="o">{</span>
+					<span class="k">return</span> <span class="n">waitForLoadingValue</span><span class="o">(</span><span class="n">e</span><span class="o">,</span> <span class="n">key</span><span class="o">,</span> <span class="n">valueReference</span><span class="o">);</span>
+				<span class="o">}</span>
+			<span class="o">}</span>
+		<span class="o">}</span>
+	<span class="o">}</span>
+<span class="o">}</span>
 </code></pre></td></tr></table>
 </div>
 </div><p>因此，如果存在key或者value已经被回收，需要回收<code>ReferenceEntry</code>，实现逻辑应该在<code>getEntry()</code>和<code>getLiveValue()</code>中，通过追踪代码，最后得到相应的方法所在：</p>
-<div class="highlight"><div style="background-color:#fff;-moz-tab-size:4;-o-tab-size:4;tab-size:4">
-<table style="border-spacing:0;padding:0;margin:0;border:0;width:auto;overflow:auto;display:block;"><tr><td style="vertical-align:top;padding:0;margin:0;border:0;">
-<pre style="background-color:#fff;-moz-tab-size:4;-o-tab-size:4;tab-size:4"><code><span style="margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f"> 1
-</span><span style="margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f"> 2
-</span><span style="margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f"> 3
-</span><span style="margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f"> 4
-</span><span style="margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f"> 5
-</span><span style="margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f"> 6
-</span><span style="margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f"> 7
-</span><span style="margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f"> 8
-</span><span style="margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f"> 9
-</span><span style="margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f">10
-</span><span style="margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f">11
-</span><span style="margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f">12
-</span><span style="margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f">13
-</span><span style="margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f">14
-</span><span style="margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f">15
-</span><span style="margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f">16
-</span><span style="margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f">17
-</span><span style="margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f">18
-</span><span style="margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f">19
-</span><span style="margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f">20
-</span><span style="margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f">21
-</span><span style="margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f">22
-</span><span style="margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f">23
-</span><span style="margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f">24
-</span><span style="margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f">25
-</span><span style="margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f">26
-</span><span style="margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f">27
-</span><span style="margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f">28
-</span><span style="margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f">29
+<div class="highlight"><div class="chroma">
+<table class="lntable"><tr><td class="lntd">
+<pre class="chroma"><code><span class="lnt"> 1
+</span><span class="lnt"> 2
+</span><span class="lnt"> 3
+</span><span class="lnt"> 4
+</span><span class="lnt"> 5
+</span><span class="lnt"> 6
+</span><span class="lnt"> 7
+</span><span class="lnt"> 8
+</span><span class="lnt"> 9
+</span><span class="lnt">10
+</span><span class="lnt">11
+</span><span class="lnt">12
+</span><span class="lnt">13
+</span><span class="lnt">14
+</span><span class="lnt">15
+</span><span class="lnt">16
+</span><span class="lnt">17
+</span><span class="lnt">18
+</span><span class="lnt">19
+</span><span class="lnt">20
+</span><span class="lnt">21
+</span><span class="lnt">22
+</span><span class="lnt">23
+</span><span class="lnt">24
+</span><span class="lnt">25
+</span><span class="lnt">26
+</span><span class="lnt">27
+</span><span class="lnt">28
+</span><span class="lnt">29
 </span></code></pre></td>
-<td style="vertical-align:top;padding:0;margin:0;border:0;;width:100%">
-<pre style="background-color:#fff;-moz-tab-size:4;-o-tab-size:4;tab-size:4"><code class="language-java" data-lang="java"><span style="color:#3c5d5d;font-weight:bold">@GuardedBy</span><span style="color:#000;font-weight:bold">(</span><span style="color:#d14">&#34;this&#34;</span><span style="color:#000;font-weight:bold">)</span>
-<span style="color:#998;font-style:italic">// 清理keyReferenceQueue
-</span><span style="color:#998;font-style:italic"></span><span style="color:#458;font-weight:bold">void</span> <span style="color:#900;font-weight:bold">drainKeyReferenceQueue</span><span style="color:#000;font-weight:bold">()</span> <span style="color:#000;font-weight:bold">{</span>
-	Reference<span style="color:#000;font-weight:bold">&lt;?</span> <span style="color:#000;font-weight:bold">extends</span> K<span style="color:#000;font-weight:bold">&gt;</span> ref<span style="color:#000;font-weight:bold">;</span>
-	<span style="color:#458;font-weight:bold">int</span> i <span style="color:#000;font-weight:bold">=</span> 0<span style="color:#000;font-weight:bold">;</span>
-	<span style="color:#000;font-weight:bold">while</span> <span style="color:#000;font-weight:bold">((</span>ref <span style="color:#000;font-weight:bold">=</span> keyReferenceQueue<span style="color:#000;font-weight:bold">.</span><span style="color:#008080">poll</span><span style="color:#000;font-weight:bold">())</span> <span style="color:#000;font-weight:bold">!=</span> <span style="color:#000;font-weight:bold">null</span><span style="color:#000;font-weight:bold">)</span> <span style="color:#000;font-weight:bold">{</span>
-		<span style="color:#3c5d5d;font-weight:bold">@SuppressWarnings</span><span style="color:#000;font-weight:bold">(</span><span style="color:#d14">&#34;unchecked&#34;</span><span style="color:#000;font-weight:bold">)</span>
-			ReferenceEntry<span style="color:#000;font-weight:bold">&lt;</span>K<span style="color:#000;font-weight:bold">,</span> V<span style="color:#000;font-weight:bold">&gt;</span> entry <span style="color:#000;font-weight:bold">=</span> <span style="color:#000;font-weight:bold">(</span>ReferenceEntry<span style="color:#000;font-weight:bold">&lt;</span>K<span style="color:#000;font-weight:bold">,</span> V<span style="color:#000;font-weight:bold">&gt;)</span> ref<span style="color:#000;font-weight:bold">;</span>
-		map<span style="color:#000;font-weight:bold">.</span><span style="color:#008080">reclaimKey</span><span style="color:#000;font-weight:bold">(</span>entry<span style="color:#000;font-weight:bold">);</span>
-		<span style="color:#000;font-weight:bold">if</span> <span style="color:#000;font-weight:bold">(++</span>i <span style="color:#000;font-weight:bold">==</span> DRAIN_MAX<span style="color:#000;font-weight:bold">)</span> <span style="color:#000;font-weight:bold">{</span>
-			<span style="color:#000;font-weight:bold">break</span><span style="color:#000;font-weight:bold">;</span>
-		<span style="color:#000;font-weight:bold">}</span>
-	<span style="color:#000;font-weight:bold">}</span>
-<span style="color:#000;font-weight:bold">}</span>
+<td class="lntd">
+<pre class="chroma"><code class="language-java" data-lang="java"><span class="nd">@GuardedBy</span><span class="o">(</span><span class="s">&#34;this&#34;</span><span class="o">)</span>
+<span class="c1">// 清理keyReferenceQueue
+</span><span class="c1"></span><span class="kt">void</span> <span class="nf">drainKeyReferenceQueue</span><span class="o">()</span> <span class="o">{</span>
+	<span class="n">Reference</span><span class="o">&lt;?</span> <span class="kd">extends</span> <span class="n">K</span><span class="o">&gt;</span> <span class="n">ref</span><span class="o">;</span>
+	<span class="kt">int</span> <span class="n">i</span> <span class="o">=</span> <span class="n">0</span><span class="o">;</span>
+	<span class="k">while</span> <span class="o">((</span><span class="n">ref</span> <span class="o">=</span> <span class="n">keyReferenceQueue</span><span class="o">.</span><span class="na">poll</span><span class="o">())</span> <span class="o">!=</span> <span class="kc">null</span><span class="o">)</span> <span class="o">{</span>
+		<span class="nd">@SuppressWarnings</span><span class="o">(</span><span class="s">&#34;unchecked&#34;</span><span class="o">)</span>
+			<span class="n">ReferenceEntry</span><span class="o">&lt;</span><span class="n">K</span><span class="o">,</span> <span class="n">V</span><span class="o">&gt;</span> <span class="n">entry</span> <span class="o">=</span> <span class="o">(</span><span class="n">ReferenceEntry</span><span class="o">&lt;</span><span class="n">K</span><span class="o">,</span> <span class="n">V</span><span class="o">&gt;)</span> <span class="n">ref</span><span class="o">;</span>
+		<span class="n">map</span><span class="o">.</span><span class="na">reclaimKey</span><span class="o">(</span><span class="n">entry</span><span class="o">);</span>
+		<span class="k">if</span> <span class="o">(++</span><span class="n">i</span> <span class="o">==</span> <span class="n">DRAIN_MAX</span><span class="o">)</span> <span class="o">{</span>
+			<span class="k">break</span><span class="o">;</span>
+		<span class="o">}</span>
+	<span class="o">}</span>
+<span class="o">}</span>
 
-<span style="color:#3c5d5d;font-weight:bold">@GuardedBy</span><span style="color:#000;font-weight:bold">(</span><span style="color:#d14">&#34;this&#34;</span><span style="color:#000;font-weight:bold">)</span>
-<span style="color:#998;font-style:italic">// 清理keyReferenceQueue
-</span><span style="color:#998;font-style:italic"></span><span style="color:#458;font-weight:bold">void</span> <span style="color:#900;font-weight:bold">drainValueReferenceQueue</span><span style="color:#000;font-weight:bold">()</span> <span style="color:#000;font-weight:bold">{</span>
-	Reference<span style="color:#000;font-weight:bold">&lt;?</span> <span style="color:#000;font-weight:bold">extends</span> V<span style="color:#000;font-weight:bold">&gt;</span> ref<span style="color:#000;font-weight:bold">;</span>
-	<span style="color:#458;font-weight:bold">int</span> i <span style="color:#000;font-weight:bold">=</span> 0<span style="color:#000;font-weight:bold">;</span>
-	<span style="color:#000;font-weight:bold">while</span> <span style="color:#000;font-weight:bold">((</span>ref <span style="color:#000;font-weight:bold">=</span> valueReferenceQueue<span style="color:#000;font-weight:bold">.</span><span style="color:#008080">poll</span><span style="color:#000;font-weight:bold">())</span> <span style="color:#000;font-weight:bold">!=</span> <span style="color:#000;font-weight:bold">null</span><span style="color:#000;font-weight:bold">)</span> <span style="color:#000;font-weight:bold">{</span>
-		<span style="color:#3c5d5d;font-weight:bold">@SuppressWarnings</span><span style="color:#000;font-weight:bold">(</span><span style="color:#d14">&#34;unchecked&#34;</span><span style="color:#000;font-weight:bold">)</span>
-			ValueReference<span style="color:#000;font-weight:bold">&lt;</span>K<span style="color:#000;font-weight:bold">,</span> V<span style="color:#000;font-weight:bold">&gt;</span> valueReference <span style="color:#000;font-weight:bold">=</span> <span style="color:#000;font-weight:bold">(</span>ValueReference<span style="color:#000;font-weight:bold">&lt;</span>K<span style="color:#000;font-weight:bold">,</span> V<span style="color:#000;font-weight:bold">&gt;)</span> ref<span style="color:#000;font-weight:bold">;</span>
-		map<span style="color:#000;font-weight:bold">.</span><span style="color:#008080">reclaimValue</span><span style="color:#000;font-weight:bold">(</span>valueReference<span style="color:#000;font-weight:bold">);</span>
-		<span style="color:#000;font-weight:bold">if</span> <span style="color:#000;font-weight:bold">(++</span>i <span style="color:#000;font-weight:bold">==</span> DRAIN_MAX<span style="color:#000;font-weight:bold">)</span> <span style="color:#000;font-weight:bold">{</span>
-			<span style="color:#000;font-weight:bold">break</span><span style="color:#000;font-weight:bold">;</span>
-		<span style="color:#000;font-weight:bold">}</span>
-	<span style="color:#000;font-weight:bold">}</span>
-<span style="color:#000;font-weight:bold">}</span>
+<span class="nd">@GuardedBy</span><span class="o">(</span><span class="s">&#34;this&#34;</span><span class="o">)</span>
+<span class="c1">// 清理keyReferenceQueue
+</span><span class="c1"></span><span class="kt">void</span> <span class="nf">drainValueReferenceQueue</span><span class="o">()</span> <span class="o">{</span>
+	<span class="n">Reference</span><span class="o">&lt;?</span> <span class="kd">extends</span> <span class="n">V</span><span class="o">&gt;</span> <span class="n">ref</span><span class="o">;</span>
+	<span class="kt">int</span> <span class="n">i</span> <span class="o">=</span> <span class="n">0</span><span class="o">;</span>
+	<span class="k">while</span> <span class="o">((</span><span class="n">ref</span> <span class="o">=</span> <span class="n">valueReferenceQueue</span><span class="o">.</span><span class="na">poll</span><span class="o">())</span> <span class="o">!=</span> <span class="kc">null</span><span class="o">)</span> <span class="o">{</span>
+		<span class="nd">@SuppressWarnings</span><span class="o">(</span><span class="s">&#34;unchecked&#34;</span><span class="o">)</span>
+			<span class="n">ValueReference</span><span class="o">&lt;</span><span class="n">K</span><span class="o">,</span> <span class="n">V</span><span class="o">&gt;</span> <span class="n">valueReference</span> <span class="o">=</span> <span class="o">(</span><span class="n">ValueReference</span><span class="o">&lt;</span><span class="n">K</span><span class="o">,</span> <span class="n">V</span><span class="o">&gt;)</span> <span class="n">ref</span><span class="o">;</span>
+		<span class="n">map</span><span class="o">.</span><span class="na">reclaimValue</span><span class="o">(</span><span class="n">valueReference</span><span class="o">);</span>
+		<span class="k">if</span> <span class="o">(++</span><span class="n">i</span> <span class="o">==</span> <span class="n">DRAIN_MAX</span><span class="o">)</span> <span class="o">{</span>
+			<span class="k">break</span><span class="o">;</span>
+		<span class="o">}</span>
+	<span class="o">}</span>
+<span class="o">}</span>
 </code></pre></td></tr></table>
 </div>
 </div><p>这两部分的代码逻辑十分简单，问题在于它是什么时候将无效的<code>EntryReference</code>或者<code>ValueReference</code>加入相应的队列的呢，最终通过查看构造方法，发现这两个队列是交给<code>WeakReference</code>进行使用的。因此，它们是在<code>WeakReference</code>在其引用的内容被GC回收后自动追加到队列中的。</p>
@@ -973,240 +888,100 @@ The value of key 128 is <span style="color:#000;font-weight:bold">null</span>
 <p><code>Cache</code>的实现灵活使用了Java的<code>enum</code>和<code>Reference</code>相关的内容。Java的<code>enum</code>其实相当灵活，不仅仅能够拥有各自的数据，还能够拥有各自的实现。<code>enum</code>中的对象就如同继承了同一个接口的类的单例，实际开发中可以结合<code>EnumSet</code>和<code>EnumMap</code>进行各种灵活使用。其次是Java中的引用，软、弱、虚3种引用我在以前的使用中并没有太多的接触，不知道能够通过<code>ReferenceQueue</code>去接收被回收的引用以及相应的实际应用场景，今天算补上了一点。</p>
 <p>Guava的<code>Cache</code>实现提供了相当丰富的功能，其源码内容除了上述之外还涉及很多多线程的内容，感兴趣的可以自行学习。</p>
 
-        </div>
-
-        
-
-
-        
-
-<div class="post-archive">
-    <h2>See Also</h2>
-    <ul class="listing">
-        
-        <li><a href="/post/guava-talk-2/">Guava杂谈 - EventBus</a></li>
-        
-        <li><a href="/post/guava-talk-1/">Guava杂谈 - ComparisonChain</a></li>
-        
-        <li><a href="/post/bash-variable/">bash - 变量及变量操作</a></li>
-        
-        <li><a href="/post/sed/">sed学习笔记</a></li>
-        
-        <li><a href="/post/awk/">awk学习笔记</a></li>
-        
-    </ul>
-</div>
-
-
-        <div class="post-meta meta-tags">
-            
-            <ul class="clearfix">
-                
-                <li><a href='https://ilixiang.github.io/tags/Java'>Java</a></li>
-                
-                <li><a href='https://ilixiang.github.io/tags/Guava'>Guava</a></li>
-                
-                <li><a href='https://ilixiang.github.io/tags/LoadingCache'>LoadingCache</a></li>
-                
-            </ul>
-            
-        </div>
-    </article>
-    
-    <div id="disqus_thread"></div>
-<script type="application/javascript">
-    var disqus_config = function () {
-    
-    
-    
-    };
-    (function() {
-        if (["localhost", "127.0.0.1"].indexOf(window.location.hostname) != -1) {
-            document.getElementById('disqus_thread').innerHTML = 'Disqus comments not available by default when the website is previewed locally.';
-            return;
-        }
-        var d = document, s = d.createElement('script'); s.async = true;
-        s.src = '//' + "yourdiscussshortname" + '.disqus.com/embed.js';
-        s.setAttribute('data-timestamp', +new Date());
-        (d.head || d.body).appendChild(s);
-    })();
-</script>
-<noscript>Please enable JavaScript to view the <a href="https://disqus.com/?ref_noscript">comments powered by Disqus.</a></noscript>
-<a href="https://disqus.com" class="dsq-brlink">comments powered by <span class="logo-disqus">Disqus</span></a>
-
-    
-    
-    <div class="post bg-white">
-      <script src="https://utteranc.es/client.js"
-            repo= "your github repo"
-            issue-term="pathname"
-            theme="github-light"
-            crossorigin="anonymous"
-            async>
-      </script>
     </div>
-    
-</div>
 
-                </div>
-
-                <div id="secondary">
-    <section class="widget">
-        <form id="search" action='https://ilixiang.github.io/search/' method="get" accept-charset="utf-8" target="_blank" _lpchecked="1">
-      
-      <input type="text" name="q" maxlength="20" placeholder="Search">
-      <input type="hidden" name="sitesearch" value="https://ilixiang.github.io/">
-      <button type="submit" class="submit icon-search"></button>
-</form>
-    </section>
-    
-    <section class="widget">
-        <h3 class="widget-title">最近文章</h3>
-<ul class="widget-list">
-    
-    <li>
-        <a href="https://ilixiang.github.io/post/java-enum/" title="Java - 枚举">Java - 枚举</a>
-    </li>
-    
-    <li>
-        <a href="https://ilixiang.github.io/post/shiro-1/" title="Apache Shiro - 基本使用和概念">Apache Shiro - 基本使用和概念</a>
-    </li>
-    
-    <li>
-        <a href="https://ilixiang.github.io/post/java-reflection/" title="Java - 反射">Java - 反射</a>
-    </li>
-    
-    <li>
-        <a href="https://ilixiang.github.io/post/regex-note/" title="Regex - 笔记">Regex - 笔记</a>
-    </li>
-    
-    <li>
-        <a href="https://ilixiang.github.io/post/guava-talk-4/" title="Guava杂谈 - ImmutableCollections">Guava杂谈 - ImmutableCollections</a>
-    </li>
-    
-    <li>
-        <a href="https://ilixiang.github.io/post/guava-talk-3/" title="Guava杂谈 - LoadingCache">Guava杂谈 - LoadingCache</a>
-    </li>
-    
-    <li>
-        <a href="https://ilixiang.github.io/post/guava-talk-2/" title="Guava杂谈 - EventBus">Guava杂谈 - EventBus</a>
-    </li>
-    
-    <li>
-        <a href="https://ilixiang.github.io/post/guava-talk-1/" title="Guava杂谈 - ComparisonChain">Guava杂谈 - ComparisonChain</a>
-    </li>
-    
-    <li>
-        <a href="https://ilixiang.github.io/post/bash-variable/" title="bash - 变量及变量操作">bash - 变量及变量操作</a>
-    </li>
-    
-    <li>
-        <a href="https://ilixiang.github.io/post/sed/" title="sed学习笔记">sed学习笔记</a>
-    </li>
-    
-</ul>
-    </section>
-
-    
-
-    <section class="widget">
-        <h3 class="widget-title">分类</h3>
-<ul class="widget-list">
-    
-    <li><a href="https://ilixiang.github.io/categories/Java/">Java (7)</a></li>
-    
-    <li><a href="https://ilixiang.github.io/categories/shell/">shell (4)</a></li>
-    
-</ul>
-    </section>
-
-    <section class="widget">
-        <h3 class="widget-title">标签</h3>
-<div class="tagcloud">
-    
-    <a href="https://ilixiang.github.io/tags/Collection/">Collection</a>
-    
-    <a href="https://ilixiang.github.io/tags/ComparisonChain/">ComparisonChain</a>
-    
-    <a href="https://ilixiang.github.io/tags/EventBus/">EventBus</a>
-    
-    <a href="https://ilixiang.github.io/tags/Guava/">Guava</a>
-    
-    <a href="https://ilixiang.github.io/tags/ImmutableCollection/">ImmutableCollection</a>
-    
-    <a href="https://ilixiang.github.io/tags/Java/">Java</a>
-    
-    <a href="https://ilixiang.github.io/tags/LoadingCache/">LoadingCache</a>
-    
-    <a href="https://ilixiang.github.io/tags/Security/">Security</a>
-    
-    <a href="https://ilixiang.github.io/tags/Shiro/">Shiro</a>
-    
-    <a href="https://ilixiang.github.io/tags/awk/">awk</a>
-    
-    <a href="https://ilixiang.github.io/tags/bash/">bash</a>
-    
-    <a href="https://ilixiang.github.io/tags/enum/">enum</a>
-    
-    <a href="https://ilixiang.github.io/tags/note/">note</a>
-    
-    <a href="https://ilixiang.github.io/tags/reflection/">reflection</a>
-    
-    <a href="https://ilixiang.github.io/tags/regex/">regex</a>
-    
-    <a href="https://ilixiang.github.io/tags/sed/">sed</a>
-    
-    <a href="https://ilixiang.github.io/tags/shell/">shell</a>
-    
-</div>
-    </section>
-
-    
-
-    <section class="widget">
-        <h3 class="widget-title">其它</h3>
-        <ul class="widget-list">
-            <li><a href="https://ilixiang.github.io/index.xml">文章 RSS</a></li>
-        </ul>
-    </section>
-</div>
-            </div>
-        </div>
-    </div>
-    <footer id="footer">
-    <div class="container">
-        &copy; 2020 <a href="https://ilixiang.github.io/">三斜求积术 By 石不转</a>.
-        Powered by <a rel="nofollow noreferer noopener" href="https://gohugo.io" target="_blank">Hugo</a>.
-        <a href="https://www.flysnow.org/" target="_blank">Theme</a> based on <a href="https://github.com/flysnow-org/maupassant-hugo" target="_blank">maupassant</a>.
+    <div class="post-copyright">
+  <p class="copyright-item">
+    <span class="item-title">文章作者</span>
+    <span class="item-content">石不转</span>
+  </p>
+  <p class="copyright-item">
+    <span class="item-title">上次更新</span>
+    <span class="item-content">
+        2020-07-01
         
+    </span>
+  </p>
+  
+  
+</div>
+<footer class="post-footer">
+      <div class="post-tags">
+          <a href="/tags/java/">Java</a>
+          <a href="/tags/guava/">Guava</a>
+          <a href="/tags/loadingcache/">LoadingCache</a>
+          </div>
+      <nav class="post-nav">
+        <a class="prev" href="/post/guava-talk-4/">
+            <i class="iconfont icon-left"></i>
+            <span class="prev-text nav-default">Guava杂谈 - ImmutableCollections</span>
+            <span class="prev-text nav-mobile">上一篇</span>
+          </a>
+        <a class="next" href="/post/guava-talk-2/">
+            <span class="next-text nav-default">Guava杂谈 - EventBus</span>
+            <span class="next-text nav-mobile">下一篇</span>
+            <i class="iconfont icon-right"></i>
+          </a>
+      </nav>
+    </footer>
+  </article>
+        </div>
+        
+
+  
+
+  
+
+      </div>
+    </main>
+
+    <footer id="footer" class="footer">
+      <div class="social-links">
+  <a href="https://ilixiang.github.io/index.xml" type="application/rss+xml" class="iconfont icon-rss" title="rss"></a>
+</div>
+
+<div class="copyright">
+  <span class="power-by">
+    由 <a class="hexo-link" href="https://gohugo.io">Hugo</a> 强力驱动
+  </span>
+  <span class="division">|</span>
+  <span class="theme-info">
+    主题 - 
+    <a class="theme-link" href="https://github.com/olOwOlo/hugo-theme-even">Even</a>
+  </span>
+
+  
+
+  <span class="copyright-year">
+    &copy; 
+    2020
+    <span class="heart">
+      <i class="iconfont icon-heart"></i>
+    </span>
+    <span class="author">石不转</span>
+  </span>
+</div>
+    </footer>
+
+    <div class="back-to-top" id="back-to-top">
+      <i class="iconfont icon-up"></i>
     </div>
-</footer>
-
-
-    
-    <script type="text/javascript">
-        window.MathJax = {
-            tex2jax: {
-                inlineMath: [['$', '$']],
-                processEscapes: true
-                }
-            };
-    </script>
-    <script src='https://cdnjs.cloudflare.com/ajax/libs/mathjax/2.7.5/MathJax.js?config=TeX-MML-AM_CHTML' async></script>
-
-
-<a id="rocket" href="#top"></a>
-<script type="text/javascript" src='/js/totop.js?v=0.0.0' async=""></script>
+  </div>
+  
+  <script src="https://cdn.jsdelivr.net/npm/jquery@3.2.1/dist/jquery.min.js" integrity="sha256-hwg4gsxgFZhOsEEamdOYGBf13FyQuiTwlAQgxVSNgt4=" crossorigin="anonymous"></script>
+  <script src="https://cdn.jsdelivr.net/npm/slideout@1.0.1/dist/slideout.min.js" integrity="sha256-t+zJ/g8/KXIJMjSVQdnibt4dlaDxc9zXr/9oNPeWqdg=" crossorigin="anonymous"></script>
+  <script src="https://cdn.jsdelivr.net/npm/@fancyapps/fancybox@3.1.20/dist/jquery.fancybox.min.js" integrity="sha256-XVLffZaxoWfGUEbdzuLi7pwaUJv1cecsQJQqGLe7axY=" crossorigin="anonymous"></script>
 
 
 
-    <script type="text/javascript" src="//busuanzi.ibruce.info/busuanzi/2.3/busuanzi.pure.mini.js" async></script>
+<script type="text/javascript" src="/js/main.min.d7b7ada643c9c1a983026e177f141f7363b4640d619caf01d8831a6718cd44ea.js"></script>
 
 
 
 
-    <script src='/js/douban.js'></script>
+
+
+
 
 </body>
-
 </html>

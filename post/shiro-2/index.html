@@ -1,0 +1,435 @@
+<!DOCTYPE html>
+<html lang="zh-cn">
+<head>
+  <meta charset="utf-8">
+  <meta http-equiv="X-UA-Compatible" content="IE=edge,chrome=1">
+  <title>Apache Shiro - Realm相关组件接口 - 三斜求积术 - Code fun. Code better</title>
+  <meta name="renderer" content="webkit" />
+<meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=1"/>
+
+<meta http-equiv="Cache-Control" content="no-transform" />
+<meta http-equiv="Cache-Control" content="no-siteapp" />
+
+<meta name="theme-color" content="#f8f5ec" />
+<meta name="msapplication-navbutton-color" content="#f8f5ec">
+<meta name="apple-mobile-web-app-capable" content="yes">
+<meta name="apple-mobile-web-app-status-bar-style" content="#f8f5ec">
+
+
+<meta name="author" content="石不转" /><meta name="description" content="如上篇所言，Realm是用以沟通和获取安全数据的组件，而需要自定义认证过程就需要自己写Realm的实现逻辑，因此我们今天就来看一看Realm" /><meta name="keywords" content="Hugo, theme, even" />
+
+
+
+
+
+
+<meta name="generator" content="Hugo 0.68.3 with theme even" />
+
+
+<link rel="canonical" href="https://ilixiang.github.io/post/shiro-2/" />
+<link rel="apple-touch-icon" sizes="180x180" href="/apple-touch-icon.png">
+<link rel="icon" type="image/png" sizes="32x32" href="/favicon-32x32.png">
+<link rel="icon" type="image/png" sizes="16x16" href="/favicon-16x16.png">
+<link rel="manifest" href="/manifest.json">
+<link rel="mask-icon" href="/safari-pinned-tab.svg" color="#5bbad5">
+
+
+
+<link href="/sass/main.min.651e6917abb0239242daa570c2bec9867267bbcd83646da5a850afe573347b44.css" rel="stylesheet">
+<link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/@fancyapps/fancybox@3.1.20/dist/jquery.fancybox.min.css" integrity="sha256-7TyXnr2YU040zfSP+rEcz29ggW4j56/ujTPwjMzyqFY=" crossorigin="anonymous">
+
+
+<meta property="og:title" content="Apache Shiro - Realm相关组件接口" />
+<meta property="og:description" content="如上篇所言，Realm是用以沟通和获取安全数据的组件，而需要自定义认证过程就需要自己写Realm的实现逻辑，因此我们今天就来看一看Realm" />
+<meta property="og:type" content="article" />
+<meta property="og:url" content="https://ilixiang.github.io/post/shiro-2/" />
+<meta property="article:published_time" content="2020-08-06T15:49:38+08:00" />
+<meta property="article:modified_time" content="2020-08-06T15:49:38+08:00" />
+<meta itemprop="name" content="Apache Shiro - Realm相关组件接口">
+<meta itemprop="description" content="如上篇所言，Realm是用以沟通和获取安全数据的组件，而需要自定义认证过程就需要自己写Realm的实现逻辑，因此我们今天就来看一看Realm">
+<meta itemprop="datePublished" content="2020-08-06T15:49:38&#43;08:00" />
+<meta itemprop="dateModified" content="2020-08-06T15:49:38&#43;08:00" />
+<meta itemprop="wordCount" content="2587">
+
+
+
+<meta itemprop="keywords" content="Java,Security,Shiro," /><meta name="twitter:card" content="summary"/>
+<meta name="twitter:title" content="Apache Shiro - Realm相关组件接口"/>
+<meta name="twitter:description" content="如上篇所言，Realm是用以沟通和获取安全数据的组件，而需要自定义认证过程就需要自己写Realm的实现逻辑，因此我们今天就来看一看Realm"/>
+
+<!--[if lte IE 9]>
+  <script src="https://cdnjs.cloudflare.com/ajax/libs/classlist/1.1.20170427/classList.min.js"></script>
+<![endif]-->
+
+<!--[if lt IE 9]>
+  <script src="https://cdn.jsdelivr.net/npm/html5shiv@3.7.3/dist/html5shiv.min.js"></script>
+  <script src="https://cdn.jsdelivr.net/npm/respond.js@1.4.2/dest/respond.min.js"></script>
+<![endif]-->
+
+</head>
+<body>
+  <div id="mobile-navbar" class="mobile-navbar">
+  <div class="mobile-header-logo">
+    <a href="/" class="logo">三斜求积术</a>
+  </div>
+  <div class="mobile-navbar-icon">
+    <span></span>
+    <span></span>
+    <span></span>
+  </div>
+</div>
+<nav id="mobile-menu" class="mobile-menu slideout-menu">
+  <ul class="mobile-menu-list">
+    <a href="/">
+        <li class="mobile-menu-item">主页</li>
+      </a><a href="/post/">
+        <li class="mobile-menu-item">归档</li>
+      </a><a href="/tags/">
+        <li class="mobile-menu-item">标签</li>
+      </a><a href="/categories/">
+        <li class="mobile-menu-item">分类</li>
+      </a>
+  </ul>
+</nav>
+  <div class="container" id="mobile-panel">
+    <header id="header" class="header">
+        <div class="logo-wrapper">
+  <a href="/" class="logo">三斜求积术</a>
+</div>
+
+<nav class="site-navbar">
+  <ul id="menu" class="menu">
+    <li class="menu-item">
+        <a class="menu-item-link" href="/">主页</a>
+      </li><li class="menu-item">
+        <a class="menu-item-link" href="/post/">归档</a>
+      </li><li class="menu-item">
+        <a class="menu-item-link" href="/tags/">标签</a>
+      </li><li class="menu-item">
+        <a class="menu-item-link" href="/categories/">分类</a>
+      </li>
+  </ul>
+</nav>
+    </header>
+
+    <main id="main" class="main">
+      <div class="content-wrapper">
+        <div id="content" class="content">
+          <article class="post">
+    
+    <header class="post-header">
+      <h1 class="post-title">Apache Shiro - Realm相关组件接口</h1>
+
+      <div class="post-meta">
+        <span class="post-time"> 2020-08-06 </span>
+        <div class="post-category">
+            <a href="/categories/java/"> Java </a>
+            </div>
+        
+      </div>
+    </header>
+
+    
+    <div class="post-content">
+      <p><img src="/img/apache-shiro.png" alt="apache shiro"></p>
+<p>如上篇所言，<code>Realm</code>是用以沟通和获取安全数据的组件，而需要自定义认证过程就需要自己写<code>Realm</code>的实现逻辑，因此我们今天就来看一看<code>Realm</code>以及和它相关的其他组件。</p>
+<h2 id="1-realm">1. <code>Realm</code></h2>
+<p>这是一个接口，上篇说过，shiro的所有基本组件都是由接口进行交互的，我们来看一看<code>Realm</code>是如何定义的吧</p>
+<div class="highlight"><div class="chroma">
+<table class="lntable"><tr><td class="lntd">
+<pre class="chroma"><code><span class="lnt">1
+</span><span class="lnt">2
+</span><span class="lnt">3
+</span><span class="lnt">4
+</span><span class="lnt">5
+</span><span class="lnt">6
+</span><span class="lnt">7
+</span><span class="lnt">8
+</span></code></pre></td>
+<td class="lntd">
+<pre class="chroma"><code class="language-java" data-lang="java"><span class="kd">public</span> <span class="kd">interface</span> <span class="nc">Realm</span> <span class="o">{</span>
+    <span class="cm">/* 该Realm实现的名字 */</span>
+    <span class="n">String</span> <span class="nf">getName</span><span class="o">();</span>
+    <span class="cm">/* 判断是否支持传入的token */</span>
+    <span class="kt">boolean</span> <span class="nf">supports</span><span class="o">(</span><span class="n">AuthenticationToken</span> <span class="n">token</span><span class="o">);</span>
+    <span class="cm">/* 根据token获取认证信息 */</span>
+    <span class="n">AuthenticationInfo</span> <span class="nf">getAuthenticationInfo</span><span class="o">(</span><span class="n">AuthenticationToken</span> <span class="n">token</span><span class="o">)</span> <span class="kd">throws</span> <span class="n">AuthenticationException</span><span class="o">;</span>
+<span class="o">}</span>
+</code></pre></td></tr></table>
+</div>
+</div><ol>
+<li><code>getName()</code>获取该<code>Realm</code>实现的名字，这个名字在应用中必须是唯一的</li>
+<li><code>supports()</code>判断该<code>Realm</code>是否支持这种<code>AuthenticationToken</code>的实现。<code>AuthenticationToken</code>是所有token都需要实现的接口，而在实现的过程中你可能会使用多种token实现进行验证，例如一种是基于用户名和密码、另一种是基于JsessionId的，当能够通过JsessionId找到未过期的会话，则不需要用户再次进行登录。因此<code>support()</code>方法能够让你避免其他不支持该token的<code>Realm</code>实现偶然通过验证，也能减少验证时进行的不必要操作以及向下转型时的判断</li>
+<li><code>getAuthenticationInfo()</code>则是真正用以获取安全数据的方法，它所返回的结果<code>AuthenticationInfo</code>也是一个接口，这个接口定义了获取的安全数据的实现应该提供的信息</li>
+</ol>
+<p>虽然<code>Realm</code>我们在shiro中可能会经常见到，但我们却并不一定会直接接触到，这是由于很大一部分的常用操作都不需要我们从底层自己建立。因而一般在重写<code>Realm</code>时，我们会选择以及搭建好大部分逻辑的抽象实现类<code>AuthorizingRealm</code>进行实现。</p>
+<div class="highlight"><div class="chroma">
+<table class="lntable"><tr><td class="lntd">
+<pre class="chroma"><code><span class="lnt"> 1
+</span><span class="lnt"> 2
+</span><span class="lnt"> 3
+</span><span class="lnt"> 4
+</span><span class="lnt"> 5
+</span><span class="lnt"> 6
+</span><span class="lnt"> 7
+</span><span class="lnt"> 8
+</span><span class="lnt"> 9
+</span><span class="lnt">10
+</span><span class="lnt">11
+</span><span class="lnt">12
+</span><span class="lnt">13
+</span><span class="lnt">14
+</span><span class="lnt">15
+</span><span class="lnt">16
+</span><span class="lnt">17
+</span><span class="lnt">18
+</span><span class="lnt">19
+</span><span class="lnt">20
+</span><span class="lnt">21
+</span><span class="lnt">22
+</span><span class="lnt">23
+</span><span class="lnt">24
+</span><span class="lnt">25
+</span><span class="lnt">26
+</span><span class="lnt">27
+</span><span class="lnt">28
+</span><span class="lnt">29
+</span><span class="lnt">30
+</span><span class="lnt">31
+</span><span class="lnt">32
+</span><span class="lnt">33
+</span><span class="lnt">34
+</span><span class="lnt">35
+</span><span class="lnt">36
+</span></code></pre></td>
+<td class="lntd">
+<pre class="chroma"><code class="language-java" data-lang="java"><span class="kd">public</span> <span class="kd">class</span> <span class="nc">MapBasedRealm</span> <span class="kd">extends</span> <span class="n">AuthorizingRealm</span> <span class="o">{</span>
+    <span class="cm">/* 用户名密码Map */</span>
+    <span class="kd">private</span> <span class="kd">final</span> <span class="n">ImmutableMap</span><span class="o">&lt;</span><span class="n">String</span><span class="o">,</span> <span class="n">String</span><span class="o">&gt;</span> <span class="n">usernamePasswordMap</span> <span class="o">=</span> <span class="n">ImmutableMap</span><span class="o">.&lt;</span><span class="n">String</span><span class="o">,</span> <span class="n">String</span><span class="o">&gt;</span><span class="n">builder</span><span class="o">().</span><span class="na">put</span><span class="o">(</span><span class="s">&#34;me&#34;</span><span class="o">,</span> <span class="s">&#34;me&#34;</span><span class="o">).</span><span class="na">build</span><span class="o">();</span>
+    <span class="cm">/* 用户名角色Map */</span>
+    <span class="kd">private</span> <span class="kd">final</span> <span class="n">ImmutableMap</span><span class="o">&lt;</span><span class="n">String</span><span class="o">,</span> <span class="n">String</span><span class="o">&gt;</span> <span class="n">userNameRoleMap</span> <span class="o">=</span> <span class="n">ImmutableMap</span><span class="o">.&lt;</span><span class="n">String</span><span class="o">,</span> <span class="n">String</span><span class="o">&gt;</span><span class="n">builder</span><span class="o">().</span><span class="na">put</span><span class="o">(</span><span class="s">&#34;me&#34;</span><span class="o">,</span> <span class="s">&#34;admin&#34;</span><span class="o">).</span><span class="na">build</span><span class="o">();</span>
+    <span class="cm">/* 角色权限Map */</span>
+    <span class="kd">private</span> <span class="kd">final</span> <span class="n">ImmutableMap</span><span class="o">&lt;</span><span class="n">String</span><span class="o">,</span> <span class="n">String</span><span class="o">&gt;</span> <span class="n">rolePermMap</span> <span class="o">=</span> <span class="n">ImmutableMap</span><span class="o">.&lt;</span><span class="n">String</span><span class="o">,</span> <span class="n">String</span><span class="o">&gt;</span><span class="n">builder</span><span class="o">().</span><span class="na">put</span><span class="o">(</span><span class="s">&#34;admin&#34;</span><span class="o">,</span> <span class="s">&#34;*&#34;</span><span class="o">).</span><span class="na">build</span><span class="o">();</span>
+
+    <span class="nd">@Override</span>
+    <span class="cm">/* 获取授权信息 */</span>
+    <span class="kd">protected</span> <span class="n">AuthorizationInfo</span> <span class="nf">doGetAuthorizationInfo</span><span class="o">(</span><span class="n">PrincipalCollection</span> <span class="n">principals</span><span class="o">)</span> <span class="o">{</span>
+        <span class="n">String</span> <span class="n">userName</span> <span class="o">=</span> <span class="o">(</span><span class="n">String</span><span class="o">)</span><span class="n">principals</span><span class="o">.</span><span class="na">getPrimaryPrincipal</span><span class="o">();</span>
+        <span class="n">SimpleAuthorizationInfo</span> <span class="n">info</span> <span class="o">=</span> <span class="k">new</span> <span class="n">SimpleAuthorizationInfo</span><span class="o">();</span>
+        <span class="n">String</span> <span class="n">role</span> <span class="o">=</span> <span class="n">userNameRoleMap</span><span class="o">.</span><span class="na">get</span><span class="o">(</span><span class="n">userName</span><span class="o">);</span>
+        <span class="n">info</span><span class="o">.</span><span class="na">setRoles</span><span class="o">(</span><span class="n">Sets</span><span class="o">.</span><span class="na">newHashSet</span><span class="o">(</span><span class="n">role</span><span class="o">));</span>
+        <span class="n">info</span><span class="o">.</span><span class="na">setStringPermissions</span><span class="o">(</span><span class="n">Sets</span><span class="o">.</span><span class="na">newHashSet</span><span class="o">(</span><span class="n">rolePermMap</span><span class="o">.</span><span class="na">get</span><span class="o">(</span><span class="n">role</span><span class="o">)));</span>
+        <span class="k">return</span> <span class="n">info</span><span class="o">;</span>
+    <span class="o">}</span>
+
+    <span class="nd">@Override</span>
+    <span class="cm">/* 获取认证信息 */</span>
+    <span class="kd">protected</span> <span class="n">AuthenticationInfo</span> <span class="nf">doGetAuthenticationInfo</span><span class="o">(</span><span class="n">AuthenticationToken</span> <span class="n">token</span><span class="o">)</span> <span class="kd">throws</span> <span class="n">AuthenticationException</span> <span class="o">{</span>
+        <span class="n">UsernamePasswordToken</span> <span class="n">usernamePasswordToken</span> <span class="o">=</span> <span class="o">(</span><span class="n">UsernamePasswordToken</span><span class="o">)</span><span class="n">token</span><span class="o">;</span>
+        <span class="n">String</span> <span class="n">userName</span> <span class="o">=</span> <span class="n">usernamePasswordToken</span><span class="o">.</span><span class="na">getUsername</span><span class="o">();</span>
+        <span class="kt">char</span><span class="o">[]</span> <span class="n">password</span> <span class="o">=</span> <span class="n">usernamePasswordToken</span><span class="o">.</span><span class="na">getPassword</span><span class="o">();</span>
+
+        <span class="k">if</span><span class="o">(!</span><span class="n">usernamePasswordMap</span><span class="o">.</span><span class="na">containsKey</span><span class="o">(</span><span class="n">userName</span><span class="o">))</span> <span class="o">{</span>
+            <span class="k">throw</span> <span class="k">new</span> <span class="n">UnknownAccountException</span><span class="o">(</span><span class="s">&#34;用户名不存在&#34;</span><span class="o">);</span>
+        <span class="o">}</span>
+
+        <span class="n">SimpleAuthenticationInfo</span> <span class="n">authenticationInfo</span> <span class="o">=</span> <span class="k">new</span> <span class="n">SimpleAuthenticationInfo</span><span class="o">();</span>
+        <span class="n">authenticationInfo</span><span class="o">.</span><span class="na">setPrincipals</span><span class="o">(</span><span class="k">new</span> <span class="n">SimplePrincipalCollection</span><span class="o">(</span><span class="n">userName</span><span class="o">,</span> <span class="n">getName</span><span class="o">()));</span>
+        <span class="n">authenticationInfo</span><span class="o">.</span><span class="na">setCredentials</span><span class="o">(</span><span class="n">usernamePasswordMap</span><span class="o">.</span><span class="na">get</span><span class="o">(</span><span class="n">userName</span><span class="o">));</span>
+        <span class="k">return</span> <span class="n">authenticationInfo</span><span class="o">;</span>
+    <span class="o">}</span>
+<span class="o">}</span>
+</code></pre></td></tr></table>
+</div>
+</div><p>上面给出了实现<code>AuthorizingRealm</code>的例子，</p>
+<p>题外话，<code>Realm</code>作为获取安全数据的组件，接口本身的设计是不具备认证或者授权等功能的，实际上重写<code>AuthorizingRealm</code>进行操作其实是接口之间耦合的结果。但即使如此，<code>AuthorizingRealm</code>事实上也只继承了<code>Authorizor</code>接口，即只拥有授权的功能，因此即使重写<code>doGetAuthenticationInfo()</code>单纯根据<code>AuthenticationToken</code>所给的principal获取安全数据返回，credential不对依然会使得<code>login()</code>失败。</p>
+<p>但事实上大部分网上的实现会在<code>doGetAuthenticationInfo()</code>中加入credential的判断，这并不能说错，但不太符合这个接口的隔离性罢了，真正进行credential验证的是<code>CredentialsMatcher</code>接口进行的，有兴趣的可以自己去看看，后面的文章也会提及到。</p>
+<h2 id="2-authenticationtoken和authenticationinfo">2. <code>AuthenticationToken</code>和<code>AuthenticationInfo</code></h2>
+<p>上面的<code>Realm</code>接口中<code>getAuthenticationInfo()</code>方法涉及到了2部分内容：</p>
+<ol>
+<li>
+<p>输入的参数<code>AuthenticationToken</code></p>
+<div class="highlight"><div class="chroma">
+<table class="lntable"><tr><td class="lntd">
+<pre class="chroma"><code><span class="lnt">1
+</span><span class="lnt">2
+</span><span class="lnt">3
+</span><span class="lnt">4
+</span></code></pre></td>
+<td class="lntd">
+<pre class="chroma"><code class="language-java" data-lang="java"><span class="kd">public</span> <span class="kd">interface</span> <span class="nc">AuthenticationInfo</span> <span class="kd">extends</span> <span class="n">Serializable</span> <span class="o">{</span>
+    <span class="n">PrincipalCollection</span> <span class="nf">getPrincipals</span><span class="o">();</span>
+    <span class="n">Object</span> <span class="nf">getCredentials</span><span class="o">();</span>
+<span class="o">}</span>
+</code></pre></td></tr></table>
+</div>
+</div></li>
+<li>
+<p>返回结果的<code>AuthenticationInfo</code></p>
+<div class="highlight"><div class="chroma">
+<table class="lntable"><tr><td class="lntd">
+<pre class="chroma"><code><span class="lnt">1
+</span><span class="lnt">2
+</span><span class="lnt">3
+</span><span class="lnt">4
+</span></code></pre></td>
+<td class="lntd">
+<pre class="chroma"><code class="language-java" data-lang="java"><span class="kd">public</span> <span class="kd">interface</span> <span class="nc">AuthenticationToken</span> <span class="kd">extends</span> <span class="n">Serializable</span> <span class="o">{</span>
+ <span class="n">Object</span> <span class="nf">getPrincipal</span><span class="o">();</span>
+    <span class="n">Object</span> <span class="nf">getCredentials</span><span class="o">();</span>
+<span class="o">}</span>
+</code></pre></td></tr></table>
+</div>
+</div></li>
+</ol>
+<p>这两个接口的方法及其相似，都涉及到了<strong>Principal</strong>和<strong>Credential</strong>两个概念：</p>
+<ul>
+<li><strong>Principal</strong> . 代表了每个用户身份的数据，最为常见的当然就是用户名</li>
+<li><strong>Credential</strong> . 代表了用户身份的验证数据，最常见的就是密码</li>
+</ul>
+<p>两个接口都能够获取这些内容，但拥有者重要区别：<code>AuthenticationToken</code>中的数据用于进行验证，<code>AuthenticationInfo</code>中的数据是已经经过校验后的认证数据</p>
+<h2 id="3-principalcollection">3. <code>PrincipalCollection</code></h2>
+<p>两者的一个区别在于获取Principal的方法，<code>AuthenticationInfo</code>获取的是<code>PrincipalCollection</code>，这是由于获取认证的<code>Realm</code>可能<strong>不止一个</strong>，因此定义了<code>PrincipalCollection</code>用于存储从所有<code>Realm</code>中获取的Principal信息。</p>
+<div class="highlight"><div class="chroma">
+<table class="lntable"><tr><td class="lntd">
+<pre class="chroma"><code><span class="lnt"> 1
+</span><span class="lnt"> 2
+</span><span class="lnt"> 3
+</span><span class="lnt"> 4
+</span><span class="lnt"> 5
+</span><span class="lnt"> 6
+</span><span class="lnt"> 7
+</span><span class="lnt"> 8
+</span><span class="lnt"> 9
+</span><span class="lnt">10
+</span><span class="lnt">11
+</span><span class="lnt">12
+</span><span class="lnt">13
+</span><span class="lnt">14
+</span><span class="lnt">15
+</span><span class="lnt">16
+</span><span class="lnt">17
+</span><span class="lnt">18
+</span></code></pre></td>
+<td class="lntd">
+<pre class="chroma"><code class="language-java" data-lang="java"><span class="kd">public</span> <span class="kd">interface</span> <span class="nc">PrincipalCollection</span> <span class="kd">extends</span> <span class="n">Iterable</span><span class="o">,</span> <span class="n">Serializable</span> <span class="o">{</span>
+    <span class="c1">// 获取主要的Principal
+</span><span class="c1"></span>    <span class="n">Object</span> <span class="nf">getPrimaryPrincipal</span><span class="o">();</span>
+    <span class="c1">// 通过类型获取1个
+</span><span class="c1"></span>    <span class="o">&lt;</span><span class="n">T</span><span class="o">&gt;</span> <span class="n">T</span> <span class="nf">oneByType</span><span class="o">(</span><span class="n">Class</span><span class="o">&lt;</span><span class="n">T</span><span class="o">&gt;</span> <span class="n">type</span><span class="o">);</span>
+    <span class="c1">// 通过类型获取一堆
+</span><span class="c1"></span>    <span class="o">&lt;</span><span class="n">T</span><span class="o">&gt;</span> <span class="n">Collection</span><span class="o">&lt;</span><span class="n">T</span><span class="o">&gt;</span> <span class="nf">byType</span><span class="o">(</span><span class="n">Class</span><span class="o">&lt;</span><span class="n">T</span><span class="o">&gt;</span> <span class="n">type</span><span class="o">);</span>
+    <span class="c1">// 获取Principal列表视图
+</span><span class="c1"></span>    <span class="n">List</span> <span class="nf">asList</span><span class="o">();</span>
+    <span class="c1">// 获取Principal集合视图
+</span><span class="c1"></span>    <span class="n">Set</span> <span class="nf">asSet</span><span class="o">();</span>
+    <span class="c1">// 通过realmName获取一堆
+</span><span class="c1"></span>    <span class="n">Collection</span> <span class="nf">fromRealm</span><span class="o">(</span><span class="n">String</span> <span class="n">realmName</span><span class="o">);</span>
+    <span class="c1">// 获取Principal关联的Realm名字集合
+</span><span class="c1"></span>    <span class="n">Set</span><span class="o">&lt;</span><span class="n">String</span><span class="o">&gt;</span> <span class="nf">getRealmNames</span><span class="o">();</span>
+    <span class="c1">// 是否一个Principal都没有
+</span><span class="c1"></span>    <span class="kt">boolean</span> <span class="nf">isEmpty</span><span class="o">();</span>
+<span class="o">}</span>
+</code></pre></td></tr></table>
+</div>
+</div><p>上面的源码可以看出，<code>PrincipalCollection</code>设计的主要目的是获取Principal信息，由于Principal是与<code>Realm</code>相关联的，因此也就能够明白上一小节中的<code>Realm::getName()</code>方法获取的名字必须在单个应用中是唯一的了。接口有几点需要注意：</p>
+<ol>
+<li><code>getPrimaryPrincipal()</code>并没有特别说明如何是<strong>Primary</strong>，因此由实现自己决定，例如shiro中<code>PrincipalCollection</code>的默认实现<code>SimplePrincipalCollection</code>返回的就是第一个Principal</li>
+<li><code>fromRealm()</code>，为什么单个<code>Realm</code>可能会产生多个Principal，其原因在于通过单个principal认证就能够获得一个用户的部分/全部信息，例如注册用户拥有可以作为principal的信息有用户id、用户名、手机号、电子邮箱，这些都可以作为principal进行登录，而通过这4种信息能够写出4个<code>Realm</code>，并且任何一种<code>Realm</code>够能获取这4种principal。因此，<code>getAuthentication()</code>返回<code>PrincipalCollection</code>，你可以自由选择其中一个或者多个principal作为返回值</li>
+</ol>
+<h2 id="总结">总结</h2>
+<p>shiro源码看到现在让我印象最为深刻的就是其组件都是各种接口之间的交互，这意味着设计之初功能的拆解和抽象十分出色，这也是大多数业务代码无法带来的学习体验。</p>
+
+    </div>
+
+    <div class="post-copyright">
+  <p class="copyright-item">
+    <span class="item-title">文章作者</span>
+    <span class="item-content">石不转</span>
+  </p>
+  <p class="copyright-item">
+    <span class="item-title">上次更新</span>
+    <span class="item-content">
+        2020-08-06
+        
+    </span>
+  </p>
+  
+  
+</div>
+<footer class="post-footer">
+      <div class="post-tags">
+          <a href="/tags/java/">Java</a>
+          <a href="/tags/security/">Security</a>
+          <a href="/tags/shiro/">Shiro</a>
+          </div>
+      <nav class="post-nav">
+        
+        <a class="next" href="/post/regex-note/">
+            <span class="next-text nav-default">Regex - 笔记</span>
+            <span class="next-text nav-mobile">下一篇</span>
+            <i class="iconfont icon-right"></i>
+          </a>
+      </nav>
+    </footer>
+  </article>
+        </div>
+        
+
+  
+
+  
+
+      </div>
+    </main>
+
+    <footer id="footer" class="footer">
+      <div class="social-links">
+  <a href="https://ilixiang.github.io/index.xml" type="application/rss+xml" class="iconfont icon-rss" title="rss"></a>
+</div>
+
+<div class="copyright">
+  <span class="power-by">
+    由 <a class="hexo-link" href="https://gohugo.io">Hugo</a> 强力驱动
+  </span>
+  <span class="division">|</span>
+  <span class="theme-info">
+    主题 - 
+    <a class="theme-link" href="https://github.com/olOwOlo/hugo-theme-even">Even</a>
+  </span>
+
+  
+
+  <span class="copyright-year">
+    &copy; 
+    2020
+    <span class="heart">
+      <i class="iconfont icon-heart"></i>
+    </span>
+    <span class="author">石不转</span>
+  </span>
+</div>
+    </footer>
+
+    <div class="back-to-top" id="back-to-top">
+      <i class="iconfont icon-up"></i>
+    </div>
+  </div>
+  
+  <script src="https://cdn.jsdelivr.net/npm/jquery@3.2.1/dist/jquery.min.js" integrity="sha256-hwg4gsxgFZhOsEEamdOYGBf13FyQuiTwlAQgxVSNgt4=" crossorigin="anonymous"></script>
+  <script src="https://cdn.jsdelivr.net/npm/slideout@1.0.1/dist/slideout.min.js" integrity="sha256-t+zJ/g8/KXIJMjSVQdnibt4dlaDxc9zXr/9oNPeWqdg=" crossorigin="anonymous"></script>
+  <script src="https://cdn.jsdelivr.net/npm/@fancyapps/fancybox@3.1.20/dist/jquery.fancybox.min.js" integrity="sha256-XVLffZaxoWfGUEbdzuLi7pwaUJv1cecsQJQqGLe7axY=" crossorigin="anonymous"></script>
+
+
+
+<script type="text/javascript" src="/js/main.min.d7b7ada643c9c1a983026e177f141f7363b4640d619caf01d8831a6718cd44ea.js"></script>
+
+
+
+
+
+
+
+
+</body>
+</html>

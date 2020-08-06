@@ -1,0 +1,87 @@
+<?xml version="1.0" encoding="utf-8" standalone="yes"?>
+<rss version="2.0" xmlns:atom="http://www.w3.org/2005/Atom">
+  <channel>
+    <title>Java on 三斜求积术 - Code fun. Code better</title>
+    <link>https://ilixiang.github.io/tags/java/</link>
+    <description>Recent content in Java on 三斜求积术 - Code fun. Code better</description>
+    <generator>Hugo -- gohugo.io</generator>
+    <language>en</language>
+    <lastBuildDate>Thu, 06 Aug 2020 15:49:38 +0800</lastBuildDate>
+    
+	<atom:link href="https://ilixiang.github.io/tags/java/index.xml" rel="self" type="application/rss+xml" />
+    
+    
+    <item>
+      <title>Apache Shiro - Realm相关组件接口</title>
+      <link>https://ilixiang.github.io/post/shiro-2/</link>
+      <pubDate>Thu, 06 Aug 2020 15:49:38 +0800</pubDate>
+      
+      <guid>https://ilixiang.github.io/post/shiro-2/</guid>
+      <description>如上篇所言，Realm是用以沟通和获取安全数据的组件，而需要自定义认证过程就需要自己写Realm的实现逻辑，因此我们今天就来看一看Realm</description>
+    </item>
+    
+    <item>
+      <title>Java - 枚举</title>
+      <link>https://ilixiang.github.io/post/java-enum/</link>
+      <pubDate>Tue, 14 Jul 2020 16:45:06 +0800</pubDate>
+      
+      <guid>https://ilixiang.github.io/post/java-enum/</guid>
+      <description>枚举，是Java中一中比较特殊的类型。我个人而言，它是一种有穷集合，因而它的成员都是它自己的某一个元素。枚举的关键字是enum，并且在各种语</description>
+    </item>
+    
+    <item>
+      <title>Apache Shiro - 基本使用和概念</title>
+      <link>https://ilixiang.github.io/post/shiro-1/</link>
+      <pubDate>Wed, 08 Jul 2020 15:49:38 +0800</pubDate>
+      
+      <guid>https://ilixiang.github.io/post/shiro-1/</guid>
+      <description>提到安全，我的第一反应其实是加密传输，所以在第一次遇到安全框架这个词的时候，我其实并不了解它所真正扮演的角色。 安全框架的主要功能包括4点： 用</description>
+    </item>
+    
+    <item>
+      <title>Java - 反射</title>
+      <link>https://ilixiang.github.io/post/java-reflection/</link>
+      <pubDate>Fri, 03 Jul 2020 13:29:04 +0800</pubDate>
+      
+      <guid>https://ilixiang.github.io/post/java-reflection/</guid>
+      <description>反射是Java的一大特点，能够在运行时获取类的全部信息，因此，在许多的框架中都有其应用。其中我们最熟悉的当属spring了，它的核心两大功能</description>
+    </item>
+    
+    <item>
+      <title>Guava杂谈 - ImmutableCollections</title>
+      <link>https://ilixiang.github.io/post/guava-talk-4/</link>
+      <pubDate>Fri, 03 Jul 2020 10:36:09 +0800</pubDate>
+      
+      <guid>https://ilixiang.github.io/post/guava-talk-4/</guid>
+      <description>Guava的ImmutableCollection意为不可变集合框架，它的存在弥补了JDK的UnmodifiableCollection的2</description>
+    </item>
+    
+    <item>
+      <title>Guava杂谈 - LoadingCache</title>
+      <link>https://ilixiang.github.io/post/guava-talk-3/</link>
+      <pubDate>Wed, 01 Jul 2020 14:26:00 +0800</pubDate>
+      
+      <guid>https://ilixiang.github.io/post/guava-talk-3/</guid>
+      <description>我与Cache这个词第一次相遇是在本科的《计算机组成原理》这门课上，这门课当时上起来那是满头问号。Cache是用于存储数据的一种组件，它存在</description>
+    </item>
+    
+    <item>
+      <title>Guava杂谈 - EventBus</title>
+      <link>https://ilixiang.github.io/post/guava-talk-2/</link>
+      <pubDate>Tue, 23 Jun 2020 13:28:12 +0800</pubDate>
+      
+      <guid>https://ilixiang.github.io/post/guava-talk-2/</guid>
+      <description>EventBus俗称“事件总线”。它的作用方式就如上图所示，能够将数据推送到所有需要它的人订阅者手上。它的行为总共分为4步： Subscrib</description>
+    </item>
+    
+    <item>
+      <title>Guava杂谈 - ComparisonChain</title>
+      <link>https://ilixiang.github.io/post/guava-talk-1/</link>
+      <pubDate>Sat, 13 Jun 2020 10:33:25 +0800</pubDate>
+      
+      <guid>https://ilixiang.github.io/post/guava-talk-1/</guid>
+      <description>单例、状态与链式 ComparisonChain这个类的作用是辅助我们去实现compareTo()方法的，使用方法极为简单 1 2 3 4 5 6 7 8 9 10</description>
+    </item>
+    
+  </channel>
+</rss>

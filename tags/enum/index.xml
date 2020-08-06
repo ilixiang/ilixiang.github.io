@@ -1,11 +1,11 @@
 <?xml version="1.0" encoding="utf-8" standalone="yes"?>
 <rss version="2.0" xmlns:atom="http://www.w3.org/2005/Atom">
   <channel>
-    <title>enum on 三斜求积术</title>
+    <title>enum on 三斜求积术 - Code fun. Code better</title>
     <link>https://ilixiang.github.io/tags/enum/</link>
-    <description>Recent content in enum on 三斜求积术</description>
+    <description>Recent content in enum on 三斜求积术 - Code fun. Code better</description>
     <generator>Hugo -- gohugo.io</generator>
-    <language>zh-CN</language>
+    <language>en</language>
     <lastBuildDate>Tue, 14 Jul 2020 16:45:06 +0800</lastBuildDate>
     
 	<atom:link href="https://ilixiang.github.io/tags/enum/index.xml" rel="self" type="application/rss+xml" />
@@ -17,7 +17,7 @@
       <pubDate>Tue, 14 Jul 2020 16:45:06 +0800</pubDate>
       
       <guid>https://ilixiang.github.io/post/java-enum/</guid>
-      <description>枚举，是Java中一中比较特殊的类型。我个人而言，它是一种有穷集合，因而它的成员都是它自己的某一个元素。枚举的关键字是enum，并且在各种语言中枚举的行为并不相同。在C中，枚举的元素对应一个整型数字，虽然其变量能够作为左值，但却并不安全，能够被任意的其他枚举元素以及整型赋值。 1 2</description>
+      <description>枚举，是Java中一中比较特殊的类型。我个人而言，它是一种有穷集合，因而它的成员都是它自己的某一个元素。枚举的关键字是enum，并且在各种语</description>
     </item>
     
   </channel>

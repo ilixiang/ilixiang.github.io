@@ -1,11 +1,11 @@
 <?xml version="1.0" encoding="utf-8" standalone="yes"?>
 <rss version="2.0" xmlns:atom="http://www.w3.org/2005/Atom">
   <channel>
-    <title>reflection on 三斜求积术</title>
+    <title>reflection on 三斜求积术 - Code fun. Code better</title>
     <link>https://ilixiang.github.io/tags/reflection/</link>
-    <description>Recent content in reflection on 三斜求积术</description>
+    <description>Recent content in reflection on 三斜求积术 - Code fun. Code better</description>
     <generator>Hugo -- gohugo.io</generator>
-    <language>zh-CN</language>
+    <language>en</language>
     <lastBuildDate>Fri, 03 Jul 2020 13:29:04 +0800</lastBuildDate>
     
 	<atom:link href="https://ilixiang.github.io/tags/reflection/index.xml" rel="self" type="application/rss+xml" />
@@ -17,7 +17,7 @@
       <pubDate>Fri, 03 Jul 2020 13:29:04 +0800</pubDate>
       
       <guid>https://ilixiang.github.io/post/java-reflection/</guid>
-      <description>反射是Java的一大特点，能够在运行时获取类的全部信息，因此，在许多的框架中都有其应用。其中我们最熟悉的当属spring了，它的核心两大功能ioc和aop都有使用反射机制，今天我们就来聊一聊反射机制。 简单使用 反射是通过获取Class对象，进而在运行时获取类的全部成员、方法、注解、</description>
+      <description>反射是Java的一大特点，能够在运行时获取类的全部信息，因此，在许多的框架中都有其应用。其中我们最熟悉的当属spring了，它的核心两大功能</description>
     </item>
     
   </channel>

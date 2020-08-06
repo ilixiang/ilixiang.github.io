@@ -1,11 +1,11 @@
 <?xml version="1.0" encoding="utf-8" standalone="yes"?>
 <rss version="2.0" xmlns:atom="http://www.w3.org/2005/Atom">
   <channel>
-    <title>sed on 三斜求积术</title>
+    <title>sed on 三斜求积术 - Code fun. Code better</title>
     <link>https://ilixiang.github.io/tags/sed/</link>
-    <description>Recent content in sed on 三斜求积术</description>
+    <description>Recent content in sed on 三斜求积术 - Code fun. Code better</description>
     <generator>Hugo -- gohugo.io</generator>
-    <language>zh-CN</language>
+    <language>en</language>
     <lastBuildDate>Wed, 10 Jun 2020 23:15:17 +0800</lastBuildDate>
     
 	<atom:link href="https://ilixiang.github.io/tags/sed/index.xml" rel="self" type="application/rss+xml" />
@@ -17,7 +17,7 @@
       <pubDate>Wed, 10 Jun 2020 23:15:17 +0800</pubDate>
       
       <guid>https://ilixiang.github.io/post/sed/</guid>
-      <description>sed的全程是Stream Editor，也就是流编辑器。 它的文本操纵单位是行，能够对文本中匹配到的信息进行替换、插入、追加等操作，在批量文本修改操作时十分强力。 从文本替换开始 文本替换是修改文本文件时十分常用的一个功能，Windows上默认的文本编辑器notepad上就有这样的功能</description>
+      <description>sed的全程是Stream Editor，也就是流编辑器。 它的文本操纵单位是行，能够对文本中匹配到的信息进行替换、插入、追加等操作，在批量文本</description>
     </item>
     
   </channel>

@@ -1,212 +1,137 @@
-<!doctype html>
-<html lang="zh-CN">
+<!DOCTYPE html>
+<html lang="zh-cn">
 <head>
+  <meta charset="utf-8">
+  <meta http-equiv="X-UA-Compatible" content="IE=edge,chrome=1">
+  <title>Guava杂谈 - EventBus - 三斜求积术 - Code fun. Code better</title>
+  <meta name="renderer" content="webkit" />
+<meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=1"/>
 
-    <meta charset="utf-8">
-    <meta http-equiv="X-UA-Compatible" content="IE=edge">
-    <meta name="viewport" content="width=device-width, initial-scale=1">
+<meta http-equiv="Cache-Control" content="no-transform" />
+<meta http-equiv="Cache-Control" content="no-siteapp" />
 
-    <title>Guava杂谈 - EventBus | 三斜求积术</title>
-    <meta property="og:title" content="Guava杂谈 - EventBus - 三斜求积术">
-    <meta property="og:type" content="article">
-        
-    <meta property="article:published_time" content='2020-06-23T13:28:12&#43;08:00'>
-        
-        
-    <meta property="article:modified_time" content='2020-06-23T13:28:12&#43;08:00'>
-        
-    <meta name="Keywords" content="Java、shell、web">
-    <meta name="description" content="Guava杂谈 - EventBus">
-        
-    <meta name="author" content="石不转">
-    <meta property="og:url" content="https://ilixiang.github.io/post/guava-talk-2/">
-    <link rel="shortcut icon" href="/favicon.ico" type="image/x-icon">
-
-    <link rel="stylesheet" href='/css/normalize.css'>
-    <link rel="stylesheet" href='/css/style.css'>
-    <script type="text/javascript" src="//cdnjs.cloudflare.com/ajax/libs/jquery/3.4.1/jquery.min.js"></script>
-
-    
-    <script async src="//pagead2.googlesyndication.com/pagead/js/adsbygoogle.js"></script>
-    <script>
-    (adsbygoogle = window.adsbygoogle || []).push({
-        google_ad_client: "ca-pub-4031353640611810",
-        enable_page_level_ads: true
-    });
-    </script>
-    
+<meta name="theme-color" content="#f8f5ec" />
+<meta name="msapplication-navbutton-color" content="#f8f5ec">
+<meta name="apple-mobile-web-app-capable" content="yes">
+<meta name="apple-mobile-web-app-status-bar-style" content="#f8f5ec">
 
 
-    
-    
-        <link rel="stylesheet" href='/css/douban.css'>
-    
-        <link rel="stylesheet" href='/css/other.css'>
-    
+<meta name="author" content="石不转" /><meta name="description" content="EventBus俗称“事件总线”。它的作用方式就如上图所示，能够将数据推送到所有需要它的人订阅者手上。它的行为总共分为4步： Subscrib" /><meta name="keywords" content="Hugo, theme, even" />
+
+
+
+
+
+
+<meta name="generator" content="Hugo 0.68.3 with theme even" />
+
+
+<link rel="canonical" href="https://ilixiang.github.io/post/guava-talk-2/" />
+<link rel="apple-touch-icon" sizes="180x180" href="/apple-touch-icon.png">
+<link rel="icon" type="image/png" sizes="32x32" href="/favicon-32x32.png">
+<link rel="icon" type="image/png" sizes="16x16" href="/favicon-16x16.png">
+<link rel="manifest" href="/manifest.json">
+<link rel="mask-icon" href="/safari-pinned-tab.svg" color="#5bbad5">
+
+
+
+<link href="/sass/main.min.651e6917abb0239242daa570c2bec9867267bbcd83646da5a850afe573347b44.css" rel="stylesheet">
+<link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/@fancyapps/fancybox@3.1.20/dist/jquery.fancybox.min.css" integrity="sha256-7TyXnr2YU040zfSP+rEcz29ggW4j56/ujTPwjMzyqFY=" crossorigin="anonymous">
+
+
+<meta property="og:title" content="Guava杂谈 - EventBus" />
+<meta property="og:description" content="EventBus俗称“事件总线”。它的作用方式就如上图所示，能够将数据推送到所有需要它的人订阅者手上。它的行为总共分为4步： Subscrib" />
+<meta property="og:type" content="article" />
+<meta property="og:url" content="https://ilixiang.github.io/post/guava-talk-2/" />
+<meta property="article:published_time" content="2020-06-23T13:28:12+08:00" />
+<meta property="article:modified_time" content="2020-06-23T13:28:12+08:00" />
+<meta itemprop="name" content="Guava杂谈 - EventBus">
+<meta itemprop="description" content="EventBus俗称“事件总线”。它的作用方式就如上图所示，能够将数据推送到所有需要它的人订阅者手上。它的行为总共分为4步： Subscrib">
+<meta itemprop="datePublished" content="2020-06-23T13:28:12&#43;08:00" />
+<meta itemprop="dateModified" content="2020-06-23T13:28:12&#43;08:00" />
+<meta itemprop="wordCount" content="5426">
+
+
+
+<meta itemprop="keywords" content="Java,Guava,EventBus," /><meta name="twitter:card" content="summary"/>
+<meta name="twitter:title" content="Guava杂谈 - EventBus"/>
+<meta name="twitter:description" content="EventBus俗称“事件总线”。它的作用方式就如上图所示，能够将数据推送到所有需要它的人订阅者手上。它的行为总共分为4步： Subscrib"/>
+
+<!--[if lte IE 9]>
+  <script src="https://cdnjs.cloudflare.com/ajax/libs/classlist/1.1.20170427/classList.min.js"></script>
+<![endif]-->
+
+<!--[if lt IE 9]>
+  <script src="https://cdn.jsdelivr.net/npm/html5shiv@3.7.3/dist/html5shiv.min.js"></script>
+  <script src="https://cdn.jsdelivr.net/npm/respond.js@1.4.2/dest/respond.min.js"></script>
+<![endif]-->
+
 </head>
-
-
 <body>
-    <header id="header" class="clearfix">
-    <div class="container">
-        <div class="col-group">
-            <div class="site-name ">
-                
-                    <a id="logo" href="https://ilixiang.github.io/">
-                        三斜求积术
-                    </a>
-                
-                <p class="description">Code for fun. Code for better</p>
-            </div>
-            <div>
-                <nav id="nav-menu" class="clearfix">
-                    <a class="current" href="https://ilixiang.github.io/">首页</a>
-                    
-                    <a  href="https://ilixiang.github.io/archives/" title="归档">归档</a>
-                    
-                    <a  href="https://ilixiang.github.io/about/" title="关于">关于</a>
-                    
-                </nav>
-            </div>
-        </div>
-    </div>
-</header>
-
-    <div id="body">
-        <div class="container">
-            <div class="col-group">
-
-                <div class="col-8" id="main">
-                    
-<div class="res-cons">
-    <style type="text/css">
-    .post-toc {
-        position: fixed;
-        width: 200px;
-        margin-left: -210px;
-        padding: 5px 10px;
-        font-family: Athelas, STHeiti, Microsoft Yahei, serif;
-        font-size: 12px;
-        border: 1px solid rgba(0, 0, 0, .07);
-        border-radius: 5px;
-        background-color: rgba(255, 255, 255, 0.98);
-        background-clip: padding-box;
-        -webkit-box-shadow: 1px 1px 2px rgba(0, 0, 0, .125);
-        box-shadow: 1px 1px 2px rgba(0, 0, 0, .125);
-        word-wrap: break-word;
-        white-space: nowrap;
-        -webkit-box-sizing: border-box;
-        box-sizing: border-box;
-        z-index: 999;
-        cursor: pointer;
-        max-height: 70%;
-        overflow-y: auto;
-        overflow-x: hidden;
-    }
-
-    .post-toc .post-toc-title {
-        width: 100%;
-        margin: 0 auto;
-        font-size: 20px;
-        font-weight: 400;
-        text-transform: uppercase;
-        text-align: center;
-    }
-
-    .post-toc .post-toc-content {
-        font-size: 15px;
-    }
-
-    .post-toc .post-toc-content>nav>ul {
-        margin: 10px 0;
-    }
-
-    .post-toc .post-toc-content ul {
-        padding-left: 20px;
-        list-style: square;
-        margin: 0.5em;
-        line-height: 1.8em;
-    }
-
-    .post-toc .post-toc-content ul ul {
-        padding-left: 15px;
-        display: none;
-    }
-
-    @media print,
-    screen and (max-width:1057px) {
-        .post-toc {
-            display: none;
-        }
-    }
-</style>
-<div class="post-toc" style="position: absolute; top: 188px;">
-    <h2 class="post-toc-title">文章目录</h2>
-    <div class="post-toc-content">
-        <nav id="TableOfContents">
-  <ul>
-    <li><a href="#从观察者模式开始-">从观察者模式开始</a></li>
-    <li><a href="#泛型和反射">泛型和反射</a></li>
-    <li><a href="#接口和注解-">接口和注解</a></li>
-    <li><a href="#继承关系与事件路由-">继承关系与事件路由</a></li>
-    <li><a href="#多线程和策略模式-">多线程和策略模式</a></li>
-    <li><a href="#反射和本地缓存-">反射和本地缓存</a></li>
-    <li><a href="#总结-">总结</a></li>
+  <div id="mobile-navbar" class="mobile-navbar">
+  <div class="mobile-header-logo">
+    <a href="/" class="logo">三斜求积术</a>
+  </div>
+  <div class="mobile-navbar-icon">
+    <span></span>
+    <span></span>
+    <span></span>
+  </div>
+</div>
+<nav id="mobile-menu" class="mobile-menu slideout-menu">
+  <ul class="mobile-menu-list">
+    <a href="/">
+        <li class="mobile-menu-item">主页</li>
+      </a><a href="/post/">
+        <li class="mobile-menu-item">归档</li>
+      </a><a href="/tags/">
+        <li class="mobile-menu-item">标签</li>
+      </a><a href="/categories/">
+        <li class="mobile-menu-item">分类</li>
+      </a>
   </ul>
 </nav>
-    </div>
+  <div class="container" id="mobile-panel">
+    <header id="header" class="header">
+        <div class="logo-wrapper">
+  <a href="/" class="logo">三斜求积术</a>
 </div>
-<script type="text/javascript">
-    $(document).ready(function () {
-        var postToc = $(".post-toc");
-        if (postToc.length) {
-            var leftPos = $("#main").offset().left;
-            if(leftPos<220){
-                postToc.css({"width":leftPos-10,"margin-left":(0-leftPos)})
-            }
 
-            var t = postToc.offset().top - 20,
-                a = {
-                    start: {
-                        position: "absolute",
-                        top: t
-                    },
-                    process: {
-                        position: "fixed",
-                        top: 20
-                    },
-                };
-            $(window).scroll(function () {
-                var e = $(window).scrollTop();
-                e < t ? postToc.css(a.start) : postToc.css(a.process)
-            })
-        }
-    })
-</script>
-    <article class="post">
-        <header>
-            <h1 class="post-title">Guava杂谈 - EventBus</h1>
-        </header>
-        <date class="post-meta meta-date">
-            2020年6月23日
-        </date>
+<nav class="site-navbar">
+  <ul id="menu" class="menu">
+    <li class="menu-item">
+        <a class="menu-item-link" href="/">主页</a>
+      </li><li class="menu-item">
+        <a class="menu-item-link" href="/post/">归档</a>
+      </li><li class="menu-item">
+        <a class="menu-item-link" href="/tags/">标签</a>
+      </li><li class="menu-item">
+        <a class="menu-item-link" href="/categories/">分类</a>
+      </li>
+  </ul>
+</nav>
+    </header>
+
+    <main id="main" class="main">
+      <div class="content-wrapper">
+        <div id="content" class="content">
+          <article class="post">
+    
+    <header class="post-header">
+      <h1 class="post-title">Guava杂谈 - EventBus</h1>
+
+      <div class="post-meta">
+        <span class="post-time"> 2020-06-23 </span>
+        <div class="post-category">
+            <a href="/categories/java/"> Java </a>
+            </div>
         
-        <div class="post-meta">
-            <span>|</span>
-            
-            <span class="meta-category"><a href='https://ilixiang.github.io/categories/Java'>Java</a></span>
-            
-        </div>
-        
-        
-        <div class="post-meta">
-            <span id="busuanzi_container_page_pv">|<span id="busuanzi_value_page_pv"></span><span>
-                    阅读</span></span>
-        </div>
-        
-        
-        <div class="post-content">
-            <p><img src="/img/guava-event-bus.png" alt="guava-event-bus"></p>
+      </div>
+    </header>
+
+    
+    <div class="post-content">
+      <p><img src="/img/guava-event-bus.png" alt="guava-event-bus"></p>
 <p><code>EventBus</code>俗称“事件总线”。它的作用方式就如上图所示，能够将数据推送到所有需要它的人订阅者手上。它的行为总共分为4步：</p>
 <ol>
 <li><code>Subscriber</code>向<code>EventBus</code>订阅某种<code>Event</code></li>
@@ -218,110 +143,110 @@
 <h2 id="从观察者模式开始-">从观察者模式开始</h2>
 <p>基于一个对象的动作而引起与之关联的所有对象都做出各自的反应，这个时候我们就会使用到<strong>观察者模式</strong>。</p>
 <p>如果我们将上述<code>EventBus</code>中的事件类型删掉，假定所有的事件就是同一类型，我们就能够很轻松的用观察者模式实现这一功能。</p>
-<div class="highlight"><div style="background-color:#fff;-moz-tab-size:4;-o-tab-size:4;tab-size:4">
-<table style="border-spacing:0;padding:0;margin:0;border:0;width:auto;overflow:auto;display:block;"><tr><td style="vertical-align:top;padding:0;margin:0;border:0;">
-<pre style="background-color:#fff;-moz-tab-size:4;-o-tab-size:4;tab-size:4"><code><span style="margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f"> 1
-</span><span style="margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f"> 2
-</span><span style="margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f"> 3
-</span><span style="margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f"> 4
-</span><span style="margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f"> 5
-</span><span style="margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f"> 6
-</span><span style="margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f"> 7
-</span><span style="margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f"> 8
-</span><span style="margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f"> 9
-</span><span style="margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f">10
-</span><span style="margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f">11
-</span><span style="margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f">12
-</span><span style="margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f">13
-</span><span style="margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f">14
-</span><span style="margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f">15
-</span><span style="margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f">16
-</span><span style="margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f">17
-</span><span style="margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f">18
-</span><span style="margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f">19
-</span><span style="margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f">20
-</span><span style="margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f">21
-</span><span style="margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f">22
-</span><span style="margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f">23
-</span><span style="margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f">24
-</span><span style="margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f">25
-</span><span style="margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f">26
-</span><span style="margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f">27
-</span><span style="margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f">28
-</span><span style="margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f">29
-</span><span style="margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f">30
-</span><span style="margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f">31
-</span><span style="margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f">32
-</span><span style="margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f">33
-</span><span style="margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f">34
-</span><span style="margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f">35
-</span><span style="margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f">36
-</span><span style="margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f">37
-</span><span style="margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f">38
-</span><span style="margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f">39
-</span><span style="margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f">40
-</span><span style="margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f">41
-</span><span style="margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f">42
-</span><span style="margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f">43
-</span><span style="margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f">44
-</span><span style="margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f">45
-</span><span style="margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f">46
-</span><span style="margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f">47
-</span><span style="margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f">48
-</span><span style="margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f">49
-</span><span style="margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f">50
+<div class="highlight"><div class="chroma">
+<table class="lntable"><tr><td class="lntd">
+<pre class="chroma"><code><span class="lnt"> 1
+</span><span class="lnt"> 2
+</span><span class="lnt"> 3
+</span><span class="lnt"> 4
+</span><span class="lnt"> 5
+</span><span class="lnt"> 6
+</span><span class="lnt"> 7
+</span><span class="lnt"> 8
+</span><span class="lnt"> 9
+</span><span class="lnt">10
+</span><span class="lnt">11
+</span><span class="lnt">12
+</span><span class="lnt">13
+</span><span class="lnt">14
+</span><span class="lnt">15
+</span><span class="lnt">16
+</span><span class="lnt">17
+</span><span class="lnt">18
+</span><span class="lnt">19
+</span><span class="lnt">20
+</span><span class="lnt">21
+</span><span class="lnt">22
+</span><span class="lnt">23
+</span><span class="lnt">24
+</span><span class="lnt">25
+</span><span class="lnt">26
+</span><span class="lnt">27
+</span><span class="lnt">28
+</span><span class="lnt">29
+</span><span class="lnt">30
+</span><span class="lnt">31
+</span><span class="lnt">32
+</span><span class="lnt">33
+</span><span class="lnt">34
+</span><span class="lnt">35
+</span><span class="lnt">36
+</span><span class="lnt">37
+</span><span class="lnt">38
+</span><span class="lnt">39
+</span><span class="lnt">40
+</span><span class="lnt">41
+</span><span class="lnt">42
+</span><span class="lnt">43
+</span><span class="lnt">44
+</span><span class="lnt">45
+</span><span class="lnt">46
+</span><span class="lnt">47
+</span><span class="lnt">48
+</span><span class="lnt">49
+</span><span class="lnt">50
 </span></code></pre></td>
-<td style="vertical-align:top;padding:0;margin:0;border:0;;width:100%">
-<pre style="background-color:#fff;-moz-tab-size:4;-o-tab-size:4;tab-size:4"><code class="language-java" data-lang="java"><span style="color:#998;font-style:italic">// CustomEventBus.java
-</span><span style="color:#998;font-style:italic"></span><span style="color:#000;font-weight:bold">public</span> <span style="color:#000;font-weight:bold">class</span> <span style="color:#458;font-weight:bold">CustomEventBus</span> <span style="color:#000;font-weight:bold">{</span>
-    <span style="color:#000;font-weight:bold">private</span> List<span style="color:#000;font-weight:bold">&lt;</span>Subscriber<span style="color:#000;font-weight:bold">&gt;</span> subscriberList<span style="color:#000;font-weight:bold">;</span>
+<td class="lntd">
+<pre class="chroma"><code class="language-java" data-lang="java"><span class="c1">// CustomEventBus.java
+</span><span class="c1"></span><span class="kd">public</span> <span class="kd">class</span> <span class="nc">CustomEventBus</span> <span class="o">{</span>
+    <span class="kd">private</span> <span class="n">List</span><span class="o">&lt;</span><span class="n">Subscriber</span><span class="o">&gt;</span> <span class="n">subscriberList</span><span class="o">;</span>
 
-    <span style="color:#000;font-weight:bold">public</span> <span style="color:#458;font-weight:bold">void</span> <span style="color:#900;font-weight:bold">subscribe</span><span style="color:#000;font-weight:bold">(</span>Subscriber subscriber<span style="color:#000;font-weight:bold">)</span> <span style="color:#000;font-weight:bold">{</span>
-        <span style="color:#000;font-weight:bold">if</span><span style="color:#000;font-weight:bold">(</span>Objects<span style="color:#000;font-weight:bold">.</span><span style="color:#008080">isNull</span><span style="color:#000;font-weight:bold">(</span>subscriberList<span style="color:#000;font-weight:bold">))</span> <span style="color:#000;font-weight:bold">{</span>
-            subscriberList <span style="color:#000;font-weight:bold">=</span> Lists<span style="color:#000;font-weight:bold">.</span><span style="color:#008080">newArrayList</span><span style="color:#000;font-weight:bold">();</span>
-        <span style="color:#000;font-weight:bold">}</span>
-        subscriberList<span style="color:#000;font-weight:bold">.</span><span style="color:#008080">add</span><span style="color:#000;font-weight:bold">(</span>subscriber<span style="color:#000;font-weight:bold">);</span>
-    <span style="color:#000;font-weight:bold">}</span>
+    <span class="kd">public</span> <span class="kt">void</span> <span class="nf">subscribe</span><span class="o">(</span><span class="n">Subscriber</span> <span class="n">subscriber</span><span class="o">)</span> <span class="o">{</span>
+        <span class="k">if</span><span class="o">(</span><span class="n">Objects</span><span class="o">.</span><span class="na">isNull</span><span class="o">(</span><span class="n">subscriberList</span><span class="o">))</span> <span class="o">{</span>
+            <span class="n">subscriberList</span> <span class="o">=</span> <span class="n">Lists</span><span class="o">.</span><span class="na">newArrayList</span><span class="o">();</span>
+        <span class="o">}</span>
+        <span class="n">subscriberList</span><span class="o">.</span><span class="na">add</span><span class="o">(</span><span class="n">subscriber</span><span class="o">);</span>
+    <span class="o">}</span>
 
-    <span style="color:#000;font-weight:bold">public</span> <span style="color:#458;font-weight:bold">void</span> <span style="color:#900;font-weight:bold">post</span><span style="color:#000;font-weight:bold">()</span> <span style="color:#000;font-weight:bold">{</span>
-        <span style="color:#000;font-weight:bold">if</span><span style="color:#000;font-weight:bold">(</span>Objects<span style="color:#000;font-weight:bold">.</span><span style="color:#008080">isNull</span><span style="color:#000;font-weight:bold">(</span>subscriberList<span style="color:#000;font-weight:bold">))</span> <span style="color:#000;font-weight:bold">return</span><span style="color:#000;font-weight:bold">;</span>
-        subscriberList<span style="color:#000;font-weight:bold">.</span><span style="color:#008080">forEach</span><span style="color:#000;font-weight:bold">(</span>Subscriber<span style="color:#000;font-weight:bold">::</span>update<span style="color:#000;font-weight:bold">);</span>
-    <span style="color:#000;font-weight:bold">}</span>
+    <span class="kd">public</span> <span class="kt">void</span> <span class="nf">post</span><span class="o">()</span> <span class="o">{</span>
+        <span class="k">if</span><span class="o">(</span><span class="n">Objects</span><span class="o">.</span><span class="na">isNull</span><span class="o">(</span><span class="n">subscriberList</span><span class="o">))</span> <span class="k">return</span><span class="o">;</span>
+        <span class="n">subscriberList</span><span class="o">.</span><span class="na">forEach</span><span class="o">(</span><span class="n">Subscriber</span><span class="o">::</span><span class="n">update</span><span class="o">);</span>
+    <span class="o">}</span>
 
-<span style="color:#000;font-weight:bold">}</span>
-<span style="color:#998;font-style:italic">// Subscriber.java
-</span><span style="color:#998;font-style:italic"></span><span style="color:#000;font-weight:bold">public</span> <span style="color:#000;font-weight:bold">interface</span> <span style="color:#458;font-weight:bold">Subscriber</span> <span style="color:#000;font-weight:bold">{</span>
-    <span style="color:#000;font-weight:bold">public</span> <span style="color:#458;font-weight:bold">void</span> <span style="color:#900;font-weight:bold">update</span><span style="color:#000;font-weight:bold">();</span>
-<span style="color:#000;font-weight:bold">}</span>
-<span style="color:#998;font-style:italic">// SubscriberA.java
-</span><span style="color:#998;font-style:italic"></span><span style="color:#000;font-weight:bold">public</span> <span style="color:#000;font-weight:bold">class</span> <span style="color:#458;font-weight:bold">SubscriberA</span> <span style="color:#000;font-weight:bold">implements</span> Subscriber <span style="color:#000;font-weight:bold">{</span>
-    <span style="color:#3c5d5d;font-weight:bold">@Override</span>
-    <span style="color:#000;font-weight:bold">public</span> <span style="color:#458;font-weight:bold">void</span> <span style="color:#900;font-weight:bold">update</span><span style="color:#000;font-weight:bold">()</span> <span style="color:#000;font-weight:bold">{</span>
-        System<span style="color:#000;font-weight:bold">.</span><span style="color:#008080">out</span><span style="color:#000;font-weight:bold">.</span><span style="color:#008080">println</span><span style="color:#000;font-weight:bold">(</span><span style="color:#d14">&#34;This is subscriber a&#34;</span><span style="color:#000;font-weight:bold">);</span>
-    <span style="color:#000;font-weight:bold">}</span>
-<span style="color:#000;font-weight:bold">}</span>
-<span style="color:#998;font-style:italic">// SubscriberB.java
-</span><span style="color:#998;font-style:italic"></span><span style="color:#000;font-weight:bold">public</span> <span style="color:#000;font-weight:bold">class</span> <span style="color:#458;font-weight:bold">SubscriberB</span> <span style="color:#000;font-weight:bold">implements</span> Subscriber <span style="color:#000;font-weight:bold">{</span>
-    <span style="color:#3c5d5d;font-weight:bold">@Override</span>
-    <span style="color:#000;font-weight:bold">public</span> <span style="color:#458;font-weight:bold">void</span> <span style="color:#900;font-weight:bold">update</span><span style="color:#000;font-weight:bold">()</span> <span style="color:#000;font-weight:bold">{</span>
-        System<span style="color:#000;font-weight:bold">.</span><span style="color:#008080">out</span><span style="color:#000;font-weight:bold">.</span><span style="color:#008080">println</span><span style="color:#000;font-weight:bold">(</span><span style="color:#d14">&#34;This is subscriber b&#34;</span><span style="color:#000;font-weight:bold">);</span>
-    <span style="color:#000;font-weight:bold">}</span>
-<span style="color:#000;font-weight:bold">}</span>
-<span style="color:#998;font-style:italic">// CustomEventBusTest.java
-</span><span style="color:#998;font-style:italic"></span><span style="color:#000;font-weight:bold">public</span> <span style="color:#000;font-weight:bold">class</span> <span style="color:#458;font-weight:bold">CustomEventBusTest</span> <span style="color:#000;font-weight:bold">{</span>
-    <span style="color:#3c5d5d;font-weight:bold">@Test</span>
-    <span style="color:#000;font-weight:bold">public</span> <span style="color:#458;font-weight:bold">void</span> <span style="color:#900;font-weight:bold">postTest</span><span style="color:#000;font-weight:bold">()</span> <span style="color:#000;font-weight:bold">{</span>
-        CustomEventBus eventBus <span style="color:#000;font-weight:bold">=</span> <span style="color:#000;font-weight:bold">new</span> CustomEventBus<span style="color:#000;font-weight:bold">();</span>
-        Subscriber a <span style="color:#000;font-weight:bold">=</span> <span style="color:#000;font-weight:bold">new</span> SubscriberA<span style="color:#000;font-weight:bold">();</span>
-        Subscriber b <span style="color:#000;font-weight:bold">=</span> <span style="color:#000;font-weight:bold">new</span> SubscriberB<span style="color:#000;font-weight:bold">();</span>
-        eventBus<span style="color:#000;font-weight:bold">.</span><span style="color:#008080">subscribe</span><span style="color:#000;font-weight:bold">(</span>a<span style="color:#000;font-weight:bold">);</span>
-        eventBus<span style="color:#000;font-weight:bold">.</span><span style="color:#008080">subscribe</span><span style="color:#000;font-weight:bold">(</span>b<span style="color:#000;font-weight:bold">);</span>
-        eventBus<span style="color:#000;font-weight:bold">.</span><span style="color:#008080">post</span><span style="color:#000;font-weight:bold">();</span>
-    <span style="color:#000;font-weight:bold">}</span>
-<span style="color:#000;font-weight:bold">}</span>
-<span style="color:#998;font-style:italic">// 输出结果
-</span><span style="color:#998;font-style:italic"></span>This is subscriber a
-This is subscriber b
+<span class="o">}</span>
+<span class="c1">// Subscriber.java
+</span><span class="c1"></span><span class="kd">public</span> <span class="kd">interface</span> <span class="nc">Subscriber</span> <span class="o">{</span>
+    <span class="kd">public</span> <span class="kt">void</span> <span class="nf">update</span><span class="o">();</span>
+<span class="o">}</span>
+<span class="c1">// SubscriberA.java
+</span><span class="c1"></span><span class="kd">public</span> <span class="kd">class</span> <span class="nc">SubscriberA</span> <span class="kd">implements</span> <span class="n">Subscriber</span> <span class="o">{</span>
+    <span class="nd">@Override</span>
+    <span class="kd">public</span> <span class="kt">void</span> <span class="nf">update</span><span class="o">()</span> <span class="o">{</span>
+        <span class="n">System</span><span class="o">.</span><span class="na">out</span><span class="o">.</span><span class="na">println</span><span class="o">(</span><span class="s">&#34;This is subscriber a&#34;</span><span class="o">);</span>
+    <span class="o">}</span>
+<span class="o">}</span>
+<span class="c1">// SubscriberB.java
+</span><span class="c1"></span><span class="kd">public</span> <span class="kd">class</span> <span class="nc">SubscriberB</span> <span class="kd">implements</span> <span class="n">Subscriber</span> <span class="o">{</span>
+    <span class="nd">@Override</span>
+    <span class="kd">public</span> <span class="kt">void</span> <span class="nf">update</span><span class="o">()</span> <span class="o">{</span>
+        <span class="n">System</span><span class="o">.</span><span class="na">out</span><span class="o">.</span><span class="na">println</span><span class="o">(</span><span class="s">&#34;This is subscriber b&#34;</span><span class="o">);</span>
+    <span class="o">}</span>
+<span class="o">}</span>
+<span class="c1">// CustomEventBusTest.java
+</span><span class="c1"></span><span class="kd">public</span> <span class="kd">class</span> <span class="nc">CustomEventBusTest</span> <span class="o">{</span>
+    <span class="nd">@Test</span>
+    <span class="kd">public</span> <span class="kt">void</span> <span class="nf">postTest</span><span class="o">()</span> <span class="o">{</span>
+        <span class="n">CustomEventBus</span> <span class="n">eventBus</span> <span class="o">=</span> <span class="k">new</span> <span class="n">CustomEventBus</span><span class="o">();</span>
+        <span class="n">Subscriber</span> <span class="n">a</span> <span class="o">=</span> <span class="k">new</span> <span class="n">SubscriberA</span><span class="o">();</span>
+        <span class="n">Subscriber</span> <span class="n">b</span> <span class="o">=</span> <span class="k">new</span> <span class="n">SubscriberB</span><span class="o">();</span>
+        <span class="n">eventBus</span><span class="o">.</span><span class="na">subscribe</span><span class="o">(</span><span class="n">a</span><span class="o">);</span>
+        <span class="n">eventBus</span><span class="o">.</span><span class="na">subscribe</span><span class="o">(</span><span class="n">b</span><span class="o">);</span>
+        <span class="n">eventBus</span><span class="o">.</span><span class="na">post</span><span class="o">();</span>
+    <span class="o">}</span>
+<span class="o">}</span>
+<span class="c1">// 输出结果
+</span><span class="c1"></span><span class="n">This</span> <span class="n">is</span> <span class="n">subscriber</span> <span class="n">a</span>
+<span class="n">This</span> <span class="n">is</span> <span class="n">subscriber</span> <span class="n">b</span>
 </code></pre></td></tr></table>
 </div>
 </div><p>以上的实现十分的简单，但从功能上而言没有事件类型的支持而显得没有那么实用，因此，接下来我们尝试让上述代码支持不同的事件类型。</p>
@@ -333,18 +258,18 @@ This is subscriber b
 </ol>
 <p>但从实际职责划分来看，筛选<code>Event</code>这件事情不应该在“处理事件”逻辑里，而应该在“分发事件”里。并且，如果<code>Subscriber</code>接收所有类型的事件，毫无疑问会导致整体的处理能力下降。因此，只能选择方法2。</p>
 <p>那么，如何让<code>Subscriber</code>在订阅的时候告知<code>EventBus</code>它所需要的类型并且在<code>Subscriber</code>的<code>update()</code>方法中也要传递不同类型的<code>Event</code>呢？答案就是使用泛型。</p>
-<div class="highlight"><div style="background-color:#fff;-moz-tab-size:4;-o-tab-size:4;tab-size:4">
-<table style="border-spacing:0;padding:0;margin:0;border:0;width:auto;overflow:auto;display:block;"><tr><td style="vertical-align:top;padding:0;margin:0;border:0;">
-<pre style="background-color:#fff;-moz-tab-size:4;-o-tab-size:4;tab-size:4"><code><span style="margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f">1
-</span><span style="margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f">2
-</span><span style="margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f">3
-</span><span style="margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f">4
+<div class="highlight"><div class="chroma">
+<table class="lntable"><tr><td class="lntd">
+<pre class="chroma"><code><span class="lnt">1
+</span><span class="lnt">2
+</span><span class="lnt">3
+</span><span class="lnt">4
 </span></code></pre></td>
-<td style="vertical-align:top;padding:0;margin:0;border:0;;width:100%">
-<pre style="background-color:#fff;-moz-tab-size:4;-o-tab-size:4;tab-size:4"><code class="language-java" data-lang="java"><span style="color:#998;font-style:italic">// Subscriber.java
-</span><span style="color:#998;font-style:italic"></span><span style="color:#000;font-weight:bold">public</span> <span style="color:#000;font-weight:bold">interface</span> <span style="color:#458;font-weight:bold">Subscriber</span><span style="color:#000;font-weight:bold">&lt;</span>T<span style="color:#000;font-weight:bold">&gt;</span> <span style="color:#000;font-weight:bold">{</span>
-    <span style="color:#000;font-weight:bold">public</span> <span style="color:#458;font-weight:bold">void</span> <span style="color:#900;font-weight:bold">update</span><span style="color:#000;font-weight:bold">(</span>T event<span style="color:#000;font-weight:bold">);</span>
-<span style="color:#000;font-weight:bold">}</span>
+<td class="lntd">
+<pre class="chroma"><code class="language-java" data-lang="java"><span class="c1">// Subscriber.java
+</span><span class="c1"></span><span class="kd">public</span> <span class="kd">interface</span> <span class="nc">Subscriber</span><span class="o">&lt;</span><span class="n">T</span><span class="o">&gt;</span> <span class="o">{</span>
+    <span class="kd">public</span> <span class="kt">void</span> <span class="nf">update</span><span class="o">(</span><span class="n">T</span> <span class="n">event</span><span class="o">);</span>
+<span class="o">}</span>
 </code></pre></td></tr></table>
 </div>
 </div><p>而在接口使用泛型的前提下，<code>EventBus</code>需要做到三点：</p>
@@ -353,78 +278,78 @@ This is subscriber b
 <li>关联<code>Event</code>类型和<code>Subscriber</code>实例</li>
 <li><code>post()</code>方法使用的参数必须能够传递给<code>Subscriber.update()</code>方法</li>
 </ol>
-<div class="highlight"><div style="background-color:#fff;-moz-tab-size:4;-o-tab-size:4;tab-size:4">
-<table style="border-spacing:0;padding:0;margin:0;border:0;width:auto;overflow:auto;display:block;"><tr><td style="vertical-align:top;padding:0;margin:0;border:0;">
-<pre style="background-color:#fff;-moz-tab-size:4;-o-tab-size:4;tab-size:4"><code><span style="margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f"> 1
-</span><span style="margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f"> 2
-</span><span style="margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f"> 3
-</span><span style="margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f"> 4
-</span><span style="margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f"> 5
-</span><span style="margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f"> 6
-</span><span style="margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f"> 7
-</span><span style="margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f"> 8
-</span><span style="margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f"> 9
-</span><span style="margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f">10
-</span><span style="margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f">11
-</span><span style="margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f">12
-</span><span style="margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f">13
-</span><span style="margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f">14
-</span><span style="margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f">15
-</span><span style="margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f">16
-</span><span style="margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f">17
-</span><span style="margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f">18
-</span><span style="margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f">19
-</span><span style="margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f">20
-</span><span style="margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f">21
-</span><span style="margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f">22
-</span><span style="margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f">23
-</span><span style="margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f">24
-</span><span style="margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f">25
-</span><span style="margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f">26
-</span><span style="margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f">27
-</span><span style="margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f">28
-</span><span style="margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f">29
-</span><span style="margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f">30
-</span><span style="margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f">31
-</span><span style="margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f">32
-</span><span style="margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f">33
-</span><span style="margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f">34
+<div class="highlight"><div class="chroma">
+<table class="lntable"><tr><td class="lntd">
+<pre class="chroma"><code><span class="lnt"> 1
+</span><span class="lnt"> 2
+</span><span class="lnt"> 3
+</span><span class="lnt"> 4
+</span><span class="lnt"> 5
+</span><span class="lnt"> 6
+</span><span class="lnt"> 7
+</span><span class="lnt"> 8
+</span><span class="lnt"> 9
+</span><span class="lnt">10
+</span><span class="lnt">11
+</span><span class="lnt">12
+</span><span class="lnt">13
+</span><span class="lnt">14
+</span><span class="lnt">15
+</span><span class="lnt">16
+</span><span class="lnt">17
+</span><span class="lnt">18
+</span><span class="lnt">19
+</span><span class="lnt">20
+</span><span class="lnt">21
+</span><span class="lnt">22
+</span><span class="lnt">23
+</span><span class="lnt">24
+</span><span class="lnt">25
+</span><span class="lnt">26
+</span><span class="lnt">27
+</span><span class="lnt">28
+</span><span class="lnt">29
+</span><span class="lnt">30
+</span><span class="lnt">31
+</span><span class="lnt">32
+</span><span class="lnt">33
+</span><span class="lnt">34
 </span></code></pre></td>
-<td style="vertical-align:top;padding:0;margin:0;border:0;;width:100%">
-<pre style="background-color:#fff;-moz-tab-size:4;-o-tab-size:4;tab-size:4"><code class="language-java" data-lang="java"><span style="color:#000;font-weight:bold">public</span> <span style="color:#000;font-weight:bold">class</span> <span style="color:#458;font-weight:bold">CustomEventBus</span> <span style="color:#000;font-weight:bold">{</span>
-    <span style="color:#998;font-style:italic">// 通过Map管理类和相应Subscriber
-</span><span style="color:#998;font-style:italic"></span>    <span style="color:#000;font-weight:bold">private</span> Map<span style="color:#000;font-weight:bold">&lt;</span>Class<span style="color:#000;font-weight:bold">&lt;?&gt;,</span> Set<span style="color:#000;font-weight:bold">&lt;</span>Subscriber<span style="color:#000;font-weight:bold">&lt;?&gt;&gt;&gt;</span> subscriberMap<span style="color:#000;font-weight:bold">;</span>
+<td class="lntd">
+<pre class="chroma"><code class="language-java" data-lang="java"><span class="kd">public</span> <span class="kd">class</span> <span class="nc">CustomEventBus</span> <span class="o">{</span>
+    <span class="c1">// 通过Map管理类和相应Subscriber
+</span><span class="c1"></span>    <span class="kd">private</span> <span class="n">Map</span><span class="o">&lt;</span><span class="n">Class</span><span class="o">&lt;?&gt;,</span> <span class="n">Set</span><span class="o">&lt;</span><span class="n">Subscriber</span><span class="o">&lt;?&gt;&gt;&gt;</span> <span class="n">subscriberMap</span><span class="o">;</span>
 
-    <span style="color:#000;font-weight:bold">public</span> <span style="color:#458;font-weight:bold">void</span> <span style="color:#900;font-weight:bold">subscribe</span><span style="color:#000;font-weight:bold">(</span>Subscriber<span style="color:#000;font-weight:bold">&lt;?&gt;</span> subscriber<span style="color:#000;font-weight:bold">)</span> <span style="color:#000;font-weight:bold">{</span>
-        <span style="color:#000;font-weight:bold">if</span><span style="color:#000;font-weight:bold">(</span>Objects<span style="color:#000;font-weight:bold">.</span><span style="color:#008080">isNull</span><span style="color:#000;font-weight:bold">(</span>subscriber<span style="color:#000;font-weight:bold">))</span> <span style="color:#000;font-weight:bold">return</span><span style="color:#000;font-weight:bold">;</span>
-        <span style="color:#000;font-weight:bold">if</span><span style="color:#000;font-weight:bold">(</span>Objects<span style="color:#000;font-weight:bold">.</span><span style="color:#008080">isNull</span><span style="color:#000;font-weight:bold">(</span>subscriberMap<span style="color:#000;font-weight:bold">))</span> <span style="color:#000;font-weight:bold">{</span>
-            subscriberMap <span style="color:#000;font-weight:bold">=</span> Maps<span style="color:#000;font-weight:bold">.</span><span style="color:#008080">newHashMap</span><span style="color:#000;font-weight:bold">();</span>
-        <span style="color:#000;font-weight:bold">}</span>
-        <span style="color:#998;font-style:italic">// 获取接口所使用的泛型
-</span><span style="color:#998;font-style:italic"></span>        ParameterizedType parameterizedType <span style="color:#000;font-weight:bold">=</span> <span style="color:#000;font-weight:bold">(</span>ParameterizedType<span style="color:#000;font-weight:bold">)</span>subscriber<span style="color:#000;font-weight:bold">.</span><span style="color:#008080">getClass</span><span style="color:#000;font-weight:bold">().</span><span style="color:#008080">getGenericInterfaces</span><span style="color:#000;font-weight:bold">()[</span>0<span style="color:#000;font-weight:bold">];</span>
-        Class<span style="color:#000;font-weight:bold">&lt;?&gt;</span> eventClazz <span style="color:#000;font-weight:bold">=</span> <span style="color:#000;font-weight:bold">(</span>Class<span style="color:#000;font-weight:bold">&lt;?&gt;)</span>parameterizedType<span style="color:#000;font-weight:bold">.</span><span style="color:#008080">getActualTypeArguments</span><span style="color:#000;font-weight:bold">()[</span>0<span style="color:#000;font-weight:bold">];</span>
+    <span class="kd">public</span> <span class="kt">void</span> <span class="nf">subscribe</span><span class="o">(</span><span class="n">Subscriber</span><span class="o">&lt;?&gt;</span> <span class="n">subscriber</span><span class="o">)</span> <span class="o">{</span>
+        <span class="k">if</span><span class="o">(</span><span class="n">Objects</span><span class="o">.</span><span class="na">isNull</span><span class="o">(</span><span class="n">subscriber</span><span class="o">))</span> <span class="k">return</span><span class="o">;</span>
+        <span class="k">if</span><span class="o">(</span><span class="n">Objects</span><span class="o">.</span><span class="na">isNull</span><span class="o">(</span><span class="n">subscriberMap</span><span class="o">))</span> <span class="o">{</span>
+            <span class="n">subscriberMap</span> <span class="o">=</span> <span class="n">Maps</span><span class="o">.</span><span class="na">newHashMap</span><span class="o">();</span>
+        <span class="o">}</span>
+        <span class="c1">// 获取接口所使用的泛型
+</span><span class="c1"></span>        <span class="n">ParameterizedType</span> <span class="n">parameterizedType</span> <span class="o">=</span> <span class="o">(</span><span class="n">ParameterizedType</span><span class="o">)</span><span class="n">subscriber</span><span class="o">.</span><span class="na">getClass</span><span class="o">().</span><span class="na">getGenericInterfaces</span><span class="o">()[</span><span class="n">0</span><span class="o">];</span>
+        <span class="n">Class</span><span class="o">&lt;?&gt;</span> <span class="n">eventClazz</span> <span class="o">=</span> <span class="o">(</span><span class="n">Class</span><span class="o">&lt;?&gt;)</span><span class="n">parameterizedType</span><span class="o">.</span><span class="na">getActualTypeArguments</span><span class="o">()[</span><span class="n">0</span><span class="o">];</span>
 
-        subscriberMap<span style="color:#000;font-weight:bold">.</span><span style="color:#008080">putIfAbsent</span><span style="color:#000;font-weight:bold">(</span>eventClazz<span style="color:#000;font-weight:bold">,</span> Sets<span style="color:#000;font-weight:bold">.</span><span style="color:#008080">newHashSet</span><span style="color:#000;font-weight:bold">());</span>
-        subscriberMap<span style="color:#000;font-weight:bold">.</span><span style="color:#008080">get</span><span style="color:#000;font-weight:bold">(</span>eventClazz<span style="color:#000;font-weight:bold">).</span><span style="color:#008080">add</span><span style="color:#000;font-weight:bold">(</span>subscriber<span style="color:#000;font-weight:bold">);</span>
-    <span style="color:#000;font-weight:bold">}</span>
+        <span class="n">subscriberMap</span><span class="o">.</span><span class="na">putIfAbsent</span><span class="o">(</span><span class="n">eventClazz</span><span class="o">,</span> <span class="n">Sets</span><span class="o">.</span><span class="na">newHashSet</span><span class="o">());</span>
+        <span class="n">subscriberMap</span><span class="o">.</span><span class="na">get</span><span class="o">(</span><span class="n">eventClazz</span><span class="o">).</span><span class="na">add</span><span class="o">(</span><span class="n">subscriber</span><span class="o">);</span>
+    <span class="o">}</span>
 
-    <span style="color:#000;font-weight:bold">public</span> <span style="color:#458;font-weight:bold">void</span> <span style="color:#900;font-weight:bold">post</span><span style="color:#000;font-weight:bold">(</span>Object event<span style="color:#000;font-weight:bold">)</span> <span style="color:#000;font-weight:bold">{</span>
-        <span style="color:#000;font-weight:bold">if</span><span style="color:#000;font-weight:bold">(</span>Objects<span style="color:#000;font-weight:bold">.</span><span style="color:#008080">isNull</span><span style="color:#000;font-weight:bold">(</span>subscriberMap<span style="color:#000;font-weight:bold">)</span>
-                <span style="color:#000;font-weight:bold">||</span> Objects<span style="color:#000;font-weight:bold">.</span><span style="color:#008080">isNull</span><span style="color:#000;font-weight:bold">(</span>event<span style="color:#000;font-weight:bold">)</span>
-                <span style="color:#000;font-weight:bold">||</span> Objects<span style="color:#000;font-weight:bold">.</span><span style="color:#008080">isNull</span><span style="color:#000;font-weight:bold">(</span>subscriberMap<span style="color:#000;font-weight:bold">.</span><span style="color:#008080">get</span><span style="color:#000;font-weight:bold">(</span>event<span style="color:#000;font-weight:bold">.</span><span style="color:#008080">getClass</span><span style="color:#000;font-weight:bold">())))</span>
-            <span style="color:#000;font-weight:bold">return</span><span style="color:#000;font-weight:bold">;</span>
-        Set<span style="color:#000;font-weight:bold">&lt;</span>Subscriber<span style="color:#000;font-weight:bold">&lt;?&gt;&gt;</span> subscriberSet <span style="color:#000;font-weight:bold">=</span> subscriberMap<span style="color:#000;font-weight:bold">.</span><span style="color:#008080">get</span><span style="color:#000;font-weight:bold">(</span>event<span style="color:#000;font-weight:bold">.</span><span style="color:#008080">getClass</span><span style="color:#000;font-weight:bold">());</span>
-        <span style="color:#000;font-weight:bold">for</span><span style="color:#000;font-weight:bold">(</span>Subscriber<span style="color:#000;font-weight:bold">&lt;?&gt;</span> subscriber <span style="color:#000;font-weight:bold">:</span> subscriberSet<span style="color:#000;font-weight:bold">)</span> <span style="color:#000;font-weight:bold">{</span>
-            <span style="color:#000;font-weight:bold">try</span> <span style="color:#000;font-weight:bold">{</span>
-                <span style="color:#998;font-style:italic">// 使用反射调用update方法
-</span><span style="color:#998;font-style:italic"></span>                Method updateMethod <span style="color:#000;font-weight:bold">=</span> subscriber<span style="color:#000;font-weight:bold">.</span><span style="color:#008080">getClass</span><span style="color:#000;font-weight:bold">().</span><span style="color:#008080">getMethod</span><span style="color:#000;font-weight:bold">(</span><span style="color:#d14">&#34;update&#34;</span><span style="color:#000;font-weight:bold">,</span> event<span style="color:#000;font-weight:bold">.</span><span style="color:#008080">getClass</span><span style="color:#000;font-weight:bold">());</span>
-                updateMethod<span style="color:#000;font-weight:bold">.</span><span style="color:#008080">invoke</span><span style="color:#000;font-weight:bold">(</span>subscriber<span style="color:#000;font-weight:bold">,</span> event<span style="color:#000;font-weight:bold">);</span>
-            <span style="color:#000;font-weight:bold">}</span> <span style="color:#000;font-weight:bold">catch</span> <span style="color:#000;font-weight:bold">(</span>Exception e<span style="color:#000;font-weight:bold">)</span> <span style="color:#000;font-weight:bold">{</span>
-                e<span style="color:#000;font-weight:bold">.</span><span style="color:#008080">printStackTrace</span><span style="color:#000;font-weight:bold">();</span>
-            <span style="color:#000;font-weight:bold">}</span>
-        <span style="color:#000;font-weight:bold">}</span>
-    <span style="color:#000;font-weight:bold">}</span>
-<span style="color:#000;font-weight:bold">}</span>
+    <span class="kd">public</span> <span class="kt">void</span> <span class="nf">post</span><span class="o">(</span><span class="n">Object</span> <span class="n">event</span><span class="o">)</span> <span class="o">{</span>
+        <span class="k">if</span><span class="o">(</span><span class="n">Objects</span><span class="o">.</span><span class="na">isNull</span><span class="o">(</span><span class="n">subscriberMap</span><span class="o">)</span>
+                <span class="o">||</span> <span class="n">Objects</span><span class="o">.</span><span class="na">isNull</span><span class="o">(</span><span class="n">event</span><span class="o">)</span>
+                <span class="o">||</span> <span class="n">Objects</span><span class="o">.</span><span class="na">isNull</span><span class="o">(</span><span class="n">subscriberMap</span><span class="o">.</span><span class="na">get</span><span class="o">(</span><span class="n">event</span><span class="o">.</span><span class="na">getClass</span><span class="o">())))</span>
+            <span class="k">return</span><span class="o">;</span>
+        <span class="n">Set</span><span class="o">&lt;</span><span class="n">Subscriber</span><span class="o">&lt;?&gt;&gt;</span> <span class="n">subscriberSet</span> <span class="o">=</span> <span class="n">subscriberMap</span><span class="o">.</span><span class="na">get</span><span class="o">(</span><span class="n">event</span><span class="o">.</span><span class="na">getClass</span><span class="o">());</span>
+        <span class="k">for</span><span class="o">(</span><span class="n">Subscriber</span><span class="o">&lt;?&gt;</span> <span class="n">subscriber</span> <span class="o">:</span> <span class="n">subscriberSet</span><span class="o">)</span> <span class="o">{</span>
+            <span class="k">try</span> <span class="o">{</span>
+                <span class="c1">// 使用反射调用update方法
+</span><span class="c1"></span>                <span class="n">Method</span> <span class="n">updateMethod</span> <span class="o">=</span> <span class="n">subscriber</span><span class="o">.</span><span class="na">getClass</span><span class="o">().</span><span class="na">getMethod</span><span class="o">(</span><span class="s">&#34;update&#34;</span><span class="o">,</span> <span class="n">event</span><span class="o">.</span><span class="na">getClass</span><span class="o">());</span>
+                <span class="n">updateMethod</span><span class="o">.</span><span class="na">invoke</span><span class="o">(</span><span class="n">subscriber</span><span class="o">,</span> <span class="n">event</span><span class="o">);</span>
+            <span class="o">}</span> <span class="k">catch</span> <span class="o">(</span><span class="n">Exception</span> <span class="n">e</span><span class="o">)</span> <span class="o">{</span>
+                <span class="n">e</span><span class="o">.</span><span class="na">printStackTrace</span><span class="o">();</span>
+            <span class="o">}</span>
+        <span class="o">}</span>
+    <span class="o">}</span>
+<span class="o">}</span>
 </code></pre></td></tr></table>
 </div>
 </div><p>上述代码相较于前一版修改了以下几点：</p>
@@ -438,150 +363,150 @@ This is subscriber b
 <h2 id="接口和注解-">接口和注解</h2>
 <p>接口是什么？它代表的是一类操作的统一抽象。并且，接口的定义本身也是一种元信息的表示，它能够表示的是实现（子类）是抽象（接口）的一种，这也是多态的来源。但在java中，元信息的表示不仅仅只有继承接口这一种，还有一种方式是通过<strong>注解</strong>去标识某个类、方法、变量的元信息。</p>
 <p>从上述例子上来看，接口作为抽象有时候会显得有些“臃肿”，定义一个接口仅仅就是为了一个方法的抽象，在<code>Subscriber</code>很多的时候需要很多的实现类。与此相类似的例子还有SpringMVC中的<code>Controller</code>接口，固定类型的参数和返回值、一个类映射一个url，而取代这一方式的就是如今的基于注解的<code>Controller</code>映射，不仅能够使url的映射变为方法级，连参数和返回值相较之前也变得更为灵活。因此，<code>EventBus</code>也同样能够通过注解的方式去解决这一问题。</p>
-<div class="highlight"><div style="background-color:#fff;-moz-tab-size:4;-o-tab-size:4;tab-size:4">
-<table style="border-spacing:0;padding:0;margin:0;border:0;width:auto;overflow:auto;display:block;"><tr><td style="vertical-align:top;padding:0;margin:0;border:0;">
-<pre style="background-color:#fff;-moz-tab-size:4;-o-tab-size:4;tab-size:4"><code><span style="margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f">1
-</span><span style="margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f">2
-</span><span style="margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f">3
-</span><span style="margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f">4
-</span><span style="margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f">5
+<div class="highlight"><div class="chroma">
+<table class="lntable"><tr><td class="lntd">
+<pre class="chroma"><code><span class="lnt">1
+</span><span class="lnt">2
+</span><span class="lnt">3
+</span><span class="lnt">4
+</span><span class="lnt">5
 </span></code></pre></td>
-<td style="vertical-align:top;padding:0;margin:0;border:0;;width:100%">
-<pre style="background-color:#fff;-moz-tab-size:4;-o-tab-size:4;tab-size:4"><code class="language-java" data-lang="java"><span style="color:#998;font-style:italic">// Listen.java
-</span><span style="color:#998;font-style:italic"></span><span style="color:#3c5d5d;font-weight:bold">@Retention</span><span style="color:#000;font-weight:bold">(</span>RetentionPolicy<span style="color:#000;font-weight:bold">.</span><span style="color:#008080">RUNTIME</span><span style="color:#000;font-weight:bold">)</span>
-<span style="color:#3c5d5d;font-weight:bold">@Target</span><span style="color:#000;font-weight:bold">(</span>ElementType<span style="color:#000;font-weight:bold">.</span><span style="color:#008080">METHOD</span><span style="color:#000;font-weight:bold">)</span>
-<span style="color:#000;font-weight:bold">public</span> <span style="color:#3c5d5d;font-weight:bold">@interface</span> Listener <span style="color:#000;font-weight:bold">{</span>
-<span style="color:#000;font-weight:bold">}</span>
+<td class="lntd">
+<pre class="chroma"><code class="language-java" data-lang="java"><span class="c1">// Listen.java
+</span><span class="c1"></span><span class="nd">@Retention</span><span class="o">(</span><span class="n">RetentionPolicy</span><span class="o">.</span><span class="na">RUNTIME</span><span class="o">)</span>
+<span class="nd">@Target</span><span class="o">(</span><span class="n">ElementType</span><span class="o">.</span><span class="na">METHOD</span><span class="o">)</span>
+<span class="kd">public</span> <span class="nd">@interface</span> <span class="n">Listener</span> <span class="o">{</span>
+<span class="o">}</span>
 </code></pre></td></tr></table>
 </div>
 </div><p>首先，定义一个用于修饰方法的注解，如果方法使用了这个注解，那么将会在该方法的参数类型的时间传递时被调用。</p>
-<div class="highlight"><div style="background-color:#fff;-moz-tab-size:4;-o-tab-size:4;tab-size:4">
-<table style="border-spacing:0;padding:0;margin:0;border:0;width:auto;overflow:auto;display:block;"><tr><td style="vertical-align:top;padding:0;margin:0;border:0;">
-<pre style="background-color:#fff;-moz-tab-size:4;-o-tab-size:4;tab-size:4"><code><span style="margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f"> 1
-</span><span style="margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f"> 2
-</span><span style="margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f"> 3
-</span><span style="margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f"> 4
-</span><span style="margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f"> 5
-</span><span style="margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f"> 6
-</span><span style="margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f"> 7
-</span><span style="margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f"> 8
-</span><span style="margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f"> 9
-</span><span style="margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f">10
-</span><span style="margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f">11
-</span><span style="margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f">12
-</span><span style="margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f">13
-</span><span style="margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f">14
-</span><span style="margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f">15
-</span><span style="margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f">16
-</span><span style="margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f">17
-</span><span style="margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f">18
-</span><span style="margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f">19
-</span><span style="margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f">20
-</span><span style="margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f">21
+<div class="highlight"><div class="chroma">
+<table class="lntable"><tr><td class="lntd">
+<pre class="chroma"><code><span class="lnt"> 1
+</span><span class="lnt"> 2
+</span><span class="lnt"> 3
+</span><span class="lnt"> 4
+</span><span class="lnt"> 5
+</span><span class="lnt"> 6
+</span><span class="lnt"> 7
+</span><span class="lnt"> 8
+</span><span class="lnt"> 9
+</span><span class="lnt">10
+</span><span class="lnt">11
+</span><span class="lnt">12
+</span><span class="lnt">13
+</span><span class="lnt">14
+</span><span class="lnt">15
+</span><span class="lnt">16
+</span><span class="lnt">17
+</span><span class="lnt">18
+</span><span class="lnt">19
+</span><span class="lnt">20
+</span><span class="lnt">21
 </span></code></pre></td>
-<td style="vertical-align:top;padding:0;margin:0;border:0;;width:100%">
-<pre style="background-color:#fff;-moz-tab-size:4;-o-tab-size:4;tab-size:4"><code class="language-java" data-lang="java"><span style="color:#000;font-weight:bold">public</span> <span style="color:#000;font-weight:bold">class</span> <span style="color:#458;font-weight:bold">Subscriber</span> <span style="color:#000;font-weight:bold">{</span>
+<td class="lntd">
+<pre class="chroma"><code class="language-java" data-lang="java"><span class="kd">public</span> <span class="kd">class</span> <span class="nc">Subscriber</span> <span class="o">{</span>
 
-    <span style="color:#000;font-weight:bold">private</span> Object targetObject<span style="color:#000;font-weight:bold">;</span>
-    <span style="color:#000;font-weight:bold">private</span> Method updateMethod<span style="color:#000;font-weight:bold">;</span>
+    <span class="kd">private</span> <span class="n">Object</span> <span class="n">targetObject</span><span class="o">;</span>
+    <span class="kd">private</span> <span class="n">Method</span> <span class="n">updateMethod</span><span class="o">;</span>
 
-    <span style="color:#000;font-weight:bold">public</span> <span style="color:#458;font-weight:bold">void</span> <span style="color:#900;font-weight:bold">setTargetObject</span><span style="color:#000;font-weight:bold">(</span>Object o<span style="color:#000;font-weight:bold">)</span> <span style="color:#000;font-weight:bold">{</span>
-        <span style="color:#000;font-weight:bold">this</span><span style="color:#000;font-weight:bold">.</span><span style="color:#008080">targetObject</span> <span style="color:#000;font-weight:bold">=</span> o<span style="color:#000;font-weight:bold">;</span>
-    <span style="color:#000;font-weight:bold">}</span>
+    <span class="kd">public</span> <span class="kt">void</span> <span class="nf">setTargetObject</span><span class="o">(</span><span class="n">Object</span> <span class="n">o</span><span class="o">)</span> <span class="o">{</span>
+        <span class="k">this</span><span class="o">.</span><span class="na">targetObject</span> <span class="o">=</span> <span class="n">o</span><span class="o">;</span>
+    <span class="o">}</span>
 
-    <span style="color:#000;font-weight:bold">public</span> <span style="color:#458;font-weight:bold">void</span> <span style="color:#900;font-weight:bold">setUpdateMethod</span><span style="color:#000;font-weight:bold">(</span>Method method<span style="color:#000;font-weight:bold">)</span> <span style="color:#000;font-weight:bold">{</span>
-        <span style="color:#000;font-weight:bold">this</span><span style="color:#000;font-weight:bold">.</span><span style="color:#008080">updateMethod</span> <span style="color:#000;font-weight:bold">=</span> method<span style="color:#000;font-weight:bold">;</span>
-    <span style="color:#000;font-weight:bold">}</span>
+    <span class="kd">public</span> <span class="kt">void</span> <span class="nf">setUpdateMethod</span><span class="o">(</span><span class="n">Method</span> <span class="n">method</span><span class="o">)</span> <span class="o">{</span>
+        <span class="k">this</span><span class="o">.</span><span class="na">updateMethod</span> <span class="o">=</span> <span class="n">method</span><span class="o">;</span>
+    <span class="o">}</span>
 
-    <span style="color:#000;font-weight:bold">public</span> <span style="color:#458;font-weight:bold">void</span> <span style="color:#900;font-weight:bold">update</span><span style="color:#000;font-weight:bold">(</span>Object event<span style="color:#000;font-weight:bold">)</span> <span style="color:#000;font-weight:bold">{</span>
-        <span style="color:#000;font-weight:bold">try</span><span style="color:#000;font-weight:bold">{</span>
-            updateMethod<span style="color:#000;font-weight:bold">.</span><span style="color:#008080">invoke</span><span style="color:#000;font-weight:bold">(</span>targetObject<span style="color:#000;font-weight:bold">,</span> event<span style="color:#000;font-weight:bold">);</span>
-        <span style="color:#000;font-weight:bold">}</span> <span style="color:#000;font-weight:bold">catch</span> <span style="color:#000;font-weight:bold">(</span>IllegalAccessException <span style="color:#000;font-weight:bold">|</span> InvocationTargetException e<span style="color:#000;font-weight:bold">)</span> <span style="color:#000;font-weight:bold">{</span>
-            e<span style="color:#000;font-weight:bold">.</span><span style="color:#008080">printStackTrace</span><span style="color:#000;font-weight:bold">();</span>
-        <span style="color:#000;font-weight:bold">}</span>
-    <span style="color:#000;font-weight:bold">}</span>
-<span style="color:#000;font-weight:bold">}</span>
+    <span class="kd">public</span> <span class="kt">void</span> <span class="nf">update</span><span class="o">(</span><span class="n">Object</span> <span class="n">event</span><span class="o">)</span> <span class="o">{</span>
+        <span class="k">try</span><span class="o">{</span>
+            <span class="n">updateMethod</span><span class="o">.</span><span class="na">invoke</span><span class="o">(</span><span class="n">targetObject</span><span class="o">,</span> <span class="n">event</span><span class="o">);</span>
+        <span class="o">}</span> <span class="k">catch</span> <span class="o">(</span><span class="n">IllegalAccessException</span> <span class="o">|</span> <span class="n">InvocationTargetException</span> <span class="n">e</span><span class="o">)</span> <span class="o">{</span>
+            <span class="n">e</span><span class="o">.</span><span class="na">printStackTrace</span><span class="o">();</span>
+        <span class="o">}</span>
+    <span class="o">}</span>
+<span class="o">}</span>
 </code></pre></td></tr></table>
 </div>
 </div><p>其次，是方法抽取为单独的类，由于Java的最小单位是类，方法无法脱离类而存在，而<code>Method</code>的调用除了方法对象本身之外，还需要目标对象。通过抽取这个类，我们就能够在每识别到一个符合要求的方法之后，将之抽取为单独的<code>Subscriber</code>对象，最后保存在<code>Map</code>当中。</p>
-<div class="highlight"><div style="background-color:#fff;-moz-tab-size:4;-o-tab-size:4;tab-size:4">
-<table style="border-spacing:0;padding:0;margin:0;border:0;width:auto;overflow:auto;display:block;"><tr><td style="vertical-align:top;padding:0;margin:0;border:0;">
-<pre style="background-color:#fff;-moz-tab-size:4;-o-tab-size:4;tab-size:4"><code><span style="margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f"> 1
-</span><span style="margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f"> 2
-</span><span style="margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f"> 3
-</span><span style="margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f"> 4
-</span><span style="margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f"> 5
-</span><span style="margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f"> 6
-</span><span style="margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f"> 7
-</span><span style="margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f"> 8
-</span><span style="margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f"> 9
-</span><span style="margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f">10
-</span><span style="margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f">11
-</span><span style="margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f">12
-</span><span style="margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f">13
-</span><span style="margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f">14
-</span><span style="margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f">15
-</span><span style="margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f">16
-</span><span style="margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f">17
-</span><span style="margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f">18
-</span><span style="margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f">19
-</span><span style="margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f">20
-</span><span style="margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f">21
-</span><span style="margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f">22
-</span><span style="margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f">23
-</span><span style="margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f">24
-</span><span style="margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f">25
-</span><span style="margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f">26
-</span><span style="margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f">27
-</span><span style="margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f">28
-</span><span style="margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f">29
-</span><span style="margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f">30
-</span><span style="margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f">31
-</span><span style="margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f">32
-</span><span style="margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f">33
-</span><span style="margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f">34
-</span><span style="margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f">35
-</span><span style="margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f">36
-</span><span style="margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f">37
+<div class="highlight"><div class="chroma">
+<table class="lntable"><tr><td class="lntd">
+<pre class="chroma"><code><span class="lnt"> 1
+</span><span class="lnt"> 2
+</span><span class="lnt"> 3
+</span><span class="lnt"> 4
+</span><span class="lnt"> 5
+</span><span class="lnt"> 6
+</span><span class="lnt"> 7
+</span><span class="lnt"> 8
+</span><span class="lnt"> 9
+</span><span class="lnt">10
+</span><span class="lnt">11
+</span><span class="lnt">12
+</span><span class="lnt">13
+</span><span class="lnt">14
+</span><span class="lnt">15
+</span><span class="lnt">16
+</span><span class="lnt">17
+</span><span class="lnt">18
+</span><span class="lnt">19
+</span><span class="lnt">20
+</span><span class="lnt">21
+</span><span class="lnt">22
+</span><span class="lnt">23
+</span><span class="lnt">24
+</span><span class="lnt">25
+</span><span class="lnt">26
+</span><span class="lnt">27
+</span><span class="lnt">28
+</span><span class="lnt">29
+</span><span class="lnt">30
+</span><span class="lnt">31
+</span><span class="lnt">32
+</span><span class="lnt">33
+</span><span class="lnt">34
+</span><span class="lnt">35
+</span><span class="lnt">36
+</span><span class="lnt">37
 </span></code></pre></td>
-<td style="vertical-align:top;padding:0;margin:0;border:0;;width:100%">
-<pre style="background-color:#fff;-moz-tab-size:4;-o-tab-size:4;tab-size:4"><code class="language-java" data-lang="java"><span style="color:#998;font-style:italic">// CustomEventBus.java
-</span><span style="color:#998;font-style:italic"></span><span style="color:#000;font-weight:bold">public</span> <span style="color:#000;font-weight:bold">class</span> <span style="color:#458;font-weight:bold">CustomEventBus</span> <span style="color:#000;font-weight:bold">{</span>
-    <span style="color:#998;font-style:italic">// 通过Map管理类和相应Subscriber
-</span><span style="color:#998;font-style:italic"></span>    <span style="color:#000;font-weight:bold">private</span> Map<span style="color:#000;font-weight:bold">&lt;</span>Class<span style="color:#000;font-weight:bold">&lt;?&gt;,</span> Set<span style="color:#000;font-weight:bold">&lt;</span>Subscriber<span style="color:#000;font-weight:bold">&gt;&gt;</span> subscriberMap<span style="color:#000;font-weight:bold">;</span>
+<td class="lntd">
+<pre class="chroma"><code class="language-java" data-lang="java"><span class="c1">// CustomEventBus.java
+</span><span class="c1"></span><span class="kd">public</span> <span class="kd">class</span> <span class="nc">CustomEventBus</span> <span class="o">{</span>
+    <span class="c1">// 通过Map管理类和相应Subscriber
+</span><span class="c1"></span>    <span class="kd">private</span> <span class="n">Map</span><span class="o">&lt;</span><span class="n">Class</span><span class="o">&lt;?&gt;,</span> <span class="n">Set</span><span class="o">&lt;</span><span class="n">Subscriber</span><span class="o">&gt;&gt;</span> <span class="n">subscriberMap</span><span class="o">;</span>
 
-    <span style="color:#000;font-weight:bold">public</span> <span style="color:#458;font-weight:bold">void</span> <span style="color:#900;font-weight:bold">subscribe</span><span style="color:#000;font-weight:bold">(</span>Object subscriber<span style="color:#000;font-weight:bold">)</span> <span style="color:#000;font-weight:bold">{</span>
-        <span style="color:#000;font-weight:bold">if</span><span style="color:#000;font-weight:bold">(</span>Objects<span style="color:#000;font-weight:bold">.</span><span style="color:#008080">isNull</span><span style="color:#000;font-weight:bold">(</span>subscriber<span style="color:#000;font-weight:bold">))</span> <span style="color:#000;font-weight:bold">return</span><span style="color:#000;font-weight:bold">;</span>
-        <span style="color:#000;font-weight:bold">if</span><span style="color:#000;font-weight:bold">(</span>Objects<span style="color:#000;font-weight:bold">.</span><span style="color:#008080">isNull</span><span style="color:#000;font-weight:bold">(</span>subscriberMap<span style="color:#000;font-weight:bold">))</span> <span style="color:#000;font-weight:bold">{</span>
-            subscriberMap <span style="color:#000;font-weight:bold">=</span> Maps<span style="color:#000;font-weight:bold">.</span><span style="color:#008080">newHashMap</span><span style="color:#000;font-weight:bold">();</span>
-        <span style="color:#000;font-weight:bold">}</span>
-        Method<span style="color:#000;font-weight:bold">[]</span> methodArray <span style="color:#000;font-weight:bold">=</span> subscriber<span style="color:#000;font-weight:bold">.</span><span style="color:#008080">getClass</span><span style="color:#000;font-weight:bold">().</span><span style="color:#008080">getMethods</span><span style="color:#000;font-weight:bold">();</span>
-        <span style="color:#000;font-weight:bold">for</span><span style="color:#000;font-weight:bold">(</span>Method method<span style="color:#000;font-weight:bold">:</span> methodArray<span style="color:#000;font-weight:bold">)</span> <span style="color:#000;font-weight:bold">{</span>
-            <span style="color:#998;font-style:italic">// 判断方法是否被@Listener修饰
-</span><span style="color:#998;font-style:italic"></span>            <span style="color:#000;font-weight:bold">if</span><span style="color:#000;font-weight:bold">(</span>method<span style="color:#000;font-weight:bold">.</span><span style="color:#008080">isAnnotationPresent</span><span style="color:#000;font-weight:bold">(</span>Listener<span style="color:#000;font-weight:bold">.</span><span style="color:#008080">class</span><span style="color:#000;font-weight:bold">))</span> <span style="color:#000;font-weight:bold">{</span>
-                Subscriber sub <span style="color:#000;font-weight:bold">=</span> <span style="color:#000;font-weight:bold">new</span> Subscriber<span style="color:#000;font-weight:bold">();</span>
-                sub<span style="color:#000;font-weight:bold">.</span><span style="color:#008080">setTargetObject</span><span style="color:#000;font-weight:bold">(</span>subscriber<span style="color:#000;font-weight:bold">);</span>
-                sub<span style="color:#000;font-weight:bold">.</span><span style="color:#008080">setUpdateMethod</span><span style="color:#000;font-weight:bold">(</span>method<span style="color:#000;font-weight:bold">);</span>
-                <span style="color:#998;font-style:italic">// 通过方法参数获取事件类型
-</span><span style="color:#998;font-style:italic"></span>                Class<span style="color:#000;font-weight:bold">&lt;?&gt;</span> eventClazz <span style="color:#000;font-weight:bold">=</span> method<span style="color:#000;font-weight:bold">.</span><span style="color:#008080">getParameterTypes</span><span style="color:#000;font-weight:bold">()[</span>0<span style="color:#000;font-weight:bold">];</span>
-                subscriberMap<span style="color:#000;font-weight:bold">.</span><span style="color:#008080">putIfAbsent</span><span style="color:#000;font-weight:bold">(</span>eventClazz<span style="color:#000;font-weight:bold">,</span> Sets<span style="color:#000;font-weight:bold">.</span><span style="color:#008080">newHashSet</span><span style="color:#000;font-weight:bold">());</span>
-                subscriberMap<span style="color:#000;font-weight:bold">.</span><span style="color:#008080">get</span><span style="color:#000;font-weight:bold">(</span>eventClazz<span style="color:#000;font-weight:bold">).</span><span style="color:#008080">add</span><span style="color:#000;font-weight:bold">(</span>sub<span style="color:#000;font-weight:bold">);</span>
-            <span style="color:#000;font-weight:bold">}</span>
-        <span style="color:#000;font-weight:bold">}</span>
-    <span style="color:#000;font-weight:bold">}</span>
+    <span class="kd">public</span> <span class="kt">void</span> <span class="nf">subscribe</span><span class="o">(</span><span class="n">Object</span> <span class="n">subscriber</span><span class="o">)</span> <span class="o">{</span>
+        <span class="k">if</span><span class="o">(</span><span class="n">Objects</span><span class="o">.</span><span class="na">isNull</span><span class="o">(</span><span class="n">subscriber</span><span class="o">))</span> <span class="k">return</span><span class="o">;</span>
+        <span class="k">if</span><span class="o">(</span><span class="n">Objects</span><span class="o">.</span><span class="na">isNull</span><span class="o">(</span><span class="n">subscriberMap</span><span class="o">))</span> <span class="o">{</span>
+            <span class="n">subscriberMap</span> <span class="o">=</span> <span class="n">Maps</span><span class="o">.</span><span class="na">newHashMap</span><span class="o">();</span>
+        <span class="o">}</span>
+        <span class="n">Method</span><span class="o">[]</span> <span class="n">methodArray</span> <span class="o">=</span> <span class="n">subscriber</span><span class="o">.</span><span class="na">getClass</span><span class="o">().</span><span class="na">getMethods</span><span class="o">();</span>
+        <span class="k">for</span><span class="o">(</span><span class="n">Method</span> <span class="n">method</span><span class="o">:</span> <span class="n">methodArray</span><span class="o">)</span> <span class="o">{</span>
+            <span class="c1">// 判断方法是否被@Listener修饰
+</span><span class="c1"></span>            <span class="k">if</span><span class="o">(</span><span class="n">method</span><span class="o">.</span><span class="na">isAnnotationPresent</span><span class="o">(</span><span class="n">Listener</span><span class="o">.</span><span class="na">class</span><span class="o">))</span> <span class="o">{</span>
+                <span class="n">Subscriber</span> <span class="n">sub</span> <span class="o">=</span> <span class="k">new</span> <span class="n">Subscriber</span><span class="o">();</span>
+                <span class="n">sub</span><span class="o">.</span><span class="na">setTargetObject</span><span class="o">(</span><span class="n">subscriber</span><span class="o">);</span>
+                <span class="n">sub</span><span class="o">.</span><span class="na">setUpdateMethod</span><span class="o">(</span><span class="n">method</span><span class="o">);</span>
+                <span class="c1">// 通过方法参数获取事件类型
+</span><span class="c1"></span>                <span class="n">Class</span><span class="o">&lt;?&gt;</span> <span class="n">eventClazz</span> <span class="o">=</span> <span class="n">method</span><span class="o">.</span><span class="na">getParameterTypes</span><span class="o">()[</span><span class="n">0</span><span class="o">];</span>
+                <span class="n">subscriberMap</span><span class="o">.</span><span class="na">putIfAbsent</span><span class="o">(</span><span class="n">eventClazz</span><span class="o">,</span> <span class="n">Sets</span><span class="o">.</span><span class="na">newHashSet</span><span class="o">());</span>
+                <span class="n">subscriberMap</span><span class="o">.</span><span class="na">get</span><span class="o">(</span><span class="n">eventClazz</span><span class="o">).</span><span class="na">add</span><span class="o">(</span><span class="n">sub</span><span class="o">);</span>
+            <span class="o">}</span>
+        <span class="o">}</span>
+    <span class="o">}</span>
 
-    <span style="color:#000;font-weight:bold">public</span> <span style="color:#458;font-weight:bold">void</span> <span style="color:#900;font-weight:bold">post</span><span style="color:#000;font-weight:bold">(</span>Object event<span style="color:#000;font-weight:bold">)</span> <span style="color:#000;font-weight:bold">{</span>
-        <span style="color:#000;font-weight:bold">if</span><span style="color:#000;font-weight:bold">(</span>Objects<span style="color:#000;font-weight:bold">.</span><span style="color:#008080">isNull</span><span style="color:#000;font-weight:bold">(</span>subscriberMap<span style="color:#000;font-weight:bold">)</span>
-                <span style="color:#000;font-weight:bold">||</span> Objects<span style="color:#000;font-weight:bold">.</span><span style="color:#008080">isNull</span><span style="color:#000;font-weight:bold">(</span>event<span style="color:#000;font-weight:bold">)</span>
-                <span style="color:#000;font-weight:bold">||</span> Objects<span style="color:#000;font-weight:bold">.</span><span style="color:#008080">isNull</span><span style="color:#000;font-weight:bold">(</span>subscriberMap<span style="color:#000;font-weight:bold">.</span><span style="color:#008080">get</span><span style="color:#000;font-weight:bold">(</span>event<span style="color:#000;font-weight:bold">.</span><span style="color:#008080">getClass</span><span style="color:#000;font-weight:bold">())))</span>
-            <span style="color:#000;font-weight:bold">return</span><span style="color:#000;font-weight:bold">;</span>
-        Set<span style="color:#000;font-weight:bold">&lt;</span>Subscriber<span style="color:#000;font-weight:bold">&gt;</span> subscriberSet <span style="color:#000;font-weight:bold">=</span> subscriberMap<span style="color:#000;font-weight:bold">.</span><span style="color:#008080">get</span><span style="color:#000;font-weight:bold">(</span>event<span style="color:#000;font-weight:bold">.</span><span style="color:#008080">getClass</span><span style="color:#000;font-weight:bold">());</span>
-        <span style="color:#000;font-weight:bold">for</span><span style="color:#000;font-weight:bold">(</span>Subscriber subscriber <span style="color:#000;font-weight:bold">:</span> subscriberSet<span style="color:#000;font-weight:bold">)</span> <span style="color:#000;font-weight:bold">{</span>
-            <span style="color:#998;font-style:italic">// 使用反射调用update方法
-</span><span style="color:#998;font-style:italic"></span>            subscriber<span style="color:#000;font-weight:bold">.</span><span style="color:#008080">update</span><span style="color:#000;font-weight:bold">(</span>event<span style="color:#000;font-weight:bold">);</span>
-        <span style="color:#000;font-weight:bold">}</span>
-    <span style="color:#000;font-weight:bold">}</span>
-<span style="color:#000;font-weight:bold">}</span>
+    <span class="kd">public</span> <span class="kt">void</span> <span class="nf">post</span><span class="o">(</span><span class="n">Object</span> <span class="n">event</span><span class="o">)</span> <span class="o">{</span>
+        <span class="k">if</span><span class="o">(</span><span class="n">Objects</span><span class="o">.</span><span class="na">isNull</span><span class="o">(</span><span class="n">subscriberMap</span><span class="o">)</span>
+                <span class="o">||</span> <span class="n">Objects</span><span class="o">.</span><span class="na">isNull</span><span class="o">(</span><span class="n">event</span><span class="o">)</span>
+                <span class="o">||</span> <span class="n">Objects</span><span class="o">.</span><span class="na">isNull</span><span class="o">(</span><span class="n">subscriberMap</span><span class="o">.</span><span class="na">get</span><span class="o">(</span><span class="n">event</span><span class="o">.</span><span class="na">getClass</span><span class="o">())))</span>
+            <span class="k">return</span><span class="o">;</span>
+        <span class="n">Set</span><span class="o">&lt;</span><span class="n">Subscriber</span><span class="o">&gt;</span> <span class="n">subscriberSet</span> <span class="o">=</span> <span class="n">subscriberMap</span><span class="o">.</span><span class="na">get</span><span class="o">(</span><span class="n">event</span><span class="o">.</span><span class="na">getClass</span><span class="o">());</span>
+        <span class="k">for</span><span class="o">(</span><span class="n">Subscriber</span> <span class="n">subscriber</span> <span class="o">:</span> <span class="n">subscriberSet</span><span class="o">)</span> <span class="o">{</span>
+            <span class="c1">// 使用反射调用update方法
+</span><span class="c1"></span>            <span class="n">subscriber</span><span class="o">.</span><span class="na">update</span><span class="o">(</span><span class="n">event</span><span class="o">);</span>
+        <span class="o">}</span>
+    <span class="o">}</span>
+<span class="o">}</span>
 </code></pre></td></tr></table>
 </div>
 </div><p>上述的<code>CustomEventBus</code>和前一版的实现不同在于：</p>
@@ -593,140 +518,140 @@ This is subscriber b
 <h2 id="继承关系与事件路由-">继承关系与事件路由</h2>
 <p>上文中，我们通过使用<code>Map</code> 将事件类型和监听方法相互关联了起来，但这样还存在一个问题，那就是当事件之间存在<strong>继承关系</strong>时如何处理事件的路由？</p>
 <p>举个例子，在上述的例子中，我们定义一个<code>Subscriber</code></p>
-<div class="highlight"><div style="background-color:#fff;-moz-tab-size:4;-o-tab-size:4;tab-size:4">
-<table style="border-spacing:0;padding:0;margin:0;border:0;width:auto;overflow:auto;display:block;"><tr><td style="vertical-align:top;padding:0;margin:0;border:0;">
-<pre style="background-color:#fff;-moz-tab-size:4;-o-tab-size:4;tab-size:4"><code><span style="margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f"> 1
-</span><span style="margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f"> 2
-</span><span style="margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f"> 3
-</span><span style="margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f"> 4
-</span><span style="margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f"> 5
-</span><span style="margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f"> 6
-</span><span style="margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f"> 7
-</span><span style="margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f"> 8
-</span><span style="margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f"> 9
-</span><span style="margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f">10
-</span><span style="margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f">11
-</span><span style="margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f">12
-</span><span style="margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f">13
+<div class="highlight"><div class="chroma">
+<table class="lntable"><tr><td class="lntd">
+<pre class="chroma"><code><span class="lnt"> 1
+</span><span class="lnt"> 2
+</span><span class="lnt"> 3
+</span><span class="lnt"> 4
+</span><span class="lnt"> 5
+</span><span class="lnt"> 6
+</span><span class="lnt"> 7
+</span><span class="lnt"> 8
+</span><span class="lnt"> 9
+</span><span class="lnt">10
+</span><span class="lnt">11
+</span><span class="lnt">12
+</span><span class="lnt">13
 </span></code></pre></td>
-<td style="vertical-align:top;padding:0;margin:0;border:0;;width:100%">
-<pre style="background-color:#fff;-moz-tab-size:4;-o-tab-size:4;tab-size:4"><code class="language-java" data-lang="java"><span style="color:#000;font-weight:bold">public</span> <span style="color:#000;font-weight:bold">class</span> <span style="color:#458;font-weight:bold">SubscriberA</span> <span style="color:#000;font-weight:bold">{</span>
-    <span style="color:#3c5d5d;font-weight:bold">@Listener</span>
-    <span style="color:#000;font-weight:bold">public</span> <span style="color:#458;font-weight:bold">void</span> <span style="color:#900;font-weight:bold">listenString</span><span style="color:#000;font-weight:bold">(</span>String event<span style="color:#000;font-weight:bold">)</span> <span style="color:#000;font-weight:bold">{</span>
-        System<span style="color:#000;font-weight:bold">.</span><span style="color:#008080">out</span><span style="color:#000;font-weight:bold">.</span><span style="color:#008080">println</span><span style="color:#000;font-weight:bold">(</span><span style="color:#d14">&#34;This method listen String&#34;</span><span style="color:#000;font-weight:bold">);</span>
-        System<span style="color:#000;font-weight:bold">.</span><span style="color:#008080">out</span><span style="color:#000;font-weight:bold">.</span><span style="color:#008080">println</span><span style="color:#000;font-weight:bold">(</span><span style="color:#d14">&#34;The event is &#34;</span> <span style="color:#000;font-weight:bold">+</span> event<span style="color:#000;font-weight:bold">);</span>
-    <span style="color:#000;font-weight:bold">}</span>
+<td class="lntd">
+<pre class="chroma"><code class="language-java" data-lang="java"><span class="kd">public</span> <span class="kd">class</span> <span class="nc">SubscriberA</span> <span class="o">{</span>
+    <span class="nd">@Listener</span>
+    <span class="kd">public</span> <span class="kt">void</span> <span class="nf">listenString</span><span class="o">(</span><span class="n">String</span> <span class="n">event</span><span class="o">)</span> <span class="o">{</span>
+        <span class="n">System</span><span class="o">.</span><span class="na">out</span><span class="o">.</span><span class="na">println</span><span class="o">(</span><span class="s">&#34;This method listen String&#34;</span><span class="o">);</span>
+        <span class="n">System</span><span class="o">.</span><span class="na">out</span><span class="o">.</span><span class="na">println</span><span class="o">(</span><span class="s">&#34;The event is &#34;</span> <span class="o">+</span> <span class="n">event</span><span class="o">);</span>
+    <span class="o">}</span>
 
-    <span style="color:#3c5d5d;font-weight:bold">@Listener</span>
-    <span style="color:#000;font-weight:bold">public</span> <span style="color:#458;font-weight:bold">void</span> <span style="color:#900;font-weight:bold">listenCharSequence</span><span style="color:#000;font-weight:bold">(</span>CharSequence event<span style="color:#000;font-weight:bold">)</span> <span style="color:#000;font-weight:bold">{</span>
-        System<span style="color:#000;font-weight:bold">.</span><span style="color:#008080">out</span><span style="color:#000;font-weight:bold">.</span><span style="color:#008080">println</span><span style="color:#000;font-weight:bold">(</span><span style="color:#d14">&#34;This method listen Charsequence&#34;</span><span style="color:#000;font-weight:bold">);</span>
-        System<span style="color:#000;font-weight:bold">.</span><span style="color:#008080">out</span><span style="color:#000;font-weight:bold">.</span><span style="color:#008080">println</span><span style="color:#000;font-weight:bold">(</span><span style="color:#d14">&#34;The event is &#34;</span> <span style="color:#000;font-weight:bold">+</span> event<span style="color:#000;font-weight:bold">);</span>
-    <span style="color:#000;font-weight:bold">}</span>
-<span style="color:#000;font-weight:bold">}</span>
+    <span class="nd">@Listener</span>
+    <span class="kd">public</span> <span class="kt">void</span> <span class="nf">listenCharSequence</span><span class="o">(</span><span class="n">CharSequence</span> <span class="n">event</span><span class="o">)</span> <span class="o">{</span>
+        <span class="n">System</span><span class="o">.</span><span class="na">out</span><span class="o">.</span><span class="na">println</span><span class="o">(</span><span class="s">&#34;This method listen Charsequence&#34;</span><span class="o">);</span>
+        <span class="n">System</span><span class="o">.</span><span class="na">out</span><span class="o">.</span><span class="na">println</span><span class="o">(</span><span class="s">&#34;The event is &#34;</span> <span class="o">+</span> <span class="n">event</span><span class="o">);</span>
+    <span class="o">}</span>
+<span class="o">}</span>
 </code></pre></td></tr></table>
 </div>
 </div><p>我们知道<code>String</code>是继承<code>CharSequence</code>的，从继承的意义上来看，<code>String</code> 就是一种<code>CharSequence</code>。那么，我们调用<code>post(&quot;Hello world&quot;)</code></p>
-<div class="highlight"><div style="background-color:#fff;-moz-tab-size:4;-o-tab-size:4;tab-size:4">
-<table style="border-spacing:0;padding:0;margin:0;border:0;width:auto;overflow:auto;display:block;"><tr><td style="vertical-align:top;padding:0;margin:0;border:0;">
-<pre style="background-color:#fff;-moz-tab-size:4;-o-tab-size:4;tab-size:4"><code><span style="margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f"> 1
-</span><span style="margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f"> 2
-</span><span style="margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f"> 3
-</span><span style="margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f"> 4
-</span><span style="margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f"> 5
-</span><span style="margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f"> 6
-</span><span style="margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f"> 7
-</span><span style="margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f"> 8
-</span><span style="margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f"> 9
-</span><span style="margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f">10
-</span><span style="margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f">11
-</span><span style="margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f">12
+<div class="highlight"><div class="chroma">
+<table class="lntable"><tr><td class="lntd">
+<pre class="chroma"><code><span class="lnt"> 1
+</span><span class="lnt"> 2
+</span><span class="lnt"> 3
+</span><span class="lnt"> 4
+</span><span class="lnt"> 5
+</span><span class="lnt"> 6
+</span><span class="lnt"> 7
+</span><span class="lnt"> 8
+</span><span class="lnt"> 9
+</span><span class="lnt">10
+</span><span class="lnt">11
+</span><span class="lnt">12
 </span></code></pre></td>
-<td style="vertical-align:top;padding:0;margin:0;border:0;;width:100%">
-<pre style="background-color:#fff;-moz-tab-size:4;-o-tab-size:4;tab-size:4"><code class="language-java" data-lang="java"><span style="color:#000;font-weight:bold">public</span> <span style="color:#000;font-weight:bold">class</span> <span style="color:#458;font-weight:bold">CustomEventBusTest</span> <span style="color:#000;font-weight:bold">{</span>
-    <span style="color:#3c5d5d;font-weight:bold">@Test</span>
-    <span style="color:#000;font-weight:bold">public</span> <span style="color:#458;font-weight:bold">void</span> <span style="color:#900;font-weight:bold">postTest</span><span style="color:#000;font-weight:bold">()</span> <span style="color:#000;font-weight:bold">{</span>
-        CustomEventBus eventBus <span style="color:#000;font-weight:bold">=</span> <span style="color:#000;font-weight:bold">new</span> CustomEventBus<span style="color:#000;font-weight:bold">();</span>
-        SubscriberA a <span style="color:#000;font-weight:bold">=</span> <span style="color:#000;font-weight:bold">new</span> SubscriberA<span style="color:#000;font-weight:bold">();</span>
-        eventBus<span style="color:#000;font-weight:bold">.</span><span style="color:#008080">subscribe</span><span style="color:#000;font-weight:bold">(</span>a<span style="color:#000;font-weight:bold">);</span>
-        eventBus<span style="color:#000;font-weight:bold">.</span><span style="color:#008080">post</span><span style="color:#000;font-weight:bold">(</span><span style="color:#d14">&#34;hello world&#34;</span><span style="color:#000;font-weight:bold">);</span>
-    <span style="color:#000;font-weight:bold">}</span>
-<span style="color:#000;font-weight:bold">}</span>
-<span style="color:#998;font-style:italic">// -------------结果-------------
-</span><span style="color:#998;font-style:italic"></span>This method listen String
-The event is hello world
+<td class="lntd">
+<pre class="chroma"><code class="language-java" data-lang="java"><span class="kd">public</span> <span class="kd">class</span> <span class="nc">CustomEventBusTest</span> <span class="o">{</span>
+    <span class="nd">@Test</span>
+    <span class="kd">public</span> <span class="kt">void</span> <span class="nf">postTest</span><span class="o">()</span> <span class="o">{</span>
+        <span class="n">CustomEventBus</span> <span class="n">eventBus</span> <span class="o">=</span> <span class="k">new</span> <span class="n">CustomEventBus</span><span class="o">();</span>
+        <span class="n">SubscriberA</span> <span class="n">a</span> <span class="o">=</span> <span class="k">new</span> <span class="n">SubscriberA</span><span class="o">();</span>
+        <span class="n">eventBus</span><span class="o">.</span><span class="na">subscribe</span><span class="o">(</span><span class="n">a</span><span class="o">);</span>
+        <span class="n">eventBus</span><span class="o">.</span><span class="na">post</span><span class="o">(</span><span class="s">&#34;hello world&#34;</span><span class="o">);</span>
+    <span class="o">}</span>
+<span class="o">}</span>
+<span class="c1">// -------------结果-------------
+</span><span class="c1"></span><span class="n">This</span> <span class="n">method</span> <span class="n">listen</span> <span class="n">String</span>
+<span class="n">The</span> <span class="n">event</span> <span class="n">is</span> <span class="n">hello</span> <span class="n">world</span>
 </code></pre></td></tr></table>
 </div>
 </div><p>显然只有监听<code>String</code>的订阅者被调用了，这并不符合我们的 预期，因此，我们要在事件路由的逻辑上将事件交给订阅其父类的订阅者。</p>
-<div class="highlight"><div style="background-color:#fff;-moz-tab-size:4;-o-tab-size:4;tab-size:4">
-<table style="border-spacing:0;padding:0;margin:0;border:0;width:auto;overflow:auto;display:block;"><tr><td style="vertical-align:top;padding:0;margin:0;border:0;">
-<pre style="background-color:#fff;-moz-tab-size:4;-o-tab-size:4;tab-size:4"><code><span style="margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f"> 1
-</span><span style="margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f"> 2
-</span><span style="margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f"> 3
-</span><span style="margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f"> 4
-</span><span style="margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f"> 5
-</span><span style="margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f"> 6
-</span><span style="margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f"> 7
-</span><span style="margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f"> 8
-</span><span style="margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f"> 9
-</span><span style="margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f">10
-</span><span style="margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f">11
-</span><span style="margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f">12
-</span><span style="margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f">13
-</span><span style="margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f">14
-</span><span style="margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f">15
-</span><span style="margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f">16
-</span><span style="margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f">17
-</span><span style="margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f">18
-</span><span style="margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f">19
-</span><span style="margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f">20
-</span><span style="margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f">21
-</span><span style="margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f">22
-</span><span style="margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f">23
-</span><span style="margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f">24
-</span><span style="margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f">25
-</span><span style="margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f">26
-</span><span style="margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f">27
-</span><span style="margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f">28
-</span><span style="margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f">29
-</span><span style="margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f">30
-</span><span style="margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f">31
-</span><span style="margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f">32
-</span><span style="margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f">33
+<div class="highlight"><div class="chroma">
+<table class="lntable"><tr><td class="lntd">
+<pre class="chroma"><code><span class="lnt"> 1
+</span><span class="lnt"> 2
+</span><span class="lnt"> 3
+</span><span class="lnt"> 4
+</span><span class="lnt"> 5
+</span><span class="lnt"> 6
+</span><span class="lnt"> 7
+</span><span class="lnt"> 8
+</span><span class="lnt"> 9
+</span><span class="lnt">10
+</span><span class="lnt">11
+</span><span class="lnt">12
+</span><span class="lnt">13
+</span><span class="lnt">14
+</span><span class="lnt">15
+</span><span class="lnt">16
+</span><span class="lnt">17
+</span><span class="lnt">18
+</span><span class="lnt">19
+</span><span class="lnt">20
+</span><span class="lnt">21
+</span><span class="lnt">22
+</span><span class="lnt">23
+</span><span class="lnt">24
+</span><span class="lnt">25
+</span><span class="lnt">26
+</span><span class="lnt">27
+</span><span class="lnt">28
+</span><span class="lnt">29
+</span><span class="lnt">30
+</span><span class="lnt">31
+</span><span class="lnt">32
+</span><span class="lnt">33
 </span></code></pre></td>
-<td style="vertical-align:top;padding:0;margin:0;border:0;;width:100%">
-<pre style="background-color:#fff;-moz-tab-size:4;-o-tab-size:4;tab-size:4"><code class="language-java" data-lang="java"><span style="color:#998;font-style:italic">// CustomEventBus.java 只列出了修改的方法
-</span><span style="color:#998;font-style:italic"></span><span style="color:#000;font-weight:bold">public</span> <span style="color:#000;font-weight:bold">class</span> <span style="color:#458;font-weight:bold">CustomEventBus</span> <span style="color:#000;font-weight:bold">{</span>
-    <span style="color:#000;font-weight:bold">public</span> <span style="color:#458;font-weight:bold">void</span> <span style="color:#900;font-weight:bold">post</span><span style="color:#000;font-weight:bold">(</span>Object event<span style="color:#000;font-weight:bold">)</span> <span style="color:#000;font-weight:bold">{</span>
-        <span style="color:#000;font-weight:bold">if</span><span style="color:#000;font-weight:bold">(</span>Objects<span style="color:#000;font-weight:bold">.</span><span style="color:#008080">isNull</span><span style="color:#000;font-weight:bold">(</span>subscriberMap<span style="color:#000;font-weight:bold">)</span>
-                <span style="color:#000;font-weight:bold">||</span> Objects<span style="color:#000;font-weight:bold">.</span><span style="color:#008080">isNull</span><span style="color:#000;font-weight:bold">(</span>event<span style="color:#000;font-weight:bold">)</span>
-                <span style="color:#000;font-weight:bold">||</span> Objects<span style="color:#000;font-weight:bold">.</span><span style="color:#008080">isNull</span><span style="color:#000;font-weight:bold">(</span>subscriberMap<span style="color:#000;font-weight:bold">.</span><span style="color:#008080">get</span><span style="color:#000;font-weight:bold">(</span>event<span style="color:#000;font-weight:bold">.</span><span style="color:#008080">getClass</span><span style="color:#000;font-weight:bold">())))</span>
-            <span style="color:#000;font-weight:bold">return</span><span style="color:#000;font-weight:bold">;</span>
-        <span style="color:#998;font-style:italic">// 获取该事件类型继承的父类和接口
-</span><span style="color:#998;font-style:italic"></span>        Set<span style="color:#000;font-weight:bold">&lt;</span>Class<span style="color:#000;font-weight:bold">&lt;?&gt;&gt;</span> postType <span style="color:#000;font-weight:bold">=</span> getSuperClassesAndInterfaces<span style="color:#000;font-weight:bold">(</span>event<span style="color:#000;font-weight:bold">.</span><span style="color:#008080">getClass</span><span style="color:#000;font-weight:bold">());</span>
-        postType<span style="color:#000;font-weight:bold">.</span><span style="color:#008080">forEach</span><span style="color:#000;font-weight:bold">((</span>eventType<span style="color:#000;font-weight:bold">)</span> <span style="color:#000;font-weight:bold">-&gt;</span> <span style="color:#000;font-weight:bold">{</span>
-            Set<span style="color:#000;font-weight:bold">&lt;</span>Subscriber<span style="color:#000;font-weight:bold">&gt;</span> subscriberSet <span style="color:#000;font-weight:bold">=</span> subscriberMap<span style="color:#000;font-weight:bold">.</span><span style="color:#008080">getOrDefault</span><span style="color:#000;font-weight:bold">(</span>eventType<span style="color:#000;font-weight:bold">,</span> Collections<span style="color:#000;font-weight:bold">.</span><span style="color:#008080">emptySet</span><span style="color:#000;font-weight:bold">());</span>
-            <span style="color:#000;font-weight:bold">for</span><span style="color:#000;font-weight:bold">(</span>Subscriber subscriber <span style="color:#000;font-weight:bold">:</span> subscriberSet<span style="color:#000;font-weight:bold">)</span> <span style="color:#000;font-weight:bold">{</span>
-                <span style="color:#998;font-style:italic">// 使用反射调用update方法
-</span><span style="color:#998;font-style:italic"></span>                subscriber<span style="color:#000;font-weight:bold">.</span><span style="color:#008080">update</span><span style="color:#000;font-weight:bold">(</span>event<span style="color:#000;font-weight:bold">);</span>
-            <span style="color:#000;font-weight:bold">}</span>
-        <span style="color:#000;font-weight:bold">});</span>
-    <span style="color:#000;font-weight:bold">}</span>
+<td class="lntd">
+<pre class="chroma"><code class="language-java" data-lang="java"><span class="c1">// CustomEventBus.java 只列出了修改的方法
+</span><span class="c1"></span><span class="kd">public</span> <span class="kd">class</span> <span class="nc">CustomEventBus</span> <span class="o">{</span>
+    <span class="kd">public</span> <span class="kt">void</span> <span class="nf">post</span><span class="o">(</span><span class="n">Object</span> <span class="n">event</span><span class="o">)</span> <span class="o">{</span>
+        <span class="k">if</span><span class="o">(</span><span class="n">Objects</span><span class="o">.</span><span class="na">isNull</span><span class="o">(</span><span class="n">subscriberMap</span><span class="o">)</span>
+                <span class="o">||</span> <span class="n">Objects</span><span class="o">.</span><span class="na">isNull</span><span class="o">(</span><span class="n">event</span><span class="o">)</span>
+                <span class="o">||</span> <span class="n">Objects</span><span class="o">.</span><span class="na">isNull</span><span class="o">(</span><span class="n">subscriberMap</span><span class="o">.</span><span class="na">get</span><span class="o">(</span><span class="n">event</span><span class="o">.</span><span class="na">getClass</span><span class="o">())))</span>
+            <span class="k">return</span><span class="o">;</span>
+        <span class="c1">// 获取该事件类型继承的父类和接口
+</span><span class="c1"></span>        <span class="n">Set</span><span class="o">&lt;</span><span class="n">Class</span><span class="o">&lt;?&gt;&gt;</span> <span class="n">postType</span> <span class="o">=</span> <span class="n">getSuperClassesAndInterfaces</span><span class="o">(</span><span class="n">event</span><span class="o">.</span><span class="na">getClass</span><span class="o">());</span>
+        <span class="n">postType</span><span class="o">.</span><span class="na">forEach</span><span class="o">((</span><span class="n">eventType</span><span class="o">)</span> <span class="o">-&gt;</span> <span class="o">{</span>
+            <span class="n">Set</span><span class="o">&lt;</span><span class="n">Subscriber</span><span class="o">&gt;</span> <span class="n">subscriberSet</span> <span class="o">=</span> <span class="n">subscriberMap</span><span class="o">.</span><span class="na">getOrDefault</span><span class="o">(</span><span class="n">eventType</span><span class="o">,</span> <span class="n">Collections</span><span class="o">.</span><span class="na">emptySet</span><span class="o">());</span>
+            <span class="k">for</span><span class="o">(</span><span class="n">Subscriber</span> <span class="n">subscriber</span> <span class="o">:</span> <span class="n">subscriberSet</span><span class="o">)</span> <span class="o">{</span>
+                <span class="c1">// 使用反射调用update方法
+</span><span class="c1"></span>                <span class="n">subscriber</span><span class="o">.</span><span class="na">update</span><span class="o">(</span><span class="n">event</span><span class="o">);</span>
+            <span class="o">}</span>
+        <span class="o">});</span>
+    <span class="o">}</span>
 
-    <span style="color:#998;font-style:italic">// 获取所有父类以及接口
-</span><span style="color:#998;font-style:italic"></span>    <span style="color:#000;font-weight:bold">private</span> Set<span style="color:#000;font-weight:bold">&lt;</span>Class<span style="color:#000;font-weight:bold">&lt;?&gt;&gt;</span> getSuperClassesAndInterfaces<span style="color:#000;font-weight:bold">(</span>Class<span style="color:#000;font-weight:bold">&lt;?&gt;</span> eventType<span style="color:#000;font-weight:bold">)</span> <span style="color:#000;font-weight:bold">{</span>
-        Set<span style="color:#000;font-weight:bold">&lt;</span>Class<span style="color:#000;font-weight:bold">&lt;?&gt;&gt;</span> visited <span style="color:#000;font-weight:bold">=</span> <span style="color:#000;font-weight:bold">new</span> HashSet<span style="color:#000;font-weight:bold">&lt;&gt;();</span>
-        Queue<span style="color:#000;font-weight:bold">&lt;</span>Class<span style="color:#000;font-weight:bold">&lt;?&gt;&gt;</span> queue <span style="color:#000;font-weight:bold">=</span> <span style="color:#000;font-weight:bold">new</span> LinkedList<span style="color:#000;font-weight:bold">&lt;&gt;();</span>
-        queue<span style="color:#000;font-weight:bold">.</span><span style="color:#008080">add</span><span style="color:#000;font-weight:bold">(</span>String<span style="color:#000;font-weight:bold">.</span><span style="color:#008080">class</span><span style="color:#000;font-weight:bold">);</span>
-        <span style="color:#000;font-weight:bold">while</span><span style="color:#000;font-weight:bold">(!</span>queue<span style="color:#000;font-weight:bold">.</span><span style="color:#008080">isEmpty</span><span style="color:#000;font-weight:bold">())</span> <span style="color:#000;font-weight:bold">{</span>
-            Class<span style="color:#000;font-weight:bold">&lt;?&gt;</span> clazz <span style="color:#000;font-weight:bold">=</span> queue<span style="color:#000;font-weight:bold">.</span><span style="color:#008080">poll</span><span style="color:#000;font-weight:bold">();</span>
-            <span style="color:#000;font-weight:bold">if</span><span style="color:#000;font-weight:bold">(!</span>visited<span style="color:#000;font-weight:bold">.</span><span style="color:#008080">add</span><span style="color:#000;font-weight:bold">(</span>clazz<span style="color:#000;font-weight:bold">))</span> <span style="color:#000;font-weight:bold">continue</span><span style="color:#000;font-weight:bold">;</span>
-            <span style="color:#000;font-weight:bold">if</span><span style="color:#000;font-weight:bold">(</span>Objects<span style="color:#000;font-weight:bold">.</span><span style="color:#008080">nonNull</span><span style="color:#000;font-weight:bold">(</span>clazz<span style="color:#000;font-weight:bold">.</span><span style="color:#008080">getSuperclass</span><span style="color:#000;font-weight:bold">()))</span>
-                queue<span style="color:#000;font-weight:bold">.</span><span style="color:#008080">add</span><span style="color:#000;font-weight:bold">(</span>clazz<span style="color:#000;font-weight:bold">.</span><span style="color:#008080">getSuperclass</span><span style="color:#000;font-weight:bold">());</span>
-            queue<span style="color:#000;font-weight:bold">.</span><span style="color:#008080">addAll</span><span style="color:#000;font-weight:bold">(</span>Arrays<span style="color:#000;font-weight:bold">.</span><span style="color:#008080">asList</span><span style="color:#000;font-weight:bold">(</span>clazz<span style="color:#000;font-weight:bold">.</span><span style="color:#008080">getInterfaces</span><span style="color:#000;font-weight:bold">()));</span>
-        <span style="color:#000;font-weight:bold">}</span>
-        <span style="color:#000;font-weight:bold">return</span> visited<span style="color:#000;font-weight:bold">;</span>
-    <span style="color:#000;font-weight:bold">}</span>
-<span style="color:#000;font-weight:bold">}</span>
+    <span class="c1">// 获取所有父类以及接口
+</span><span class="c1"></span>    <span class="kd">private</span> <span class="n">Set</span><span class="o">&lt;</span><span class="n">Class</span><span class="o">&lt;?&gt;&gt;</span> <span class="n">getSuperClassesAndInterfaces</span><span class="o">(</span><span class="n">Class</span><span class="o">&lt;?&gt;</span> <span class="n">eventType</span><span class="o">)</span> <span class="o">{</span>
+        <span class="n">Set</span><span class="o">&lt;</span><span class="n">Class</span><span class="o">&lt;?&gt;&gt;</span> <span class="n">visited</span> <span class="o">=</span> <span class="k">new</span> <span class="n">HashSet</span><span class="o">&lt;&gt;();</span>
+        <span class="n">Queue</span><span class="o">&lt;</span><span class="n">Class</span><span class="o">&lt;?&gt;&gt;</span> <span class="n">queue</span> <span class="o">=</span> <span class="k">new</span> <span class="n">LinkedList</span><span class="o">&lt;&gt;();</span>
+        <span class="n">queue</span><span class="o">.</span><span class="na">add</span><span class="o">(</span><span class="n">String</span><span class="o">.</span><span class="na">class</span><span class="o">);</span>
+        <span class="k">while</span><span class="o">(!</span><span class="n">queue</span><span class="o">.</span><span class="na">isEmpty</span><span class="o">())</span> <span class="o">{</span>
+            <span class="n">Class</span><span class="o">&lt;?&gt;</span> <span class="n">clazz</span> <span class="o">=</span> <span class="n">queue</span><span class="o">.</span><span class="na">poll</span><span class="o">();</span>
+            <span class="k">if</span><span class="o">(!</span><span class="n">visited</span><span class="o">.</span><span class="na">add</span><span class="o">(</span><span class="n">clazz</span><span class="o">))</span> <span class="k">continue</span><span class="o">;</span>
+            <span class="k">if</span><span class="o">(</span><span class="n">Objects</span><span class="o">.</span><span class="na">nonNull</span><span class="o">(</span><span class="n">clazz</span><span class="o">.</span><span class="na">getSuperclass</span><span class="o">()))</span>
+                <span class="n">queue</span><span class="o">.</span><span class="na">add</span><span class="o">(</span><span class="n">clazz</span><span class="o">.</span><span class="na">getSuperclass</span><span class="o">());</span>
+            <span class="n">queue</span><span class="o">.</span><span class="na">addAll</span><span class="o">(</span><span class="n">Arrays</span><span class="o">.</span><span class="na">asList</span><span class="o">(</span><span class="n">clazz</span><span class="o">.</span><span class="na">getInterfaces</span><span class="o">()));</span>
+        <span class="o">}</span>
+        <span class="k">return</span> <span class="n">visited</span><span class="o">;</span>
+    <span class="o">}</span>
+<span class="o">}</span>
 </code></pre></td></tr></table>
 </div>
 </div><p>实现继承事件路由的方法也是，在调用<code>post()</code>方法是获取事件类型的父类，从<code>Map</code>中查找全部父类并获取<code>Subscriber</code>，分别调用他们的处理方法。</p>
@@ -741,135 +666,135 @@ The event is hello world
 <p><code>post()</code>方法的多线程调用在上述的代码中会产生的问题是，调用<code>post()</code>的线程会执行全部的<code>Subscriber</code>的方法调用，而我们不能保证<code>Subscriber</code>的方法是线程安全的，所以就会产生并发的各种问题。</p>
 <p>第2个问题在于我们不知道使用<code>EventBus</code>的人想要怎样的调用方式，因此我们就需要抽离出这一部分的变化。</p>
 <p>这次我们来看Guava的代码实现，首先是<code>EventBus</code> 中的关键成员</p>
-<div class="highlight"><div style="background-color:#fff;-moz-tab-size:4;-o-tab-size:4;tab-size:4">
-<table style="border-spacing:0;padding:0;margin:0;border:0;width:auto;overflow:auto;display:block;"><tr><td style="vertical-align:top;padding:0;margin:0;border:0;">
-<pre style="background-color:#fff;-moz-tab-size:4;-o-tab-size:4;tab-size:4"><code><span style="margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f"> 1
-</span><span style="margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f"> 2
-</span><span style="margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f"> 3
-</span><span style="margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f"> 4
-</span><span style="margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f"> 5
-</span><span style="margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f"> 6
-</span><span style="margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f"> 7
-</span><span style="margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f"> 8
-</span><span style="margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f"> 9
-</span><span style="margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f">10
-</span><span style="margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f">11
+<div class="highlight"><div class="chroma">
+<table class="lntable"><tr><td class="lntd">
+<pre class="chroma"><code><span class="lnt"> 1
+</span><span class="lnt"> 2
+</span><span class="lnt"> 3
+</span><span class="lnt"> 4
+</span><span class="lnt"> 5
+</span><span class="lnt"> 6
+</span><span class="lnt"> 7
+</span><span class="lnt"> 8
+</span><span class="lnt"> 9
+</span><span class="lnt">10
+</span><span class="lnt">11
 </span></code></pre></td>
-<td style="vertical-align:top;padding:0;margin:0;border:0;;width:100%">
-<pre style="background-color:#fff;-moz-tab-size:4;-o-tab-size:4;tab-size:4"><code class="language-java" data-lang="java"><span style="color:#998;font-style:italic">// EventBus.java中的成员变量
-</span><span style="color:#998;font-style:italic"></span><span style="color:#000;font-weight:bold">public</span> <span style="color:#000;font-weight:bold">class</span> <span style="color:#458;font-weight:bold">EventBus</span> <span style="color:#000;font-weight:bold">{</span>
-    <span style="color:#998;font-style:italic">// 执行器
-</span><span style="color:#998;font-style:italic"></span>    <span style="color:#000;font-weight:bold">private</span> <span style="color:#000;font-weight:bold">final</span> Executor executor<span style="color:#000;font-weight:bold">;</span>
-    <span style="color:#998;font-style:italic">// 异常处理器
-</span><span style="color:#998;font-style:italic"></span>    <span style="color:#000;font-weight:bold">private</span> <span style="color:#000;font-weight:bold">final</span> SubscriberExceptionHandler exceptionHandler<span style="color:#000;font-weight:bold">;</span>
-    <span style="color:#998;font-style:italic">// 订阅者注册机
-</span><span style="color:#998;font-style:italic"></span>    <span style="color:#000;font-weight:bold">private</span> <span style="color:#000;font-weight:bold">final</span> SubscriberRegistry subscribers<span style="color:#000;font-weight:bold">;</span>
-    <span style="color:#998;font-style:italic">// 事件分发器
-</span><span style="color:#998;font-style:italic"></span>    <span style="color:#000;font-weight:bold">private</span> <span style="color:#000;font-weight:bold">final</span> Dispatcher dispatcher<span style="color:#000;font-weight:bold">;</span>
-<span style="color:#000;font-weight:bold">}</span>
+<td class="lntd">
+<pre class="chroma"><code class="language-java" data-lang="java"><span class="c1">// EventBus.java中的成员变量
+</span><span class="c1"></span><span class="kd">public</span> <span class="kd">class</span> <span class="nc">EventBus</span> <span class="o">{</span>
+    <span class="c1">// 执行器
+</span><span class="c1"></span>    <span class="kd">private</span> <span class="kd">final</span> <span class="n">Executor</span> <span class="n">executor</span><span class="o">;</span>
+    <span class="c1">// 异常处理器
+</span><span class="c1"></span>    <span class="kd">private</span> <span class="kd">final</span> <span class="n">SubscriberExceptionHandler</span> <span class="n">exceptionHandler</span><span class="o">;</span>
+    <span class="c1">// 订阅者注册机
+</span><span class="c1"></span>    <span class="kd">private</span> <span class="kd">final</span> <span class="n">SubscriberRegistry</span> <span class="n">subscribers</span><span class="o">;</span>
+    <span class="c1">// 事件分发器
+</span><span class="c1"></span>    <span class="kd">private</span> <span class="kd">final</span> <span class="n">Dispatcher</span> <span class="n">dispatcher</span><span class="o">;</span>
+<span class="o">}</span>
 </code></pre></td></tr></table>
 </div>
 </div><p>这些成员瓜分了<code>EventBus</code>的代码，从名字中也很好理解他们各自的作用。所以，为了弄清楚如何解决<code>subscribe()</code>并发访问带来的问题，我们看一看<code>SubscriberResistry</code>中的相关代码</p>
-<div class="highlight"><div style="background-color:#fff;-moz-tab-size:4;-o-tab-size:4;tab-size:4">
-<table style="border-spacing:0;padding:0;margin:0;border:0;width:auto;overflow:auto;display:block;"><tr><td style="vertical-align:top;padding:0;margin:0;border:0;">
-<pre style="background-color:#fff;-moz-tab-size:4;-o-tab-size:4;tab-size:4"><code><span style="margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f">1
-</span><span style="margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f">2
-</span><span style="margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f">3
-</span><span style="margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f">4
+<div class="highlight"><div class="chroma">
+<table class="lntable"><tr><td class="lntd">
+<pre class="chroma"><code><span class="lnt">1
+</span><span class="lnt">2
+</span><span class="lnt">3
+</span><span class="lnt">4
 </span></code></pre></td>
-<td style="vertical-align:top;padding:0;margin:0;border:0;;width:100%">
-<pre style="background-color:#fff;-moz-tab-size:4;-o-tab-size:4;tab-size:4"><code class="language-java" data-lang="java"><span style="color:#000;font-weight:bold">final</span> <span style="color:#000;font-weight:bold">class</span> <span style="color:#458;font-weight:bold">SubscriberRegistry</span> <span style="color:#000;font-weight:bold">{</span>
-    <span style="color:#998;font-style:italic">// 使用并发数据结构
-</span><span style="color:#998;font-style:italic"></span>    <span style="color:#000;font-weight:bold">private</span> <span style="color:#000;font-weight:bold">final</span> ConcurrentMap<span style="color:#000;font-weight:bold">&lt;</span>Class<span style="color:#000;font-weight:bold">&lt;?&gt;,</span> CopyOnWriteArraySet<span style="color:#000;font-weight:bold">&lt;</span>Subscriber<span style="color:#000;font-weight:bold">&gt;&gt;</span> subscribers <span style="color:#000;font-weight:bold">=</span> Maps<span style="color:#000;font-weight:bold">.</span><span style="color:#008080">newConcurrentMap</span><span style="color:#000;font-weight:bold">();</span>
-<span style="color:#000;font-weight:bold">}</span>
+<td class="lntd">
+<pre class="chroma"><code class="language-java" data-lang="java"><span class="kd">final</span> <span class="kd">class</span> <span class="nc">SubscriberRegistry</span> <span class="o">{</span>
+    <span class="c1">// 使用并发数据结构
+</span><span class="c1"></span>    <span class="kd">private</span> <span class="kd">final</span> <span class="n">ConcurrentMap</span><span class="o">&lt;</span><span class="n">Class</span><span class="o">&lt;?&gt;,</span> <span class="n">CopyOnWriteArraySet</span><span class="o">&lt;</span><span class="n">Subscriber</span><span class="o">&gt;&gt;</span> <span class="n">subscribers</span> <span class="o">=</span> <span class="n">Maps</span><span class="o">.</span><span class="na">newConcurrentMap</span><span class="o">();</span>
+<span class="o">}</span>
 </code></pre></td></tr></table>
 </div>
 </div><p>很显然，Guava将管理<code>Subscriber</code>的数据结构换为了并发数据结构。</p>
 <p>其次，我们来看看<code>post()</code>调用时，如何保证事件的处理方法不会产生冲突</p>
-<div class="highlight"><div style="background-color:#fff;-moz-tab-size:4;-o-tab-size:4;tab-size:4">
-<table style="border-spacing:0;padding:0;margin:0;border:0;width:auto;overflow:auto;display:block;"><tr><td style="vertical-align:top;padding:0;margin:0;border:0;">
-<pre style="background-color:#fff;-moz-tab-size:4;-o-tab-size:4;tab-size:4"><code><span style="margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f"> 1
-</span><span style="margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f"> 2
-</span><span style="margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f"> 3
-</span><span style="margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f"> 4
-</span><span style="margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f"> 5
-</span><span style="margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f"> 6
-</span><span style="margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f"> 7
-</span><span style="margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f"> 8
-</span><span style="margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f"> 9
-</span><span style="margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f">10
-</span><span style="margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f">11
-</span><span style="margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f">12
-</span><span style="margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f">13
-</span><span style="margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f">14
-</span><span style="margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f">15
-</span><span style="margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f">16
-</span><span style="margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f">17
-</span><span style="margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f">18
-</span><span style="margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f">19
-</span><span style="margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f">20
-</span><span style="margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f">21
-</span><span style="margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f">22
-</span><span style="margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f">23
+<div class="highlight"><div class="chroma">
+<table class="lntable"><tr><td class="lntd">
+<pre class="chroma"><code><span class="lnt"> 1
+</span><span class="lnt"> 2
+</span><span class="lnt"> 3
+</span><span class="lnt"> 4
+</span><span class="lnt"> 5
+</span><span class="lnt"> 6
+</span><span class="lnt"> 7
+</span><span class="lnt"> 8
+</span><span class="lnt"> 9
+</span><span class="lnt">10
+</span><span class="lnt">11
+</span><span class="lnt">12
+</span><span class="lnt">13
+</span><span class="lnt">14
+</span><span class="lnt">15
+</span><span class="lnt">16
+</span><span class="lnt">17
+</span><span class="lnt">18
+</span><span class="lnt">19
+</span><span class="lnt">20
+</span><span class="lnt">21
+</span><span class="lnt">22
+</span><span class="lnt">23
 </span></code></pre></td>
-<td style="vertical-align:top;padding:0;margin:0;border:0;;width:100%">
-<pre style="background-color:#fff;-moz-tab-size:4;-o-tab-size:4;tab-size:4"><code class="language-java" data-lang="java"><span style="color:#000;font-weight:bold">class</span> <span style="color:#458;font-weight:bold">Subscriber</span> <span style="color:#000;font-weight:bold">{</span>
-    <span style="color:#998;font-style:italic">// 通过用户给出的方法的线程安全性创建不同的Subscriber实例
-</span><span style="color:#998;font-style:italic"></span>	<span style="color:#000;font-weight:bold">static</span> Subscriber <span style="color:#900;font-weight:bold">create</span><span style="color:#000;font-weight:bold">(</span>EventBus bus<span style="color:#000;font-weight:bold">,</span> Object listener<span style="color:#000;font-weight:bold">,</span> Method method<span style="color:#000;font-weight:bold">)</span> <span style="color:#000;font-weight:bold">{</span>
-        <span style="color:#000;font-weight:bold">return</span> <span style="color:#000;font-weight:bold">(</span>Subscriber<span style="color:#000;font-weight:bold">)(</span>isDeclaredThreadSafe<span style="color:#000;font-weight:bold">(</span>method<span style="color:#000;font-weight:bold">)</span> <span style="color:#000;font-weight:bold">?</span> <span style="color:#000;font-weight:bold">new</span> Subscriber<span style="color:#000;font-weight:bold">(</span>bus<span style="color:#000;font-weight:bold">,</span> listener<span style="color:#000;font-weight:bold">,</span> method<span style="color:#000;font-weight:bold">)</span> <span style="color:#000;font-weight:bold">:</span> <span style="color:#000;font-weight:bold">new</span> Subscriber<span style="color:#000;font-weight:bold">.</span><span style="color:#008080">SynchronizedSubscriber</span><span style="color:#000;font-weight:bold">(</span>bus<span style="color:#000;font-weight:bold">,</span> listener<span style="color:#000;font-weight:bold">,</span> method<span style="color:#000;font-weight:bold">));</span>
-    <span style="color:#000;font-weight:bold">}</span>
-    <span style="color:#998;font-style:italic">// 注册的方法是否通过@AllowConcurrentEvents注解声明为线程安全
-</span><span style="color:#998;font-style:italic"></span>    <span style="color:#000;font-weight:bold">private</span> <span style="color:#000;font-weight:bold">static</span> <span style="color:#458;font-weight:bold">boolean</span> <span style="color:#900;font-weight:bold">isDeclaredThreadSafe</span><span style="color:#000;font-weight:bold">(</span>Method method<span style="color:#000;font-weight:bold">)</span> <span style="color:#000;font-weight:bold">{</span>
-        <span style="color:#000;font-weight:bold">return</span> method<span style="color:#000;font-weight:bold">.</span><span style="color:#008080">getAnnotation</span><span style="color:#000;font-weight:bold">(</span>AllowConcurrentEvents<span style="color:#000;font-weight:bold">.</span><span style="color:#008080">class</span><span style="color:#000;font-weight:bold">)</span> <span style="color:#000;font-weight:bold">!=</span> <span style="color:#000;font-weight:bold">null</span><span style="color:#000;font-weight:bold">;</span>
-    <span style="color:#000;font-weight:bold">}</span>
-    <span style="color:#3c5d5d;font-weight:bold">@VisibleForTesting</span>
-    <span style="color:#998;font-style:italic">// 非线程安全的Subscriber
-</span><span style="color:#998;font-style:italic"></span>    <span style="color:#000;font-weight:bold">static</span> <span style="color:#000;font-weight:bold">final</span> <span style="color:#000;font-weight:bold">class</span> <span style="color:#458;font-weight:bold">SynchronizedSubscriber</span> <span style="color:#000;font-weight:bold">extends</span> Subscriber <span style="color:#000;font-weight:bold">{</span>
-        <span style="color:#000;font-weight:bold">private</span> <span style="color:#900;font-weight:bold">SynchronizedSubscriber</span><span style="color:#000;font-weight:bold">(</span>EventBus bus<span style="color:#000;font-weight:bold">,</span> Object target<span style="color:#000;font-weight:bold">,</span> Method method<span style="color:#000;font-weight:bold">)</span> <span style="color:#000;font-weight:bold">{</span>
-            <span style="color:#000;font-weight:bold">super</span><span style="color:#000;font-weight:bold">(</span>bus<span style="color:#000;font-weight:bold">,</span> target<span style="color:#000;font-weight:bold">,</span> method<span style="color:#000;font-weight:bold">,</span> <span style="color:#000;font-weight:bold">null</span><span style="color:#000;font-weight:bold">);</span>
-        <span style="color:#000;font-weight:bold">}</span>
-        <span style="color:#998;font-style:italic">// 调用前给上个锁
-</span><span style="color:#998;font-style:italic"></span>        <span style="color:#458;font-weight:bold">void</span> <span style="color:#900;font-weight:bold">invokeSubscriberMethod</span><span style="color:#000;font-weight:bold">(</span>Object event<span style="color:#000;font-weight:bold">)</span> <span style="color:#000;font-weight:bold">throws</span> InvocationTargetException <span style="color:#000;font-weight:bold">{</span>
-            <span style="color:#000;font-weight:bold">synchronized</span><span style="color:#000;font-weight:bold">(</span><span style="color:#000;font-weight:bold">this</span><span style="color:#000;font-weight:bold">)</span> <span style="color:#000;font-weight:bold">{</span>
-                <span style="color:#000;font-weight:bold">super</span><span style="color:#000;font-weight:bold">.</span><span style="color:#008080">invokeSubscriberMethod</span><span style="color:#000;font-weight:bold">(</span>event<span style="color:#000;font-weight:bold">);</span>
-            <span style="color:#000;font-weight:bold">}</span>
-        <span style="color:#000;font-weight:bold">}</span>
-    <span style="color:#000;font-weight:bold">}</span>
-<span style="color:#000;font-weight:bold">}</span>
+<td class="lntd">
+<pre class="chroma"><code class="language-java" data-lang="java"><span class="kd">class</span> <span class="nc">Subscriber</span> <span class="o">{</span>
+    <span class="c1">// 通过用户给出的方法的线程安全性创建不同的Subscriber实例
+</span><span class="c1"></span>	<span class="kd">static</span> <span class="n">Subscriber</span> <span class="nf">create</span><span class="o">(</span><span class="n">EventBus</span> <span class="n">bus</span><span class="o">,</span> <span class="n">Object</span> <span class="n">listener</span><span class="o">,</span> <span class="n">Method</span> <span class="n">method</span><span class="o">)</span> <span class="o">{</span>
+        <span class="k">return</span> <span class="o">(</span><span class="n">Subscriber</span><span class="o">)(</span><span class="n">isDeclaredThreadSafe</span><span class="o">(</span><span class="n">method</span><span class="o">)</span> <span class="o">?</span> <span class="k">new</span> <span class="n">Subscriber</span><span class="o">(</span><span class="n">bus</span><span class="o">,</span> <span class="n">listener</span><span class="o">,</span> <span class="n">method</span><span class="o">)</span> <span class="o">:</span> <span class="k">new</span> <span class="n">Subscriber</span><span class="o">.</span><span class="na">SynchronizedSubscriber</span><span class="o">(</span><span class="n">bus</span><span class="o">,</span> <span class="n">listener</span><span class="o">,</span> <span class="n">method</span><span class="o">));</span>
+    <span class="o">}</span>
+    <span class="c1">// 注册的方法是否通过@AllowConcurrentEvents注解声明为线程安全
+</span><span class="c1"></span>    <span class="kd">private</span> <span class="kd">static</span> <span class="kt">boolean</span> <span class="nf">isDeclaredThreadSafe</span><span class="o">(</span><span class="n">Method</span> <span class="n">method</span><span class="o">)</span> <span class="o">{</span>
+        <span class="k">return</span> <span class="n">method</span><span class="o">.</span><span class="na">getAnnotation</span><span class="o">(</span><span class="n">AllowConcurrentEvents</span><span class="o">.</span><span class="na">class</span><span class="o">)</span> <span class="o">!=</span> <span class="kc">null</span><span class="o">;</span>
+    <span class="o">}</span>
+    <span class="nd">@VisibleForTesting</span>
+    <span class="c1">// 非线程安全的Subscriber
+</span><span class="c1"></span>    <span class="kd">static</span> <span class="kd">final</span> <span class="kd">class</span> <span class="nc">SynchronizedSubscriber</span> <span class="kd">extends</span> <span class="n">Subscriber</span> <span class="o">{</span>
+        <span class="kd">private</span> <span class="nf">SynchronizedSubscriber</span><span class="o">(</span><span class="n">EventBus</span> <span class="n">bus</span><span class="o">,</span> <span class="n">Object</span> <span class="n">target</span><span class="o">,</span> <span class="n">Method</span> <span class="n">method</span><span class="o">)</span> <span class="o">{</span>
+            <span class="kd">super</span><span class="o">(</span><span class="n">bus</span><span class="o">,</span> <span class="n">target</span><span class="o">,</span> <span class="n">method</span><span class="o">,</span> <span class="kc">null</span><span class="o">);</span>
+        <span class="o">}</span>
+        <span class="c1">// 调用前给上个锁
+</span><span class="c1"></span>        <span class="kt">void</span> <span class="nf">invokeSubscriberMethod</span><span class="o">(</span><span class="n">Object</span> <span class="n">event</span><span class="o">)</span> <span class="kd">throws</span> <span class="n">InvocationTargetException</span> <span class="o">{</span>
+            <span class="kd">synchronized</span><span class="o">(</span><span class="k">this</span><span class="o">)</span> <span class="o">{</span>
+                <span class="kd">super</span><span class="o">.</span><span class="na">invokeSubscriberMethod</span><span class="o">(</span><span class="n">event</span><span class="o">);</span>
+            <span class="o">}</span>
+        <span class="o">}</span>
+    <span class="o">}</span>
+<span class="o">}</span>
 </code></pre></td></tr></table>
 </div>
 </div><p>Guava在<code>post()</code>方法的线程安全方面，再次通过注解将这一元信息的描述交给了使用者。</p>
 <p>最后，是通过<code>Dispatcher</code>和<code>Executor</code>决定如何分发事件和执行事件，<code>Executor</code>这个接口相信大家都比较熟悉了，而<code>Dispatcher</code>的默认实现Guava给出了3个</p>
-<div class="highlight"><div style="background-color:#fff;-moz-tab-size:4;-o-tab-size:4;tab-size:4">
-<table style="border-spacing:0;padding:0;margin:0;border:0;width:auto;overflow:auto;display:block;"><tr><td style="vertical-align:top;padding:0;margin:0;border:0;">
-<pre style="background-color:#fff;-moz-tab-size:4;-o-tab-size:4;tab-size:4"><code><span style="margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f"> 1
-</span><span style="margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f"> 2
-</span><span style="margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f"> 3
-</span><span style="margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f"> 4
-</span><span style="margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f"> 5
-</span><span style="margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f"> 6
-</span><span style="margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f"> 7
-</span><span style="margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f"> 8
-</span><span style="margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f"> 9
-</span><span style="margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f">10
-</span><span style="margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f">11
-</span><span style="margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f">12
-</span><span style="margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f">13
+<div class="highlight"><div class="chroma">
+<table class="lntable"><tr><td class="lntd">
+<pre class="chroma"><code><span class="lnt"> 1
+</span><span class="lnt"> 2
+</span><span class="lnt"> 3
+</span><span class="lnt"> 4
+</span><span class="lnt"> 5
+</span><span class="lnt"> 6
+</span><span class="lnt"> 7
+</span><span class="lnt"> 8
+</span><span class="lnt"> 9
+</span><span class="lnt">10
+</span><span class="lnt">11
+</span><span class="lnt">12
+</span><span class="lnt">13
 </span></code></pre></td>
-<td style="vertical-align:top;padding:0;margin:0;border:0;;width:100%">
-<pre style="background-color:#fff;-moz-tab-size:4;-o-tab-size:4;tab-size:4"><code class="language-java" data-lang="java"><span style="color:#000;font-weight:bold">abstract</span> <span style="color:#000;font-weight:bold">class</span> <span style="color:#458;font-weight:bold">Dispatcher</span> <span style="color:#000;font-weight:bold">{</span>
-    <span style="color:#000;font-weight:bold">static</span> Dispatcher <span style="color:#900;font-weight:bold">perThreadDispatchQueue</span><span style="color:#000;font-weight:bold">()</span> <span style="color:#000;font-weight:bold">{</span>
-        <span style="color:#000;font-weight:bold">return</span> <span style="color:#000;font-weight:bold">new</span> Dispatcher<span style="color:#000;font-weight:bold">.</span><span style="color:#008080">PerThreadQueuedDispatcher</span><span style="color:#000;font-weight:bold">();</span>
-    <span style="color:#000;font-weight:bold">}</span>
+<td class="lntd">
+<pre class="chroma"><code class="language-java" data-lang="java"><span class="kd">abstract</span> <span class="kd">class</span> <span class="nc">Dispatcher</span> <span class="o">{</span>
+    <span class="kd">static</span> <span class="n">Dispatcher</span> <span class="nf">perThreadDispatchQueue</span><span class="o">()</span> <span class="o">{</span>
+        <span class="k">return</span> <span class="k">new</span> <span class="n">Dispatcher</span><span class="o">.</span><span class="na">PerThreadQueuedDispatcher</span><span class="o">();</span>
+    <span class="o">}</span>
 	
-    <span style="color:#000;font-weight:bold">static</span> Dispatcher <span style="color:#900;font-weight:bold">legacyAsync</span><span style="color:#000;font-weight:bold">()</span> <span style="color:#000;font-weight:bold">{</span>
-        <span style="color:#000;font-weight:bold">return</span> <span style="color:#000;font-weight:bold">new</span> Dispatcher<span style="color:#000;font-weight:bold">.</span><span style="color:#008080">LegacyAsyncDispatcher</span><span style="color:#000;font-weight:bold">();</span>
-    <span style="color:#000;font-weight:bold">}</span>
+    <span class="kd">static</span> <span class="n">Dispatcher</span> <span class="nf">legacyAsync</span><span class="o">()</span> <span class="o">{</span>
+        <span class="k">return</span> <span class="k">new</span> <span class="n">Dispatcher</span><span class="o">.</span><span class="na">LegacyAsyncDispatcher</span><span class="o">();</span>
+    <span class="o">}</span>
 
-    <span style="color:#000;font-weight:bold">static</span> Dispatcher <span style="color:#900;font-weight:bold">immediate</span><span style="color:#000;font-weight:bold">()</span> <span style="color:#000;font-weight:bold">{</span>
-        <span style="color:#000;font-weight:bold">return</span> Dispatcher<span style="color:#000;font-weight:bold">.</span><span style="color:#008080">ImmediateDispatcher</span><span style="color:#000;font-weight:bold">.</span><span style="color:#008080">INSTANCE</span><span style="color:#000;font-weight:bold">;</span>
-    <span style="color:#000;font-weight:bold">}</span>
-<span style="color:#000;font-weight:bold">}</span>
+    <span class="kd">static</span> <span class="n">Dispatcher</span> <span class="nf">immediate</span><span class="o">()</span> <span class="o">{</span>
+        <span class="k">return</span> <span class="n">Dispatcher</span><span class="o">.</span><span class="na">ImmediateDispatcher</span><span class="o">.</span><span class="na">INSTANCE</span><span class="o">;</span>
+    <span class="o">}</span>
+<span class="o">}</span>
 </code></pre></td></tr></table>
 </div>
 </div><p><code>Dispatcher</code>意思是分发器，它决定的是事件的<strong>分发顺序</strong></p>
@@ -879,38 +804,38 @@ The event is hello world
 <p><code>Executor</code>决定了事件分发后的执行线程究竟是谁，可以使用线程池异步去执行事件处理，也可以使用当前线程进行处理，不多赘述了。</p>
 <h2 id="反射和本地缓存-">反射和本地缓存</h2>
 <p>在<code>EventBus</code>的实现中，有几个地方用到了Guava的<code>LoadingCache</code></p>
-<div class="highlight"><div style="background-color:#fff;-moz-tab-size:4;-o-tab-size:4;tab-size:4">
-<table style="border-spacing:0;padding:0;margin:0;border:0;width:auto;overflow:auto;display:block;"><tr><td style="vertical-align:top;padding:0;margin:0;border:0;">
-<pre style="background-color:#fff;-moz-tab-size:4;-o-tab-size:4;tab-size:4"><code><span style="margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f"> 1
-</span><span style="margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f"> 2
-</span><span style="margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f"> 3
-</span><span style="margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f"> 4
-</span><span style="margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f"> 5
-</span><span style="margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f"> 6
-</span><span style="margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f"> 7
-</span><span style="margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f"> 8
-</span><span style="margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f"> 9
-</span><span style="margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f">10
-</span><span style="margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f">11
-</span><span style="margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f">12
-</span><span style="margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f">13
-</span><span style="margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f">14
+<div class="highlight"><div class="chroma">
+<table class="lntable"><tr><td class="lntd">
+<pre class="chroma"><code><span class="lnt"> 1
+</span><span class="lnt"> 2
+</span><span class="lnt"> 3
+</span><span class="lnt"> 4
+</span><span class="lnt"> 5
+</span><span class="lnt"> 6
+</span><span class="lnt"> 7
+</span><span class="lnt"> 8
+</span><span class="lnt"> 9
+</span><span class="lnt">10
+</span><span class="lnt">11
+</span><span class="lnt">12
+</span><span class="lnt">13
+</span><span class="lnt">14
 </span></code></pre></td>
-<td style="vertical-align:top;padding:0;margin:0;border:0;;width:100%">
-<pre style="background-color:#fff;-moz-tab-size:4;-o-tab-size:4;tab-size:4"><code class="language-java" data-lang="java"><span style="color:#000;font-weight:bold">final</span> <span style="color:#000;font-weight:bold">class</span> <span style="color:#458;font-weight:bold">SubscriberRegistry</span> <span style="color:#000;font-weight:bold">{</span>
-    <span style="color:#998;font-style:italic">// 缓存类中的@Subscribe标识的方法
-</span><span style="color:#998;font-style:italic"></span>	<span style="color:#000;font-weight:bold">private</span> <span style="color:#000;font-weight:bold">static</span> <span style="color:#000;font-weight:bold">final</span> LoadingCache<span style="color:#000;font-weight:bold">&lt;</span>Class<span style="color:#000;font-weight:bold">&lt;?&gt;,</span> ImmutableList<span style="color:#000;font-weight:bold">&lt;</span>Method<span style="color:#000;font-weight:bold">&gt;&gt;</span> subscriberMethodsCache <span style="color:#000;font-weight:bold">=</span> CacheBuilder<span style="color:#000;font-weight:bold">.</span><span style="color:#008080">newBuilder</span><span style="color:#000;font-weight:bold">().</span><span style="color:#008080">weakKeys</span><span style="color:#000;font-weight:bold">().</span><span style="color:#008080">build</span><span style="color:#000;font-weight:bold">(</span><span style="color:#000;font-weight:bold">new</span> CacheLoader<span style="color:#000;font-weight:bold">&lt;</span>Class<span style="color:#000;font-weight:bold">&lt;?&gt;,</span> ImmutableList<span style="color:#000;font-weight:bold">&lt;</span>Method<span style="color:#000;font-weight:bold">&gt;&gt;()</span> <span style="color:#000;font-weight:bold">{</span>
-        <span style="color:#000;font-weight:bold">public</span> ImmutableList<span style="color:#000;font-weight:bold">&lt;</span>Method<span style="color:#000;font-weight:bold">&gt;</span> <span style="color:#900;font-weight:bold">load</span><span style="color:#000;font-weight:bold">(</span>Class<span style="color:#000;font-weight:bold">&lt;?&gt;</span> concreteClass<span style="color:#000;font-weight:bold">)</span> <span style="color:#000;font-weight:bold">throws</span> Exception <span style="color:#000;font-weight:bold">{</span>
-            <span style="color:#000;font-weight:bold">return</span> SubscriberRegistry<span style="color:#000;font-weight:bold">.</span><span style="color:#008080">getAnnotatedMethodsNotCached</span><span style="color:#000;font-weight:bold">(</span>concreteClass<span style="color:#000;font-weight:bold">);</span>
-        <span style="color:#000;font-weight:bold">}</span>
-    <span style="color:#000;font-weight:bold">});</span>
-    <span style="color:#998;font-style:italic">// 缓存类和其全部的父类和接口
-</span><span style="color:#998;font-style:italic"></span>    <span style="color:#000;font-weight:bold">private</span> <span style="color:#000;font-weight:bold">static</span> <span style="color:#000;font-weight:bold">final</span> LoadingCache<span style="color:#000;font-weight:bold">&lt;</span>Class<span style="color:#000;font-weight:bold">&lt;?&gt;,</span> ImmutableSet<span style="color:#000;font-weight:bold">&lt;</span>Class<span style="color:#000;font-weight:bold">&lt;?&gt;&gt;&gt;</span> flattenHierarchyCache <span style="color:#000;font-weight:bold">=</span> CacheBuilder<span style="color:#000;font-weight:bold">.</span><span style="color:#008080">newBuilder</span><span style="color:#000;font-weight:bold">().</span><span style="color:#008080">weakKeys</span><span style="color:#000;font-weight:bold">().</span><span style="color:#008080">build</span><span style="color:#000;font-weight:bold">(</span><span style="color:#000;font-weight:bold">new</span> CacheLoader<span style="color:#000;font-weight:bold">&lt;</span>Class<span style="color:#000;font-weight:bold">&lt;?&gt;,</span> ImmutableSet<span style="color:#000;font-weight:bold">&lt;</span>Class<span style="color:#000;font-weight:bold">&lt;?&gt;&gt;&gt;()</span> <span style="color:#000;font-weight:bold">{</span>
-        <span style="color:#000;font-weight:bold">public</span> ImmutableSet<span style="color:#000;font-weight:bold">&lt;</span>Class<span style="color:#000;font-weight:bold">&lt;?&gt;&gt;</span> load<span style="color:#000;font-weight:bold">(</span>Class<span style="color:#000;font-weight:bold">&lt;?&gt;</span> concreteClass<span style="color:#000;font-weight:bold">)</span> <span style="color:#000;font-weight:bold">{</span>
-            <span style="color:#000;font-weight:bold">return</span> ImmutableSet<span style="color:#000;font-weight:bold">.</span><span style="color:#008080">copyOf</span><span style="color:#000;font-weight:bold">(</span>TypeToken<span style="color:#000;font-weight:bold">.</span><span style="color:#008080">of</span><span style="color:#000;font-weight:bold">(</span>concreteClass<span style="color:#000;font-weight:bold">).</span><span style="color:#008080">getTypes</span><span style="color:#000;font-weight:bold">().</span><span style="color:#008080">rawTypes</span><span style="color:#000;font-weight:bold">());</span>
-        <span style="color:#000;font-weight:bold">}</span>
-    <span style="color:#000;font-weight:bold">})</span>
-<span style="color:#000;font-weight:bold">}</span>
+<td class="lntd">
+<pre class="chroma"><code class="language-java" data-lang="java"><span class="kd">final</span> <span class="kd">class</span> <span class="nc">SubscriberRegistry</span> <span class="o">{</span>
+    <span class="c1">// 缓存类中的@Subscribe标识的方法
+</span><span class="c1"></span>	<span class="kd">private</span> <span class="kd">static</span> <span class="kd">final</span> <span class="n">LoadingCache</span><span class="o">&lt;</span><span class="n">Class</span><span class="o">&lt;?&gt;,</span> <span class="n">ImmutableList</span><span class="o">&lt;</span><span class="n">Method</span><span class="o">&gt;&gt;</span> <span class="n">subscriberMethodsCache</span> <span class="o">=</span> <span class="n">CacheBuilder</span><span class="o">.</span><span class="na">newBuilder</span><span class="o">().</span><span class="na">weakKeys</span><span class="o">().</span><span class="na">build</span><span class="o">(</span><span class="k">new</span> <span class="n">CacheLoader</span><span class="o">&lt;</span><span class="n">Class</span><span class="o">&lt;?&gt;,</span> <span class="n">ImmutableList</span><span class="o">&lt;</span><span class="n">Method</span><span class="o">&gt;&gt;()</span> <span class="o">{</span>
+        <span class="kd">public</span> <span class="n">ImmutableList</span><span class="o">&lt;</span><span class="n">Method</span><span class="o">&gt;</span> <span class="nf">load</span><span class="o">(</span><span class="n">Class</span><span class="o">&lt;?&gt;</span> <span class="n">concreteClass</span><span class="o">)</span> <span class="kd">throws</span> <span class="n">Exception</span> <span class="o">{</span>
+            <span class="k">return</span> <span class="n">SubscriberRegistry</span><span class="o">.</span><span class="na">getAnnotatedMethodsNotCached</span><span class="o">(</span><span class="n">concreteClass</span><span class="o">);</span>
+        <span class="o">}</span>
+    <span class="o">});</span>
+    <span class="c1">// 缓存类和其全部的父类和接口
+</span><span class="c1"></span>    <span class="kd">private</span> <span class="kd">static</span> <span class="kd">final</span> <span class="n">LoadingCache</span><span class="o">&lt;</span><span class="n">Class</span><span class="o">&lt;?&gt;,</span> <span class="n">ImmutableSet</span><span class="o">&lt;</span><span class="n">Class</span><span class="o">&lt;?&gt;&gt;&gt;</span> <span class="n">flattenHierarchyCache</span> <span class="o">=</span> <span class="n">CacheBuilder</span><span class="o">.</span><span class="na">newBuilder</span><span class="o">().</span><span class="na">weakKeys</span><span class="o">().</span><span class="na">build</span><span class="o">(</span><span class="k">new</span> <span class="n">CacheLoader</span><span class="o">&lt;</span><span class="n">Class</span><span class="o">&lt;?&gt;,</span> <span class="n">ImmutableSet</span><span class="o">&lt;</span><span class="n">Class</span><span class="o">&lt;?&gt;&gt;&gt;()</span> <span class="o">{</span>
+        <span class="kd">public</span> <span class="n">ImmutableSet</span><span class="o">&lt;</span><span class="n">Class</span><span class="o">&lt;?&gt;&gt;</span> <span class="n">load</span><span class="o">(</span><span class="n">Class</span><span class="o">&lt;?&gt;</span> <span class="n">concreteClass</span><span class="o">)</span> <span class="o">{</span>
+            <span class="k">return</span> <span class="n">ImmutableSet</span><span class="o">.</span><span class="na">copyOf</span><span class="o">(</span><span class="n">TypeToken</span><span class="o">.</span><span class="na">of</span><span class="o">(</span><span class="n">concreteClass</span><span class="o">).</span><span class="na">getTypes</span><span class="o">().</span><span class="na">rawTypes</span><span class="o">());</span>
+        <span class="o">}</span>
+    <span class="o">})</span>
+<span class="o">}</span>
 </code></pre></td></tr></table>
 </div>
 </div><p>这两部分的<code>LoadingCache</code>用于减少反射带来的性能损耗，<code>subscriberMethodsCache</code>可以降低<code>register()</code>的参数为同一个类的对象时多次反射获取方法信息带来的性能损耗。而<code>flattenHierarchyCache</code>是在调用<code>post()</code>时，解析事件类型的继承结构而定义的缓存。</p>
@@ -920,240 +845,100 @@ The event is hello world
 <p>面向对象的设计方法很多都是和设计模式相挂钩，“策略模式”是一个十分典型且有效的设计模式，因而在许多框架和工具中都有体现。而面向对象的另一方面就是封装，我认为“单一职责”这一设计原则有时候很容易被忽略并且不好把握，所以写代码时经常就会出现不应该出现的“全能类”。</p>
 <p>Guava作为类库而言是十分易用的，但内部的实现其实很多时候超乎预想的复杂，需要考虑的细节也比较多，我所写的也没有将之全部包含进去，感兴趣的小伙伴务必自己去看一看。Orz</p>
 
-        </div>
-
-        
-
-
-        
-
-<div class="post-archive">
-    <h2>See Also</h2>
-    <ul class="listing">
-        
-        <li><a href="/post/guava-talk-1/">Guava杂谈 - ComparisonChain</a></li>
-        
-        <li><a href="/post/bash-variable/">bash - 变量及变量操作</a></li>
-        
-        <li><a href="/post/sed/">sed学习笔记</a></li>
-        
-        <li><a href="/post/awk/">awk学习笔记</a></li>
-        
-        <li><a href="/about/">关于我</a></li>
-        
-    </ul>
-</div>
-
-
-        <div class="post-meta meta-tags">
-            
-            <ul class="clearfix">
-                
-                <li><a href='https://ilixiang.github.io/tags/Java'>Java</a></li>
-                
-                <li><a href='https://ilixiang.github.io/tags/Guava'>Guava</a></li>
-                
-                <li><a href='https://ilixiang.github.io/tags/EventBus'>EventBus</a></li>
-                
-            </ul>
-            
-        </div>
-    </article>
-    
-    <div id="disqus_thread"></div>
-<script type="application/javascript">
-    var disqus_config = function () {
-    
-    
-    
-    };
-    (function() {
-        if (["localhost", "127.0.0.1"].indexOf(window.location.hostname) != -1) {
-            document.getElementById('disqus_thread').innerHTML = 'Disqus comments not available by default when the website is previewed locally.';
-            return;
-        }
-        var d = document, s = d.createElement('script'); s.async = true;
-        s.src = '//' + "yourdiscussshortname" + '.disqus.com/embed.js';
-        s.setAttribute('data-timestamp', +new Date());
-        (d.head || d.body).appendChild(s);
-    })();
-</script>
-<noscript>Please enable JavaScript to view the <a href="https://disqus.com/?ref_noscript">comments powered by Disqus.</a></noscript>
-<a href="https://disqus.com" class="dsq-brlink">comments powered by <span class="logo-disqus">Disqus</span></a>
-
-    
-    
-    <div class="post bg-white">
-      <script src="https://utteranc.es/client.js"
-            repo= "your github repo"
-            issue-term="pathname"
-            theme="github-light"
-            crossorigin="anonymous"
-            async>
-      </script>
     </div>
-    
-</div>
 
-                </div>
-
-                <div id="secondary">
-    <section class="widget">
-        <form id="search" action='https://ilixiang.github.io/search/' method="get" accept-charset="utf-8" target="_blank" _lpchecked="1">
-      
-      <input type="text" name="q" maxlength="20" placeholder="Search">
-      <input type="hidden" name="sitesearch" value="https://ilixiang.github.io/">
-      <button type="submit" class="submit icon-search"></button>
-</form>
-    </section>
-    
-    <section class="widget">
-        <h3 class="widget-title">最近文章</h3>
-<ul class="widget-list">
-    
-    <li>
-        <a href="https://ilixiang.github.io/post/java-enum/" title="Java - 枚举">Java - 枚举</a>
-    </li>
-    
-    <li>
-        <a href="https://ilixiang.github.io/post/shiro-1/" title="Apache Shiro - 基本使用和概念">Apache Shiro - 基本使用和概念</a>
-    </li>
-    
-    <li>
-        <a href="https://ilixiang.github.io/post/java-reflection/" title="Java - 反射">Java - 反射</a>
-    </li>
-    
-    <li>
-        <a href="https://ilixiang.github.io/post/regex-note/" title="Regex - 笔记">Regex - 笔记</a>
-    </li>
-    
-    <li>
-        <a href="https://ilixiang.github.io/post/guava-talk-4/" title="Guava杂谈 - ImmutableCollections">Guava杂谈 - ImmutableCollections</a>
-    </li>
-    
-    <li>
-        <a href="https://ilixiang.github.io/post/guava-talk-3/" title="Guava杂谈 - LoadingCache">Guava杂谈 - LoadingCache</a>
-    </li>
-    
-    <li>
-        <a href="https://ilixiang.github.io/post/guava-talk-2/" title="Guava杂谈 - EventBus">Guava杂谈 - EventBus</a>
-    </li>
-    
-    <li>
-        <a href="https://ilixiang.github.io/post/guava-talk-1/" title="Guava杂谈 - ComparisonChain">Guava杂谈 - ComparisonChain</a>
-    </li>
-    
-    <li>
-        <a href="https://ilixiang.github.io/post/bash-variable/" title="bash - 变量及变量操作">bash - 变量及变量操作</a>
-    </li>
-    
-    <li>
-        <a href="https://ilixiang.github.io/post/sed/" title="sed学习笔记">sed学习笔记</a>
-    </li>
-    
-</ul>
-    </section>
-
-    
-
-    <section class="widget">
-        <h3 class="widget-title">分类</h3>
-<ul class="widget-list">
-    
-    <li><a href="https://ilixiang.github.io/categories/Java/">Java (7)</a></li>
-    
-    <li><a href="https://ilixiang.github.io/categories/shell/">shell (4)</a></li>
-    
-</ul>
-    </section>
-
-    <section class="widget">
-        <h3 class="widget-title">标签</h3>
-<div class="tagcloud">
-    
-    <a href="https://ilixiang.github.io/tags/Collection/">Collection</a>
-    
-    <a href="https://ilixiang.github.io/tags/ComparisonChain/">ComparisonChain</a>
-    
-    <a href="https://ilixiang.github.io/tags/EventBus/">EventBus</a>
-    
-    <a href="https://ilixiang.github.io/tags/Guava/">Guava</a>
-    
-    <a href="https://ilixiang.github.io/tags/ImmutableCollection/">ImmutableCollection</a>
-    
-    <a href="https://ilixiang.github.io/tags/Java/">Java</a>
-    
-    <a href="https://ilixiang.github.io/tags/LoadingCache/">LoadingCache</a>
-    
-    <a href="https://ilixiang.github.io/tags/Security/">Security</a>
-    
-    <a href="https://ilixiang.github.io/tags/Shiro/">Shiro</a>
-    
-    <a href="https://ilixiang.github.io/tags/awk/">awk</a>
-    
-    <a href="https://ilixiang.github.io/tags/bash/">bash</a>
-    
-    <a href="https://ilixiang.github.io/tags/enum/">enum</a>
-    
-    <a href="https://ilixiang.github.io/tags/note/">note</a>
-    
-    <a href="https://ilixiang.github.io/tags/reflection/">reflection</a>
-    
-    <a href="https://ilixiang.github.io/tags/regex/">regex</a>
-    
-    <a href="https://ilixiang.github.io/tags/sed/">sed</a>
-    
-    <a href="https://ilixiang.github.io/tags/shell/">shell</a>
-    
-</div>
-    </section>
-
-    
-
-    <section class="widget">
-        <h3 class="widget-title">其它</h3>
-        <ul class="widget-list">
-            <li><a href="https://ilixiang.github.io/index.xml">文章 RSS</a></li>
-        </ul>
-    </section>
-</div>
-            </div>
-        </div>
-    </div>
-    <footer id="footer">
-    <div class="container">
-        &copy; 2020 <a href="https://ilixiang.github.io/">三斜求积术 By 石不转</a>.
-        Powered by <a rel="nofollow noreferer noopener" href="https://gohugo.io" target="_blank">Hugo</a>.
-        <a href="https://www.flysnow.org/" target="_blank">Theme</a> based on <a href="https://github.com/flysnow-org/maupassant-hugo" target="_blank">maupassant</a>.
+    <div class="post-copyright">
+  <p class="copyright-item">
+    <span class="item-title">文章作者</span>
+    <span class="item-content">石不转</span>
+  </p>
+  <p class="copyright-item">
+    <span class="item-title">上次更新</span>
+    <span class="item-content">
+        2020-06-23
         
+    </span>
+  </p>
+  
+  
+</div>
+<footer class="post-footer">
+      <div class="post-tags">
+          <a href="/tags/java/">Java</a>
+          <a href="/tags/guava/">Guava</a>
+          <a href="/tags/eventbus/">EventBus</a>
+          </div>
+      <nav class="post-nav">
+        <a class="prev" href="/post/guava-talk-3/">
+            <i class="iconfont icon-left"></i>
+            <span class="prev-text nav-default">Guava杂谈 - LoadingCache</span>
+            <span class="prev-text nav-mobile">上一篇</span>
+          </a>
+        <a class="next" href="/post/guava-talk-1/">
+            <span class="next-text nav-default">Guava杂谈 - ComparisonChain</span>
+            <span class="next-text nav-mobile">下一篇</span>
+            <i class="iconfont icon-right"></i>
+          </a>
+      </nav>
+    </footer>
+  </article>
+        </div>
+        
+
+  
+
+  
+
+      </div>
+    </main>
+
+    <footer id="footer" class="footer">
+      <div class="social-links">
+  <a href="https://ilixiang.github.io/index.xml" type="application/rss+xml" class="iconfont icon-rss" title="rss"></a>
+</div>
+
+<div class="copyright">
+  <span class="power-by">
+    由 <a class="hexo-link" href="https://gohugo.io">Hugo</a> 强力驱动
+  </span>
+  <span class="division">|</span>
+  <span class="theme-info">
+    主题 - 
+    <a class="theme-link" href="https://github.com/olOwOlo/hugo-theme-even">Even</a>
+  </span>
+
+  
+
+  <span class="copyright-year">
+    &copy; 
+    2020
+    <span class="heart">
+      <i class="iconfont icon-heart"></i>
+    </span>
+    <span class="author">石不转</span>
+  </span>
+</div>
+    </footer>
+
+    <div class="back-to-top" id="back-to-top">
+      <i class="iconfont icon-up"></i>
     </div>
-</footer>
-
-
-    
-    <script type="text/javascript">
-        window.MathJax = {
-            tex2jax: {
-                inlineMath: [['$', '$']],
-                processEscapes: true
-                }
-            };
-    </script>
-    <script src='https://cdnjs.cloudflare.com/ajax/libs/mathjax/2.7.5/MathJax.js?config=TeX-MML-AM_CHTML' async></script>
-
-
-<a id="rocket" href="#top"></a>
-<script type="text/javascript" src='/js/totop.js?v=0.0.0' async=""></script>
+  </div>
+  
+  <script src="https://cdn.jsdelivr.net/npm/jquery@3.2.1/dist/jquery.min.js" integrity="sha256-hwg4gsxgFZhOsEEamdOYGBf13FyQuiTwlAQgxVSNgt4=" crossorigin="anonymous"></script>
+  <script src="https://cdn.jsdelivr.net/npm/slideout@1.0.1/dist/slideout.min.js" integrity="sha256-t+zJ/g8/KXIJMjSVQdnibt4dlaDxc9zXr/9oNPeWqdg=" crossorigin="anonymous"></script>
+  <script src="https://cdn.jsdelivr.net/npm/@fancyapps/fancybox@3.1.20/dist/jquery.fancybox.min.js" integrity="sha256-XVLffZaxoWfGUEbdzuLi7pwaUJv1cecsQJQqGLe7axY=" crossorigin="anonymous"></script>
 
 
 
-    <script type="text/javascript" src="//busuanzi.ibruce.info/busuanzi/2.3/busuanzi.pure.mini.js" async></script>
+<script type="text/javascript" src="/js/main.min.d7b7ada643c9c1a983026e177f141f7363b4640d619caf01d8831a6718cd44ea.js"></script>
 
 
 
 
-    <script src='/js/douban.js'></script>
+
+
+
 
 </body>
-
 </html>

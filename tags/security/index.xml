@@ -1,0 +1,33 @@
+<?xml version="1.0" encoding="utf-8" standalone="yes"?>
+<rss version="2.0" xmlns:atom="http://www.w3.org/2005/Atom">
+  <channel>
+    <title>Security on 三斜求积术 - Code fun. Code better</title>
+    <link>https://ilixiang.github.io/tags/security/</link>
+    <description>Recent content in Security on 三斜求积术 - Code fun. Code better</description>
+    <generator>Hugo -- gohugo.io</generator>
+    <language>en</language>
+    <lastBuildDate>Thu, 06 Aug 2020 15:49:38 +0800</lastBuildDate>
+    
+	<atom:link href="https://ilixiang.github.io/tags/security/index.xml" rel="self" type="application/rss+xml" />
+    
+    
+    <item>
+      <title>Apache Shiro - Realm相关组件接口</title>
+      <link>https://ilixiang.github.io/post/shiro-2/</link>
+      <pubDate>Thu, 06 Aug 2020 15:49:38 +0800</pubDate>
+      
+      <guid>https://ilixiang.github.io/post/shiro-2/</guid>
+      <description>如上篇所言，Realm是用以沟通和获取安全数据的组件，而需要自定义认证过程就需要自己写Realm的实现逻辑，因此我们今天就来看一看Realm</description>
+    </item>
+    
+    <item>
+      <title>Apache Shiro - 基本使用和概念</title>
+      <link>https://ilixiang.github.io/post/shiro-1/</link>
+      <pubDate>Wed, 08 Jul 2020 15:49:38 +0800</pubDate>
+      
+      <guid>https://ilixiang.github.io/post/shiro-1/</guid>
+      <description>提到安全，我的第一反应其实是加密传输，所以在第一次遇到安全框架这个词的时候，我其实并不了解它所真正扮演的角色。 安全框架的主要功能包括4点： 用</description>
+    </item>
+    
+  </channel>
+</rss>

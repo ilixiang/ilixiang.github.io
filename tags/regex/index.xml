@@ -1,12 +1,12 @@
 <?xml version="1.0" encoding="utf-8" standalone="yes"?>
 <rss version="2.0" xmlns:atom="http://www.w3.org/2005/Atom">
   <channel>
-    <title>regex on 三斜求积术</title>
+    <title>regex on 三斜求积术 - Code fun. Code better</title>
     <link>https://ilixiang.github.io/tags/regex/</link>
-    <description>Recent content in regex on 三斜求积术</description>
+    <description>Recent content in regex on 三斜求积术 - Code fun. Code better</description>
     <generator>Hugo -- gohugo.io</generator>
-    <language>zh-CN</language>
-    <lastBuildDate>Fri, 03 Jul 2020 13:29:04 +0800</lastBuildDate>
+    <language>en</language>
+    <lastBuildDate>Mon, 03 Aug 2020 13:29:04 +0800</lastBuildDate>
     
 	<atom:link href="https://ilixiang.github.io/tags/regex/index.xml" rel="self" type="application/rss+xml" />
     
@@ -14,10 +14,10 @@
     <item>
       <title>Regex - 笔记</title>
       <link>https://ilixiang.github.io/post/regex-note/</link>
-      <pubDate>Fri, 03 Jul 2020 13:29:04 +0800</pubDate>
+      <pubDate>Mon, 03 Aug 2020 13:29:04 +0800</pubDate>
       
       <guid>https://ilixiang.github.io/post/regex-note/</guid>
-      <description>POSIX字符集 POSIX ASCII Description [:alnum:] [A-Za-z0-9] 字母和数字 [:alpha:] [A-Za-z] 字母 [:blank:] [ \t] 空白和\t [:cntrl:] [\x00-\x1F\x7F] 控制字符集 [:digit:] [0-9] 数字 [:graph:] [\x21-\x7E] 可见字符 [:lower:] [a-z] 小写字母 [:print:] [\x20-\x7E] 空格和可见字符 [:space:] [ \t\r\n\v\f] 空白集合 [:upper:] [A-Z] 大写字母 [:xdigit:] [A-Fa-f0-9] 十六进制数 表中还有一项[:punct:]表示可见的符号集合，然而里面的符号和markdown语法冲突，因此删掉了，注意一下。 上</description>
+      <description>POSIX字符集 POSIX ASCII Description [:alnum:] [A-Za-z0-9] 字母和数字 [:alpha:] [A-Za-z] 字母 [:blank:] [ \t] 空白和\t [:cntrl:] [\x00-\x1F\x7F] 控制字符集 [:digit:] [0-9] 数字 [:graph:] [\x21-\x7E] 可见字符 [:lower:] [a-z] 小写字母 [:print:] [\x20-\x7E] 空格和可见字符 [:space:] [ \t\r\n\v\f] 空白集合 [:upper:]</description>
     </item>
     
   </channel>

@@ -1,270 +1,188 @@
-<!doctype html>
-<html lang="zh-CN">
+<!DOCTYPE html>
+<html lang="zh-cn">
 <head>
+  <meta charset="utf-8">
+  <meta http-equiv="X-UA-Compatible" content="IE=edge,chrome=1">
+  <title>awk · 三斜求积术 - Code fun. Code better</title>
+  <meta name="renderer" content="webkit" />
+<meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=1"/>
 
-    <meta charset="utf-8">
-    <meta http-equiv="X-UA-Compatible" content="IE=edge">
-    <meta name="viewport" content="width=device-width, initial-scale=1">
+<meta http-equiv="Cache-Control" content="no-transform" />
+<meta http-equiv="Cache-Control" content="no-siteapp" />
 
-    <title>awk | 三斜求积术</title>
-    <meta property="og:title" content="awk - 三斜求积术">
-    <meta property="og:type" content="article">
-        
-        
-    <meta name="Keywords" content="Java、shell、web">
-    <meta name="description" content="awk">
-        
-    <meta name="author" content="石不转">
-    <meta property="og:url" content="https://ilixiang.github.io/tags/awk/">
-    <link rel="shortcut icon" href="/favicon.ico" type="image/x-icon">
-
-    <link rel="stylesheet" href='/css/normalize.css'>
-    <link rel="stylesheet" href='/css/style.css'>
-    <link rel="alternate" type="application/rss+xml+xml" href="https://ilixiang.github.io/tags/awk/index.xml" title="三斜求积术" />
-    <script type="text/javascript" src="//cdnjs.cloudflare.com/ajax/libs/jquery/3.4.1/jquery.min.js"></script>
-
-    
-    <script async src="//pagead2.googlesyndication.com/pagead/js/adsbygoogle.js"></script>
-    <script>
-    (adsbygoogle = window.adsbygoogle || []).push({
-        google_ad_client: "ca-pub-4031353640611810",
-        enable_page_level_ads: true
-    });
-    </script>
-    
+<meta name="theme-color" content="#f8f5ec" />
+<meta name="msapplication-navbutton-color" content="#f8f5ec">
+<meta name="apple-mobile-web-app-capable" content="yes">
+<meta name="apple-mobile-web-app-status-bar-style" content="#f8f5ec">
 
 
-    
-    
-        <link rel="stylesheet" href='/css/douban.css'>
-    
-        <link rel="stylesheet" href='/css/other.css'>
-    
+<meta name="author" content="石不转" /><meta name="description" content="Hugo theme even example site." /><meta name="keywords" content="Hugo, theme, even" />
+
+
+
+
+
+
+<meta name="generator" content="Hugo 0.68.3 with theme even" />
+
+
+<link rel="canonical" href="https://ilixiang.github.io/tags/awk/" />
+  <link href="https://ilixiang.github.io/tags/awk/index.xml" rel="alternate" type="application/rss+xml" title="三斜求积术 - Code fun. Code better" />
+  <link href="https://ilixiang.github.io/tags/awk/index.xml" rel="feed" type="application/rss+xml" title="三斜求积术 - Code fun. Code better" />
+<link rel="apple-touch-icon" sizes="180x180" href="/apple-touch-icon.png">
+<link rel="icon" type="image/png" sizes="32x32" href="/favicon-32x32.png">
+<link rel="icon" type="image/png" sizes="16x16" href="/favicon-16x16.png">
+<link rel="manifest" href="/manifest.json">
+<link rel="mask-icon" href="/safari-pinned-tab.svg" color="#5bbad5">
+
+
+
+<link href="/sass/main.min.651e6917abb0239242daa570c2bec9867267bbcd83646da5a850afe573347b44.css" rel="stylesheet">
+<link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/@fancyapps/fancybox@3.1.20/dist/jquery.fancybox.min.css" integrity="sha256-7TyXnr2YU040zfSP+rEcz29ggW4j56/ujTPwjMzyqFY=" crossorigin="anonymous">
+
+
+<meta property="og:title" content="awk" />
+<meta property="og:description" content="Hugo theme even example site." />
+<meta property="og:type" content="website" />
+<meta property="og:url" content="https://ilixiang.github.io/tags/awk/" />
+<meta property="og:updated_time" content="2020-06-09T23:48:30+08:00" />
+<meta itemprop="name" content="awk">
+<meta itemprop="description" content="Hugo theme even example site."><meta name="twitter:card" content="summary"/>
+<meta name="twitter:title" content="awk"/>
+<meta name="twitter:description" content="Hugo theme even example site."/>
+
+<!--[if lte IE 9]>
+  <script src="https://cdnjs.cloudflare.com/ajax/libs/classlist/1.1.20170427/classList.min.js"></script>
+<![endif]-->
+
+<!--[if lt IE 9]>
+  <script src="https://cdn.jsdelivr.net/npm/html5shiv@3.7.3/dist/html5shiv.min.js"></script>
+  <script src="https://cdn.jsdelivr.net/npm/respond.js@1.4.2/dest/respond.min.js"></script>
+<![endif]-->
+
 </head>
-
-
 <body>
-    <header id="header" class="clearfix">
-    <div class="container">
-        <div class="col-group">
-            <div class="site-name ">
-                
-                    <a id="logo" href="https://ilixiang.github.io/">
-                        三斜求积术
-                    </a>
-                
-                <p class="description">Code for fun. Code for better</p>
-            </div>
-            <div>
-                <nav id="nav-menu" class="clearfix">
-                    <a class="" href="https://ilixiang.github.io/">首页</a>
-                    
-                    <a  href="https://ilixiang.github.io/archives/" title="归档">归档</a>
-                    
-                    <a  href="https://ilixiang.github.io/about/" title="关于">关于</a>
-                    
-                </nav>
-            </div>
-        </div>
-    </div>
-</header>
-
-    <div id="body">
-        <div class="container">
-            <div class="col-group">
-
-                <div class="col-8" id="main">
-                    
-<div class="res-cons">
-    
-    <h3 class="archive-title">
-        包含标签
-        <span class="keyword">awk</span>
-        的文章
-    </h3>
-    
-
-    
-    <article class="post">
-        <header>
-            <h1 class="post-title">
-                <a href="https://ilixiang.github.io/post/awk/">awk学习笔记</a>
-            </h1>
-        </header>
-        <date class="post-meta meta-date">
-            2020年6月9日
-        </date>
-        
-        <div class="post-meta meta-category">
-            |
-            
-            <a href='https://ilixiang.github.io/categories/shell'>shell</a>
-            
-        </div>
-        
-        <div class="post-content">
-            awk、sed以及grep是linux下用于操作文本的3大上古神器，它们操纵文本的侧重点各有不同，但都对正则表达式有着十分完整的支持，因此经常出现在同一场合。 初学乍练 awk在shell中同时作为一个命令和一种脚本语言存在，能够使用它进行操纵的文本格式十分接近表格，即拥有的明确的分……
-            <p class="readmore"><a href="https://ilixiang.github.io/post/awk/">阅读全文</a></p>
-        </div>
-    </article>
-    
-
-    
-
-
-
-
-
+  <div id="mobile-navbar" class="mobile-navbar">
+  <div class="mobile-header-logo">
+    <a href="/" class="logo">三斜求积术</a>
+  </div>
+  <div class="mobile-navbar-icon">
+    <span></span>
+    <span></span>
+    <span></span>
+  </div>
+</div>
+<nav id="mobile-menu" class="mobile-menu slideout-menu">
+  <ul class="mobile-menu-list">
+    <a href="/">
+        <li class="mobile-menu-item">主页</li>
+      </a><a href="/post/">
+        <li class="mobile-menu-item">归档</li>
+      </a><a href="/tags/">
+        <li class="mobile-menu-item">标签</li>
+      </a><a href="/categories/">
+        <li class="mobile-menu-item">分类</li>
+      </a>
+  </ul>
+</nav>
+  <div class="container" id="mobile-panel">
+    <header id="header" class="header">
+        <div class="logo-wrapper">
+  <a href="/" class="logo">三斜求积术</a>
 </div>
 
-                </div>
+<nav class="site-navbar">
+  <ul id="menu" class="menu">
+    <li class="menu-item">
+        <a class="menu-item-link" href="/">主页</a>
+      </li><li class="menu-item">
+        <a class="menu-item-link" href="/post/">归档</a>
+      </li><li class="menu-item">
+        <a class="menu-item-link" href="/tags/">标签</a>
+      </li><li class="menu-item">
+        <a class="menu-item-link" href="/categories/">分类</a>
+      </li>
+  </ul>
+</nav>
+    </header>
 
-                <div id="secondary">
-    <section class="widget">
-        <form id="search" action='https://ilixiang.github.io/search/' method="get" accept-charset="utf-8" target="_blank" _lpchecked="1">
-      
-      <input type="text" name="q" maxlength="20" placeholder="Search">
-      <input type="hidden" name="sitesearch" value="https://ilixiang.github.io/">
-      <button type="submit" class="submit icon-search"></button>
-</form>
-    </section>
-    
-    <section class="widget">
-        <h3 class="widget-title">最近文章</h3>
-<ul class="widget-list">
-    
-    <li>
-        <a href="https://ilixiang.github.io/post/java-enum/" title="Java - 枚举">Java - 枚举</a>
-    </li>
-    
-    <li>
-        <a href="https://ilixiang.github.io/post/shiro-1/" title="Apache Shiro - 基本使用和概念">Apache Shiro - 基本使用和概念</a>
-    </li>
-    
-    <li>
-        <a href="https://ilixiang.github.io/post/java-reflection/" title="Java - 反射">Java - 反射</a>
-    </li>
-    
-    <li>
-        <a href="https://ilixiang.github.io/post/regex-note/" title="Regex - 笔记">Regex - 笔记</a>
-    </li>
-    
-    <li>
-        <a href="https://ilixiang.github.io/post/guava-talk-4/" title="Guava杂谈 - ImmutableCollections">Guava杂谈 - ImmutableCollections</a>
-    </li>
-    
-    <li>
-        <a href="https://ilixiang.github.io/post/guava-talk-3/" title="Guava杂谈 - LoadingCache">Guava杂谈 - LoadingCache</a>
-    </li>
-    
-    <li>
-        <a href="https://ilixiang.github.io/post/guava-talk-2/" title="Guava杂谈 - EventBus">Guava杂谈 - EventBus</a>
-    </li>
-    
-    <li>
-        <a href="https://ilixiang.github.io/post/guava-talk-1/" title="Guava杂谈 - ComparisonChain">Guava杂谈 - ComparisonChain</a>
-    </li>
-    
-    <li>
-        <a href="https://ilixiang.github.io/post/bash-variable/" title="bash - 变量及变量操作">bash - 变量及变量操作</a>
-    </li>
-    
-    <li>
-        <a href="https://ilixiang.github.io/post/sed/" title="sed学习笔记">sed学习笔记</a>
-    </li>
-    
-</ul>
-    </section>
+    <main id="main" class="main">
+      <div class="content-wrapper">
+        <div id="content" class="content">
+          <section id="archive" class="archive">
+  <div class="archive-title tag">
+        <h2 class="archive-name">awk</h2>
+      </div>
 
-    
+  <div class="archive-post">
+      <span class="archive-post-time">
+        2020-06-09
+      </span>
+      <span class="archive-post-title">
+        <a href="/post/awk/" class="archive-post-link">
+          awk学习笔记
+        </a>
+      </span>
+    </div>
+</section>
 
-    <section class="widget">
-        <h3 class="widget-title">分类</h3>
-<ul class="widget-list">
-    
-    <li><a href="https://ilixiang.github.io/categories/Java/">Java (7)</a></li>
-    
-    <li><a href="https://ilixiang.github.io/categories/shell/">shell (4)</a></li>
-    
-</ul>
-    </section>
-
-    <section class="widget">
-        <h3 class="widget-title">标签</h3>
-<div class="tagcloud">
-    
-    <a href="https://ilixiang.github.io/tags/Collection/">Collection</a>
-    
-    <a href="https://ilixiang.github.io/tags/ComparisonChain/">ComparisonChain</a>
-    
-    <a href="https://ilixiang.github.io/tags/EventBus/">EventBus</a>
-    
-    <a href="https://ilixiang.github.io/tags/Guava/">Guava</a>
-    
-    <a href="https://ilixiang.github.io/tags/ImmutableCollection/">ImmutableCollection</a>
-    
-    <a href="https://ilixiang.github.io/tags/Java/">Java</a>
-    
-    <a href="https://ilixiang.github.io/tags/LoadingCache/">LoadingCache</a>
-    
-    <a href="https://ilixiang.github.io/tags/Security/">Security</a>
-    
-    <a href="https://ilixiang.github.io/tags/Shiro/">Shiro</a>
-    
-    <a href="https://ilixiang.github.io/tags/awk/">awk</a>
-    
-    <a href="https://ilixiang.github.io/tags/bash/">bash</a>
-    
-    <a href="https://ilixiang.github.io/tags/enum/">enum</a>
-    
-    <a href="https://ilixiang.github.io/tags/note/">note</a>
-    
-    <a href="https://ilixiang.github.io/tags/reflection/">reflection</a>
-    
-    <a href="https://ilixiang.github.io/tags/regex/">regex</a>
-    
-    <a href="https://ilixiang.github.io/tags/sed/">sed</a>
-    
-    <a href="https://ilixiang.github.io/tags/shell/">shell</a>
-    
-</div>
-    </section>
-
-    
-
-    <section class="widget">
-        <h3 class="widget-title">其它</h3>
-        <ul class="widget-list">
-            <li><a href="https://ilixiang.github.io/index.xml">文章 RSS</a></li>
-        </ul>
-    </section>
-</div>
-            </div>
+<nav class="pagination">
+  
+  
+</nav>
         </div>
-    </div>
-    <footer id="footer">
-    <div class="container">
-        &copy; 2020 <a href="https://ilixiang.github.io/">三斜求积术 By 石不转</a>.
-        Powered by <a rel="nofollow noreferer noopener" href="https://gohugo.io" target="_blank">Hugo</a>.
-        <a href="https://www.flysnow.org/" target="_blank">Theme</a> based on <a href="https://github.com/flysnow-org/maupassant-hugo" target="_blank">maupassant</a>.
         
+
+      </div>
+    </main>
+
+    <footer id="footer" class="footer">
+      <div class="social-links">
+  <a href="https://ilixiang.github.io/index.xml" type="application/rss+xml" class="iconfont icon-rss" title="rss"></a>
+</div>
+
+<div class="copyright">
+  <span class="power-by">
+    由 <a class="hexo-link" href="https://gohugo.io">Hugo</a> 强力驱动
+  </span>
+  <span class="division">|</span>
+  <span class="theme-info">
+    主题 - 
+    <a class="theme-link" href="https://github.com/olOwOlo/hugo-theme-even">Even</a>
+  </span>
+
+  
+
+  <span class="copyright-year">
+    &copy; 
+    2020
+    <span class="heart">
+      <i class="iconfont icon-heart"></i>
+    </span>
+    <span class="author">石不转</span>
+  </span>
+</div>
+    </footer>
+
+    <div class="back-to-top" id="back-to-top">
+      <i class="iconfont icon-up"></i>
     </div>
-</footer>
+  </div>
+  
+  <script src="https://cdn.jsdelivr.net/npm/jquery@3.2.1/dist/jquery.min.js" integrity="sha256-hwg4gsxgFZhOsEEamdOYGBf13FyQuiTwlAQgxVSNgt4=" crossorigin="anonymous"></script>
+  <script src="https://cdn.jsdelivr.net/npm/slideout@1.0.1/dist/slideout.min.js" integrity="sha256-t+zJ/g8/KXIJMjSVQdnibt4dlaDxc9zXr/9oNPeWqdg=" crossorigin="anonymous"></script>
+  <script src="https://cdn.jsdelivr.net/npm/@fancyapps/fancybox@3.1.20/dist/jquery.fancybox.min.js" integrity="sha256-XVLffZaxoWfGUEbdzuLi7pwaUJv1cecsQJQqGLe7axY=" crossorigin="anonymous"></script>
 
 
 
-<a id="rocket" href="#top"></a>
-<script type="text/javascript" src='/js/totop.js?v=0.0.0' async=""></script>
-
-
-
-    <script type="text/javascript" src="//busuanzi.ibruce.info/busuanzi/2.3/busuanzi.pure.mini.js" async></script>
+<script type="text/javascript" src="/js/main.min.d7b7ada643c9c1a983026e177f141f7363b4640d619caf01d8831a6718cd44ea.js"></script>
 
 
 
 
-    <script src='/js/douban.js'></script>
+
+
+
 
 </body>
-
 </html>
