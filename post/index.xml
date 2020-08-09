@@ -1,15 +1,24 @@
 <?xml version="1.0" encoding="utf-8" standalone="yes"?>
 <rss version="2.0" xmlns:atom="http://www.w3.org/2005/Atom">
   <channel>
-    <title>Posts on 三斜求积术 - Code fun. Code better</title>
+    <title>Posts on Antithesis - Code fun. Code better</title>
     <link>https://ilixiang.github.io/post/</link>
-    <description>Recent content in Posts on 三斜求积术 - Code fun. Code better</description>
+    <description>Recent content in Posts on Antithesis - Code fun. Code better</description>
     <generator>Hugo -- gohugo.io</generator>
     <language>en</language>
-    <lastBuildDate>Thu, 06 Aug 2020 15:49:38 +0800</lastBuildDate>
+    <lastBuildDate>Sat, 08 Aug 2020 21:21:47 +0800</lastBuildDate>
     
 	<atom:link href="https://ilixiang.github.io/post/index.xml" rel="self" type="application/rss+xml" />
     
+    
+    <item>
+      <title>Python - 基础笔记</title>
+      <link>https://ilixiang.github.io/post/python-note-1/</link>
+      <pubDate>Sat, 08 Aug 2020 21:21:47 +0800</pubDate>
+      
+      <guid>https://ilixiang.github.io/post/python-note-1/</guid>
+      <description>近年来python的使用越来越广，其最大的特点是简洁的代码和庞大的工具库，因此能够通过简短的代码完成复杂的功能。目前而言，我学习python</description>
+    </item>
     
     <item>
       <title>Apache Shiro - Realm相关组件接口</title>

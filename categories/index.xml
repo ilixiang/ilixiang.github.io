@@ -1,15 +1,24 @@
 <?xml version="1.0" encoding="utf-8" standalone="yes"?>
 <rss version="2.0" xmlns:atom="http://www.w3.org/2005/Atom">
   <channel>
-    <title>Categories on 三斜求积术 - Code fun. Code better</title>
+    <title>Categories on Antithesis - Code fun. Code better</title>
     <link>https://ilixiang.github.io/categories/</link>
-    <description>Recent content in Categories on 三斜求积术 - Code fun. Code better</description>
+    <description>Recent content in Categories on Antithesis - Code fun. Code better</description>
     <generator>Hugo -- gohugo.io</generator>
     <language>en</language>
-    <lastBuildDate>Thu, 06 Aug 2020 15:49:38 +0800</lastBuildDate>
+    <lastBuildDate>Sat, 08 Aug 2020 21:21:47 +0800</lastBuildDate>
     
 	<atom:link href="https://ilixiang.github.io/categories/index.xml" rel="self" type="application/rss+xml" />
     
+    
+    <item>
+      <title>python</title>
+      <link>https://ilixiang.github.io/categories/python/</link>
+      <pubDate>Sat, 08 Aug 2020 21:21:47 +0800</pubDate>
+      
+      <guid>https://ilixiang.github.io/categories/python/</guid>
+      <description></description>
+    </item>
     
     <item>
       <title>Java</title>

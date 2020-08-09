@@ -1,0 +1,850 @@
+<!DOCTYPE html>
+<html lang="zh-cn">
+<head>
+  <meta charset="utf-8">
+  <meta http-equiv="X-UA-Compatible" content="IE=edge,chrome=1">
+  <title>Python - 基础笔记 - Antithesis - Code fun. Code better</title>
+  <meta name="renderer" content="webkit" />
+<meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=1"/>
+
+<meta http-equiv="Cache-Control" content="no-transform" />
+<meta http-equiv="Cache-Control" content="no-siteapp" />
+
+<meta name="theme-color" content="#f8f5ec" />
+<meta name="msapplication-navbutton-color" content="#f8f5ec">
+<meta name="apple-mobile-web-app-capable" content="yes">
+<meta name="apple-mobile-web-app-status-bar-style" content="#f8f5ec">
+
+
+<meta name="author" content="石不转" /><meta name="description" content="近年来python的使用越来越广，其最大的特点是简洁的代码和庞大的工具库，因此能够通过简短的代码完成复杂的功能。目前而言，我学习python" /><meta name="keywords" content="Hugo, theme, even" />
+
+
+
+
+
+
+<meta name="generator" content="Hugo 0.68.3 with theme even" />
+
+
+<link rel="canonical" href="https://ilixiang.github.io/post/python-note-1/" />
+<link rel="apple-touch-icon" sizes="180x180" href="/apple-touch-icon.png">
+<link rel="icon" type="image/png" sizes="32x32" href="/favicon-32x32.png">
+<link rel="icon" type="image/png" sizes="16x16" href="/favicon-16x16.png">
+<link rel="manifest" href="/manifest.json">
+<link rel="mask-icon" href="/safari-pinned-tab.svg" color="#5bbad5">
+
+
+
+<link href="/sass/main.min.651e6917abb0239242daa570c2bec9867267bbcd83646da5a850afe573347b44.css" rel="stylesheet">
+<link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/@fancyapps/fancybox@3.1.20/dist/jquery.fancybox.min.css" integrity="sha256-7TyXnr2YU040zfSP+rEcz29ggW4j56/ujTPwjMzyqFY=" crossorigin="anonymous">
+
+
+<meta property="og:title" content="Python - 基础笔记" />
+<meta property="og:description" content="近年来python的使用越来越广，其最大的特点是简洁的代码和庞大的工具库，因此能够通过简短的代码完成复杂的功能。目前而言，我学习python" />
+<meta property="og:type" content="article" />
+<meta property="og:url" content="https://ilixiang.github.io/post/python-note-1/" />
+<meta property="article:published_time" content="2020-08-08T21:21:47+08:00" />
+<meta property="article:modified_time" content="2020-08-08T21:21:47+08:00" />
+<meta itemprop="name" content="Python - 基础笔记">
+<meta itemprop="description" content="近年来python的使用越来越广，其最大的特点是简洁的代码和庞大的工具库，因此能够通过简短的代码完成复杂的功能。目前而言，我学习python">
+<meta itemprop="datePublished" content="2020-08-08T21:21:47&#43;08:00" />
+<meta itemprop="dateModified" content="2020-08-08T21:21:47&#43;08:00" />
+<meta itemprop="wordCount" content="2942">
+
+
+
+<meta itemprop="keywords" content="python,note," /><meta name="twitter:card" content="summary"/>
+<meta name="twitter:title" content="Python - 基础笔记"/>
+<meta name="twitter:description" content="近年来python的使用越来越广，其最大的特点是简洁的代码和庞大的工具库，因此能够通过简短的代码完成复杂的功能。目前而言，我学习python"/>
+
+<!--[if lte IE 9]>
+  <script src="https://cdnjs.cloudflare.com/ajax/libs/classlist/1.1.20170427/classList.min.js"></script>
+<![endif]-->
+
+<!--[if lt IE 9]>
+  <script src="https://cdn.jsdelivr.net/npm/html5shiv@3.7.3/dist/html5shiv.min.js"></script>
+  <script src="https://cdn.jsdelivr.net/npm/respond.js@1.4.2/dest/respond.min.js"></script>
+<![endif]-->
+
+</head>
+<body>
+  <div id="mobile-navbar" class="mobile-navbar">
+  <div class="mobile-header-logo">
+    <a href="/" class="logo">Antithesis</a>
+  </div>
+  <div class="mobile-navbar-icon">
+    <span></span>
+    <span></span>
+    <span></span>
+  </div>
+</div>
+<nav id="mobile-menu" class="mobile-menu slideout-menu">
+  <ul class="mobile-menu-list">
+    <a href="/">
+        <li class="mobile-menu-item">Home</li>
+      </a><a href="/post/">
+        <li class="mobile-menu-item">Archive</li>
+      </a><a href="/tags/">
+        <li class="mobile-menu-item">Tag</li>
+      </a><a href="/categories/">
+        <li class="mobile-menu-item">Category</li>
+      </a>
+  </ul>
+</nav>
+  <div class="container" id="mobile-panel">
+    <header id="header" class="header">
+        <div class="logo-wrapper">
+  <a href="/" class="logo">Antithesis</a>
+</div>
+
+<nav class="site-navbar">
+  <ul id="menu" class="menu">
+    <li class="menu-item">
+        <a class="menu-item-link" href="/">Home</a>
+      </li><li class="menu-item">
+        <a class="menu-item-link" href="/post/">Archive</a>
+      </li><li class="menu-item">
+        <a class="menu-item-link" href="/tags/">Tag</a>
+      </li><li class="menu-item">
+        <a class="menu-item-link" href="/categories/">Category</a>
+      </li>
+  </ul>
+</nav>
+    </header>
+
+    <main id="main" class="main">
+      <div class="content-wrapper">
+        <div id="content" class="content">
+          <article class="post">
+    
+    <header class="post-header">
+      <h1 class="post-title">Python - 基础笔记</h1>
+
+      <div class="post-meta">
+        <span class="post-time"> 2020-08-08 </span>
+        <div class="post-category">
+            <a href="/categories/python/"> python </a>
+            </div>
+        
+      </div>
+    </header>
+
+    
+    <div class="post-content">
+      <p><img src="/img/python-logo.png" alt="python-logo"></p>
+<p>近年来python的使用越来越广，其最大的特点是简洁的代码和庞大的工具库，因此能够通过简短的代码完成复杂的功能。目前而言，我学习python的主要原因是为了在弥补shell解决某些问题比较困难；其次，通过学习语言更多了解编程范式和设计思想；最后，学习python也能为了以后接触和学习其他领域做准备。</p>
+<p>记下这篇的主要原因是平时python的使用极少，因而常在学习和忘记的状态反复横跳，所以记下一些自己常忘记的语法和操作。</p>
+<h2 id="1-基本语法">1 基本语法</h2>
+<h3 id="11-操作符">1.1 操作符</h3>
+<ol>
+<li>
+<p>三元操作符</p>
+<div class="highlight"><div class="chroma">
+<table class="lntable"><tr><td class="lntd">
+<pre class="chroma"><code><span class="lnt">1
+</span></code></pre></td>
+<td class="lntd">
+<pre class="chroma"><code class="language-python" data-lang="python"><span class="nb">min</span> <span class="o">=</span> <span class="n">a</span> <span class="k">if</span> <span class="n">a</span> <span class="o">&lt;</span> <span class="n">b</span> <span class="k">else</span> <span class="n">b</span>
+</code></pre></td></tr></table>
+</div>
+</div></li>
+<li>
+<p><code>in</code>、<code>not in</code></p>
+<div class="highlight"><div class="chroma">
+<table class="lntable"><tr><td class="lntd">
+<pre class="chroma"><code><span class="lnt">1
+</span><span class="lnt">2
+</span><span class="lnt">3
+</span><span class="lnt">4
+</span><span class="lnt">5
+</span><span class="lnt">6
+</span><span class="lnt">7
+</span><span class="lnt">8
+</span></code></pre></td>
+<td class="lntd">
+<pre class="chroma"><code class="language-python" data-lang="python"><span class="c1"># 集合迭代</span>
+<span class="k">for</span> <span class="n">item</span> <span class="ow">in</span> <span class="n">items</span><span class="p">:</span>
+    <span class="k">print</span><span class="p">(</span><span class="n">item</span><span class="p">)</span>
+<span class="c1"># 条件判断</span>
+<span class="k">if</span> <span class="n">item</span> <span class="ow">in</span> <span class="n">items</span><span class="p">:</span>
+    <span class="k">print</span><span class="p">(</span><span class="bp">True</span><span class="p">)</span>
+<span class="k">if</span> <span class="n">item</span> <span class="ow">not</span> <span class="ow">in</span> <span class="n">items</span><span class="p">:</span>
+    <span class="k">print</span><span class="p">(</span><span class="bp">False</span><span class="p">)</span>
+</code></pre></td></tr></table>
+</div>
+</div></li>
+<li>
+<p><code>is</code>、<code>is not</code></p>
+<div class="highlight"><div class="chroma">
+<table class="lntable"><tr><td class="lntd">
+<pre class="chroma"><code><span class="lnt">1
+</span><span class="lnt">2
+</span><span class="lnt">3
+</span><span class="lnt">4
+</span><span class="lnt">5
+</span><span class="lnt">6
+</span><span class="lnt">7
+</span></code></pre></td>
+<td class="lntd">
+<pre class="chroma"><code class="language-python" data-lang="python"><span class="c1"># 类型判断</span>
+<span class="n">a</span> <span class="o">=</span> <span class="mi">3</span>
+<span class="c1"># type(a)用于获取a的类型</span>
+<span class="k">if</span> <span class="nb">type</span><span class="p">(</span><span class="n">a</span><span class="p">)</span> <span class="ow">is</span> <span class="nb">int</span><span class="p">:</span>
+    <span class="k">print</span><span class="p">(</span><span class="bp">True</span><span class="p">)</span>
+<span class="k">if</span> <span class="nb">type</span><span class="p">(</span><span class="n">a</span><span class="p">)</span> <span class="ow">is</span> <span class="ow">not</span> <span class="nb">int</span><span class="p">:</span>
+    <span class="k">print</span><span class="p">(</span><span class="bp">False</span><span class="p">)</span>
+</code></pre></td></tr></table>
+</div>
+</div></li>
+</ol>
+<h3 id="12-函数">1.2 函数</h3>
+<h4 id="121-可变参数">1.2.1 可变参数</h4>
+<div class="highlight"><div class="chroma">
+<table class="lntable"><tr><td class="lntd">
+<pre class="chroma"><code><span class="lnt">1
+</span><span class="lnt">2
+</span><span class="lnt">3
+</span><span class="lnt">4
+</span><span class="lnt">5
+</span><span class="lnt">6
+</span><span class="lnt">7
+</span><span class="lnt">8
+</span><span class="lnt">9
+</span></code></pre></td>
+<td class="lntd">
+<pre class="chroma"><code class="language-python" data-lang="python"><span class="k">def</span> <span class="nf">func</span><span class="p">(</span><span class="o">*</span><span class="n">args</span><span class="p">):</span>
+    <span class="k">for</span> <span class="n">arg</span> <span class="ow">in</span> <span class="n">args</span><span class="p">:</span>
+        <span class="k">print</span><span class="p">(</span><span class="n">arg</span><span class="p">)</span>
+        
+<span class="n">func</span><span class="p">(</span><span class="mi">1</span><span class="p">,</span> <span class="mi">2</span><span class="p">)</span>
+<span class="s1">&#39;&#39;&#39;输出 
+</span><span class="s1">1
+</span><span class="s1">2
+</span><span class="s1">&#39;&#39;&#39;</span> 
+</code></pre></td></tr></table>
+</div>
+</div><p>可变参数实际是将所有参数组成一个<code>tuple</code>，因此可以使用任何<code>tuple</code>操作</p>
+<p>可变参数需要在所有普通参数的<strong>后面</strong>，否则无法判断那些参数是可变的</p>
+<h4 id="122-关键字参数">1.2.2 关键字参数</h4>
+<div class="highlight"><div class="chroma">
+<table class="lntable"><tr><td class="lntd">
+<pre class="chroma"><code><span class="lnt"> 1
+</span><span class="lnt"> 2
+</span><span class="lnt"> 3
+</span><span class="lnt"> 4
+</span><span class="lnt"> 5
+</span><span class="lnt"> 6
+</span><span class="lnt"> 7
+</span><span class="lnt"> 8
+</span><span class="lnt"> 9
+</span><span class="lnt">10
+</span><span class="lnt">11
+</span></code></pre></td>
+<td class="lntd">
+<pre class="chroma"><code class="language-python" data-lang="python"><span class="k">def</span> <span class="nf">func</span><span class="p">(</span><span class="o">**</span><span class="n">kwargs</span><span class="p">):</span>
+    <span class="k">for</span> <span class="n">key</span><span class="p">,</span> <span class="n">value</span> <span class="ow">in</span> <span class="n">kwargs</span><span class="o">.</span><span class="n">items</span><span class="p">():</span>
+        <span class="k">print</span><span class="p">(</span><span class="n">key</span> <span class="o">+</span> <span class="s2">&#34;:&#34;</span> <span class="o">+</span> <span class="n">value</span><span class="p">)</span>
+    <span class="k">print</span><span class="p">(</span><span class="nb">type</span><span class="p">(</span><span class="n">kwargs</span><span class="p">))</span>
+
+<span class="n">func</span><span class="p">(</span><span class="n">first</span> <span class="o">=</span> <span class="s1">&#39;1&#39;</span><span class="p">,</span> <span class="n">second</span> <span class="o">=</span> <span class="s1">&#39;2&#39;</span><span class="p">)</span>
+<span class="s1">&#39;&#39;&#39;输出
+</span><span class="s1">first:1
+</span><span class="s1">second:2
+</span><span class="s1">&lt;class &#39;dict&#39;&gt;
+</span><span class="s1">&#39;&#39;&#39;</span>
+</code></pre></td></tr></table>
+</div>
+</div><p>关键字参数通过键值对传递</p>
+<p>关键字参数实际上是一个字典</p>
+<h4 id="123-yield和生成器">1.2.3 <code>yield</code>和生成器</h4>
+<div class="highlight"><div class="chroma">
+<table class="lntable"><tr><td class="lntd">
+<pre class="chroma"><code><span class="lnt"> 1
+</span><span class="lnt"> 2
+</span><span class="lnt"> 3
+</span><span class="lnt"> 4
+</span><span class="lnt"> 5
+</span><span class="lnt"> 6
+</span><span class="lnt"> 7
+</span><span class="lnt"> 8
+</span><span class="lnt"> 9
+</span><span class="lnt">10
+</span><span class="lnt">11
+</span></code></pre></td>
+<td class="lntd">
+<pre class="chroma"><code class="language-python" data-lang="python"><span class="k">def</span> <span class="nf">func</span><span class="p">():</span>
+    <span class="k">yield</span> <span class="mi">1</span>
+    <span class="k">yield</span> <span class="mi">2</span>
+    <span class="k">yield</span> <span class="mi">3</span>
+<span class="n">g</span> <span class="o">=</span> <span class="n">func</span><span class="p">()</span>
+<span class="n">g</span><span class="o">.</span><span class="n">next</span><span class="p">()</span>
+<span class="n">g</span><span class="o">.</span><span class="n">next</span><span class="p">()</span>
+<span class="s1">&#39;&#39;&#39;输出
+</span><span class="s1">1
+</span><span class="s1">2
+</span><span class="s1">&#39;&#39;&#39;</span>
+</code></pre></td></tr></table>
+</div>
+</div><p><code>yield</code>是python中的关键字，如果函数中使用了它，那么调用函数得到的就是一个<strong>生成器</strong>而并非返回值</p>
+<p>生成器可以通过调用<code>next()</code>从上次<code>yield</code>返回的地发继续执行</p>
+<p>生成器的特点有：</p>
+<ol>
+<li>惰性求值，仅在每次调用<code>next()</code>的时候求取下一个值，内存友好</li>
+<li>能够无限返回，这一点是普通函数做不到的</li>
+</ol>
+<h4 id="124-lambda表达式">1.2.4 lambda表达式</h4>
+<div class="highlight"><div class="chroma">
+<table class="lntable"><tr><td class="lntd">
+<pre class="chroma"><code><span class="lnt">1
+</span><span class="lnt">2
+</span><span class="lnt">3
+</span><span class="lnt">4
+</span><span class="lnt">5
+</span></code></pre></td>
+<td class="lntd">
+<pre class="chroma"><code class="language-python" data-lang="python"><span class="n">a</span> <span class="o">=</span> <span class="k">lambda</span> <span class="n">x</span> <span class="p">:</span> <span class="n">x</span><span class="o">*</span><span class="n">x</span>
+<span class="n">a</span><span class="p">(</span><span class="mi">2</span><span class="p">)</span>
+<span class="s1">&#39;&#39;&#39;输出
+</span><span class="s1">4
+</span><span class="s1">&#39;&#39;&#39;</span>
+</code></pre></td></tr></table>
+</div>
+</div><p>python中的lambda表达式语法为<code>lambda params : expression</code></p>
+<p>python中的lambda表达式原则上只能拥有一行代码，如果有多行建议定义为函数</p>
+<p>由于python是动态类型语言，因此lambda表达式作为变量、参数、返回值传递都十分方便</p>
+<h4 id="125-装饰器">1.2.5 装饰器</h4>
+<div class="highlight"><div class="chroma">
+<table class="lntable"><tr><td class="lntd">
+<pre class="chroma"><code><span class="lnt"> 1
+</span><span class="lnt"> 2
+</span><span class="lnt"> 3
+</span><span class="lnt"> 4
+</span><span class="lnt"> 5
+</span><span class="lnt"> 6
+</span><span class="lnt"> 7
+</span><span class="lnt"> 8
+</span><span class="lnt"> 9
+</span><span class="lnt">10
+</span><span class="lnt">11
+</span><span class="lnt">12
+</span><span class="lnt">13
+</span><span class="lnt">14
+</span><span class="lnt">15
+</span><span class="lnt">16
+</span></code></pre></td>
+<td class="lntd">
+<pre class="chroma"><code class="language-python" data-lang="python"><span class="k">def</span> <span class="nf">decorateFunc</span><span class="p">(</span><span class="n">func</span><span class="p">):</span>
+    <span class="k">def</span> <span class="nf">innerFunc</span><span class="p">(</span><span class="o">*</span><span class="n">args</span><span class="p">,</span> <span class="o">**</span><span class="n">kwargs</span><span class="p">):</span>
+        <span class="k">print</span><span class="p">(</span><span class="s2">&#34;Before execute&#34;</span><span class="p">)</span>
+        <span class="n">func</span><span class="p">(</span><span class="o">*</span><span class="n">args</span><span class="p">,</span> <span class="o">**</span><span class="n">kwargs</span><span class="p">)</span>
+        <span class="k">print</span><span class="p">(</span><span class="s2">&#34;After execute&#34;</span><span class="p">)</span>
+    <span class="k">return</span> <span class="n">innerFunc</span>
+
+<span class="nd">@decorateFunc</span>
+<span class="k">def</span> <span class="nf">func</span><span class="p">():</span>
+    <span class="k">print</span><span class="p">(</span><span class="s2">&#34;Hello world&#34;</span><span class="p">)</span>
+<span class="n">func</span><span class="p">()</span>
+<span class="s1">&#39;&#39;&#39;输出
+</span><span class="s1">Before execute
+</span><span class="s1">Hello world
+</span><span class="s1">After execute
+</span><span class="s1">&#39;&#39;&#39;</span>
+</code></pre></td></tr></table>
+</div>
+</div><p>python的装饰器是一种函数式编程的应用，通过将函数作为变量、参数、返回值，从而利用已有函数生成新的函数。</p>
+<div class="highlight"><div class="chroma">
+<table class="lntable"><tr><td class="lntd">
+<pre class="chroma"><code><span class="lnt"> 1
+</span><span class="lnt"> 2
+</span><span class="lnt"> 3
+</span><span class="lnt"> 4
+</span><span class="lnt"> 5
+</span><span class="lnt"> 6
+</span><span class="lnt"> 7
+</span><span class="lnt"> 8
+</span><span class="lnt"> 9
+</span><span class="lnt">10
+</span><span class="lnt">11
+</span><span class="lnt">12
+</span><span class="lnt">13
+</span><span class="lnt">14
+</span><span class="lnt">15
+</span><span class="lnt">16
+</span><span class="lnt">17
+</span><span class="lnt">18
+</span><span class="lnt">19
+</span><span class="lnt">20
+</span><span class="lnt">21
+</span><span class="lnt">22
+</span><span class="lnt">23
+</span><span class="lnt">24
+</span></code></pre></td>
+<td class="lntd">
+<pre class="chroma"><code class="language-python" data-lang="python"><span class="k">def</span> <span class="nf">decorateFunc</span><span class="p">(</span><span class="n">a</span><span class="p">,</span> <span class="n">b</span><span class="p">):</span>
+    <span class="k">def</span> <span class="nf">innerDecorate</span><span class="p">(</span><span class="n">func</span><span class="p">):</span>
+        <span class="k">def</span> <span class="nf">innerFunc</span><span class="p">(</span><span class="o">*</span><span class="n">args</span><span class="p">,</span> <span class="o">**</span><span class="n">kwargs</span><span class="p">):</span>
+            <span class="k">print</span><span class="p">(</span><span class="s2">&#34;This is innerFunc&#34;</span><span class="p">)</span>
+            <span class="k">print</span><span class="p">(</span><span class="s2">&#34;a is {}, b is {}&#34;</span><span class="o">.</span><span class="n">format</span><span class="p">(</span><span class="n">a</span><span class="p">,</span> <span class="n">b</span><span class="p">))</span>
+            <span class="n">func</span><span class="p">(</span><span class="o">*</span><span class="n">args</span><span class="p">,</span> <span class="o">**</span><span class="n">kwargs</span><span class="p">)</span>
+        <span class="k">return</span> <span class="n">innerFunc</span>
+    <span class="k">return</span> <span class="n">innerDecorate</span>
+
+<span class="nd">@decorateFunc</span><span class="p">(</span><span class="mi">1</span><span class="p">,</span> <span class="mi">2</span><span class="p">)</span>
+<span class="k">def</span> <span class="nf">func</span><span class="p">(</span><span class="o">*</span><span class="n">args</span><span class="p">):</span>
+    <span class="k">for</span> <span class="n">arg</span> <span class="ow">in</span> <span class="n">args</span><span class="p">:</span>
+        <span class="k">print</span><span class="p">(</span><span class="n">arg</span><span class="p">)</span>
+
+<span class="n">func</span><span class="p">(</span><span class="mi">1</span><span class="p">,</span> <span class="mi">2</span><span class="p">,</span> <span class="mi">3</span><span class="p">,</span> <span class="mi">4</span><span class="p">)</span>
+
+<span class="s1">&#39;&#39;&#39;输出
+</span><span class="s1">This is innerFunc
+</span><span class="s1">a is 1, b is 2
+</span><span class="s1">1
+</span><span class="s1">2
+</span><span class="s1">3
+</span><span class="s1">4
+</span><span class="s1">&#39;&#39;&#39;</span>
+</code></pre></td></tr></table>
+</div>
+</div><p>上面这个装饰器更为复杂，它拥有参数，因此实现需要3层的函数嵌套。</p>
+<ul>
+<li>
+<p>第一层的<code>def decorateFunc(a, b)</code>的作用是返回一个无参数的装饰器，就如同前面那个例子一样</p>
+</li>
+<li>
+<p>第二层的<code>def innerDecorate(func)</code>的作用是传入被装饰的函数，返回装饰后的函数</p>
+</li>
+<li>
+<p>第三层的<code>def innerFunc(*args, **kwargs)</code>用于定义装饰后的函数</p>
+</li>
+</ul>
+<h3 id="13-类和对象">1.3 类和对象</h3>
+<h4 id="131-构造器">1.3.1 构造器</h4>
+<div class="highlight"><div class="chroma">
+<table class="lntable"><tr><td class="lntd">
+<pre class="chroma"><code><span class="lnt">1
+</span><span class="lnt">2
+</span><span class="lnt">3
+</span><span class="lnt">4
+</span><span class="lnt">5
+</span><span class="lnt">6
+</span><span class="lnt">7
+</span><span class="lnt">8
+</span><span class="lnt">9
+</span></code></pre></td>
+<td class="lntd">
+<pre class="chroma"><code class="language-python" data-lang="python"><span class="k">class</span> <span class="nc">Person</span><span class="p">:</span>
+    <span class="k">def</span> <span class="fm">__init__</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">name</span><span class="p">,</span> <span class="n">age</span><span class="p">):</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">name</span> <span class="o">=</span> <span class="n">name</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">age</span> <span class="o">=</span> <span class="n">age</span>
+<span class="n">person</span> <span class="o">=</span> <span class="n">Person</span><span class="p">(</span><span class="s2">&#34;richard&#34;</span><span class="p">,</span> <span class="mi">13</span><span class="p">)</span>
+<span class="k">print</span><span class="p">(</span><span class="s2">&#34;name is {}, age is {}&#34;</span><span class="o">.</span><span class="n">format</span><span class="p">(</span><span class="n">person</span><span class="o">.</span><span class="n">name</span><span class="p">,</span> <span class="n">person</span><span class="o">.</span><span class="n">age</span><span class="p">))</span>
+<span class="s1">&#39;&#39;&#39;输出
+</span><span class="s1">name is richard, age is 13
+</span><span class="s1">&#39;&#39;&#39;</span>
+</code></pre></td></tr></table>
+</div>
+</div><p>python的类构造器语法如上所示为<code>def __init__(self)</code></p>
+<p>python的类不需要提前声明成员变量，通过构造器的<code>self</code>引用之间创建即可</p>
+<p>python如果在类中定义变量，那么这个变量就是属于类的，也就是其他语言中的静态变量</p>
+<h4 id="132-私有成员">1.3.2 私有成员</h4>
+<div class="highlight"><div class="chroma">
+<table class="lntable"><tr><td class="lntd">
+<pre class="chroma"><code><span class="lnt"> 1
+</span><span class="lnt"> 2
+</span><span class="lnt"> 3
+</span><span class="lnt"> 4
+</span><span class="lnt"> 5
+</span><span class="lnt"> 6
+</span><span class="lnt"> 7
+</span><span class="lnt"> 8
+</span><span class="lnt"> 9
+</span><span class="lnt">10
+</span><span class="lnt">11
+</span><span class="lnt">12
+</span><span class="lnt">13
+</span></code></pre></td>
+<td class="lntd">
+<pre class="chroma"><code class="language-python" data-lang="python"><span class="k">class</span> <span class="nc">Person</span><span class="p">:</span>
+    <span class="k">def</span> <span class="fm">__init__</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">name</span><span class="p">,</span> <span class="n">age</span><span class="p">):</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">__name</span> <span class="o">=</span> <span class="n">name</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">__age</span> <span class="o">=</span> <span class="n">age</span>
+    <span class="k">def</span> <span class="nf">getName</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
+        <span class="k">return</span> <span class="bp">self</span><span class="o">.</span><span class="n">__name</span>
+    <span class="k">def</span> <span class="nf">getAge</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
+        <span class="k">return</span> <span class="bp">self</span><span class="o">.</span><span class="n">__age</span>
+<span class="n">person</span> <span class="o">=</span> <span class="n">Person</span><span class="p">(</span><span class="s2">&#34;richard&#34;</span><span class="p">,</span> <span class="mi">13</span><span class="p">)</span>
+<span class="k">print</span><span class="p">(</span><span class="s2">&#34;name is {}, age is {}&#34;</span><span class="o">.</span><span class="n">format</span><span class="p">(</span><span class="n">person</span><span class="o">.</span><span class="n">getName</span><span class="p">(),</span> <span class="n">person</span><span class="o">.</span><span class="n">getAge</span><span class="p">()))</span>
+<span class="s1">&#39;&#39;&#39;输出
+</span><span class="s1">name is richard, age is 13
+</span><span class="s1">&#39;&#39;&#39;</span>
+</code></pre></td></tr></table>
+</div>
+</div><p>python的私有成员是通过在构造器的<code>self</code>引用变量时，通过在变量前面加上<code>__</code>得到的</p>
+<h3 id="14-异常">1.4 异常</h3>
+<h4 id="141-异常处理">1.4.1 异常处理</h4>
+<div class="highlight"><div class="chroma">
+<table class="lntable"><tr><td class="lntd">
+<pre class="chroma"><code><span class="lnt"> 1
+</span><span class="lnt"> 2
+</span><span class="lnt"> 3
+</span><span class="lnt"> 4
+</span><span class="lnt"> 5
+</span><span class="lnt"> 6
+</span><span class="lnt"> 7
+</span><span class="lnt"> 8
+</span><span class="lnt"> 9
+</span><span class="lnt">10
+</span><span class="lnt">11
+</span><span class="lnt">12
+</span><span class="lnt">13
+</span><span class="lnt">14
+</span><span class="lnt">15
+</span><span class="lnt">16
+</span><span class="lnt">17
+</span><span class="lnt">18
+</span><span class="lnt">19
+</span></code></pre></td>
+<td class="lntd">
+<pre class="chroma"><code class="language-python" data-lang="python"><span class="k">def</span> <span class="nf">func</span><span class="p">(</span><span class="n">a</span><span class="p">,</span> <span class="n">b</span><span class="p">):</span>
+	<span class="k">try</span><span class="p">:</span>
+		<span class="k">return</span> <span class="n">a</span><span class="o">/</span><span class="n">b</span>
+	<span class="k">except</span> <span class="ne">ZeroDivisionError</span> <span class="k">as</span> <span class="n">e</span><span class="p">:</span>
+		<span class="k">print</span><span class="p">(</span><span class="s1">&#39;division by zero&#39;</span><span class="p">)</span>
+	<span class="k">finally</span><span class="p">:</span>
+		<span class="k">print</span><span class="p">(</span><span class="s1">&#39;finally block&#39;</span><span class="p">)</span>
+
+<span class="k">print</span><span class="p">(</span><span class="n">func</span><span class="p">(</span><span class="mi">4</span><span class="p">,</span> <span class="mi">2</span><span class="p">))</span>
+<span class="k">print</span><span class="p">(</span><span class="s1">&#39;------&#39;</span><span class="p">)</span>
+<span class="k">print</span><span class="p">(</span><span class="n">func</span><span class="p">(</span><span class="mi">2</span><span class="p">,</span> <span class="mi">0</span><span class="p">))</span>
+<span class="s1">&#39;&#39;&#39;输出
+</span><span class="s1">finally block
+</span><span class="s1">2.0
+</span><span class="s1">------
+</span><span class="s1">division by zero
+</span><span class="s1">finally block
+</span><span class="s1">None
+</span><span class="s1">&#39;&#39;&#39;</span>
+</code></pre></td></tr></table>
+</div>
+</div><p>这就是整个异常处理的语法，没有什么奇怪的地方</p>
+<h4 id="142-抛出异常">1.4.2 抛出异常</h4>
+<div class="highlight"><div class="chroma">
+<table class="lntable"><tr><td class="lntd">
+<pre class="chroma"><code><span class="lnt"> 1
+</span><span class="lnt"> 2
+</span><span class="lnt"> 3
+</span><span class="lnt"> 4
+</span><span class="lnt"> 5
+</span><span class="lnt"> 6
+</span><span class="lnt"> 7
+</span><span class="lnt"> 8
+</span><span class="lnt"> 9
+</span><span class="lnt">10
+</span><span class="lnt">11
+</span><span class="lnt">12
+</span></code></pre></td>
+<td class="lntd">
+<pre class="chroma"><code class="language-python" data-lang="python"><span class="k">def</span> <span class="nf">func</span><span class="p">():</span>
+	<span class="k">raise</span> <span class="ne">ZeroDivisionError</span><span class="p">()</span>
+
+<span class="n">func</span><span class="p">()</span>
+<span class="s1">&#39;&#39;&#39;输出
+</span><span class="s1">Traceback (most recent call last):
+</span><span class="s1">  File &#34;exception.py&#34;, line 18, in &lt;module&gt;
+</span><span class="s1">    func()
+</span><span class="s1">  File &#34;exception.py&#34;, line 16, in func
+</span><span class="s1">    raise ZeroDivisionError()
+</span><span class="s1">ZeroDivisionError
+</span><span class="s1">&#39;&#39;&#39;</span>
+</code></pre></td></tr></table>
+</div>
+</div><p>python抛出异常的关键字问<code>raise</code></p>
+<h4 id="143-with">1.4.3 <code>with</code></h4>
+<div class="highlight"><div class="chroma">
+<table class="lntable"><tr><td class="lntd">
+<pre class="chroma"><code><span class="lnt"> 1
+</span><span class="lnt"> 2
+</span><span class="lnt"> 3
+</span><span class="lnt"> 4
+</span><span class="lnt"> 5
+</span><span class="lnt"> 6
+</span><span class="lnt"> 7
+</span><span class="lnt"> 8
+</span><span class="lnt"> 9
+</span><span class="lnt">10
+</span><span class="lnt">11
+</span><span class="lnt">12
+</span><span class="lnt">13
+</span><span class="lnt">14
+</span><span class="lnt">15
+</span><span class="lnt">16
+</span><span class="lnt">17
+</span></code></pre></td>
+<td class="lntd">
+<pre class="chroma"><code class="language-python" data-lang="python"><span class="k">class</span> <span class="nc">R</span><span class="p">:</span>
+    <span class="k">def</span> <span class="fm">__init__</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">s</span><span class="p">):</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">s</span> <span class="o">=</span> <span class="n">s</span>
+        <span class="k">print</span><span class="p">(</span><span class="s2">&#34;call __init__&#34;</span><span class="p">)</span>
+    <span class="k">def</span> <span class="fm">__enter__</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
+        <span class="k">print</span><span class="p">(</span><span class="s2">&#34;call __enter__&#34;</span><span class="p">)</span>
+        <span class="k">return</span> <span class="bp">self</span>
+    <span class="k">def</span> <span class="fm">__exit__</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="nb">type</span><span class="p">,</span> <span class="n">value</span><span class="p">,</span> <span class="n">traceback</span><span class="p">):</span>
+        <span class="k">print</span><span class="p">(</span><span class="s2">&#34;call __exit__&#34;</span><span class="p">)</span>
+<span class="k">with</span> <span class="n">R</span><span class="p">(</span><span class="s2">&#34;hello world&#34;</span><span class="p">)</span> <span class="k">as</span> <span class="n">r</span><span class="p">:</span>
+    <span class="k">print</span><span class="p">(</span><span class="n">r</span><span class="o">.</span><span class="n">s</span><span class="p">)</span>
+<span class="s1">&#39;&#39;&#39;输出
+</span><span class="s1">call __init__
+</span><span class="s1">call __enter__
+</span><span class="s1">hello world
+</span><span class="s1">call __exit__
+</span><span class="s1">&#39;&#39;&#39;</span>
+</code></pre></td></tr></table>
+</div>
+</div><p>python中的<code>with</code>关键字所使用的语法类似与Java中的<code>try-with-resource</code>，能够不用去写<code>finally</code>调用相应资源的<code>close()</code>方法</p>
+<p>python中的<code>with func() as f</code>调用顺序为：</p>
+<ol>
+<li>调用<code>func()</code>获取返回对象</li>
+<li>调用返回对象的<code>__enter__()</code>方法获取相应的返回值并赋值给<code>f</code></li>
+<li>使用<code>f</code>进行相应的操作</li>
+<li>调用<code>func()</code>返回对象的<code>__exit__</code>销毁资源</li>
+</ol>
+<h2 id="2-基本操作">2 基本操作</h2>
+<h3 id="21-io">2.1 IO</h3>
+<h4 id="211-输入输出">2.1.1 输入输出</h4>
+<p><code>input()</code>是python的输出函数，功能类似与Java中的<code>Scanner</code>，能够按行读取来自控制台的输入</p>
+<div class="highlight"><div class="chroma">
+<table class="lntable"><tr><td class="lntd">
+<pre class="chroma"><code><span class="lnt">1
+</span></code></pre></td>
+<td class="lntd">
+<pre class="chroma"><code class="language-python" data-lang="python"><span class="k">print</span><span class="p">(</span><span class="n">value</span><span class="p">,</span> <span class="o">...</span><span class="p">,</span> <span class="n">sep</span><span class="o">=</span><span class="s1">&#39; &#39;</span><span class="p">,</span> <span class="n">end</span><span class="o">=</span><span class="s1">&#39;</span><span class="se">\n</span><span class="s1">&#39;</span><span class="p">,</span> <span class="nb">file</span><span class="o">=</span><span class="n">sys</span><span class="o">.</span><span class="n">stdout</span><span class="p">,</span> <span class="n">flush</span><span class="o">=</span><span class="bp">False</span><span class="p">)</span>
+</code></pre></td></tr></table>
+</div>
+</div><p>上面是输出函数<code>print()</code>方法的完整定义，因而通过<code>print()</code>方法能够指定分隔符、终止符、输出文件等参数，从而获得自己想要的输出格式</p>
+<h4 id="212-文件操作">2.1.2 文件操作</h4>
+<p>文件操作使用的函数是<code>open()</code>，完整定义为：</p>
+<div class="highlight"><div class="chroma">
+<table class="lntable"><tr><td class="lntd">
+<pre class="chroma"><code><span class="lnt">1
+</span></code></pre></td>
+<td class="lntd">
+<pre class="chroma"><code class="language-python" data-lang="python"><span class="nb">open</span><span class="p">(</span><span class="nb">file</span><span class="p">,</span> <span class="n">mode</span><span class="o">=</span><span class="s1">&#39;r&#39;</span><span class="p">,</span> <span class="n">buffering</span><span class="o">=-</span><span class="mi">1</span><span class="p">,</span> <span class="n">encoding</span><span class="o">=</span><span class="bp">None</span><span class="p">,</span> <span class="n">errors</span><span class="o">=</span><span class="bp">None</span><span class="p">,</span> <span class="n">newline</span><span class="o">=</span><span class="bp">None</span><span class="p">,</span> <span class="n">closefd</span><span class="o">=</span><span class="bp">True</span><span class="p">,</span> <span class="n">opener</span><span class="o">=</span><span class="bp">None</span><span class="p">)</span>
+</code></pre></td></tr></table>
+</div>
+</div><p>其中比较关键的是<code>mode</code>参数，仅针对文本文件有6中选择：</p>
+<ol>
+<li><code>r</code>，只读方式，如果文件不存在则抛出异常，属于默认模式</li>
+<li><code>r+</code>，读写方式，写入位置为文件的起始位置，文件不存在则会抛出遗产</li>
+<li><code>w</code>，只写方式，若文件长度不为0则将之截断为0，文件不存在则创建</li>
+<li><code>w+</code>，读写方式，若文件长度不为0则将之截断为0，文件不存在则创建</li>
+<li><code>a</code>，只写方式，以追加方式写入，文件不存在则创建</li>
+<li><code>a+</code>，读写方式，以追加方式写入，文件不存在则创建</li>
+</ol>
+<h3 id="22-集合">2.2 集合</h3>
+<h4 id="221-集合构造">2.2.1 集合构造</h4>
+<p>python中的集合创建大多数都不需要调用构造器：</p>
+<ol>
+<li><code>dict</code>，字典类型，构造方法是<code>d = {}</code>，在Java中对应<code>Map</code>，存储键值对</li>
+<li><code>list</code>，列表类型，构造方法是<code>l = []</code>，在Java中对应<code>List</code></li>
+<li><code>tuple</code>，元组类型，构造方法是<code>t = ()</code>，但元组一经初始化就无法添加/删除/更换元素</li>
+<li><code>set</code>，集合类型，构造方法是<code>s = set()</code>，由于<code>set</code>和<code>dict</code>都是使用<code>{}</code>表示，只不过一个存储关联数据，一个仅存单个数据，因此初始化一个<strong>空</strong><code>set</code>需要调用构造器</li>
+</ol>
+<h4 id="222-集合迭代">2.2.2 集合迭代</h4>
+<ol>
+<li>
+<p><code>enumerate</code>能够在迭代<code>list</code>时同时获取索引和数值</p>
+<div class="highlight"><div class="chroma">
+<table class="lntable"><tr><td class="lntd">
+<pre class="chroma"><code><span class="lnt">1
+</span><span class="lnt">2
+</span><span class="lnt">3
+</span><span class="lnt">4
+</span><span class="lnt">5
+</span><span class="lnt">6
+</span><span class="lnt">7
+</span><span class="lnt">8
+</span><span class="lnt">9
+</span></code></pre></td>
+<td class="lntd">
+<pre class="chroma"><code class="language-python" data-lang="python"><span class="n">l</span> <span class="o">=</span> <span class="p">[</span><span class="s1">&#39;a&#39;</span><span class="p">,</span> <span class="s1">&#39;b&#39;</span><span class="p">,</span> <span class="s1">&#39;c&#39;</span><span class="p">,</span> <span class="s1">&#39;d&#39;</span><span class="p">]</span>
+<span class="k">for</span> <span class="n">index</span><span class="p">,</span> <span class="n">value</span> <span class="ow">in</span> <span class="nb">enumerate</span><span class="p">(</span><span class="n">l</span><span class="p">):</span>
+    <span class="k">print</span><span class="p">(</span><span class="n">index</span><span class="p">,</span> <span class="n">value</span><span class="p">)</span>
+<span class="s1">&#39;&#39;&#39;输出
+</span><span class="s1">0 a
+</span><span class="s1">1 b
+</span><span class="s1">2 c
+</span><span class="s1">3 d
+</span><span class="s1">&#39;&#39;&#39;</span>
+</code></pre></td></tr></table>
+</div>
+</div></li>
+<li>
+<p><code>zip</code>能够同时获取多个<code>list</code>的同索引对应的数值，相当于对<code>list</code>进行关联</p>
+<div class="highlight"><div class="chroma">
+<table class="lntable"><tr><td class="lntd">
+<pre class="chroma"><code><span class="lnt"> 1
+</span><span class="lnt"> 2
+</span><span class="lnt"> 3
+</span><span class="lnt"> 4
+</span><span class="lnt"> 5
+</span><span class="lnt"> 6
+</span><span class="lnt"> 7
+</span><span class="lnt"> 8
+</span><span class="lnt"> 9
+</span><span class="lnt">10
+</span></code></pre></td>
+<td class="lntd">
+<pre class="chroma"><code class="language-python" data-lang="python"><span class="n">l1</span> <span class="o">=</span> <span class="p">[</span><span class="s1">&#39;i&#39;</span><span class="p">,</span> <span class="s1">&#39;ii&#39;</span><span class="p">,</span> <span class="s1">&#39;iii&#39;</span><span class="p">]</span>
+<span class="n">l2</span> <span class="o">=</span> <span class="p">[</span><span class="mi">1</span><span class="p">,</span> <span class="mi">2</span><span class="p">,</span> <span class="mi">3</span><span class="p">]</span>
+<span class="n">l3</span> <span class="o">=</span> <span class="p">[</span><span class="s1">&#39;a&#39;</span><span class="p">,</span> <span class="s1">&#39;b&#39;</span><span class="p">,</span> <span class="s1">&#39;c&#39;</span><span class="p">]</span>
+<span class="k">for</span> <span class="n">r</span><span class="p">,</span> <span class="n">n</span><span class="p">,</span> <span class="n">a</span> <span class="ow">in</span> <span class="nb">zip</span><span class="p">(</span><span class="n">l1</span><span class="p">,</span> <span class="n">l2</span><span class="p">,</span> <span class="n">l3</span><span class="p">):</span>
+    <span class="k">print</span><span class="p">(</span><span class="n">r</span><span class="p">,</span> <span class="n">n</span><span class="p">,</span> <span class="n">a</span><span class="p">)</span>
+<span class="s1">&#39;&#39;&#39;输出
+</span><span class="s1">i 1 a
+</span><span class="s1">ii 2 b
+</span><span class="s1">iii 3 c
+</span><span class="s1">&#39;&#39;&#39;</span>
+</code></pre></td></tr></table>
+</div>
+</div></li>
+<li>
+<p>通过<code>items()</code>方法迭代<code>dict</code></p>
+<div class="highlight"><div class="chroma">
+<table class="lntable"><tr><td class="lntd">
+<pre class="chroma"><code><span class="lnt">1
+</span><span class="lnt">2
+</span><span class="lnt">3
+</span><span class="lnt">4
+</span><span class="lnt">5
+</span><span class="lnt">6
+</span><span class="lnt">7
+</span></code></pre></td>
+<td class="lntd">
+<pre class="chroma"><code class="language-python" data-lang="python"><span class="n">d</span> <span class="o">=</span> <span class="p">{</span><span class="s1">&#39;i&#39;</span><span class="p">:</span><span class="s1">&#39;a&#39;</span><span class="p">,</span> <span class="s1">&#39;ii&#39;</span><span class="p">:</span><span class="s1">&#39;b&#39;</span><span class="p">}</span>
+<span class="k">for</span> <span class="n">r</span><span class="p">,</span> <span class="n">a</span> <span class="ow">in</span> <span class="n">d</span><span class="o">.</span><span class="n">items</span><span class="p">():</span>
+    <span class="k">print</span><span class="p">(</span><span class="n">r</span><span class="p">,</span> <span class="n">a</span><span class="p">)</span>
+<span class="s1">&#39;&#39;&#39;输出
+</span><span class="s1">i a
+</span><span class="s1">ii b
+</span><span class="s1">&#39;&#39;&#39;</span>
+</code></pre></td></tr></table>
+</div>
+</div></li>
+</ol>
+<h4 id="223-列表切片">2.2.3 列表切片</h4>
+<p><code>list</code>和<code>tuple</code>可以通过<code>[index]</code>获取index对应的元素，但<code>[]</code>其实是可以按范围获取<code>list</code>和<code>tuple</code>类型变量的元素</p>
+<div class="highlight"><div class="chroma">
+<table class="lntable"><tr><td class="lntd">
+<pre class="chroma"><code><span class="lnt">1
+</span><span class="lnt">2
+</span><span class="lnt">3
+</span><span class="lnt">4
+</span><span class="lnt">5
+</span><span class="lnt">6
+</span><span class="lnt">7
+</span></code></pre></td>
+<td class="lntd">
+<pre class="chroma"><code class="language-python" data-lang="python"><span class="n">l</span> <span class="o">=</span> <span class="p">[</span><span class="s1">&#39;a&#39;</span><span class="p">,</span> <span class="s1">&#39;b&#39;</span><span class="p">,</span> <span class="s1">&#39;c&#39;</span><span class="p">,</span> <span class="s1">&#39;d&#39;</span><span class="p">]</span>
+<span class="k">print</span><span class="p">(</span><span class="n">l</span><span class="p">[</span><span class="mi">0</span><span class="p">:</span><span class="mi">1</span><span class="p">])</span>
+<span class="k">print</span><span class="p">(</span><span class="n">l</span><span class="p">[</span><span class="mi">0</span><span class="p">:</span><span class="mi">2</span><span class="p">:</span><span class="mi">2</span><span class="p">])</span>
+<span class="s1">&#39;&#39;&#39;输出
+</span><span class="s1">[&#39;a&#39;]
+</span><span class="s1">[&#39;a&#39;]
+</span><span class="s1">&#39;&#39;&#39;</span>
+</code></pre></td></tr></table>
+</div>
+</div><p>切片语法为<code>list[startIndex:endIndex:step]</code>，通过传入起始索引、终止索引以及步长就能够获取想要的元素集合</p>
+
+    </div>
+
+    <div class="post-copyright">
+  <p class="copyright-item">
+    <span class="item-title">文章作者</span>
+    <span class="item-content">石不转</span>
+  </p>
+  <p class="copyright-item">
+    <span class="item-title">上次更新</span>
+    <span class="item-content">
+        2020-08-08
+        
+    </span>
+  </p>
+  
+  
+</div>
+<footer class="post-footer">
+      <div class="post-tags">
+          <a href="/tags/python/">python</a>
+          <a href="/tags/note/">note</a>
+          </div>
+      <nav class="post-nav">
+        
+        <a class="next" href="/post/shiro-2/">
+            <span class="next-text nav-default">Apache Shiro - Realm相关组件接口</span>
+            <span class="next-text nav-mobile">下一篇</span>
+            <i class="iconfont icon-right"></i>
+          </a>
+      </nav>
+    </footer>
+  </article>
+        </div>
+        
+
+  
+
+  
+
+      </div>
+    </main>
+
+    <footer id="footer" class="footer">
+      <div class="social-links">
+  <a href="https://ilixiang.github.io/index.xml" type="application/rss+xml" class="iconfont icon-rss" title="rss"></a>
+</div>
+
+<div class="copyright">
+  <span class="power-by">
+    由 <a class="hexo-link" href="https://gohugo.io">Hugo</a> 强力驱动
+  </span>
+  <span class="division">|</span>
+  <span class="theme-info">
+    主题 - 
+    <a class="theme-link" href="https://github.com/olOwOlo/hugo-theme-even">Even</a>
+  </span>
+
+  
+
+  <span class="copyright-year">
+    &copy; 
+    2020
+    <span class="heart">
+      <i class="iconfont icon-heart"></i>
+    </span>
+    <span class="author">石不转</span>
+  </span>
+</div>
+    </footer>
+
+    <div class="back-to-top" id="back-to-top">
+      <i class="iconfont icon-up"></i>
+    </div>
+  </div>
+  
+  <script src="https://cdn.jsdelivr.net/npm/jquery@3.2.1/dist/jquery.min.js" integrity="sha256-hwg4gsxgFZhOsEEamdOYGBf13FyQuiTwlAQgxVSNgt4=" crossorigin="anonymous"></script>
+  <script src="https://cdn.jsdelivr.net/npm/slideout@1.0.1/dist/slideout.min.js" integrity="sha256-t+zJ/g8/KXIJMjSVQdnibt4dlaDxc9zXr/9oNPeWqdg=" crossorigin="anonymous"></script>
+  <script src="https://cdn.jsdelivr.net/npm/@fancyapps/fancybox@3.1.20/dist/jquery.fancybox.min.js" integrity="sha256-XVLffZaxoWfGUEbdzuLi7pwaUJv1cecsQJQqGLe7axY=" crossorigin="anonymous"></script>
+
+
+
+<script type="text/javascript" src="/js/main.min.d7b7ada643c9c1a983026e177f141f7363b4640d619caf01d8831a6718cd44ea.js"></script>
+
+
+
+
+
+
+
+
+</body>
+</html>
