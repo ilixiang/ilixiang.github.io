@@ -1,0 +1,35 @@
+<?xml version="1.0" encoding="utf-8" standalone="yes"?>
+<rss version="2.0" xmlns:atom="http://www.w3.org/2005/Atom">
+    <channel>
+        <title>Tags on 演示站点</title>
+        <link>https://ilixiang.github.io/tags/</link>
+        <description>Recent content in Tags on 演示站点</description>
+        <generator>Hugo -- gohugo.io</generator>
+        <language>zh-cn</language>
+        <lastBuildDate>Sun, 04 Dec 2022 09:52:32 +0800</lastBuildDate><atom:link href="https://ilixiang.github.io/tags/index.xml" rel="self" type="application/rss+xml" /><item>
+        <title>InnoDB</title>
+        <link>https://ilixiang.github.io/tags/innodb/</link>
+        <pubDate>Sun, 04 Dec 2022 09:52:32 +0800</pubDate>
+        
+        <guid>https://ilixiang.github.io/tags/innodb/</guid>
+        <description></description>
+        </item>
+        <item>
+        <title>Lock</title>
+        <link>https://ilixiang.github.io/tags/lock/</link>
+        <pubDate>Sun, 04 Dec 2022 09:52:32 +0800</pubDate>
+        
+        <guid>https://ilixiang.github.io/tags/lock/</guid>
+        <description></description>
+        </item>
+        <item>
+        <title>MySQL</title>
+        <link>https://ilixiang.github.io/tags/mysql/</link>
+        <pubDate>Sun, 04 Dec 2022 09:52:32 +0800</pubDate>
+        
+        <guid>https://ilixiang.github.io/tags/mysql/</guid>
+        <description></description>
+        </item>
+        
+    </channel>
+</rss>
