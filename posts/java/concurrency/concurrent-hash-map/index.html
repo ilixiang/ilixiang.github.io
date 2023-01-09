@@ -1,0 +1,1101 @@
+<!DOCTYPE html>
+<html lang="zh-cn" dir="ltr">
+    <head><meta charset='utf-8'>
+<meta name='viewport' content='width=device-width, initial-scale=1'><meta name='description' content='类型和变量说明 Node类及其子类，用于存储键值对，存在以下几个实现： Node. 最基本的实现，用于与其他子类实例区分的特征是其中hash字段的值为所有'>
+<title>Java - ConcurrentHashMap</title>
+
+<link rel='canonical' href='https://ilixiang.github.io/posts/java/concurrency/concurrent-hash-map/'>
+
+<link rel="stylesheet" href="/scss/style.min.8191399262444ab68b72a18c97392f5349be20a1615d77445be51e974c144cff.css"><meta property='og:title' content='Java - ConcurrentHashMap'>
+<meta property='og:description' content='类型和变量说明 Node类及其子类，用于存储键值对，存在以下几个实现： Node. 最基本的实现，用于与其他子类实例区分的特征是其中hash字段的值为所有'>
+<meta property='og:url' content='https://ilixiang.github.io/posts/java/concurrency/concurrent-hash-map/'>
+<meta property='og:site_name' content='演示站点'>
+<meta property='og:type' content='article'><meta property='article:section' content='Posts' /><meta property='article:tag' content='Java' /><meta property='article:tag' content='Concurrency' /><meta property='article:published_time' content='2023-01-06T10:03:32&#43;08:00'/><meta property='article:modified_time' content='2023-01-06T10:03:32&#43;08:00'/>
+<meta name="twitter:title" content="Java - ConcurrentHashMap">
+<meta name="twitter:description" content="类型和变量说明 Node类及其子类，用于存储键值对，存在以下几个实现： Node. 最基本的实现，用于与其他子类实例区分的特征是其中hash字段的值为所有">
+    </head>
+    <body class="
+    article-page
+    ">
+    <script>
+        (function() {
+            const colorSchemeKey = 'StackColorScheme';
+            if(!localStorage.getItem(colorSchemeKey)){
+                localStorage.setItem(colorSchemeKey, "auto");
+            }
+        })();
+    </script><script>
+    (function() {
+        const colorSchemeKey = 'StackColorScheme';
+        const colorSchemeItem = localStorage.getItem(colorSchemeKey);
+        const supportDarkMode = window.matchMedia('(prefers-color-scheme: dark)').matches === true;
+
+        if (colorSchemeItem == 'dark' || colorSchemeItem === 'auto' && supportDarkMode) {
+            
+
+            document.documentElement.dataset.scheme = 'dark';
+        } else {
+            document.documentElement.dataset.scheme = 'light';
+        }
+    })();
+</script>
+<div class="container main-container flex on-phone--column extended"><aside class="sidebar left-sidebar sticky ">
+    <button class="hamburger hamburger--spin" type="button" id="toggle-menu" aria-label="切换菜单">
+        <span class="hamburger-box">
+            <span class="hamburger-inner"></span>
+        </span>
+    </button>
+
+    <header>
+        
+            
+            <figure class="site-avatar">
+                <a href="/">
+                
+                    
+                    
+                    
+                        
+                        <img src="/img/avatar_huda2458f72ce188392d75c5d51cd8e24e_373_300x0_resize_box_3.png" width="300"
+                            height="300" class="site-logo" loading="lazy" alt="Avatar">
+                    
+                
+                </a>
+                
+                    <span class="emoji">😋</span>
+                
+            </figure>
+            
+        
+        
+        <div class="site-meta">
+            <h1 class="site-name"><a href="/">演示站点</a></h1>
+            <h2 class="site-description">Lorem ipsum dolor sit amet, consectetur adipiscing elit.</h2>
+        </div>
+    </header><ol class="menu" id="main-menu">
+        
+        
+        
+        <li >
+            <a href='/' >
+                
+                
+                
+                    <svg xmlns="http://www.w3.org/2000/svg" class="icon icon-tabler icon-tabler-home" width="24" height="24" viewBox="0 0 24 24" stroke-width="2" stroke="currentColor" fill="none" stroke-linecap="round" stroke-linejoin="round">
+  <path stroke="none" d="M0 0h24v24H0z"/>
+  <polyline points="5 12 3 12 12 3 21 12 19 12" />
+  <path d="M5 12v7a2 2 0 0 0 2 2h10a2 2 0 0 0 2 -2v-7" />
+  <path d="M9 21v-6a2 2 0 0 1 2 -2h2a2 2 0 0 1 2 2v6" />
+</svg>
+
+
+
+                
+                <span>主页</span>
+            </a>
+        </li>
+        
+        
+        <li >
+            <a href='/about/' >
+                
+                
+                
+                    <svg xmlns="http://www.w3.org/2000/svg" class="icon icon-tabler icon-tabler-user" width="24" height="24" viewBox="0 0 24 24" stroke-width="2" stroke="currentColor" fill="none" stroke-linecap="round" stroke-linejoin="round">
+  <path stroke="none" d="M0 0h24v24H0z"/>
+  <circle cx="12" cy="7" r="4" />
+  <path d="M6 21v-2a4 4 0 0 1 4 -4h4a4 4 0 0 1 4 4v2" />
+</svg>
+
+
+
+                
+                <span>关于</span>
+            </a>
+        </li>
+        
+        
+        <li >
+            <a href='/archives/' >
+                
+                
+                
+                    <svg xmlns="http://www.w3.org/2000/svg" class="icon icon-tabler icon-tabler-archive" width="24" height="24" viewBox="0 0 24 24" stroke-width="2" stroke="currentColor" fill="none" stroke-linecap="round" stroke-linejoin="round">
+  <path stroke="none" d="M0 0h24v24H0z"/>
+  <rect x="3" y="4" width="18" height="4" rx="2" />
+  <path d="M5 8v10a2 2 0 0 0 2 2h10a2 2 0 0 0 2 -2v-10" />
+  <line x1="10" y1="12" x2="14" y2="12" />
+</svg>
+
+
+
+                
+                <span>归档</span>
+            </a>
+        </li>
+        
+
+        <div class="menu-bottom-section">
+            
+            
+                <li id="dark-mode-toggle">
+                    <svg xmlns="http://www.w3.org/2000/svg" class="icon icon-tabler icon-tabler-toggle-left" width="24" height="24" viewBox="0 0 24 24" stroke-width="2" stroke="currentColor" fill="none" stroke-linecap="round" stroke-linejoin="round">
+  <path stroke="none" d="M0 0h24v24H0z"/>
+  <circle cx="8" cy="12" r="2" />
+  <rect x="2" y="6" width="20" height="12" rx="6" />
+</svg>
+
+
+
+                    <svg xmlns="http://www.w3.org/2000/svg" class="icon icon-tabler icon-tabler-toggle-right" width="24" height="24" viewBox="0 0 24 24" stroke-width="2" stroke="currentColor" fill="none" stroke-linecap="round" stroke-linejoin="round">
+  <path stroke="none" d="M0 0h24v24H0z"/>
+  <circle cx="16" cy="12" r="2" />
+  <rect x="2" y="6" width="20" height="12" rx="6" />
+</svg>
+
+
+
+                    <span>暗色模式</span>
+                </li>
+            
+        </div>
+    </ol>
+</aside>
+
+    <aside class="sidebar right-sidebar sticky">
+        
+            
+                
+    <section class="widget archives">
+        <div class="widget-icon">
+            <svg xmlns="http://www.w3.org/2000/svg" class="icon icon-tabler icon-tabler-hash" width="24" height="24" viewBox="0 0 24 24" stroke-width="2" stroke="currentColor" fill="none" stroke-linecap="round" stroke-linejoin="round">
+  <path stroke="none" d="M0 0h24v24H0z"/>
+  <line x1="5" y1="9" x2="19" y2="9" />
+  <line x1="5" y1="15" x2="19" y2="15" />
+  <line x1="11" y1="4" x2="7" y2="20" />
+  <line x1="17" y1="4" x2="13" y2="20" />
+</svg>
+
+
+
+        </div>
+        <h2 class="widget-title section-title">目录</h2>
+        
+        <div class="widget--toc">
+            <nav id="TableOfContents">
+  <ol>
+    <li><a href="#类型和变量说明">类型和变量说明</a></li>
+    <li><a href="#get方法"><code>get</code>方法</a></li>
+    <li><a href="#put方法"><code>put</code>方法</a>
+      <ol>
+        <li><a href="#table初始化"><code>table</code>初始化</a></li>
+        <li><a href="#头节点检测">头节点检测</a></li>
+        <li><a href="#冲突链表红黑树遍历">冲突链表/红黑树遍历</a></li>
+        <li><a href="#冲突链表树化treeifybin">冲突链表树化<code>treeifyBin</code></a></li>
+        <li><a href="#hash迁移transfer">Hash迁移<code>transfer</code></a></li>
+      </ol>
+    </li>
+    <li><a href="#总结">总结</a></li>
+  </ol>
+</nav>
+        </div>
+    </section>
+
+            
+        
+    </aside>
+
+
+            <main class="main full-width">
+    <article class="main-article">
+    <header class="article-header">
+
+    <div class="article-details">
+    
+
+    <div class="article-title-wrapper">
+        <h2 class="article-title">
+            <a href="/posts/java/concurrency/concurrent-hash-map/">Java - ConcurrentHashMap</a>
+        </h2>
+    
+        
+    </div>
+
+    
+    
+    
+    
+    <footer class="article-time">
+        
+            <div>
+                <svg xmlns="http://www.w3.org/2000/svg" class="icon icon-tabler icon-tabler-calendar-time" width="56" height="56" viewBox="0 0 24 24" stroke-width="2" stroke="currentColor" fill="none" stroke-linecap="round" stroke-linejoin="round">
+  <path stroke="none" d="M0 0h24v24H0z"/>
+  <path d="M11.795 21h-6.795a2 2 0 0 1 -2 -2v-12a2 2 0 0 1 2 -2h12a2 2 0 0 1 2 2v4" />
+  <circle cx="18" cy="18" r="4" />
+  <path d="M15 3v4" />
+  <path d="M7 3v4" />
+  <path d="M3 11h16" />
+  <path d="M18 16.496v1.504l1 1" />
+</svg>
+                <time class="article-time--published">Jan 06, 2023</time>
+            </div>
+        
+
+        
+            <div>
+                <svg xmlns="http://www.w3.org/2000/svg" class="icon icon-tabler icon-tabler-clock" width="24" height="24" viewBox="0 0 24 24" stroke-width="2" stroke="currentColor" fill="none" stroke-linecap="round" stroke-linejoin="round">
+  <path stroke="none" d="M0 0h24v24H0z"/>
+  <circle cx="12" cy="12" r="9" />
+  <polyline points="12 7 12 12 15 15" />
+</svg>
+
+
+
+                <time class="article-time--reading">
+                    阅读时长: 11 分钟
+                </time>
+            </div>
+        
+    </footer>
+    
+
+    
+</div>
+
+</header>
+
+    <section class="article-content">
+    
+    
+    <h2 id="类型和变量说明">类型和变量说明</h2>
+<p><code>Node</code>类及其子类，用于存储键值对，存在以下几个实现：</p>
+<ol>
+<li><code>Node</code>. 最基本的实现，用于与其他子类实例区分的特征是其中<code>hash</code>字段的值为所有
+冲突的Key的共同Hash值，因此一定大于0</li>
+<li><code>ForwardingNode</code>. 表示该槽中所有的节点已经被迁移至<code>nextTable</code>中，特征是<code>hash</code>
+字段的值为常量<code>MOVED</code>，当前实现中<code>MOVED</code>的值为<code>-1</code></li>
+<li><code>TreeNode</code>. 表示红黑树的节点，与<code>Node</code>一样<code>hash</code>中存储的内容也是Key的Hash值</li>
+<li><code>TreeBin</code>. 表示当前槽中的所有节点由链表转为了红黑树，<code>TreeBin</code>中包含了这棵
+红黑树的根节点，即一个<code>TreeNode</code>实例。<code>TreeBin</code>的特征是<code>hash</code>字段为<code>TREEBIN</code>常量，
+当前实现中<code>TREEBIN</code>的值为<code>-2</code>，但实际源码中使用的是<code>instanceof</code>进行判断</li>
+</ol>
+<p><code>table</code>成员变量，表示当前正在使用的Hash表</p>
+<p><code>transferIndex</code>成员变量，表示迁移时<code>[0, transferIndex)</code>这个范围内的<code>table</code>的索引
+的迁移权还未被线程所占用</p>
+<p><code>sizeCtl</code>成员变量，用于Hash表的初始化和控制，它的取值为负数时，表示Hash表正在初始化
+或者迁移。实际取负值并非任意，注释上说明的是<code>-1</code>表示正在初始化，其他情况下为扩容，
+取值为<code>-(1 + number of resize threads)</code>，但实际却会出现类似<code>-2145714174</code>这样很小的
+负数，综上，<code>sizeCtl</code>的赋值逻辑暂时还未弄明白。</p>
+<h2 id="get方法"><code>get</code>方法</h2>
+<p><code>ConcurrentHashMap</code>中的<code>get</code>方法并未使用任何同步手段，因此总体而言并不复杂。下面给出
+<code>get</code>方法的源码。</p>
+<div class="highlight"><div class="chroma">
+<table class="lntable"><tr><td class="lntd">
+<pre tabindex="0" class="chroma"><code><span class="lnt"> 1
+</span><span class="lnt"> 2
+</span><span class="lnt"> 3
+</span><span class="lnt"> 4
+</span><span class="lnt"> 5
+</span><span class="lnt"> 6
+</span><span class="lnt"> 7
+</span><span class="lnt"> 8
+</span><span class="lnt"> 9
+</span><span class="lnt">10
+</span><span class="lnt">11
+</span><span class="lnt">12
+</span><span class="lnt">13
+</span><span class="lnt">14
+</span><span class="lnt">15
+</span><span class="lnt">16
+</span><span class="lnt">17
+</span><span class="lnt">18
+</span><span class="lnt">19
+</span><span class="lnt">20
+</span><span class="lnt">21
+</span><span class="lnt">22
+</span><span class="lnt">23
+</span><span class="lnt">24
+</span></code></pre></td>
+<td class="lntd">
+<pre tabindex="0" class="chroma"><code class="language-java" data-lang="java"><span class="line"><span class="cl"><span class="kd">public</span> <span class="n">V</span> <span class="nf">get</span><span class="o">(</span><span class="n">Object</span> <span class="n">key</span><span class="o">)</span> <span class="o">{</span>
+</span></span><span class="line"><span class="cl">    <span class="n">Node</span><span class="o">&lt;</span><span class="n">K</span><span class="o">,</span><span class="n">V</span><span class="o">&gt;[]</span> <span class="n">tab</span><span class="o">;</span> <span class="n">Node</span><span class="o">&lt;</span><span class="n">K</span><span class="o">,</span><span class="n">V</span><span class="o">&gt;</span> <span class="n">e</span><span class="o">,</span> <span class="n">p</span><span class="o">;</span> <span class="kt">int</span> <span class="n">n</span><span class="o">,</span> <span class="n">eh</span><span class="o">;</span> <span class="n">K</span> <span class="n">ek</span><span class="o">;</span>
+</span></span><span class="line"><span class="cl">    <span class="c1">// 计算hash值
+</span></span></span><span class="line"><span class="cl"><span class="c1"></span>    <span class="kt">int</span> <span class="n">h</span> <span class="o">=</span> <span class="n">spread</span><span class="o">(</span><span class="n">key</span><span class="o">.</span><span class="na">hashCode</span><span class="o">());</span>
+</span></span><span class="line"><span class="cl">    <span class="c1">// 通过hash值获取table中的对应槽
+</span></span></span><span class="line"><span class="cl"><span class="c1"></span>    <span class="k">if</span> <span class="o">((</span><span class="n">tab</span> <span class="o">=</span> <span class="n">table</span><span class="o">)</span> <span class="o">!=</span> <span class="kc">null</span> <span class="o">&amp;&amp;</span> <span class="o">(</span><span class="n">n</span> <span class="o">=</span> <span class="n">tab</span><span class="o">.</span><span class="na">length</span><span class="o">)</span> <span class="o">&gt;</span> <span class="mi">0</span> <span class="o">&amp;&amp;</span>
+</span></span><span class="line"><span class="cl">        <span class="o">(</span><span class="n">e</span> <span class="o">=</span> <span class="n">tabAt</span><span class="o">(</span><span class="n">tab</span><span class="o">,</span> <span class="o">(</span><span class="n">n</span> <span class="o">-</span> <span class="mi">1</span><span class="o">)</span> <span class="o">&amp;</span> <span class="n">h</span><span class="o">))</span> <span class="o">!=</span> <span class="kc">null</span><span class="o">)</span> <span class="o">{</span>
+</span></span><span class="line"><span class="cl">        <span class="c1">// 判断头节点是否就是想要找的节点
+</span></span></span><span class="line"><span class="cl"><span class="c1"></span>        <span class="k">if</span> <span class="o">((</span><span class="n">eh</span> <span class="o">=</span> <span class="n">e</span><span class="o">.</span><span class="na">hash</span><span class="o">)</span> <span class="o">==</span> <span class="n">h</span><span class="o">)</span> <span class="o">{</span>
+</span></span><span class="line"><span class="cl">            <span class="k">if</span> <span class="o">((</span><span class="n">ek</span> <span class="o">=</span> <span class="n">e</span><span class="o">.</span><span class="na">key</span><span class="o">)</span> <span class="o">==</span> <span class="n">key</span> <span class="o">||</span> <span class="o">(</span><span class="n">ek</span> <span class="o">!=</span> <span class="kc">null</span> <span class="o">&amp;&amp;</span> <span class="n">key</span><span class="o">.</span><span class="na">equals</span><span class="o">(</span><span class="n">ek</span><span class="o">)))</span>
+</span></span><span class="line"><span class="cl">                <span class="k">return</span> <span class="n">e</span><span class="o">.</span><span class="na">val</span><span class="o">;</span>
+</span></span><span class="line"><span class="cl">        <span class="o">}</span>
+</span></span><span class="line"><span class="cl">        <span class="c1">// 红黑树和已被迁移的情况下的判断
+</span></span></span><span class="line"><span class="cl"><span class="c1"></span>        <span class="k">else</span> <span class="k">if</span> <span class="o">(</span><span class="n">eh</span> <span class="o">&lt;</span> <span class="mi">0</span><span class="o">)</span>
+</span></span><span class="line"><span class="cl">            <span class="k">return</span> <span class="o">(</span><span class="n">p</span> <span class="o">=</span> <span class="n">e</span><span class="o">.</span><span class="na">find</span><span class="o">(</span><span class="n">h</span><span class="o">,</span> <span class="n">key</span><span class="o">))</span> <span class="o">!=</span> <span class="kc">null</span> <span class="o">?</span> <span class="n">p</span><span class="o">.</span><span class="na">val</span> <span class="o">:</span> <span class="kc">null</span><span class="o">;</span>
+</span></span><span class="line"><span class="cl">        <span class="c1">// 链表遍历并进行查找
+</span></span></span><span class="line"><span class="cl"><span class="c1"></span>        <span class="k">while</span> <span class="o">((</span><span class="n">e</span> <span class="o">=</span> <span class="n">e</span><span class="o">.</span><span class="na">next</span><span class="o">)</span> <span class="o">!=</span> <span class="kc">null</span><span class="o">)</span> <span class="o">{</span>
+</span></span><span class="line"><span class="cl">            <span class="k">if</span> <span class="o">(</span><span class="n">e</span><span class="o">.</span><span class="na">hash</span> <span class="o">==</span> <span class="n">h</span> <span class="o">&amp;&amp;</span>
+</span></span><span class="line"><span class="cl">                <span class="o">((</span><span class="n">ek</span> <span class="o">=</span> <span class="n">e</span><span class="o">.</span><span class="na">key</span><span class="o">)</span> <span class="o">==</span> <span class="n">key</span> <span class="o">||</span> <span class="o">(</span><span class="n">ek</span> <span class="o">!=</span> <span class="kc">null</span> <span class="o">&amp;&amp;</span> <span class="n">key</span><span class="o">.</span><span class="na">equals</span><span class="o">(</span><span class="n">ek</span><span class="o">))))</span>
+</span></span><span class="line"><span class="cl">                <span class="k">return</span> <span class="n">e</span><span class="o">.</span><span class="na">val</span><span class="o">;</span>
+</span></span><span class="line"><span class="cl">        <span class="o">}</span>
+</span></span><span class="line"><span class="cl">    <span class="o">}</span>
+</span></span><span class="line"><span class="cl">    <span class="k">return</span> <span class="kc">null</span><span class="o">;</span>
+</span></span><span class="line"><span class="cl"><span class="o">}</span>
+</span></span></code></pre></td></tr></table>
+</div>
+</div><p><code>get</code>方法的逻辑十分明确，就是根据<code>tabAt()</code>方法的到的<code>Node</code>实例进行不同的查询操作，
+没有使用<code>synchronize</code>进行同步。因此，我们需要关注的是会不会由于其他操作的非原子性
+而导致找不到某个原本存在的值。</p>
+<ol>
+<li>由于其他线程正在操作链表，导致某些已存在的节点未被查询到</li>
+<li>由于其他线程正在操作红黑树，但由于该红黑树的旋转而导致某些节点未被查询到</li>
+</ol>
+<p>针对链表的情况，由于添加的节点都是向链表尾部添加，而删除的情况只要不修改被删除的
+节点的<code>next</code>的字段就不会产生问题。针对红黑树则应该更为复杂，但这部分我还未阅读相
+关的源码，因此没有相关的了解。总而言之，针对并发数据结构，读的操作需要达成的目标
+是得到某个保有整体一致性的版本。</p>
+<h2 id="put方法"><code>put</code>方法</h2>
+<p><code>ConcurrentHashMap</code>中的<code>put</code>方法是由<code>putVal</code>实现的，<code>putVal</code>可能产生的几种情况：</p>
+<ul>
+<li>Hash数组尚未被初始化</li>
+<li>Key在Hash数组中对应的槽为空，即尚未有任何元素的Hash值与该Key相同</li>
+<li>Key在Hash数组中对应的槽不为空，且头节点的Key与给定Key相等</li>
+<li>Key在Hash数组中对应的槽不为空，但头节点的Key与给定Key不想等，此时需要对该槽中所
+存储的链表或者红黑树进行遍历</li>
+<li>Key在Hash数组中对应的槽为空，但被标记为已经迁移了</li>
+</ul>
+<h3 id="table初始化"><code>table</code>初始化</h3>
+<p>这部分的逻辑对应的源码如下：</p>
+<div class="highlight"><div class="chroma">
+<table class="lntable"><tr><td class="lntd">
+<pre tabindex="0" class="chroma"><code><span class="lnt"> 1
+</span><span class="lnt"> 2
+</span><span class="lnt"> 3
+</span><span class="lnt"> 4
+</span><span class="lnt"> 5
+</span><span class="lnt"> 6
+</span><span class="lnt"> 7
+</span><span class="lnt"> 8
+</span><span class="lnt"> 9
+</span><span class="lnt">10
+</span><span class="lnt">11
+</span><span class="lnt">12
+</span><span class="lnt">13
+</span><span class="lnt">14
+</span><span class="lnt">15
+</span><span class="lnt">16
+</span><span class="lnt">17
+</span><span class="lnt">18
+</span><span class="lnt">19
+</span><span class="lnt">20
+</span><span class="lnt">21
+</span><span class="lnt">22
+</span><span class="lnt">23
+</span><span class="lnt">24
+</span><span class="lnt">25
+</span><span class="lnt">26
+</span><span class="lnt">27
+</span></code></pre></td>
+<td class="lntd">
+<pre tabindex="0" class="chroma"><code class="language-java" data-lang="java"><span class="line"><span class="cl"><span class="kd">private</span> <span class="kd">final</span> <span class="n">Node</span><span class="o">&lt;</span><span class="n">K</span><span class="o">,</span><span class="n">V</span><span class="o">&gt;[]</span> <span class="nf">initTable</span><span class="o">()</span> <span class="o">{</span>
+</span></span><span class="line"><span class="cl">    <span class="n">Node</span><span class="o">&lt;</span><span class="n">K</span><span class="o">,</span><span class="n">V</span><span class="o">&gt;[]</span> <span class="n">tab</span><span class="o">;</span> <span class="kt">int</span> <span class="n">sc</span><span class="o">;</span>
+</span></span><span class="line"><span class="cl">    <span class="c1">// 当table为空时不断自旋
+</span></span></span><span class="line"><span class="cl"><span class="c1"></span>    <span class="k">while</span> <span class="o">((</span><span class="n">tab</span> <span class="o">=</span> <span class="n">table</span><span class="o">)</span> <span class="o">==</span> <span class="kc">null</span> <span class="o">||</span> <span class="n">tab</span><span class="o">.</span><span class="na">length</span> <span class="o">==</span> <span class="mi">0</span><span class="o">)</span> <span class="o">{</span>
+</span></span><span class="line"><span class="cl">        <span class="c1">// 已完成初始化权限的竞争，当前线程无初始化权限，放弃CPU的使用权限
+</span></span></span><span class="line"><span class="cl"><span class="c1"></span>        <span class="k">if</span> <span class="o">((</span><span class="n">sc</span> <span class="o">=</span> <span class="n">sizeCtl</span><span class="o">)</span> <span class="o">&lt;</span> <span class="mi">0</span><span class="o">)</span>
+</span></span><span class="line"><span class="cl">            <span class="n">Thread</span><span class="o">.</span><span class="na">yield</span><span class="o">();</span>
+</span></span><span class="line"><span class="cl">        <span class="c1">// 尝试竞争table的初始化权限
+</span></span></span><span class="line"><span class="cl"><span class="c1"></span>        <span class="k">else</span> <span class="k">if</span> <span class="o">(</span><span class="n">U</span><span class="o">.</span><span class="na">compareAndSetInt</span><span class="o">(</span><span class="k">this</span><span class="o">,</span> <span class="n">SIZECTL</span><span class="o">,</span> <span class="n">sc</span><span class="o">,</span> <span class="o">-</span><span class="mi">1</span><span class="o">))</span> <span class="o">{</span>
+</span></span><span class="line"><span class="cl">            <span class="k">try</span> <span class="o">{</span>
+</span></span><span class="line"><span class="cl">                <span class="c1">// 双重检测，防止重复初始化
+</span></span></span><span class="line"><span class="cl"><span class="c1"></span>                <span class="k">if</span> <span class="o">((</span><span class="n">tab</span> <span class="o">=</span> <span class="n">table</span><span class="o">)</span> <span class="o">==</span> <span class="kc">null</span> <span class="o">||</span> <span class="n">tab</span><span class="o">.</span><span class="na">length</span> <span class="o">==</span> <span class="mi">0</span><span class="o">)</span> <span class="o">{</span>
+</span></span><span class="line"><span class="cl">                    <span class="kt">int</span> <span class="n">n</span> <span class="o">=</span> <span class="o">(</span><span class="n">sc</span> <span class="o">&gt;</span> <span class="mi">0</span><span class="o">)</span> <span class="o">?</span> <span class="n">sc</span> <span class="o">:</span> <span class="n">DEFAULT_CAPACITY</span><span class="o">;</span>
+</span></span><span class="line"><span class="cl">                    <span class="nd">@SuppressWarnings</span><span class="o">(</span><span class="s">&#34;unchecked&#34;</span><span class="o">)</span>
+</span></span><span class="line"><span class="cl">                    <span class="n">Node</span><span class="o">&lt;</span><span class="n">K</span><span class="o">,</span><span class="n">V</span><span class="o">&gt;[]</span> <span class="n">nt</span> <span class="o">=</span> <span class="o">(</span><span class="n">Node</span><span class="o">&lt;</span><span class="n">K</span><span class="o">,</span><span class="n">V</span><span class="o">&gt;[])</span><span class="k">new</span> <span class="n">Node</span><span class="o">&lt;?,?&gt;[</span><span class="n">n</span><span class="o">];</span>
+</span></span><span class="line"><span class="cl">                    <span class="n">table</span> <span class="o">=</span> <span class="n">tab</span> <span class="o">=</span> <span class="n">nt</span><span class="o">;</span>
+</span></span><span class="line"><span class="cl">                    <span class="n">sc</span> <span class="o">=</span> <span class="n">n</span> <span class="o">-</span> <span class="o">(</span><span class="n">n</span> <span class="o">&gt;&gt;&gt;</span> <span class="mi">2</span><span class="o">);</span>
+</span></span><span class="line"><span class="cl">                <span class="o">}</span>
+</span></span><span class="line"><span class="cl">            <span class="o">}</span> <span class="k">finally</span> <span class="o">{</span>
+</span></span><span class="line"><span class="cl">                <span class="c1">// 确保sizeCtl的还原
+</span></span></span><span class="line"><span class="cl"><span class="c1"></span>                <span class="n">sizeCtl</span> <span class="o">=</span> <span class="n">sc</span><span class="o">;</span>
+</span></span><span class="line"><span class="cl">            <span class="o">}</span>
+</span></span><span class="line"><span class="cl">            <span class="k">break</span><span class="o">;</span>
+</span></span><span class="line"><span class="cl">        <span class="o">}</span>
+</span></span><span class="line"><span class="cl">    <span class="o">}</span>
+</span></span><span class="line"><span class="cl">    <span class="k">return</span> <span class="n">tab</span><span class="o">;</span>
+</span></span><span class="line"><span class="cl"><span class="o">}</span>
+</span></span></code></pre></td></tr></table>
+</div>
+</div><p>首先，需要明确的是仅会有1个线程对<code>table</code>进行初始化。为了达到这个目的，源码中的实现是通过
+设置一个公共变量<code>sizeCtl</code>，线程通过自旋和对<code>sizeCtl</code>进行CAS竞争<code>table</code>的初始化权限。</p>
+<p>自旋的条件为<code>(tab = table) == null || tab.length == 0</code>，即<code>table</code>为空。假设现在有A和B两个
+线程，那么执行情况可能有以下几种：</p>
+<p>并发竞争初始化权限</p>
+<ol>
+<li>A和B都检测<code>table</code>为空</li>
+<li>A和B都检测<code>(sc = sizeCtl) &lt; 0</code>不成立</li>
+<li>A和B同时会执行<code>U.compareAndSetInt(this, SIZECTL, sc, -1)</code>的话</li>
+<li>由成功的一方进行<code>table</code>初始化，而失败的一方则进入下一次循环</li>
+</ol>
+<p>顺序竞争初始化权限</p>
+<ol>
+<li>A和B都检测<code>table</code>为空</li>
+<li>A和B都检测<code>(sc = sizeCtl) &lt; 0</code>不成立</li>
+<li>B由于CPU的调度被暂停了，A执行<code>U.compareAndSetInt(this, SIZECTL, sc, -1)</code>成功</li>
+<li>A完成了<code>table</code>的初始化并还原的<code>sizeCtl</code>的值</li>
+<li>B执行<code>U.compareAndSetInt(this, SIZECTL, sc, -1)</code>成功</li>
+<li>B进行第2次检测发现<code>table</code>已经被初始化了，则还原<code>sizeCtl</code>并返回</li>
+</ol>
+<p>不竞争初始化权限</p>
+<ol>
+<li>A检测<code>table</code>为空</li>
+<li>A检测<code>(sc = sizeCtl) &lt; 0</code>不成立</li>
+<li>A执行<code>U.compareAndSetInt(this, SIZECTL, sc, -1)</code>成功并开始初始化</li>
+<li>B检测<code>table</code>为空</li>
+<li>B检测<code>(sc = sizeCtl) &lt; 0</code>成立，B让渡出CPU的使用权等待A初始化完成</li>
+<li>A完成初始化，还原<code>sizeCtl</code>并返回</li>
+</ol>
+<h3 id="头节点检测">头节点检测</h3>
+<p>头节点检测的代码片段如下所示：</p>
+<div class="highlight"><div class="chroma">
+<table class="lntable"><tr><td class="lntd">
+<pre tabindex="0" class="chroma"><code><span class="lnt"> 1
+</span><span class="lnt"> 2
+</span><span class="lnt"> 3
+</span><span class="lnt"> 4
+</span><span class="lnt"> 5
+</span><span class="lnt"> 6
+</span><span class="lnt"> 7
+</span><span class="lnt"> 8
+</span><span class="lnt"> 9
+</span><span class="lnt">10
+</span><span class="lnt">11
+</span><span class="lnt">12
+</span><span class="lnt">13
+</span><span class="lnt">14
+</span><span class="lnt">15
+</span><span class="lnt">16
+</span><span class="lnt">17
+</span><span class="lnt">18
+</span><span class="lnt">19
+</span><span class="lnt">20
+</span><span class="lnt">21
+</span><span class="lnt">22
+</span></code></pre></td>
+<td class="lntd">
+<pre tabindex="0" class="chroma"><code class="language-java" data-lang="java"><span class="line"><span class="cl"><span class="k">for</span> <span class="o">(</span><span class="n">Node</span><span class="o">&lt;</span><span class="n">K</span><span class="o">,</span><span class="n">V</span><span class="o">&gt;[]</span> <span class="n">tab</span> <span class="o">=</span> <span class="n">table</span><span class="o">;;)</span> <span class="o">{</span>
+</span></span><span class="line"><span class="cl">    <span class="o">...</span>
+</span></span><span class="line"><span class="cl">    <span class="c1">// key的hash所在槽没有任何节点
+</span></span></span><span class="line"><span class="cl"><span class="c1"></span>    <span class="k">else</span> <span class="k">if</span> <span class="o">((</span><span class="n">f</span> <span class="o">=</span> <span class="n">tabAt</span><span class="o">(</span><span class="n">tab</span><span class="o">,</span> <span class="n">i</span> <span class="o">=</span> <span class="o">(</span><span class="n">n</span> <span class="o">-</span> <span class="mi">1</span><span class="o">)</span> <span class="o">&amp;</span> <span class="n">hash</span><span class="o">))</span> <span class="o">==</span> <span class="kc">null</span><span class="o">)</span> <span class="o">{</span>
+</span></span><span class="line"><span class="cl">        <span class="c1">// 通过cas将竞争头节点
+</span></span></span><span class="line"><span class="cl"><span class="c1"></span>        <span class="k">if</span> <span class="o">(</span><span class="n">casTabAt</span><span class="o">(</span><span class="n">tab</span><span class="o">,</span> <span class="n">i</span><span class="o">,</span> <span class="kc">null</span><span class="o">,</span> <span class="k">new</span> <span class="n">Node</span><span class="o">&lt;</span><span class="n">K</span><span class="o">,</span><span class="n">V</span><span class="o">&gt;(</span><span class="n">hash</span><span class="o">,</span> <span class="n">key</span><span class="o">,</span> <span class="n">value</span><span class="o">)))</span>
+</span></span><span class="line"><span class="cl">            <span class="k">break</span><span class="o">;</span>                   <span class="c1">// no lock when adding to empty bin
+</span></span></span><span class="line"><span class="cl"><span class="c1"></span>    <span class="o">}</span>
+</span></span><span class="line"><span class="cl">    <span class="c1">// 当前冲突链表/红黑树已被迁移至新的hash表
+</span></span></span><span class="line"><span class="cl"><span class="c1"></span>    <span class="k">else</span> <span class="k">if</span> <span class="o">((</span><span class="n">fh</span> <span class="o">=</span> <span class="n">f</span><span class="o">.</span><span class="na">hash</span><span class="o">)</span> <span class="o">==</span> <span class="n">MOVED</span><span class="o">)</span>
+</span></span><span class="line"><span class="cl">        <span class="c1">// 帮助完成迁移工作，之后进入下一次循环
+</span></span></span><span class="line"><span class="cl"><span class="c1"></span>        <span class="n">tab</span> <span class="o">=</span> <span class="n">helpTransfer</span><span class="o">(</span><span class="n">tab</span><span class="o">,</span> <span class="n">f</span><span class="o">);</span>
+</span></span><span class="line"><span class="cl">    <span class="c1">// 头节点的key值与给定key相同且不允许同一个key重复插入
+</span></span></span><span class="line"><span class="cl"><span class="c1"></span>    <span class="k">else</span> <span class="k">if</span> <span class="o">(</span><span class="n">onlyIfAbsent</span> <span class="c1">// check first node without acquiring lock
+</span></span></span><span class="line"><span class="cl"><span class="c1"></span>             <span class="o">&amp;&amp;</span> <span class="n">fh</span> <span class="o">==</span> <span class="n">hash</span>
+</span></span><span class="line"><span class="cl">             <span class="o">&amp;&amp;</span> <span class="o">((</span><span class="n">fk</span> <span class="o">=</span> <span class="n">f</span><span class="o">.</span><span class="na">key</span><span class="o">)</span> <span class="o">==</span> <span class="n">key</span> <span class="o">||</span> <span class="o">(</span><span class="n">fk</span> <span class="o">!=</span> <span class="kc">null</span> <span class="o">&amp;&amp;</span> <span class="n">key</span><span class="o">.</span><span class="na">equals</span><span class="o">(</span><span class="n">fk</span><span class="o">)))</span>
+</span></span><span class="line"><span class="cl">             <span class="o">&amp;&amp;</span> <span class="o">(</span><span class="n">fv</span> <span class="o">=</span> <span class="n">f</span><span class="o">.</span><span class="na">val</span><span class="o">)</span> <span class="o">!=</span> <span class="kc">null</span><span class="o">)</span>
+</span></span><span class="line"><span class="cl">        <span class="k">return</span> <span class="n">fv</span><span class="o">;</span>
+</span></span><span class="line"><span class="cl">    <span class="k">else</span> <span class="o">{</span>
+</span></span><span class="line"><span class="cl">        <span class="o">...</span>
+</span></span><span class="line"><span class="cl">    <span class="o">}</span>
+</span></span><span class="line"><span class="cl"><span class="o">}</span>
+</span></span></code></pre></td></tr></table>
+</div>
+</div><p>不去遍历冲突链表/红黑树，仅使用头节点的情况有2种：</p>
+<ol>
+<li>头节点为空，这意味着不存在任何冲突，因此只需要通过CAS保证头节点变更的原子性即可，
+在并发下成功的线程会直接返回，而失败则意味着进入下次循环再次根据实际情况判断。</li>
+<li>头节点的Key与所传参数一致的情况下，如果允许同Key的覆盖，那么就需要考虑同时有多个
+线程会同时操作这个头节点的情况，这里的操作包括可能会发生移除操作，因此不能简单的将
+头节点的Value替换为参数传递的内容。但当不允许同Key的覆盖则不存在这一限制，因为我们
+不需要修改头节点的内容，只需要得到它然后返回即可。</li>
+</ol>
+<p>还有一种情况是由于扩容的发生，导致当前槽内的所有节点已被迁移值新的Hash表，这时如果
+插入值到旧的Hash表就会发生数据丢失，而直接插入新表则需要考虑锁住新表中相应槽的头节点，
+这会导致迁移的工作变得更加复杂以及耗时。因此，源码中的实现采用了辅助迁移的方式加速
+扩容。</p>
+<h3 id="冲突链表红黑树遍历">冲突链表/红黑树遍历</h3>
+<div class="highlight"><div class="chroma">
+<table class="lntable"><tr><td class="lntd">
+<pre tabindex="0" class="chroma"><code><span class="lnt"> 1
+</span><span class="lnt"> 2
+</span><span class="lnt"> 3
+</span><span class="lnt"> 4
+</span><span class="lnt"> 5
+</span><span class="lnt"> 6
+</span><span class="lnt"> 7
+</span><span class="lnt"> 8
+</span><span class="lnt"> 9
+</span><span class="lnt">10
+</span><span class="lnt">11
+</span><span class="lnt">12
+</span><span class="lnt">13
+</span><span class="lnt">14
+</span><span class="lnt">15
+</span><span class="lnt">16
+</span><span class="lnt">17
+</span><span class="lnt">18
+</span><span class="lnt">19
+</span><span class="lnt">20
+</span><span class="lnt">21
+</span><span class="lnt">22
+</span><span class="lnt">23
+</span><span class="lnt">24
+</span><span class="lnt">25
+</span><span class="lnt">26
+</span><span class="lnt">27
+</span><span class="lnt">28
+</span><span class="lnt">29
+</span><span class="lnt">30
+</span><span class="lnt">31
+</span><span class="lnt">32
+</span><span class="lnt">33
+</span><span class="lnt">34
+</span><span class="lnt">35
+</span><span class="lnt">36
+</span><span class="lnt">37
+</span><span class="lnt">38
+</span><span class="lnt">39
+</span><span class="lnt">40
+</span><span class="lnt">41
+</span><span class="lnt">42
+</span><span class="lnt">43
+</span><span class="lnt">44
+</span><span class="lnt">45
+</span><span class="lnt">46
+</span><span class="lnt">47
+</span><span class="lnt">48
+</span><span class="lnt">49
+</span><span class="lnt">50
+</span><span class="lnt">51
+</span><span class="lnt">52
+</span><span class="lnt">53
+</span><span class="lnt">54
+</span><span class="lnt">55
+</span></code></pre></td>
+<td class="lntd">
+<pre tabindex="0" class="chroma"><code class="language-java" data-lang="java"><span class="line"><span class="cl"><span class="k">for</span> <span class="o">(</span><span class="n">Node</span><span class="o">&lt;</span><span class="n">K</span><span class="o">,</span><span class="n">V</span><span class="o">&gt;[]</span> <span class="n">tab</span> <span class="o">=</span> <span class="n">table</span><span class="o">;;)</span> <span class="o">{</span>
+</span></span><span class="line"><span class="cl">    <span class="o">...</span>
+</span></span><span class="line"><span class="cl">    <span class="k">else</span> <span class="o">{</span>
+</span></span><span class="line"><span class="cl">        <span class="n">V</span> <span class="n">oldVal</span> <span class="o">=</span> <span class="kc">null</span><span class="o">;</span>
+</span></span><span class="line"><span class="cl">        <span class="c1">// 锁住头节点
+</span></span></span><span class="line"><span class="cl"><span class="c1"></span>        <span class="kd">synchronized</span> <span class="o">(</span><span class="n">f</span><span class="o">)</span> <span class="o">{</span>
+</span></span><span class="line"><span class="cl">            <span class="c1">// 链表遍历
+</span></span></span><span class="line"><span class="cl"><span class="c1"></span>            <span class="k">if</span> <span class="o">(</span><span class="n">tabAt</span><span class="o">(</span><span class="n">tab</span><span class="o">,</span> <span class="n">i</span><span class="o">)</span> <span class="o">==</span> <span class="n">f</span><span class="o">)</span> <span class="o">{</span>
+</span></span><span class="line"><span class="cl">                <span class="k">if</span> <span class="o">(</span><span class="n">fh</span> <span class="o">&gt;=</span> <span class="mi">0</span><span class="o">)</span> <span class="o">{</span>
+</span></span><span class="line"><span class="cl">                    <span class="n">binCount</span> <span class="o">=</span> <span class="mi">1</span><span class="o">;</span>
+</span></span><span class="line"><span class="cl">                    <span class="k">for</span> <span class="o">(</span><span class="n">Node</span><span class="o">&lt;</span><span class="n">K</span><span class="o">,</span><span class="n">V</span><span class="o">&gt;</span> <span class="n">e</span> <span class="o">=</span> <span class="n">f</span><span class="o">;;</span> <span class="o">++</span><span class="n">binCount</span><span class="o">)</span> <span class="o">{</span>
+</span></span><span class="line"><span class="cl">                        <span class="n">K</span> <span class="n">ek</span><span class="o">;</span>
+</span></span><span class="line"><span class="cl">                        <span class="k">if</span> <span class="o">(</span><span class="n">e</span><span class="o">.</span><span class="na">hash</span> <span class="o">==</span> <span class="n">hash</span> <span class="o">&amp;&amp;</span>
+</span></span><span class="line"><span class="cl">                            <span class="o">((</span><span class="n">ek</span> <span class="o">=</span> <span class="n">e</span><span class="o">.</span><span class="na">key</span><span class="o">)</span> <span class="o">==</span> <span class="n">key</span> <span class="o">||</span>
+</span></span><span class="line"><span class="cl">                             <span class="o">(</span><span class="n">ek</span> <span class="o">!=</span> <span class="kc">null</span> <span class="o">&amp;&amp;</span> <span class="n">key</span><span class="o">.</span><span class="na">equals</span><span class="o">(</span><span class="n">ek</span><span class="o">))))</span> <span class="o">{</span>
+</span></span><span class="line"><span class="cl">                            <span class="n">oldVal</span> <span class="o">=</span> <span class="n">e</span><span class="o">.</span><span class="na">val</span><span class="o">;</span>
+</span></span><span class="line"><span class="cl">                            <span class="k">if</span> <span class="o">(!</span><span class="n">onlyIfAbsent</span><span class="o">)</span>
+</span></span><span class="line"><span class="cl">                                <span class="n">e</span><span class="o">.</span><span class="na">val</span> <span class="o">=</span> <span class="n">value</span><span class="o">;</span>
+</span></span><span class="line"><span class="cl">                            <span class="k">break</span><span class="o">;</span>
+</span></span><span class="line"><span class="cl">                        <span class="o">}</span>
+</span></span><span class="line"><span class="cl">                        <span class="n">Node</span><span class="o">&lt;</span><span class="n">K</span><span class="o">,</span><span class="n">V</span><span class="o">&gt;</span> <span class="n">pred</span> <span class="o">=</span> <span class="n">e</span><span class="o">;</span>
+</span></span><span class="line"><span class="cl">                        <span class="k">if</span> <span class="o">((</span><span class="n">e</span> <span class="o">=</span> <span class="n">e</span><span class="o">.</span><span class="na">next</span><span class="o">)</span> <span class="o">==</span> <span class="kc">null</span><span class="o">)</span> <span class="o">{</span>
+</span></span><span class="line"><span class="cl">                            <span class="n">pred</span><span class="o">.</span><span class="na">next</span> <span class="o">=</span> <span class="k">new</span> <span class="n">Node</span><span class="o">&lt;</span><span class="n">K</span><span class="o">,</span><span class="n">V</span><span class="o">&gt;(</span><span class="n">hash</span><span class="o">,</span> <span class="n">key</span><span class="o">,</span> <span class="n">value</span><span class="o">);</span>
+</span></span><span class="line"><span class="cl">                            <span class="k">break</span><span class="o">;</span>
+</span></span><span class="line"><span class="cl">                        <span class="o">}</span>
+</span></span><span class="line"><span class="cl">                    <span class="o">}</span>
+</span></span><span class="line"><span class="cl">                <span class="o">}</span>
+</span></span><span class="line"><span class="cl">                <span class="c1">// 红黑数遍历
+</span></span></span><span class="line"><span class="cl"><span class="c1"></span>                <span class="k">else</span> <span class="k">if</span> <span class="o">(</span><span class="n">f</span> <span class="k">instanceof</span> <span class="n">TreeBin</span><span class="o">)</span> <span class="o">{</span>
+</span></span><span class="line"><span class="cl">                    <span class="n">Node</span><span class="o">&lt;</span><span class="n">K</span><span class="o">,</span><span class="n">V</span><span class="o">&gt;</span> <span class="n">p</span><span class="o">;</span>
+</span></span><span class="line"><span class="cl">                    <span class="n">binCount</span> <span class="o">=</span> <span class="mi">2</span><span class="o">;</span>
+</span></span><span class="line"><span class="cl">                    <span class="k">if</span> <span class="o">((</span><span class="n">p</span> <span class="o">=</span> <span class="o">((</span><span class="n">TreeBin</span><span class="o">&lt;</span><span class="n">K</span><span class="o">,</span><span class="n">V</span><span class="o">&gt;)</span><span class="n">f</span><span class="o">).</span><span class="na">putTreeVal</span><span class="o">(</span><span class="n">hash</span><span class="o">,</span> <span class="n">key</span><span class="o">,</span>
+</span></span><span class="line"><span class="cl">                                                   <span class="n">value</span><span class="o">))</span> <span class="o">!=</span> <span class="kc">null</span><span class="o">)</span> <span class="o">{</span>
+</span></span><span class="line"><span class="cl">                        <span class="n">oldVal</span> <span class="o">=</span> <span class="n">p</span><span class="o">.</span><span class="na">val</span><span class="o">;</span>
+</span></span><span class="line"><span class="cl">                        <span class="k">if</span> <span class="o">(!</span><span class="n">onlyIfAbsent</span><span class="o">)</span>
+</span></span><span class="line"><span class="cl">                            <span class="n">p</span><span class="o">.</span><span class="na">val</span> <span class="o">=</span> <span class="n">value</span><span class="o">;</span>
+</span></span><span class="line"><span class="cl">                    <span class="o">}</span>
+</span></span><span class="line"><span class="cl">                <span class="o">}</span>
+</span></span><span class="line"><span class="cl">                <span class="c1">// 异常情况
+</span></span></span><span class="line"><span class="cl"><span class="c1"></span>                <span class="k">else</span> <span class="k">if</span> <span class="o">(</span><span class="n">f</span> <span class="k">instanceof</span> <span class="n">ReservationNode</span><span class="o">)</span>
+</span></span><span class="line"><span class="cl">                    <span class="k">throw</span> <span class="k">new</span> <span class="n">IllegalStateException</span><span class="o">(</span><span class="s">&#34;Recursive update&#34;</span><span class="o">);</span>
+</span></span><span class="line"><span class="cl">            <span class="o">}</span>
+</span></span><span class="line"><span class="cl">        <span class="o">}</span>
+</span></span><span class="line"><span class="cl">        <span class="c1">// 已解除头节点锁
+</span></span></span><span class="line"><span class="cl"><span class="c1"></span>        <span class="k">if</span> <span class="o">(</span><span class="n">binCount</span> <span class="o">!=</span> <span class="mi">0</span><span class="o">)</span> <span class="o">{</span>
+</span></span><span class="line"><span class="cl">            <span class="c1">// 判断冲突节点个数是否超过门限
+</span></span></span><span class="line"><span class="cl"><span class="c1"></span>            <span class="k">if</span> <span class="o">(</span><span class="n">binCount</span> <span class="o">&gt;=</span> <span class="n">TREEIFY_THRESHOLD</span><span class="o">)</span>
+</span></span><span class="line"><span class="cl">                <span class="c1">// 尝试将链表转为红黑树
+</span></span></span><span class="line"><span class="cl"><span class="c1"></span>                <span class="n">treeifyBin</span><span class="o">(</span><span class="n">tab</span><span class="o">,</span> <span class="n">i</span><span class="o">);</span>
+</span></span><span class="line"><span class="cl">            <span class="k">if</span> <span class="o">(</span><span class="n">oldVal</span> <span class="o">!=</span> <span class="kc">null</span><span class="o">)</span>
+</span></span><span class="line"><span class="cl">                <span class="k">return</span> <span class="n">oldVal</span><span class="o">;</span>
+</span></span><span class="line"><span class="cl">            <span class="k">break</span><span class="o">;</span>
+</span></span><span class="line"><span class="cl">        <span class="o">}</span>
+</span></span><span class="line"><span class="cl">    <span class="o">}</span>
+</span></span><span class="line"><span class="cl"><span class="o">}</span>
+</span></span></code></pre></td></tr></table>
+</div>
+</div><p>无论是遍历链表还是二叉树，其本质都是查找是否存在Key一致的节点，如果存在就根据
+<code>onlyIfAbsent</code>决定是否替换节点中的值。</p>
+<p>比较值得注意的是使用<code>synchronize</code>锁住头节点之后进行的<code>tabAt(tab, i) == f</code>判断，
+这里的检测是为了保证在等待锁的过程中，其他线程的操作是否导致了头节点的变化，而
+实际线程操作可能产生头节点变化的情况有以下几种：</p>
+<ol>
+<li>由于扩容导致头节点由<code>Node</code>或<code>TreeBin</code>变为<code>ForwardingNode</code></li>
+<li>由于冲突节点个数超过<code>TREEIFY_THRESHOLD</code>而导致节点由<code>Node</code>变为<code>TreeBin</code></li>
+<li>由于冲突节点个数减少而导致节点由<code>TreeBin</code>还原成<code>Node</code></li>
+<li>由于头节点的移除而导致的头节点变更</li>
+</ol>
+<p>头节点的变化会导致2种情况的发生：</p>
+<ol>
+<li>后续的线程获取锁住新的头节点而导致多个线程并发修改同一个冲突链表/红黑树</li>
+<li>当前线程以旧的头节点进行后续操作是无效的</li>
+</ol>
+<p>因此，在检测到头节点变化后，会立刻放弃本次循环。</p>
+<p>注意到一点，在插入执行成功之后，线程会解锁头节点之后再调用<code>treeifyBin</code>，个人
+认为这是由于<code>treeifyBin</code>可能调用<code>tryPresize</code>，如果持续锁住该头节点，则会使得
+整个迁移过程该槽无法进行任何修改，减低并发能力。</p>
+<h3 id="冲突链表树化treeifybin">冲突链表树化<code>treeifyBin</code></h3>
+<p>首先，需要明确<code>treeifyBin</code>并非一定会将冲突链表转为红黑树，而是尝试采用扩容
+的方式解决问题。这部分的源码如下：</p>
+<div class="highlight"><div class="chroma">
+<table class="lntable"><tr><td class="lntd">
+<pre tabindex="0" class="chroma"><code><span class="lnt"> 1
+</span><span class="lnt"> 2
+</span><span class="lnt"> 3
+</span><span class="lnt"> 4
+</span><span class="lnt"> 5
+</span><span class="lnt"> 6
+</span><span class="lnt"> 7
+</span><span class="lnt"> 8
+</span><span class="lnt"> 9
+</span><span class="lnt">10
+</span><span class="lnt">11
+</span><span class="lnt">12
+</span><span class="lnt">13
+</span><span class="lnt">14
+</span><span class="lnt">15
+</span><span class="lnt">16
+</span><span class="lnt">17
+</span><span class="lnt">18
+</span><span class="lnt">19
+</span><span class="lnt">20
+</span><span class="lnt">21
+</span><span class="lnt">22
+</span><span class="lnt">23
+</span><span class="lnt">24
+</span><span class="lnt">25
+</span><span class="lnt">26
+</span><span class="lnt">27
+</span><span class="lnt">28
+</span><span class="lnt">29
+</span></code></pre></td>
+<td class="lntd">
+<pre tabindex="0" class="chroma"><code class="language-java" data-lang="java"><span class="line"><span class="cl"><span class="kd">private</span> <span class="kd">final</span> <span class="kt">void</span> <span class="nf">treeifyBin</span><span class="o">(</span><span class="n">Node</span><span class="o">&lt;</span><span class="n">K</span><span class="o">,</span><span class="n">V</span><span class="o">&gt;[]</span> <span class="n">tab</span><span class="o">,</span> <span class="kt">int</span> <span class="n">index</span><span class="o">)</span> <span class="o">{</span>
+</span></span><span class="line"><span class="cl">    <span class="n">Node</span><span class="o">&lt;</span><span class="n">K</span><span class="o">,</span><span class="n">V</span><span class="o">&gt;</span> <span class="n">b</span><span class="o">;</span> <span class="kt">int</span> <span class="n">n</span><span class="o">;</span>
+</span></span><span class="line"><span class="cl">    <span class="k">if</span> <span class="o">(</span><span class="n">tab</span> <span class="o">!=</span> <span class="kc">null</span><span class="o">)</span> <span class="o">{</span>
+</span></span><span class="line"><span class="cl">        <span class="c1">// 判断是否尝试扩容
+</span></span></span><span class="line"><span class="cl"><span class="c1"></span>        <span class="k">if</span> <span class="o">((</span><span class="n">n</span> <span class="o">=</span> <span class="n">tab</span><span class="o">.</span><span class="na">length</span><span class="o">)</span> <span class="o">&lt;</span> <span class="n">MIN_TREEIFY_CAPACITY</span><span class="o">)</span>
+</span></span><span class="line"><span class="cl">            <span class="n">tryPresize</span><span class="o">(</span><span class="n">n</span> <span class="o">&lt;&lt;</span> <span class="mi">1</span><span class="o">);</span>
+</span></span><span class="line"><span class="cl">        <span class="c1">// 获取key所在链表头节点，防止代码执行期间的节点变化
+</span></span></span><span class="line"><span class="cl"><span class="c1"></span>        <span class="k">else</span> <span class="k">if</span> <span class="o">((</span><span class="n">b</span> <span class="o">=</span> <span class="n">tabAt</span><span class="o">(</span><span class="n">tab</span><span class="o">,</span> <span class="n">index</span><span class="o">))</span> <span class="o">!=</span> <span class="kc">null</span> <span class="o">&amp;&amp;</span> <span class="n">b</span><span class="o">.</span><span class="na">hash</span> <span class="o">&gt;=</span> <span class="mi">0</span><span class="o">)</span> <span class="o">{</span>
+</span></span><span class="line"><span class="cl">            <span class="c1">// 锁住头节点
+</span></span></span><span class="line"><span class="cl"><span class="c1"></span>            <span class="kd">synchronized</span> <span class="o">(</span><span class="n">b</span><span class="o">)</span> <span class="o">{</span>
+</span></span><span class="line"><span class="cl">                <span class="c1">// 判断获取锁的期间头节点是否产生变化
+</span></span></span><span class="line"><span class="cl"><span class="c1"></span>                <span class="k">if</span> <span class="o">(</span><span class="n">tabAt</span><span class="o">(</span><span class="n">tab</span><span class="o">,</span> <span class="n">index</span><span class="o">)</span> <span class="o">==</span> <span class="n">b</span><span class="o">)</span> <span class="o">{</span>
+</span></span><span class="line"><span class="cl">                    <span class="n">TreeNode</span><span class="o">&lt;</span><span class="n">K</span><span class="o">,</span><span class="n">V</span><span class="o">&gt;</span> <span class="n">hd</span> <span class="o">=</span> <span class="kc">null</span><span class="o">,</span> <span class="n">tl</span> <span class="o">=</span> <span class="kc">null</span><span class="o">;</span>
+</span></span><span class="line"><span class="cl">                    <span class="k">for</span> <span class="o">(</span><span class="n">Node</span><span class="o">&lt;</span><span class="n">K</span><span class="o">,</span><span class="n">V</span><span class="o">&gt;</span> <span class="n">e</span> <span class="o">=</span> <span class="n">b</span><span class="o">;</span> <span class="n">e</span> <span class="o">!=</span> <span class="kc">null</span><span class="o">;</span> <span class="n">e</span> <span class="o">=</span> <span class="n">e</span><span class="o">.</span><span class="na">next</span><span class="o">)</span> <span class="o">{</span>
+</span></span><span class="line"><span class="cl">                        <span class="n">TreeNode</span><span class="o">&lt;</span><span class="n">K</span><span class="o">,</span><span class="n">V</span><span class="o">&gt;</span> <span class="n">p</span> <span class="o">=</span>
+</span></span><span class="line"><span class="cl">                            <span class="k">new</span> <span class="n">TreeNode</span><span class="o">&lt;</span><span class="n">K</span><span class="o">,</span><span class="n">V</span><span class="o">&gt;(</span><span class="n">e</span><span class="o">.</span><span class="na">hash</span><span class="o">,</span> <span class="n">e</span><span class="o">.</span><span class="na">key</span><span class="o">,</span> <span class="n">e</span><span class="o">.</span><span class="na">val</span><span class="o">,</span>
+</span></span><span class="line"><span class="cl">                                              <span class="kc">null</span><span class="o">,</span> <span class="kc">null</span><span class="o">);</span>
+</span></span><span class="line"><span class="cl">                        <span class="k">if</span> <span class="o">((</span><span class="n">p</span><span class="o">.</span><span class="na">prev</span> <span class="o">=</span> <span class="n">tl</span><span class="o">)</span> <span class="o">==</span> <span class="kc">null</span><span class="o">)</span>
+</span></span><span class="line"><span class="cl">                            <span class="n">hd</span> <span class="o">=</span> <span class="n">p</span><span class="o">;</span>
+</span></span><span class="line"><span class="cl">                        <span class="k">else</span>
+</span></span><span class="line"><span class="cl">                            <span class="n">tl</span><span class="o">.</span><span class="na">next</span> <span class="o">=</span> <span class="n">p</span><span class="o">;</span>
+</span></span><span class="line"><span class="cl">                        <span class="n">tl</span> <span class="o">=</span> <span class="n">p</span><span class="o">;</span>
+</span></span><span class="line"><span class="cl">                    <span class="o">}</span>
+</span></span><span class="line"><span class="cl">                    <span class="n">setTabAt</span><span class="o">(</span><span class="n">tab</span><span class="o">,</span> <span class="n">index</span><span class="o">,</span> <span class="k">new</span> <span class="n">TreeBin</span><span class="o">&lt;</span><span class="n">K</span><span class="o">,</span><span class="n">V</span><span class="o">&gt;(</span><span class="n">hd</span><span class="o">));</span>
+</span></span><span class="line"><span class="cl">                <span class="o">}</span>
+</span></span><span class="line"><span class="cl">            <span class="o">}</span>
+</span></span><span class="line"><span class="cl">        <span class="o">}</span>
+</span></span><span class="line"><span class="cl">    <span class="o">}</span>
+</span></span><span class="line"><span class="cl"><span class="o">}</span>
+</span></span></code></pre></td></tr></table>
+</div>
+</div><p>根据源码，是否先进行扩容是依据常量<code>MIN_TREEIFY_CAPACITY</code>进行的。暂时不考虑扩容的
+情况，冲突链表的树化与链表操作一样都需要获取头节点的锁，所使用的也是双重检测的方
+法防止头节点的变化。不同的是，<code>treeifyBin</code>并不会进行重试，这是由于节点的变化一般
+都是类型的变化，这些情况下要么是冲突链表已被其他线程转为红黑树，要么是已被迁移。</p>
+<p>而当非类型变化时，也的确可能发生冲突节点个数大于<code>MIN_TREEIFY_CAPACITY</code>且由于并发
+而不产生树化的情况：</p>
+<ol>
+<li>线程A、B、C各添加1个节点，并释放头节点</li>
+<li>线程D获取头节点锁</li>
+<li>线程A、B、C执行<code>treeifyBin</code>，并锁住头节点失败阻塞</li>
+<li>线程D移除头节点</li>
+<li>现成A、B、C发现头节点变化，不执行树化</li>
+</ol>
+<h3 id="hash迁移transfer">Hash迁移<code>transfer</code></h3>
+<div class="highlight"><div class="chroma">
+<table class="lntable"><tr><td class="lntd">
+<pre tabindex="0" class="chroma"><code><span class="lnt"> 1
+</span><span class="lnt"> 2
+</span><span class="lnt"> 3
+</span><span class="lnt"> 4
+</span><span class="lnt"> 5
+</span><span class="lnt"> 6
+</span><span class="lnt"> 7
+</span><span class="lnt"> 8
+</span><span class="lnt"> 9
+</span><span class="lnt">10
+</span><span class="lnt">11
+</span><span class="lnt">12
+</span><span class="lnt">13
+</span><span class="lnt">14
+</span><span class="lnt">15
+</span><span class="lnt">16
+</span><span class="lnt">17
+</span><span class="lnt">18
+</span><span class="lnt">19
+</span><span class="lnt">20
+</span><span class="lnt">21
+</span><span class="lnt">22
+</span><span class="lnt">23
+</span><span class="lnt">24
+</span><span class="lnt">25
+</span><span class="lnt">26
+</span><span class="lnt">27
+</span><span class="lnt">28
+</span><span class="lnt">29
+</span><span class="lnt">30
+</span><span class="lnt">31
+</span><span class="lnt">32
+</span><span class="lnt">33
+</span><span class="lnt">34
+</span><span class="lnt">35
+</span><span class="lnt">36
+</span><span class="lnt">37
+</span><span class="lnt">38
+</span><span class="lnt">39
+</span><span class="lnt">40
+</span><span class="lnt">41
+</span><span class="lnt">42
+</span><span class="lnt">43
+</span><span class="lnt">44
+</span><span class="lnt">45
+</span><span class="lnt">46
+</span><span class="lnt">47
+</span><span class="lnt">48
+</span><span class="lnt">49
+</span><span class="lnt">50
+</span><span class="lnt">51
+</span><span class="lnt">52
+</span><span class="lnt">53
+</span><span class="lnt">54
+</span><span class="lnt">55
+</span><span class="lnt">56
+</span><span class="lnt">57
+</span><span class="lnt">58
+</span><span class="lnt">59
+</span><span class="lnt">60
+</span><span class="lnt">61
+</span><span class="lnt">62
+</span><span class="lnt">63
+</span><span class="lnt">64
+</span><span class="lnt">65
+</span><span class="lnt">66
+</span><span class="lnt">67
+</span><span class="lnt">68
+</span><span class="lnt">69
+</span><span class="lnt">70
+</span><span class="lnt">71
+</span><span class="lnt">72
+</span><span class="lnt">73
+</span><span class="lnt">74
+</span><span class="lnt">75
+</span><span class="lnt">76
+</span><span class="lnt">77
+</span><span class="lnt">78
+</span><span class="lnt">79
+</span><span class="lnt">80
+</span><span class="lnt">81
+</span><span class="lnt">82
+</span><span class="lnt">83
+</span><span class="lnt">84
+</span><span class="lnt">85
+</span></code></pre></td>
+<td class="lntd">
+<pre tabindex="0" class="chroma"><code class="language-java" data-lang="java"><span class="line"><span class="cl"><span class="kd">private</span> <span class="kd">final</span> <span class="kt">void</span> <span class="nf">transfer</span><span class="o">(</span><span class="n">Node</span><span class="o">&lt;</span><span class="n">K</span><span class="o">,</span><span class="n">V</span><span class="o">&gt;[]</span> <span class="n">tab</span><span class="o">,</span> <span class="n">Node</span><span class="o">&lt;</span><span class="n">K</span><span class="o">,</span><span class="n">V</span><span class="o">&gt;[]</span> <span class="n">nextTab</span><span class="o">)</span> <span class="o">{</span>
+</span></span><span class="line"><span class="cl">    <span class="kt">int</span> <span class="n">n</span> <span class="o">=</span> <span class="n">tab</span><span class="o">.</span><span class="na">length</span><span class="o">,</span> <span class="n">stride</span><span class="o">;</span>
+</span></span><span class="line"><span class="cl">    <span class="c1">// stride为线程所负责的table迁移窗口大小，迁移窗口为[transferIndex - stride, transferIndex)
+</span></span></span><span class="line"><span class="cl"><span class="c1"></span>    <span class="k">if</span> <span class="o">((</span><span class="n">stride</span> <span class="o">=</span> <span class="o">(</span><span class="n">NCPU</span> <span class="o">&gt;</span> <span class="mi">1</span><span class="o">)</span> <span class="o">?</span> <span class="o">(</span><span class="n">n</span> <span class="o">&gt;&gt;&gt;</span> <span class="mi">3</span><span class="o">)</span> <span class="o">/</span> <span class="n">NCPU</span> <span class="o">:</span> <span class="n">n</span><span class="o">)</span> <span class="o">&lt;</span> <span class="n">MIN_TRANSFER_STRIDE</span><span class="o">)</span>
+</span></span><span class="line"><span class="cl">        <span class="n">stride</span> <span class="o">=</span> <span class="n">MIN_TRANSFER_STRIDE</span><span class="o">;</span>
+</span></span><span class="line"><span class="cl">    <span class="c1">// 初始化新的Hash表
+</span></span></span><span class="line"><span class="cl"><span class="c1"></span>    <span class="k">if</span> <span class="o">(</span><span class="n">nextTab</span> <span class="o">==</span> <span class="kc">null</span><span class="o">)</span> <span class="o">{</span>
+</span></span><span class="line"><span class="cl">        <span class="k">try</span> <span class="o">{</span>
+</span></span><span class="line"><span class="cl">            <span class="nd">@SuppressWarnings</span><span class="o">(</span><span class="s">&#34;unchecked&#34;</span><span class="o">)</span>
+</span></span><span class="line"><span class="cl">            <span class="n">Node</span><span class="o">&lt;</span><span class="n">K</span><span class="o">,</span><span class="n">V</span><span class="o">&gt;[]</span> <span class="n">nt</span> <span class="o">=</span> <span class="o">(</span><span class="n">Node</span><span class="o">&lt;</span><span class="n">K</span><span class="o">,</span><span class="n">V</span><span class="o">&gt;[])</span><span class="k">new</span> <span class="n">Node</span><span class="o">&lt;?,?&gt;[</span><span class="n">n</span> <span class="o">&lt;&lt;</span> <span class="mi">1</span><span class="o">];</span>
+</span></span><span class="line"><span class="cl">            <span class="n">nextTab</span> <span class="o">=</span> <span class="n">nt</span><span class="o">;</span>
+</span></span><span class="line"><span class="cl">        <span class="o">}</span> <span class="k">catch</span> <span class="o">(</span><span class="n">Throwable</span> <span class="n">ex</span><span class="o">)</span> <span class="o">{</span>      <span class="c1">// try to cope with OOME
+</span></span></span><span class="line"><span class="cl"><span class="c1"></span>            <span class="n">sizeCtl</span> <span class="o">=</span> <span class="n">Integer</span><span class="o">.</span><span class="na">MAX_VALUE</span><span class="o">;</span>
+</span></span><span class="line"><span class="cl">            <span class="k">return</span><span class="o">;</span>
+</span></span><span class="line"><span class="cl">        <span class="o">}</span>
+</span></span><span class="line"><span class="cl">        <span class="n">nextTable</span> <span class="o">=</span> <span class="n">nextTab</span><span class="o">;</span>
+</span></span><span class="line"><span class="cl">        <span class="c1">// 更新迁移边界
+</span></span></span><span class="line"><span class="cl"><span class="c1"></span>        <span class="n">transferIndex</span> <span class="o">=</span> <span class="n">n</span><span class="o">;</span>
+</span></span><span class="line"><span class="cl">    <span class="o">}</span>
+</span></span><span class="line"><span class="cl">    <span class="kt">int</span> <span class="n">nextn</span> <span class="o">=</span> <span class="n">nextTab</span><span class="o">.</span><span class="na">length</span><span class="o">;</span>
+</span></span><span class="line"><span class="cl">    <span class="n">ForwardingNode</span><span class="o">&lt;</span><span class="n">K</span><span class="o">,</span><span class="n">V</span><span class="o">&gt;</span> <span class="n">fwd</span> <span class="o">=</span> <span class="k">new</span> <span class="n">ForwardingNode</span><span class="o">&lt;</span><span class="n">K</span><span class="o">,</span><span class="n">V</span><span class="o">&gt;(</span><span class="n">nextTab</span><span class="o">);</span>
+</span></span><span class="line"><span class="cl">    <span class="kt">boolean</span> <span class="n">advance</span> <span class="o">=</span> <span class="kc">true</span><span class="o">;</span>
+</span></span><span class="line"><span class="cl">    <span class="kt">boolean</span> <span class="n">finishing</span> <span class="o">=</span> <span class="kc">false</span><span class="o">;</span> <span class="c1">// to ensure sweep before committing nextTab
+</span></span></span><span class="line"><span class="cl"><span class="c1"></span>    <span class="k">for</span> <span class="o">(</span><span class="kt">int</span> <span class="n">i</span> <span class="o">=</span> <span class="mi">0</span><span class="o">,</span> <span class="n">bound</span> <span class="o">=</span> <span class="mi">0</span><span class="o">;;)</span> <span class="o">{</span>
+</span></span><span class="line"><span class="cl">        <span class="n">Node</span><span class="o">&lt;</span><span class="n">K</span><span class="o">,</span><span class="n">V</span><span class="o">&gt;</span> <span class="n">f</span><span class="o">;</span> <span class="kt">int</span> <span class="n">fh</span><span class="o">;</span>
+</span></span><span class="line"><span class="cl">        <span class="c1">// 更新迁移槽
+</span></span></span><span class="line"><span class="cl"><span class="c1"></span>        <span class="k">while</span> <span class="o">(</span><span class="n">advance</span><span class="o">)</span> <span class="o">{</span>
+</span></span><span class="line"><span class="cl">            <span class="kt">int</span> <span class="n">nextIndex</span><span class="o">,</span> <span class="n">nextBound</span><span class="o">;</span>
+</span></span><span class="line"><span class="cl">            <span class="c1">// 当前的迁移窗口中的槽还未迁移完毕
+</span></span></span><span class="line"><span class="cl"><span class="c1"></span>            <span class="k">if</span> <span class="o">(--</span><span class="n">i</span> <span class="o">&gt;=</span> <span class="n">bound</span> <span class="o">||</span> <span class="n">finishing</span><span class="o">)</span>
+</span></span><span class="line"><span class="cl">                <span class="n">advance</span> <span class="o">=</span> <span class="kc">false</span><span class="o">;</span>
+</span></span><span class="line"><span class="cl">            <span class="c1">// 已无新的迁移窗口可以获取
+</span></span></span><span class="line"><span class="cl"><span class="c1"></span>            <span class="k">else</span> <span class="k">if</span> <span class="o">((</span><span class="n">nextIndex</span> <span class="o">=</span> <span class="n">transferIndex</span><span class="o">)</span> <span class="o">&lt;=</span> <span class="mi">0</span><span class="o">)</span> <span class="o">{</span>
+</span></span><span class="line"><span class="cl">                <span class="n">i</span> <span class="o">=</span> <span class="o">-</span><span class="mi">1</span><span class="o">;</span>
+</span></span><span class="line"><span class="cl">                <span class="n">advance</span> <span class="o">=</span> <span class="kc">false</span><span class="o">;</span>
+</span></span><span class="line"><span class="cl">            <span class="o">}</span>
+</span></span><span class="line"><span class="cl">            <span class="c1">// 尝试获取新的迁移窗口
+</span></span></span><span class="line"><span class="cl"><span class="c1"></span>            <span class="k">else</span> <span class="k">if</span> <span class="o">(</span><span class="n">U</span><span class="o">.</span><span class="na">compareAndSetInt</span>
+</span></span><span class="line"><span class="cl">                     <span class="o">(</span><span class="k">this</span><span class="o">,</span> <span class="n">TRANSFERINDEX</span><span class="o">,</span> <span class="n">nextIndex</span><span class="o">,</span>
+</span></span><span class="line"><span class="cl">                      <span class="n">nextBound</span> <span class="o">=</span> <span class="o">(</span><span class="n">nextIndex</span> <span class="o">&gt;</span> <span class="n">stride</span> <span class="o">?</span>
+</span></span><span class="line"><span class="cl">                                   <span class="n">nextIndex</span> <span class="o">-</span> <span class="n">stride</span> <span class="o">:</span> <span class="mi">0</span><span class="o">)))</span> <span class="o">{</span>
+</span></span><span class="line"><span class="cl">                <span class="n">bound</span> <span class="o">=</span> <span class="n">nextBound</span><span class="o">;</span>
+</span></span><span class="line"><span class="cl">                <span class="n">i</span> <span class="o">=</span> <span class="n">nextIndex</span> <span class="o">-</span> <span class="mi">1</span><span class="o">;</span>
+</span></span><span class="line"><span class="cl">                <span class="n">advance</span> <span class="o">=</span> <span class="kc">false</span><span class="o">;</span>
+</span></span><span class="line"><span class="cl">            <span class="o">}</span>
+</span></span><span class="line"><span class="cl">        <span class="o">}</span>
+</span></span><span class="line"><span class="cl">        <span class="c1">// 无法迁移
+</span></span></span><span class="line"><span class="cl"><span class="c1"></span>        <span class="k">if</span> <span class="o">(</span><span class="n">i</span> <span class="o">&lt;</span> <span class="mi">0</span> <span class="o">||</span> <span class="n">i</span> <span class="o">&gt;=</span> <span class="n">n</span> <span class="o">||</span> <span class="n">i</span> <span class="o">+</span> <span class="n">n</span> <span class="o">&gt;=</span> <span class="n">nextn</span><span class="o">)</span> <span class="o">{</span>
+</span></span><span class="line"><span class="cl">            <span class="kt">int</span> <span class="n">sc</span><span class="o">;</span>
+</span></span><span class="line"><span class="cl">            <span class="k">if</span> <span class="o">(</span><span class="n">finishing</span><span class="o">)</span> <span class="o">{</span>
+</span></span><span class="line"><span class="cl">                <span class="n">nextTable</span> <span class="o">=</span> <span class="kc">null</span><span class="o">;</span>
+</span></span><span class="line"><span class="cl">                <span class="n">table</span> <span class="o">=</span> <span class="n">nextTab</span><span class="o">;</span>
+</span></span><span class="line"><span class="cl">                <span class="n">sizeCtl</span> <span class="o">=</span> <span class="o">(</span><span class="n">n</span> <span class="o">&lt;&lt;</span> <span class="mi">1</span><span class="o">)</span> <span class="o">-</span> <span class="o">(</span><span class="n">n</span> <span class="o">&gt;&gt;&gt;</span> <span class="mi">1</span><span class="o">);</span>
+</span></span><span class="line"><span class="cl">                <span class="k">return</span><span class="o">;</span>
+</span></span><span class="line"><span class="cl">            <span class="o">}</span>
+</span></span><span class="line"><span class="cl">            <span class="k">if</span> <span class="o">(</span><span class="n">U</span><span class="o">.</span><span class="na">compareAndSetInt</span><span class="o">(</span><span class="k">this</span><span class="o">,</span> <span class="n">SIZECTL</span><span class="o">,</span> <span class="n">sc</span> <span class="o">=</span> <span class="n">sizeCtl</span><span class="o">,</span> <span class="n">sc</span> <span class="o">-</span> <span class="mi">1</span><span class="o">))</span> <span class="o">{</span>
+</span></span><span class="line"><span class="cl">                <span class="k">if</span> <span class="o">((</span><span class="n">sc</span> <span class="o">-</span> <span class="mi">2</span><span class="o">)</span> <span class="o">!=</span> <span class="n">resizeStamp</span><span class="o">(</span><span class="n">n</span><span class="o">)</span> <span class="o">&lt;&lt;</span> <span class="n">RESIZE_STAMP_SHIFT</span><span class="o">)</span>
+</span></span><span class="line"><span class="cl">                    <span class="k">return</span><span class="o">;</span>
+</span></span><span class="line"><span class="cl">                <span class="n">finishing</span> <span class="o">=</span> <span class="n">advance</span> <span class="o">=</span> <span class="kc">true</span><span class="o">;</span>
+</span></span><span class="line"><span class="cl">                <span class="n">i</span> <span class="o">=</span> <span class="n">n</span><span class="o">;</span>
+</span></span><span class="line"><span class="cl">            <span class="o">}</span>
+</span></span><span class="line"><span class="cl">        <span class="o">}</span>
+</span></span><span class="line"><span class="cl">        <span class="c1">// 当前迁移槽为空
+</span></span></span><span class="line"><span class="cl"><span class="c1"></span>        <span class="k">else</span> <span class="k">if</span> <span class="o">((</span><span class="n">f</span> <span class="o">=</span> <span class="n">tabAt</span><span class="o">(</span><span class="n">tab</span><span class="o">,</span> <span class="n">i</span><span class="o">))</span> <span class="o">==</span> <span class="kc">null</span><span class="o">)</span>
+</span></span><span class="line"><span class="cl">            <span class="n">advance</span> <span class="o">=</span> <span class="n">casTabAt</span><span class="o">(</span><span class="n">tab</span><span class="o">,</span> <span class="n">i</span><span class="o">,</span> <span class="kc">null</span><span class="o">,</span> <span class="n">fwd</span><span class="o">);</span>
+</span></span><span class="line"><span class="cl">        <span class="c1">// 当前迁移槽已被迁移
+</span></span></span><span class="line"><span class="cl"><span class="c1"></span>        <span class="k">else</span> <span class="k">if</span> <span class="o">((</span><span class="n">fh</span> <span class="o">=</span> <span class="n">f</span><span class="o">.</span><span class="na">hash</span><span class="o">)</span> <span class="o">==</span> <span class="n">MOVED</span><span class="o">)</span>
+</span></span><span class="line"><span class="cl">            <span class="n">advance</span> <span class="o">=</span> <span class="kc">true</span><span class="o">;</span>
+</span></span><span class="line"><span class="cl">        <span class="c1">// 进行迁移
+</span></span></span><span class="line"><span class="cl"><span class="c1"></span>        <span class="k">else</span> <span class="o">{</span>
+</span></span><span class="line"><span class="cl">            <span class="kd">synchronized</span> <span class="o">(</span><span class="n">f</span><span class="o">)</span> <span class="o">{</span>
+</span></span><span class="line"><span class="cl">                <span class="k">if</span> <span class="o">(</span><span class="n">tabAt</span><span class="o">(</span><span class="n">tab</span><span class="o">,</span> <span class="n">i</span><span class="o">)</span> <span class="o">==</span> <span class="n">f</span><span class="o">)</span> <span class="o">{</span>
+</span></span><span class="line"><span class="cl">                    <span class="c1">// 链表迁移
+</span></span></span><span class="line"><span class="cl"><span class="c1"></span>                    <span class="o">...</span>
+</span></span><span class="line"><span class="cl">                <span class="o">}</span>
+</span></span><span class="line"><span class="cl">                <span class="k">else</span> <span class="k">if</span> <span class="o">(</span><span class="n">f</span> <span class="k">instanceof</span> <span class="n">TreeBin</span><span class="o">)</span> <span class="o">{</span>
+</span></span><span class="line"><span class="cl">                    <span class="c1">// 红黑树迁移
+</span></span></span><span class="line"><span class="cl"><span class="c1"></span>                    <span class="o">...</span>
+</span></span><span class="line"><span class="cl">                <span class="o">}</span>
+</span></span><span class="line"><span class="cl">                <span class="k">else</span> <span class="k">if</span> <span class="o">(</span><span class="n">f</span> <span class="k">instanceof</span> <span class="n">ReservationNode</span><span class="o">)</span>
+</span></span><span class="line"><span class="cl">                    <span class="k">throw</span> <span class="k">new</span> <span class="n">IllegalStateException</span><span class="o">(</span><span class="s">&#34;Recursive update&#34;</span><span class="o">);</span>
+</span></span><span class="line"><span class="cl">            <span class="o">}</span>
+</span></span><span class="line"><span class="cl">        <span class="o">}</span>
+</span></span><span class="line"><span class="cl">    <span class="o">}</span>
+</span></span><span class="line"><span class="cl"><span class="o">}</span>
+</span></span></code></pre></td></tr></table>
+</div>
+</div><p>在解释这部分代码前大致说明一下几个变量：</p>
+<ol>
+<li><code>transferIndex</code>，当前可用迁移上界，初始为<code>table</code>的长度</li>
+<li><code>stride</code>，步长，可以理解为负责迁移窗口的大小，大小由原始<code>table</code>的大小以及
+CPU核数共同确定</li>
+</ol>
+<p>举个例子说明一下，假定线程A发起了迁移工作，那么它会依据当前的<code>transferIndex</code>尝试
+获取自己可以进行迁移的窗口，即在<code>table</code>中<code>[transferIndex - stride, transferIndex)</code>
+所包含的索引范围均由该线程迁移至<code>nextTable</code>。竞争的方式是将<code>transferIndex</code>变量通过
+CAS更新为<code>transferIndex - stride</code>。</p>
+<p>有了上面的基础思路，代码逻辑就十分好理解了：</p>
+<ol>
+<li>确定迁移窗口大小</li>
+<li>检测<code>nextTable</code>是否初始化，如果没有则进行初始化</li>
+<li>获取下一个迁移的槽，如果当前的窗口中还有能够使用的迁移槽则直接使用，否则尝试获取
+新的窗口</li>
+<li>根据槽中头节点的内容进行迁移</li>
+</ol>
+<h2 id="总结">总结</h2>
+<p><code>ConcurrentHashMap</code>使用了CAS和<code>synchronized</code>两个同步手段保证线程安全，相比与JDK1.7中
+的分段锁实现，优化的部分有：</p>
+<ol>
+<li>JDK 1.7中的实现并发度在初始化的时候就已经确定，无法提高，而JDK 8中则能够通过扩容提
+高并发能力</li>
+<li>在解决冲突的方法上也做了优化，默认当冲突数大于8个时会将冲突链表转为红黑树以获得更高
+的查询性能</li>
+</ol>
+<p>在实现方面，<code>ConcurrentHashMap</code>大量采用了CAS与自旋的方案，避免了大量的加锁操作。</p>
+
+</section>
+
+
+    <footer class="article-footer">
+    
+    <section class="article-tags">
+        
+            <a href="/tags/java/">Java</a>
+        
+            <a href="/tags/concurrency/">Concurrency</a>
+        
+    </section>
+
+
+    
+    <section class="article-copyright">
+        <svg xmlns="http://www.w3.org/2000/svg" class="icon icon-tabler icon-tabler-copyright" width="24" height="24" viewBox="0 0 24 24" stroke-width="2" stroke="currentColor" fill="none" stroke-linecap="round" stroke-linejoin="round">
+  <path stroke="none" d="M0 0h24v24H0z"/>
+  <circle cx="12" cy="12" r="9" />
+  <path d="M14.5 9a3.5 4 0 1 0 0 6" />
+</svg>
+
+
+
+        <span>Licensed under CC BY-NC-SA 4.0</span>
+    </section>
+    </footer>
+
+
+    
+</article>
+
+    
+
+    
+
+     
+    
+        
+    
+
+    <footer class="site-footer">
+    <section class="copyright">
+        &copy; 
+        
+            2020 - 
+        
+        2023 演示站点
+    </section>
+    
+    <section class="powerby">
+        Built with <a href="https://gohugo.io/" target="_blank" rel="noopener">Hugo</a> <br />
+        主题 <b><a href="https://github.com/CaiJimmy/hugo-theme-stack" target="_blank" rel="noopener" data-version="3.16.0">Stack</a></b> 由 <a href="https://jimmycai.com" target="_blank" rel="noopener">Jimmy</a> 设计
+    </section>
+</footer>
+
+
+    
+<div class="pswp" tabindex="-1" role="dialog" aria-hidden="true">
+
+    
+    <div class="pswp__bg"></div>
+
+    
+    <div class="pswp__scroll-wrap">
+
+        
+        <div class="pswp__container">
+            <div class="pswp__item"></div>
+            <div class="pswp__item"></div>
+            <div class="pswp__item"></div>
+        </div>
+
+        
+        <div class="pswp__ui pswp__ui--hidden">
+
+            <div class="pswp__top-bar">
+
+                
+
+                <div class="pswp__counter"></div>
+
+                <button class="pswp__button pswp__button--close" title="Close (Esc)"></button>
+
+                <button class="pswp__button pswp__button--share" title="Share"></button>
+
+                <button class="pswp__button pswp__button--fs" title="Toggle fullscreen"></button>
+
+                <button class="pswp__button pswp__button--zoom" title="Zoom in/out"></button>
+
+                
+                
+                <div class="pswp__preloader">
+                    <div class="pswp__preloader__icn">
+                        <div class="pswp__preloader__cut">
+                            <div class="pswp__preloader__donut"></div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+
+            <div class="pswp__share-modal pswp__share-modal--hidden pswp__single-tap">
+                <div class="pswp__share-tooltip"></div>
+            </div>
+
+            <button class="pswp__button pswp__button--arrow--left" title="Previous (arrow left)">
+            </button>
+
+            <button class="pswp__button pswp__button--arrow--right" title="Next (arrow right)">
+            </button>
+
+            <div class="pswp__caption">
+                <div class="pswp__caption__center"></div>
+            </div>
+
+        </div>
+
+    </div>
+
+</div><script 
+                src="https://cdn.jsdelivr.net/npm/photoswipe@4.1.3/dist/photoswipe.min.js"integrity="sha256-ePwmChbbvXbsO02lbM3HoHbSHTHFAeChekF1xKJdleo="crossorigin="anonymous"
+                defer
+                >
+            </script><script 
+                src="https://cdn.jsdelivr.net/npm/photoswipe@4.1.3/dist/photoswipe-ui-default.min.js"integrity="sha256-UKkzOn/w1mBxRmLLGrSeyB4e1xbrp4xylgAWb3M42pU="crossorigin="anonymous"
+                defer
+                >
+            </script><link 
+                rel="stylesheet" 
+                href="https://cdn.jsdelivr.net/npm/photoswipe@4.1.3/dist/default-skin/default-skin.min.css"crossorigin="anonymous"
+            ><link 
+                rel="stylesheet" 
+                href="https://cdn.jsdelivr.net/npm/photoswipe@4.1.3/dist/photoswipe.min.css"crossorigin="anonymous"
+            >
+
+            </main>
+        </div>
+        <script 
+                src="https://cdn.jsdelivr.net/npm/node-vibrant@3.1.6/dist/vibrant.min.js"integrity="sha256-awcR2jno4kI5X0zL8ex0vi2z&#43;KMkF24hUW8WePSA9HM="crossorigin="anonymous"
+                
+                >
+            </script><script type="text/javascript" src="/ts/main.js" defer></script>
+<script>
+    (function () {
+        const customFont = document.createElement('link');
+        customFont.href = "https://fonts.googleapis.com/css2?family=Lato:wght@300;400;700&display=swap";
+
+        customFont.type = "text/css";
+        customFont.rel = "stylesheet";
+
+        document.head.appendChild(customFont);
+    }());
+</script>
+
+    </body>
+</html>
