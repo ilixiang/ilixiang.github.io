@@ -1,0 +1,1079 @@
+<!DOCTYPE html>
+<html lang="zh-cn" dir="ltr">
+    <head><meta charset='utf-8'>
+<meta name='viewport' content='width=device-width, initial-scale=1'><meta name='description' content='服务发现和注册 Eureka Eureka的拓扑结构如下图： Eureka有以下几个特点： 服务器的自我保护机制。客户端通过“心跳”向Eureka集群保证自己'>
+<title>Spring Cloud - 笔记</title>
+
+<link rel='canonical' href='https://ilixiang.github.io/p/java/spring/cloud/note/'>
+
+<link rel="stylesheet" href="/scss/style.min.8191399262444ab68b72a18c97392f5349be20a1615d77445be51e974c144cff.css"><meta property='og:title' content='Spring Cloud - 笔记'>
+<meta property='og:description' content='服务发现和注册 Eureka Eureka的拓扑结构如下图： Eureka有以下几个特点： 服务器的自我保护机制。客户端通过“心跳”向Eureka集群保证自己'>
+<meta property='og:url' content='https://ilixiang.github.io/p/java/spring/cloud/note/'>
+<meta property='og:site_name' content='演示站点'>
+<meta property='og:type' content='article'><meta property='article:section' content='Post' /><meta property='article:tag' content='Java' /><meta property='article:tag' content='Spring Cloud' /><meta property='article:published_time' content='2023-01-23T09:46:32&#43;08:00'/><meta property='article:modified_time' content='2023-01-23T09:46:32&#43;08:00'/>
+<meta name="twitter:title" content="Spring Cloud - 笔记">
+<meta name="twitter:description" content="服务发现和注册 Eureka Eureka的拓扑结构如下图： Eureka有以下几个特点： 服务器的自我保护机制。客户端通过“心跳”向Eureka集群保证自己">
+    </head>
+    <body class="
+    article-page
+    ">
+    <script>
+        (function() {
+            const colorSchemeKey = 'StackColorScheme';
+            if(!localStorage.getItem(colorSchemeKey)){
+                localStorage.setItem(colorSchemeKey, "auto");
+            }
+        })();
+    </script><script>
+    (function() {
+        const colorSchemeKey = 'StackColorScheme';
+        const colorSchemeItem = localStorage.getItem(colorSchemeKey);
+        const supportDarkMode = window.matchMedia('(prefers-color-scheme: dark)').matches === true;
+
+        if (colorSchemeItem == 'dark' || colorSchemeItem === 'auto' && supportDarkMode) {
+            
+
+            document.documentElement.dataset.scheme = 'dark';
+        } else {
+            document.documentElement.dataset.scheme = 'light';
+        }
+    })();
+</script>
+<div class="container main-container flex on-phone--column extended"><aside class="sidebar left-sidebar sticky ">
+    <button class="hamburger hamburger--spin" type="button" id="toggle-menu" aria-label="切换菜单">
+        <span class="hamburger-box">
+            <span class="hamburger-inner"></span>
+        </span>
+    </button>
+
+    <header>
+        
+            
+            <figure class="site-avatar">
+                <a href="/">
+                
+                    
+                    
+                    
+                        
+                        <img src="/img/avatar_huda2458f72ce188392d75c5d51cd8e24e_373_300x0_resize_box_3.png" width="300"
+                            height="300" class="site-logo" loading="lazy" alt="Avatar">
+                    
+                
+                </a>
+                
+                    <span class="emoji">😋</span>
+                
+            </figure>
+            
+        
+        
+        <div class="site-meta">
+            <h1 class="site-name"><a href="/">演示站点</a></h1>
+            <h2 class="site-description">Lorem ipsum dolor sit amet, consectetur adipiscing elit.</h2>
+        </div>
+    </header><ol class="menu" id="main-menu">
+        
+        
+        
+        <li >
+            <a href='/' >
+                
+                
+                
+                    <svg xmlns="http://www.w3.org/2000/svg" class="icon icon-tabler icon-tabler-home" width="24" height="24" viewBox="0 0 24 24" stroke-width="2" stroke="currentColor" fill="none" stroke-linecap="round" stroke-linejoin="round">
+  <path stroke="none" d="M0 0h24v24H0z"/>
+  <polyline points="5 12 3 12 12 3 21 12 19 12" />
+  <path d="M5 12v7a2 2 0 0 0 2 2h10a2 2 0 0 0 2 -2v-7" />
+  <path d="M9 21v-6a2 2 0 0 1 2 -2h2a2 2 0 0 1 2 2v6" />
+</svg>
+
+
+
+                
+                <span>主页</span>
+            </a>
+        </li>
+        
+        
+        <li >
+            <a href='/about/' >
+                
+                
+                
+                    <svg xmlns="http://www.w3.org/2000/svg" class="icon icon-tabler icon-tabler-user" width="24" height="24" viewBox="0 0 24 24" stroke-width="2" stroke="currentColor" fill="none" stroke-linecap="round" stroke-linejoin="round">
+  <path stroke="none" d="M0 0h24v24H0z"/>
+  <circle cx="12" cy="7" r="4" />
+  <path d="M6 21v-2a4 4 0 0 1 4 -4h4a4 4 0 0 1 4 4v2" />
+</svg>
+
+
+
+                
+                <span>关于</span>
+            </a>
+        </li>
+        
+        
+        <li >
+            <a href='/archives/' >
+                
+                
+                
+                    <svg xmlns="http://www.w3.org/2000/svg" class="icon icon-tabler icon-tabler-archive" width="24" height="24" viewBox="0 0 24 24" stroke-width="2" stroke="currentColor" fill="none" stroke-linecap="round" stroke-linejoin="round">
+  <path stroke="none" d="M0 0h24v24H0z"/>
+  <rect x="3" y="4" width="18" height="4" rx="2" />
+  <path d="M5 8v10a2 2 0 0 0 2 2h10a2 2 0 0 0 2 -2v-10" />
+  <line x1="10" y1="12" x2="14" y2="12" />
+</svg>
+
+
+
+                
+                <span>归档</span>
+            </a>
+        </li>
+        
+
+        <div class="menu-bottom-section">
+            
+            
+                <li id="dark-mode-toggle">
+                    <svg xmlns="http://www.w3.org/2000/svg" class="icon icon-tabler icon-tabler-toggle-left" width="24" height="24" viewBox="0 0 24 24" stroke-width="2" stroke="currentColor" fill="none" stroke-linecap="round" stroke-linejoin="round">
+  <path stroke="none" d="M0 0h24v24H0z"/>
+  <circle cx="8" cy="12" r="2" />
+  <rect x="2" y="6" width="20" height="12" rx="6" />
+</svg>
+
+
+
+                    <svg xmlns="http://www.w3.org/2000/svg" class="icon icon-tabler icon-tabler-toggle-right" width="24" height="24" viewBox="0 0 24 24" stroke-width="2" stroke="currentColor" fill="none" stroke-linecap="round" stroke-linejoin="round">
+  <path stroke="none" d="M0 0h24v24H0z"/>
+  <circle cx="16" cy="12" r="2" />
+  <rect x="2" y="6" width="20" height="12" rx="6" />
+</svg>
+
+
+
+                    <span>暗色模式</span>
+                </li>
+            
+        </div>
+    </ol>
+</aside>
+
+    <aside class="sidebar right-sidebar sticky">
+        
+            
+                
+    <section class="widget archives">
+        <div class="widget-icon">
+            <svg xmlns="http://www.w3.org/2000/svg" class="icon icon-tabler icon-tabler-hash" width="24" height="24" viewBox="0 0 24 24" stroke-width="2" stroke="currentColor" fill="none" stroke-linecap="round" stroke-linejoin="round">
+  <path stroke="none" d="M0 0h24v24H0z"/>
+  <line x1="5" y1="9" x2="19" y2="9" />
+  <line x1="5" y1="15" x2="19" y2="15" />
+  <line x1="11" y1="4" x2="7" y2="20" />
+  <line x1="17" y1="4" x2="13" y2="20" />
+</svg>
+
+
+
+        </div>
+        <h2 class="widget-title section-title">目录</h2>
+        
+        <div class="widget--toc">
+            <nav id="TableOfContents">
+  <ol>
+    <li><a href="#服务发现和注册">服务发现和注册</a>
+      <ol>
+        <li><a href="#eureka">Eureka</a></li>
+        <li><a href="#zookeeper">Zookeeper</a></li>
+      </ol>
+    </li>
+    <li><a href="#服务调用">服务调用</a>
+      <ol>
+        <li><a href="#ribbon">Ribbon</a></li>
+        <li><a href="#openfeign">OpenFeign</a></li>
+      </ol>
+    </li>
+    <li><a href="#断路器">断路器</a>
+      <ol>
+        <li><a href="#hystrix">Hystrix</a></li>
+      </ol>
+    </li>
+    <li><a href="#统一网关">统一网关</a>
+      <ol>
+        <li><a href="#gateway">Gateway</a></li>
+      </ol>
+    </li>
+    <li><a href="#统一配置">统一配置</a>
+      <ol>
+        <li><a href="#config--bus">Config + Bus</a></li>
+      </ol>
+    </li>
+    <li><a href="#消息驱动">消息驱动</a></li>
+    <li><a href="#alibaba">Alibaba</a>
+      <ol>
+        <li><a href="#nacos">Nacos</a>
+          <ol>
+            <li><a href="#nacos-discovery">Nacos Discovery</a></li>
+            <li><a href="#nacos-config">Nacos Config</a></li>
+          </ol>
+        </li>
+        <li><a href="#sentinel">Sentinel</a></li>
+        <li><a href="#seata">Seata</a></li>
+      </ol>
+    </li>
+    <li><a href="#总结">总结</a></li>
+  </ol>
+</nav>
+        </div>
+    </section>
+
+            
+        
+    </aside>
+
+
+            <main class="main full-width">
+    <article class="main-article">
+    <header class="article-header">
+
+    <div class="article-details">
+    
+    <header class="article-category">
+        
+            <a href="/categories/spring-cloud/" >
+                Spring Cloud
+            </a>
+        
+    </header>
+    
+
+    <div class="article-title-wrapper">
+        <h2 class="article-title">
+            <a href="/p/java/spring/cloud/note/">Spring Cloud - 笔记</a>
+        </h2>
+    
+        
+    </div>
+
+    
+    
+    
+    
+    <footer class="article-time">
+        
+            <div>
+                <svg xmlns="http://www.w3.org/2000/svg" class="icon icon-tabler icon-tabler-calendar-time" width="56" height="56" viewBox="0 0 24 24" stroke-width="2" stroke="currentColor" fill="none" stroke-linecap="round" stroke-linejoin="round">
+  <path stroke="none" d="M0 0h24v24H0z"/>
+  <path d="M11.795 21h-6.795a2 2 0 0 1 -2 -2v-12a2 2 0 0 1 2 -2h12a2 2 0 0 1 2 2v4" />
+  <circle cx="18" cy="18" r="4" />
+  <path d="M15 3v4" />
+  <path d="M7 3v4" />
+  <path d="M3 11h16" />
+  <path d="M18 16.496v1.504l1 1" />
+</svg>
+                <time class="article-time--published">Jan 23, 2023</time>
+            </div>
+        
+
+        
+            <div>
+                <svg xmlns="http://www.w3.org/2000/svg" class="icon icon-tabler icon-tabler-clock" width="24" height="24" viewBox="0 0 24 24" stroke-width="2" stroke="currentColor" fill="none" stroke-linecap="round" stroke-linejoin="round">
+  <path stroke="none" d="M0 0h24v24H0z"/>
+  <circle cx="12" cy="12" r="9" />
+  <polyline points="12 7 12 12 15 15" />
+</svg>
+
+
+
+                <time class="article-time--reading">
+                    阅读时长: 11 分钟
+                </time>
+            </div>
+        
+    </footer>
+    
+
+    
+</div>
+
+</header>
+
+    <section class="article-content">
+    
+    
+    <h2 id="服务发现和注册">服务发现和注册</h2>
+<h3 id="eureka">Eureka</h3>
+<p>Eureka的拓扑结构如下图：</p>
+<p><img src="/p/java/spring/cloud/note/eureka-topology.svg"
+	
+	
+	
+	loading="lazy"
+	
+		alt="Eureka拓扑"
+	
+	
+></p>
+<p>Eureka有以下几个特点：</p>
+<ul>
+<li>服务器的自我保护机制。客户端通过“心跳”向Eureka集群保证自己的可用性，这个“心跳”的
+间隔默认为90s，但实际上即使超过90s没有心跳发送Eureka服务器也不会立刻将该客户端从服务
+列表信息中删除。这样设计的出发点是出于对网络故障导致的心跳发送失败的考虑，也是Eureka
+优先保证可用性的体现。</li>
+<li>服务器优先保证可用性。Eureka集群不存在类似Leader节点的概念，所有的节点都是平等的。
+这使得Eureka集群不会由于Leader的选举导致整体不可用，并且当客户端与其中部分的节点之间
+存在网络故障时，可以从其他的节点中获得服务信息。</li>
+<li>客户端会缓存节点信息。当客户端首次从Eureka服务器得到服务列表时，会将之缓存在本地内存
+当中。因此，即使在最为极端的情况下客户端和集群中所有的Eureka服务器都发生网络故障，依然
+存在不会导致服务调用的失败的可能。</li>
+</ul>
+<p>Eureka的设计原则是优先保证可用性，平等的节点保证了客户端可以向任意的服务器进行注册和
+心跳的发送，自我保护机制使得客户端可以最大程度得到“可能可用”的服务列表。</p>
+<h3 id="zookeeper">Zookeeper</h3>
+<p>Zookeeper的拓扑结构如下图：</p>
+<p><img src="/p/java/spring/cloud/note/zookeeper-topology.svg"
+	
+	
+	
+	loading="lazy"
+	
+		alt="Zookeeper服务注册中心拓扑"
+	
+	
+></p>
+<p>Zookeeper提供分布式协同服务，也能作为分布式的服务注册中心使用。而Zookeeper作为服务注册
+中心则有一下特点：</p>
+<ul>
+<li>Leader选举产生集群整体的不可用。当Zookeeper集群中Leader节点故障时，即使客户端与其他
+节点能够正常通信也无法获得任何已被注册服务的信息。</li>
+<li>临时节点在客户端和服务器的会话结束时会立刻被删除。因此产生网络分区导致心跳无法发送时，
+服务的信息会立刻从Zookeeper中被删除。</li>
+</ul>
+<p>由于Zookeeper优先一致性的设计原则，在作为服务注册中心时容易产生由网络分区产生的服务
+不可用的情况，因此，有观点提出Zookeeper或许并不适合作为服务注册中心使用。</p>
+<h2 id="服务调用">服务调用</h2>
+<h3 id="ribbon">Ribbon</h3>
+<p>Ribbon能够将服务名通过服务发现转为实际的<code>ip:port</code>形式，并且会在转换的过程中使用特定
+的负载均衡算法决定调用的服务器。</p>
+<p>Ribbon的负载均衡算法有：</p>
+<ol>
+<li>轮循策略</li>
+<li>随机策略</li>
+<li>权重策略。根据响应时间决定调用的服务器</li>
+<li>最小连接数策略。</li>
+<li>重试策略</li>
+<li>可用性敏感策略</li>
+<li>区域敏感策略</li>
+</ol>
+<p>也可以通过实现<code>IRule</code>接口的方式自定义负载均衡算法。配置负载均衡算法的方式有2种：</p>
+<ol>
+<li>全局配置。将<code>IRule</code>的Bean定义的配置类放置于主启动方法可以扫描的路径下</li>
+<li>指定特定服务的负载均衡算法。将<code>IRule</code>的Bean定义的配置类放置在主启动方法无法扫描
+的路径下，并通过<code>@RibbonClient</code>指定服务名以及<code>IRule</code>所在的配置类</li>
+</ol>
+<p>Spring Cloud Ribbon集成方式：</p>
+<ol>
+<li>引入依赖<code>spring-cloud-starter-netflix-ribbon</code>（实际Eureka本身就会引入Ribbon的依赖）</li>
+<li>定义<code>RestTemplate</code>的Bean，并使用<code>@LoadBalanced</code>修饰定义方法</li>
+<li>使用<code>http://{service-name}</code>的方式调用服务接口</li>
+</ol>
+<h3 id="openfeign">OpenFeign</h3>
+<p>OpenFeign用于实现声明市的HTTP Client，相较于Ribbon中直接使用<code>RestTemplate</code>而言
+更加方便。</p>
+<p>Spring Cloud OpenFeign集成方式：</p>
+<ol>
+<li>引入依赖<code>spring-cloud-starter-openfeign</code></li>
+<li>开启声明式HTTP客户端<code>@EnableFeignClients</code></li>
+<li>定义接口并使用<code>@FeignClient</code>修饰</li>
+</ol>
+<div class="highlight"><div class="chroma">
+<table class="lntable"><tr><td class="lntd">
+<pre tabindex="0" class="chroma"><code><span class="lnt"> 1
+</span><span class="lnt"> 2
+</span><span class="lnt"> 3
+</span><span class="lnt"> 4
+</span><span class="lnt"> 5
+</span><span class="lnt"> 6
+</span><span class="lnt"> 7
+</span><span class="lnt"> 8
+</span><span class="lnt"> 9
+</span><span class="lnt">10
+</span></code></pre></td>
+<td class="lntd">
+<pre tabindex="0" class="chroma"><code class="language-java" data-lang="java"><span class="line"><span class="cl"><span class="nd">@Component</span>
+</span></span><span class="line"><span class="cl"><span class="nd">@FeignClient</span><span class="o">(</span><span class="n">value</span> <span class="o">=</span> <span class="s">&#34;CLOUD-PAYMENT-SERVICE&#34;</span><span class="o">)</span>
+</span></span><span class="line"><span class="cl"><span class="kd">public</span> <span class="kd">interface</span> <span class="nc">PaymentFeignService</span> <span class="o">{</span>
+</span></span><span class="line"><span class="cl">
+</span></span><span class="line"><span class="cl">    <span class="nd">@GetMapping</span><span class="o">(</span><span class="s">&#34;/payment/get/{id}&#34;</span><span class="o">)</span>
+</span></span><span class="line"><span class="cl">    <span class="n">Result</span><span class="o">&lt;</span><span class="n">Payment</span><span class="o">&gt;</span> <span class="nf">getPaymentById</span><span class="o">(</span><span class="nd">@PathVariable</span><span class="o">(</span><span class="s">&#34;id&#34;</span><span class="o">)</span> <span class="n">Long</span> <span class="n">id</span><span class="o">);</span>
+</span></span><span class="line"><span class="cl">
+</span></span><span class="line"><span class="cl">    <span class="nd">@PostMapping</span><span class="o">(</span><span class="s">&#34;/payment/create&#34;</span><span class="o">)</span>
+</span></span><span class="line"><span class="cl">    <span class="n">Result</span><span class="o">&lt;?&gt;</span> <span class="n">create</span><span class="o">(</span><span class="nd">@RequestBody</span> <span class="n">Payment</span> <span class="n">payment</span><span class="o">);</span>
+</span></span><span class="line"><span class="cl"><span class="o">}</span>
+</span></span></code></pre></td></tr></table>
+</div>
+</div><h2 id="断路器">断路器</h2>
+<h3 id="hystrix">Hystrix</h3>
+<p>Hystrix的基本原理如下图所示：</p>
+<p><img src="/p/java/spring/cloud/note/hystrix-isolation.png"
+	width="640"
+	height="869"
+	srcset="/p/java/spring/cloud/note/hystrix-isolation_hu1ac65aad236f155a042239191f69ff6b_182946_480x0_resize_box_3.png 480w, /p/java/spring/cloud/note/hystrix-isolation_hu1ac65aad236f155a042239191f69ff6b_182946_1024x0_resize_box_3.png 1024w"
+	loading="lazy"
+	
+		alt="Hystrix线程隔离"
+	
+	
+		class="gallery-image" 
+		data-flex-grow="73"
+		data-flex-basis="176px"
+	
+></p>
+<p>Hystrix的基本原理是通过将需要隔离的逻辑放入指定的线程池中运行，从而达到隔离的目的。
+举个例子，假设<code>a()</code>方法被<code>@HystrixCommand</code>注解修饰，那么在<code>b()</code>方法中调用<code>a()</code>时，
+就会通过特别为<code>a()</code>准备的线程池执行<code>a()</code>的逻辑，这样<code>b()</code>的线程就能够监控<code>a()</code>的
+执行结果，无论是<strong>超时</strong>、<strong>异常</strong>等情况都能够被检测并纳入统计。</p>
+<p>Spring Cloud中Hystrix的集成方式：</p>
+<ol>
+<li>引入依赖<code>spring-cloud-starter-netflix-hystrix</code></li>
+<li>开启断路器<code>@EnableCircuitBreaker</code></li>
+<li>使用<code>@HystrixCommand</code>修饰需要监控的方法</li>
+</ol>
+<h2 id="统一网关">统一网关</h2>
+<h3 id="gateway">Gateway</h3>
+<p><img src="/p/java/spring/cloud/note/gateway-topology.svg"
+	
+	
+	
+	loading="lazy"
+	
+		alt="Gateway拓扑"
+	
+	
+></p>
+<p>统一网关位处于外部客户端以及内部系统之间，它的主要作用有：</p>
+<ol>
+<li>统一鉴权。对客户端传入的请求的参数进行鉴权处理，如果不通过则直接返回失败</li>
+<li>统一监控。对所有访问内网的请求进行监控和记录等操作</li>
+<li>请求路由。将客户端提供的URL转为内部服务器调用的URL</li>
+</ol>
+<p><img src="/p/java/spring/cloud/note/gateway-principle.svg"
+	
+	
+	
+	loading="lazy"
+	
+		alt="Gateway工作原理"
+	
+	
+></p>
+<p>Gateway类似于Eureka Server是一个单独的服务程序，不需要写业务相关代码，但需要配置
+相关的路由规则以及请求的过滤器。为此，Gateway提供了3个主要概念：</p>
+<ol>
+<li>断言。判断客户端Request是否能被某个路由规则转发</li>
+<li>路由。通过客户端提供的URL计算出内部可以调用的服务URL</li>
+<li>过滤器。处理客户端提供的Reuqest以及内部服务返回的Response，可以用于日志记录以及
+统一鉴权</li>
+</ol>
+<p>Gateway的启用方式：</p>
+<ol>
+<li>引入依赖<code>spring-cloud-starter-gateway</code></li>
+<li>按需求实现<code>GlobalFilter</code>接口引入自定义的过滤器</li>
+<li>配置相应的路由规则，示例如下</li>
+</ol>
+<div class="highlight"><div class="chroma">
+<table class="lntable"><tr><td class="lntd">
+<pre tabindex="0" class="chroma"><code><span class="lnt"> 1
+</span><span class="lnt"> 2
+</span><span class="lnt"> 3
+</span><span class="lnt"> 4
+</span><span class="lnt"> 5
+</span><span class="lnt"> 6
+</span><span class="lnt"> 7
+</span><span class="lnt"> 8
+</span><span class="lnt"> 9
+</span><span class="lnt">10
+</span><span class="lnt">11
+</span><span class="lnt">12
+</span><span class="lnt">13
+</span><span class="lnt">14
+</span><span class="lnt">15
+</span><span class="lnt">16
+</span><span class="lnt">17
+</span><span class="lnt">18
+</span><span class="lnt">19
+</span><span class="lnt">20
+</span></code></pre></td>
+<td class="lntd">
+<pre tabindex="0" class="chroma"><code class="language-yaml" data-lang="yaml"><span class="line"><span class="cl"><span class="nt">spring</span><span class="p">:</span><span class="w">
+</span></span></span><span class="line"><span class="cl"><span class="w">  </span><span class="nt">application</span><span class="p">:</span><span class="w">
+</span></span></span><span class="line"><span class="cl"><span class="w">    </span><span class="nt">name</span><span class="p">:</span><span class="w"> </span><span class="l">cloud-gateway</span><span class="w">
+</span></span></span><span class="line"><span class="cl"><span class="w">  </span><span class="nt">cloud</span><span class="p">:</span><span class="w">
+</span></span></span><span class="line"><span class="cl"><span class="w">    </span><span class="nt">gateway</span><span class="p">:</span><span class="w">
+</span></span></span><span class="line"><span class="cl"><span class="w">      </span><span class="nt">discovery</span><span class="p">:</span><span class="w"> </span><span class="c"># 开启服务发现与注册</span><span class="w">
+</span></span></span><span class="line"><span class="cl"><span class="w">        </span><span class="nt">locator</span><span class="p">:</span><span class="w">
+</span></span></span><span class="line"><span class="cl"><span class="w">          </span><span class="nt">enabled</span><span class="p">:</span><span class="w"> </span><span class="kc">true</span><span class="w">
+</span></span></span><span class="line"><span class="cl"><span class="w">      </span><span class="nt">routes</span><span class="p">:</span><span class="w">
+</span></span></span><span class="line"><span class="cl"><span class="w">        </span>- <span class="nt">id</span><span class="p">:</span><span class="w"> </span><span class="l">payment_route</span><span class="w">
+</span></span></span><span class="line"><span class="cl"><span class="w">          </span><span class="nt">uri</span><span class="p">:</span><span class="w"> </span><span class="l">lb://cloud-payment-service</span><span class="w"> </span><span class="c"># lb://{service-name} 表示通过服务发现与注册进行转发</span><span class="w">
+</span></span></span><span class="line"><span class="cl"><span class="w">          </span><span class="nt">predicates</span><span class="p">:</span><span class="w">
+</span></span></span><span class="line"><span class="cl"><span class="w">            </span>- <span class="l">Path=/payment/get/**</span><span class="w">
+</span></span></span><span class="line"><span class="cl"><span class="w">
+</span></span></span><span class="line"><span class="cl"><span class="w"></span><span class="nt">eureka</span><span class="p">:</span><span class="w">
+</span></span></span><span class="line"><span class="cl"><span class="w">  </span><span class="nt">client</span><span class="p">:</span><span class="w">
+</span></span></span><span class="line"><span class="cl"><span class="w">    </span><span class="nt">register-with-eureka</span><span class="p">:</span><span class="w"> </span><span class="kc">true</span><span class="w">
+</span></span></span><span class="line"><span class="cl"><span class="w">    </span><span class="nt">fetch-registry</span><span class="p">:</span><span class="w"> </span><span class="kc">true</span><span class="w">
+</span></span></span><span class="line"><span class="cl"><span class="w">    </span><span class="nt">service-url</span><span class="p">:</span><span class="w">
+</span></span></span><span class="line"><span class="cl"><span class="w">      </span><span class="nt">defaultZone</span><span class="p">:</span><span class="w"> </span><span class="l">http://eureka7001.com:7001/eureka,http://eureka7002.com:7002/eureka</span><span class="w">
+</span></span></span></code></pre></td></tr></table>
+</div>
+</div><p>Gateway作为统一网关有以下特点：</p>
+<ol>
+<li>使用Java语言编写，因此与Spring生态统一使用学习成本相对较低</li>
+<li>提供的机制能够实现复杂的网关功能</li>
+<li>性能而言，比Nginx低，但使用了高性能网络框架Netty，因此性能上要高于Zuul</li>
+<li>默认的工作方式是代码/配置的硬编码的方式，而不是通过Web页面的配置方式，因此更新路由
+规则需要重启服务</li>
+</ol>
+<h2 id="统一配置">统一配置</h2>
+<h3 id="config--bus">Config + Bus</h3>
+<p><img src="/p/java/spring/cloud/note/manually-update-config.svg"
+	
+	
+	
+	loading="lazy"
+	
+		alt="手动更新配置"
+	
+	
+></p>
+<p>Config的主要思想是通过git管理配置文件的版本，而Config服务器能够通过HTTP URL的方式
+访问存在于git服务器的特定分支的配置文件。</p>
+<ol>
+<li>引入依赖<code>spring-cloud-config-server</code></li>
+<li>使用<code>@EnableConfigServer</code>注解开启配置服务器</li>
+<li>通过配置文件指定远程配置文件所在的git仓库地址</li>
+</ol>
+<div class="highlight"><div class="chroma">
+<table class="lntable"><tr><td class="lntd">
+<pre tabindex="0" class="chroma"><code><span class="lnt">1
+</span><span class="lnt">2
+</span><span class="lnt">3
+</span><span class="lnt">4
+</span><span class="lnt">5
+</span><span class="lnt">6
+</span></code></pre></td>
+<td class="lntd">
+<pre tabindex="0" class="chroma"><code class="language-yaml" data-lang="yaml"><span class="line"><span class="cl"><span class="nt">spring</span><span class="p">:</span><span class="w">
+</span></span></span><span class="line"><span class="cl"><span class="w">  </span><span class="nt">cloud</span><span class="p">:</span><span class="w">
+</span></span></span><span class="line"><span class="cl"><span class="w">    </span><span class="nt">config</span><span class="p">:</span><span class="w">
+</span></span></span><span class="line"><span class="cl"><span class="w">      </span><span class="nt">server</span><span class="p">:</span><span class="w">
+</span></span></span><span class="line"><span class="cl"><span class="w">        </span><span class="nt">git</span><span class="p">:</span><span class="w">
+</span></span></span><span class="line"><span class="cl"><span class="w">          </span><span class="nt">uri</span><span class="p">:</span><span class="w"> </span><span class="l">git@github.com.....</span><span class="w">
+</span></span></span></code></pre></td></tr></table>
+</div>
+</div><p>可通过REST风格的接口直接从Config服务器获取到git上的配置文件，获取的URL按照特定
+的规则有3种：</p>
+<ol>
+<li><code>/{label}/{name}-{profile}.yml</code></li>
+<li><code>/{name}-{profile}.yml</code></li>
+<li><code>/{name}/{profile}/{label}</code></li>
+</ol>
+<p>对于想要引入可刷新配置的服务提供者，需要执行以下步骤：</p>
+<ol>
+<li>引入依赖<code>spring-cloud-starter-config</code></li>
+<li>在引入可刷新依赖的Bean的类上使用<code>@RefreshScope</code>修饰</li>
+<li>服务的配置文件名称需要改为<code>bootstrap.yml</code>（可能是父子容器），并进行以下配置</li>
+</ol>
+<div class="highlight"><div class="chroma">
+<table class="lntable"><tr><td class="lntd">
+<pre tabindex="0" class="chroma"><code><span class="lnt"> 1
+</span><span class="lnt"> 2
+</span><span class="lnt"> 3
+</span><span class="lnt"> 4
+</span><span class="lnt"> 5
+</span><span class="lnt"> 6
+</span><span class="lnt"> 7
+</span><span class="lnt"> 8
+</span><span class="lnt"> 9
+</span><span class="lnt">10
+</span><span class="lnt">11
+</span><span class="lnt">12
+</span></code></pre></td>
+<td class="lntd">
+<pre tabindex="0" class="chroma"><code class="language-yaml" data-lang="yaml"><span class="line"><span class="cl"><span class="nt">spring</span><span class="p">:</span><span class="w">
+</span></span></span><span class="line"><span class="cl"><span class="w">  </span><span class="nt">cloud</span><span class="p">:</span><span class="w">
+</span></span></span><span class="line"><span class="cl"><span class="w">    </span><span class="nt">config</span><span class="p">:</span><span class="w">
+</span></span></span><span class="line"><span class="cl"><span class="w">      </span><span class="nt">label</span><span class="p">:</span><span class="w"> </span>{<span class="l">branch}</span><span class="w">
+</span></span></span><span class="line"><span class="cl"><span class="w">      </span><span class="nt">name</span><span class="p">:</span><span class="w"> </span>{<span class="l">config file name}</span><span class="w">
+</span></span></span><span class="line"><span class="cl"><span class="w">      </span><span class="nt">profile</span><span class="p">:</span><span class="w"> </span>{<span class="l">profile}</span><span class="w">
+</span></span></span><span class="line"><span class="cl"><span class="w">      </span><span class="nt">uri</span><span class="p">:</span><span class="w"> </span>{<span class="l">config server url}</span><span class="w">
+</span></span></span><span class="line"><span class="cl"><span class="w"></span><span class="nt">management</span><span class="p">:</span><span class="w">
+</span></span></span><span class="line"><span class="cl"><span class="w">  </span><span class="nt">endpoints</span><span class="p">:</span><span class="w">
+</span></span></span><span class="line"><span class="cl"><span class="w">    </span><span class="nt">web</span><span class="p">:</span><span class="w">
+</span></span></span><span class="line"><span class="cl"><span class="w">      </span><span class="nt">exposure</span><span class="p">:</span><span class="w">
+</span></span></span><span class="line"><span class="cl"><span class="w">        </span><span class="nt">include</span><span class="p">:</span><span class="w"> </span><span class="s2">&#34;*&#34;</span><span class="w">
+</span></span></span></code></pre></td></tr></table>
+</div>
+</div><p>通过POST调用需要刷新配置的服务提供者的<code>http://ip:port/actuator/refresh</code>接口</p>
+<p><img src="/p/java/spring/cloud/note/auto-update-config.svg"
+	
+	
+	
+	loading="lazy"
+	
+		alt="自动刷新配置"
+	
+	
+></p>
+<ol>
+<li>引入依赖<code>spring-cloud-starter-bus-amqp</code></li>
+<li>在配置文件中新增RabbitMQ配置并暴露<code>bus-refresh</code>接口</li>
+</ol>
+<div class="highlight"><div class="chroma">
+<table class="lntable"><tr><td class="lntd">
+<pre tabindex="0" class="chroma"><code><span class="lnt"> 1
+</span><span class="lnt"> 2
+</span><span class="lnt"> 3
+</span><span class="lnt"> 4
+</span><span class="lnt"> 5
+</span><span class="lnt"> 6
+</span><span class="lnt"> 7
+</span><span class="lnt"> 8
+</span><span class="lnt"> 9
+</span><span class="lnt">10
+</span><span class="lnt">11
+</span><span class="lnt">12
+</span></code></pre></td>
+<td class="lntd">
+<pre tabindex="0" class="chroma"><code class="language-yml" data-lang="yml"><span class="line"><span class="cl"><span class="nt">spring</span><span class="p">:</span><span class="w">
+</span></span></span><span class="line"><span class="cl"><span class="w">  </span><span class="nt">rabbitmq</span><span class="p">:</span><span class="w">
+</span></span></span><span class="line"><span class="cl"><span class="w">    </span><span class="nt">host</span><span class="p">:</span><span class="w"> </span><span class="l">localhost</span><span class="w">
+</span></span></span><span class="line"><span class="cl"><span class="w">    </span><span class="nt">port</span><span class="p">:</span><span class="w"> </span><span class="m">5672</span><span class="w">
+</span></span></span><span class="line"><span class="cl"><span class="w">    </span><span class="nt">username</span><span class="p">:</span><span class="w"> </span><span class="l">guest</span><span class="w">
+</span></span></span><span class="line"><span class="cl"><span class="w">    </span><span class="nt">password</span><span class="p">:</span><span class="w"> </span><span class="l">guest</span><span class="w">
+</span></span></span><span class="line"><span class="cl"><span class="w">  
+</span></span></span><span class="line"><span class="cl"><span class="w"></span><span class="nt">manangement</span><span class="p">:</span><span class="w">
+</span></span></span><span class="line"><span class="cl"><span class="w">  </span><span class="nt">endpoints</span><span class="p">:</span><span class="w">
+</span></span></span><span class="line"><span class="cl"><span class="w">    </span><span class="nt">web</span><span class="p">:</span><span class="w">
+</span></span></span><span class="line"><span class="cl"><span class="w">      </span><span class="nt">exposure</span><span class="p">:</span><span class="w">
+</span></span></span><span class="line"><span class="cl"><span class="w">        </span><span class="nt">include</span><span class="p">:</span><span class="w"> </span><span class="s1">&#39;bus-refresh&#39;</span><span class="w">
+</span></span></span></code></pre></td></tr></table>
+</div>
+</div><p>客户端需要进行以下配置：</p>
+<ol>
+<li>引入<code>spring-cloud-starter-bus-amqp</code></li>
+<li>配置文件<code>bootstrap.yml</code>中新增相应的RabbitMQ配置</li>
+</ol>
+<div class="highlight"><div class="chroma">
+<table class="lntable"><tr><td class="lntd">
+<pre tabindex="0" class="chroma"><code><span class="lnt">1
+</span><span class="lnt">2
+</span><span class="lnt">3
+</span><span class="lnt">4
+</span><span class="lnt">5
+</span><span class="lnt">6
+</span></code></pre></td>
+<td class="lntd">
+<pre tabindex="0" class="chroma"><code class="language-yaml" data-lang="yaml"><span class="line"><span class="cl"><span class="nt">spring</span><span class="p">:</span><span class="w">
+</span></span></span><span class="line"><span class="cl"><span class="w">  </span><span class="nt">rabbitmq</span><span class="p">:</span><span class="w">
+</span></span></span><span class="line"><span class="cl"><span class="w">    </span><span class="nt">host</span><span class="p">:</span><span class="w"> </span><span class="l">localhost</span><span class="w">
+</span></span></span><span class="line"><span class="cl"><span class="w">    </span><span class="nt">port</span><span class="p">:</span><span class="w"> </span><span class="m">5672</span><span class="w">
+</span></span></span><span class="line"><span class="cl"><span class="w">    </span><span class="nt">username</span><span class="p">:</span><span class="w"> </span><span class="l">guest</span><span class="w">
+</span></span></span><span class="line"><span class="cl"><span class="w">    </span><span class="nt">password</span><span class="p">:</span><span class="w"> </span><span class="l">guest</span><span class="w">
+</span></span></span></code></pre></td></tr></table>
+</div>
+</div><p>刷新配置的方式均为调用Config服务器的特定接口：</p>
+<ul>
+<li>全局刷新<code>POST http://host:port/actuator/bus-refresh</code></li>
+<li>定点刷新<code>POST http://host:port/actuator/bus-refresh/{application}:{port}</code></li>
+</ul>
+<h2 id="消息驱动">消息驱动</h2>
+<h2 id="alibaba">Alibaba</h2>
+<h3 id="nacos">Nacos</h3>
+<p>Nacos能够同时提供服务注册以及统一配置中心的功能，Nacos集群官方推荐的拓扑是由虚拟IP
+以及负载均衡的服务器作为统一入口的，这么做的好处在于Nacos集群的拓展可以不更改客户端
+的配置信息。其拓扑如下：</p>
+<p><img src="/p/java/spring/cloud/note/nacos-cluster-topology.svg"
+	
+	
+	
+	loading="lazy"
+	
+		alt="Nacos拓扑"
+	
+	
+></p>
+<p>Nacos由官方提供专门的服务器二进制包，运行之后可以通过页面进行所有功能的配置。</p>
+<h4 id="nacos-discovery">Nacos Discovery</h4>
+<ol>
+<li>引入依赖<code>spring-cloud-starter-nacos-discovery</code></li>
+<li>使用<code>@EnableDiscoveryClient</code>开启服务发现客户端</li>
+<li>在配置文件中配置Nacos服务器的地址</li>
+</ol>
+<div class="highlight"><div class="chroma">
+<table class="lntable"><tr><td class="lntd">
+<pre tabindex="0" class="chroma"><code><span class="lnt">1
+</span><span class="lnt">2
+</span><span class="lnt">3
+</span><span class="lnt">4
+</span><span class="lnt">5
+</span></code></pre></td>
+<td class="lntd">
+<pre tabindex="0" class="chroma"><code class="language-yaml" data-lang="yaml"><span class="line"><span class="cl"><span class="nt">spring</span><span class="p">:</span><span class="w">
+</span></span></span><span class="line"><span class="cl"><span class="w">  </span><span class="nt">cloud</span><span class="p">:</span><span class="w">
+</span></span></span><span class="line"><span class="cl"><span class="w">    </span><span class="nt">nacos</span><span class="p">:</span><span class="w">
+</span></span></span><span class="line"><span class="cl"><span class="w">      </span><span class="nt">discovery</span><span class="p">:</span><span class="w">
+</span></span></span><span class="line"><span class="cl"><span class="w">        </span><span class="nt">server-addr</span><span class="p">:</span><span class="w"> </span><span class="l">localhost:8848</span><span class="w">
+</span></span></span></code></pre></td></tr></table>
+</div>
+</div><p>Nacos作为服务注册中心有以下特点：</p>
+<ol>
+<li>支持Ribbon</li>
+<li>AP和CP可切换</li>
+</ol>
+<h4 id="nacos-config">Nacos Config</h4>
+<ol>
+<li>引入依赖<code>spring-cloud-starter-nacos-config</code></li>
+<li>在配置文件中引入Nacos相关服务器的配置</li>
+</ol>
+<div class="highlight"><div class="chroma">
+<table class="lntable"><tr><td class="lntd">
+<pre tabindex="0" class="chroma"><code><span class="lnt">1
+</span><span class="lnt">2
+</span><span class="lnt">3
+</span><span class="lnt">4
+</span><span class="lnt">5
+</span><span class="lnt">6
+</span><span class="lnt">7
+</span></code></pre></td>
+<td class="lntd">
+<pre tabindex="0" class="chroma"><code class="language-yaml" data-lang="yaml"><span class="line"><span class="cl"><span class="nt">spring</span><span class="p">:</span><span class="w">
+</span></span></span><span class="line"><span class="cl"><span class="w">  </span><span class="nt">cloud</span><span class="p">:</span><span class="w">
+</span></span></span><span class="line"><span class="cl"><span class="w">    </span><span class="nt">nacos</span><span class="p">:</span><span class="w">
+</span></span></span><span class="line"><span class="cl"><span class="w">      </span><span class="nt">config</span><span class="p">:</span><span class="w">
+</span></span></span><span class="line"><span class="cl"><span class="w">        </span><span class="nt">server-addr</span><span class="p">:</span><span class="w"> </span><span class="l">localhost:1234</span><span class="w"> </span><span class="c"># Nacos服务器的访问地址</span><span class="w">
+</span></span></span><span class="line"><span class="cl"><span class="w">        </span><span class="nt">prefix</span><span class="p">:</span><span class="w"> </span><span class="l">config</span><span class="w">
+</span></span></span><span class="line"><span class="cl"><span class="w">        </span><span class="nt">file-extension</span><span class="p">:</span><span class="w"> </span><span class="l">yaml</span><span class="w">
+</span></span></span></code></pre></td></tr></table>
+</div>
+</div><p>Nacos通过使用<code>(namespace, group, dataId)</code>坐标唯一确定一个配置文件，在实际开发中
+可以通过命名空间（namespace）以及分组（group）进行分割。其中，
+<code>dataId</code>是由多个部分拼合而成，规则为<code>{prefix}-{spring-profiles-active}.{file-extension}</code>，
+规则中所有的字段都需要与配置文件一致。</p>
+<h3 id="sentinel">Sentinel</h3>
+<p><img src="/p/java/spring/cloud/note/sentinel-topology.svg"
+	
+	
+	
+	loading="lazy"
+	
+		alt="Sentinel拓扑"
+	
+	
+></p>
+<p>同样是服务的熔断与降级，Sentinel采用的方案为<strong>动态配置</strong>，也就是通过页面对服务中
+的各个资源进行降级/限流/熔断的规则配置，并通过其他服务（如Nacos）保存配置的规则。</p>
+<p>Sentinel的集成方法：</p>
+<ol>
+<li>引入依赖<code>spring-cloud-starter-alibaba-sentinel</code></li>
+<li>在配置文件中引入以下配置</li>
+</ol>
+<div class="highlight"><div class="chroma">
+<table class="lntable"><tr><td class="lntd">
+<pre tabindex="0" class="chroma"><code><span class="lnt">1
+</span><span class="lnt">2
+</span><span class="lnt">3
+</span><span class="lnt">4
+</span><span class="lnt">5
+</span><span class="lnt">6
+</span></code></pre></td>
+<td class="lntd">
+<pre tabindex="0" class="chroma"><code class="language-yaml" data-lang="yaml"><span class="line"><span class="cl"><span class="nt">spring</span><span class="p">:</span><span class="w">
+</span></span></span><span class="line"><span class="cl"><span class="w">  </span><span class="nt">cloud</span><span class="p">:</span><span class="w">
+</span></span></span><span class="line"><span class="cl"><span class="w">    </span><span class="nt">sentinel</span><span class="p">:</span><span class="w">
+</span></span></span><span class="line"><span class="cl"><span class="w">      </span><span class="nt">transport</span><span class="p">:</span><span class="w">
+</span></span></span><span class="line"><span class="cl"><span class="w">        </span><span class="nt">dashboard</span><span class="p">:</span><span class="w"> </span><span class="l">localhost:8080</span><span class="w"> </span><span class="c"># Sentinel服务器的控制台URI</span><span class="w">
+</span></span></span><span class="line"><span class="cl"><span class="w">        </span><span class="nt">port</span><span class="p">:</span><span class="w"> </span><span class="m">8719</span><span class="w"> </span><span class="c"># 客户端开启的监听端口，用于Sentinel服务器配置相应的规则</span><span class="w">
+</span></span></span></code></pre></td></tr></table>
+</div>
+</div><p>Sentinel的<code>@SentinelResource</code>提供了对规则异常的处理以及对普通运行时异常的处理。这里
+有一个问题，即对普通运行时异常的处理和Spring本身的<code>@RestControllerAdvisor</code>之间的冲突。
+实验结果为：</p>
+<ol>
+<li>使用<code>@RestControllerAdvisor</code>能够触发异常的降级策略</li>
+<li>同时使用<code>@SentinelResource</code>的<code>fallback</code>属性与<code>@RestControllerAdvisor</code>优先触发前者</li>
+</ol>
+<p>由此，可以使用<code>@RestControllerAdvisor</code>对整个应用的异常进行统一处理，并结合<code>fallback</code>
+对需要特殊处理方式的方法进行额外处理。</p>
+<p>Sentinel也能够和Hystrix一样开启Feign的服务降级，开启方法也是在<code>feign</code>的配置中开启相应
+的降级。</p>
+<div class="highlight"><div class="chroma">
+<table class="lntable"><tr><td class="lntd">
+<pre tabindex="0" class="chroma"><code><span class="lnt">1
+</span><span class="lnt">2
+</span><span class="lnt">3
+</span></code></pre></td>
+<td class="lntd">
+<pre tabindex="0" class="chroma"><code class="language-yaml" data-lang="yaml"><span class="line"><span class="cl"><span class="nt">feign</span><span class="p">:</span><span class="w">
+</span></span></span><span class="line"><span class="cl"><span class="w">  </span><span class="nt">sentinel</span><span class="p">:</span><span class="w">
+</span></span></span><span class="line"><span class="cl"><span class="w">    </span><span class="nt">enabled</span><span class="p">:</span><span class="w"> </span><span class="kc">true</span><span class="w">
+</span></span></span></code></pre></td></tr></table>
+</div>
+</div><p>使用方式与Hystrix的降级一致，即通过实现<code>@FeignClient</code>修饰的接口。</p>
+<p>Sentinel也提供了持久化方案，也就是能够将在Dashboard中进行的所有配置保存在其他的服务器
+中。在使用Spring Cloud Alibaba时，最为推荐的是使用同为Alibaba套件的Nacos，开启步骤如下：</p>
+<ol>
+<li>引入依赖<code>sentinel-datasource-nacos</code></li>
+<li>在<code>spring.cloud.sentinel</code>配置中新增以下内容</li>
+</ol>
+<div class="highlight"><div class="chroma">
+<table class="lntable"><tr><td class="lntd">
+<pre tabindex="0" class="chroma"><code><span class="lnt"> 1
+</span><span class="lnt"> 2
+</span><span class="lnt"> 3
+</span><span class="lnt"> 4
+</span><span class="lnt"> 5
+</span><span class="lnt"> 6
+</span><span class="lnt"> 7
+</span><span class="lnt"> 8
+</span><span class="lnt"> 9
+</span><span class="lnt">10
+</span></code></pre></td>
+<td class="lntd">
+<pre tabindex="0" class="chroma"><code class="language-yaml" data-lang="yaml"><span class="line"><span class="cl"><span class="nt">spring</span><span class="p">:</span><span class="w">
+</span></span></span><span class="line"><span class="cl"><span class="w">  </span><span class="nt">cloud</span><span class="p">:</span><span class="w">
+</span></span></span><span class="line"><span class="cl"><span class="w">    </span><span class="nt">sentinel</span><span class="p">:</span><span class="w">
+</span></span></span><span class="line"><span class="cl"><span class="w">      </span><span class="nt">ds1</span><span class="p">:</span><span class="w">
+</span></span></span><span class="line"><span class="cl"><span class="w">        </span><span class="nt">nacos</span><span class="p">:</span><span class="w">
+</span></span></span><span class="line"><span class="cl"><span class="w">          </span><span class="nt">server-addr</span><span class="p">:</span><span class="w"> </span><span class="l">localhost:8848</span><span class="w"> </span><span class="c"># Nacos的服务器地址</span><span class="w">
+</span></span></span><span class="line"><span class="cl"><span class="w">          </span><span class="nt">dataId</span><span class="p">:</span><span class="w"> </span><span class="l">${spring.application.name}</span><span class="w">
+</span></span></span><span class="line"><span class="cl"><span class="w">          </span><span class="nt">groupId</span><span class="p">:</span><span class="w"> </span><span class="l">DEFAULT_GROUP</span><span class="w">
+</span></span></span><span class="line"><span class="cl"><span class="w">          </span><span class="nt">data-type</span><span class="p">:</span><span class="w"> </span><span class="l">json</span><span class="w">
+</span></span></span><span class="line"><span class="cl"><span class="w">          </span><span class="nt">rule-type</span><span class="p">:</span><span class="w"> </span><span class="l">flow</span><span class="w">
+</span></span></span></code></pre></td></tr></table>
+</div>
+</div><h3 id="seata">Seata</h3>
+<p><img src="/p/java/spring/cloud/note/seata-solution.svg"
+	
+	
+	
+	loading="lazy"
+	
+		alt="Seata解决方案"
+	
+	
+></p>
+<p>在图中，存在以下几个概念：</p>
+<ol>
+<li><code>TC</code>. 事务协调器</li>
+<li><code>TM</code>. 事务管理器</li>
+<li><code>RM</code>. 资源管理器</li>
+</ol>
+<p>对于整个分布式事务而言，首先需要事务的开启者通过<code>TM</code>向<code>TC</code>注册一个全局事务，并
+从<code>TC</code>得到一个<strong>全局事务ID</strong>，这个ID将在整个调用链的上下文中传递。而涉及到几个
+分支事务，则分别携带全局事务ID向<code>TC</code>注册自己，在完成自己相应的操作之后告知<code>TC</code>
+可以提交。最终，由<code>TC</code>控制并决定提交/回滚事务。当然，这只是大致流程，实际上通过
+<code>TC</code>控制全部事务本身就十分困难。</p>
+<p>Seata的集成方法：</p>
+<ol>
+<li>引入依赖<code>seata-all</code></li>
+<li>通过<code>@GlobalTransactional</code>的注解修饰需要开启分布式事务的方法</li>
+</ol>
+<h2 id="总结">总结</h2>
+<p>本文是Spring Cloud的一些凌乱介绍，来自于我个人在学习网课时的一些记录，仅仅只涉及
+了一部分粗浅的内容。</p>
+<p>Spring Cloud的组件也代表了目前一般的微服务所需要的基本功能，包括了服务发现/注册、
+服务调用、服务熔断、统一配置、统一网关和分布式事务。</p>
+<p>服务发现/注册、统一配置和分布式事务需要中心服务器进行协调，而为了保证高可用性，
+中心服务器往往是由集群所构成。因此，学习是需要考虑2点：</p>
+<ol>
+<li>客户端和服务器之间的通信，这部分代表了组件功能的设计思路</li>
+<li>集群内部各节点的构成方案，这部分关系到集群内部的请求处理逻辑，也关系到了集群
+的可用性与一致性问题</li>
+</ol>
+<p>服务调用与服务熔断则更加偏向编码，因此学习时更加偏向于如何使用以及如何拓展，例如
+Ribbon中的<code>IRule</code>路由规则以及服务熔断的中的降级规则等。</p>
+
+</section>
+
+
+    <footer class="article-footer">
+    
+    <section class="article-tags">
+        
+            <a href="/tags/java/">Java</a>
+        
+            <a href="/tags/spring-cloud/">Spring Cloud</a>
+        
+    </section>
+
+
+    
+    <section class="article-copyright">
+        <svg xmlns="http://www.w3.org/2000/svg" class="icon icon-tabler icon-tabler-copyright" width="24" height="24" viewBox="0 0 24 24" stroke-width="2" stroke="currentColor" fill="none" stroke-linecap="round" stroke-linejoin="round">
+  <path stroke="none" d="M0 0h24v24H0z"/>
+  <circle cx="12" cy="12" r="9" />
+  <path d="M14.5 9a3.5 4 0 1 0 0 6" />
+</svg>
+
+
+
+        <span>Licensed under CC BY-NC-SA 4.0</span>
+    </section>
+    </footer>
+
+
+    
+        <link 
+                rel="stylesheet" 
+                href="https://cdn.jsdelivr.net/npm/katex@0.15.6/dist/katex.min.css"integrity="sha256-J&#43;iAE0sgH8QSz9hpcDxXIftnj65JEZgNhGcgReTTK9s="crossorigin="anonymous"
+            ><script 
+                src="https://cdn.jsdelivr.net/npm/katex@0.15.6/dist/katex.min.js"integrity="sha256-InsNdER1b2xUewP&#43;pKCUJpkhiqwHgqiPXDlIk7GzBu4="crossorigin="anonymous"
+                defer
+                >
+            </script><script 
+                src="https://cdn.jsdelivr.net/npm/katex@0.15.6/dist/contrib/auto-render.min.js"integrity="sha256-y39Mpg7V3D4lhBX4x6O0bUqTV4pSrfgwEfGKfxkOdgI="crossorigin="anonymous"
+                defer
+                >
+            </script><script>
+    window.addEventListener("DOMContentLoaded", () => {
+        renderMathInElement(document.querySelector(`.article-content`), {
+            delimiters: [
+                { left: "$$", right: "$$", display: true },
+                { left: "$", right: "$", display: false },
+                { left: "\\(", right: "\\)", display: false },
+                { left: "\\[", right: "\\]", display: true }
+            ]
+        });})
+</script>
+    
+</article>
+
+    
+
+    
+
+     
+    
+        
+    
+
+    <footer class="site-footer">
+    <section class="copyright">
+        &copy; 
+        
+            2020 - 
+        
+        2023 演示站点
+    </section>
+    
+    <section class="powerby">
+        Built with <a href="https://gohugo.io/" target="_blank" rel="noopener">Hugo</a> <br />
+        主题 <b><a href="https://github.com/CaiJimmy/hugo-theme-stack" target="_blank" rel="noopener" data-version="3.16.0">Stack</a></b> 由 <a href="https://jimmycai.com" target="_blank" rel="noopener">Jimmy</a> 设计
+    </section>
+</footer>
+
+
+    
+<div class="pswp" tabindex="-1" role="dialog" aria-hidden="true">
+
+    
+    <div class="pswp__bg"></div>
+
+    
+    <div class="pswp__scroll-wrap">
+
+        
+        <div class="pswp__container">
+            <div class="pswp__item"></div>
+            <div class="pswp__item"></div>
+            <div class="pswp__item"></div>
+        </div>
+
+        
+        <div class="pswp__ui pswp__ui--hidden">
+
+            <div class="pswp__top-bar">
+
+                
+
+                <div class="pswp__counter"></div>
+
+                <button class="pswp__button pswp__button--close" title="Close (Esc)"></button>
+
+                <button class="pswp__button pswp__button--share" title="Share"></button>
+
+                <button class="pswp__button pswp__button--fs" title="Toggle fullscreen"></button>
+
+                <button class="pswp__button pswp__button--zoom" title="Zoom in/out"></button>
+
+                
+                
+                <div class="pswp__preloader">
+                    <div class="pswp__preloader__icn">
+                        <div class="pswp__preloader__cut">
+                            <div class="pswp__preloader__donut"></div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+
+            <div class="pswp__share-modal pswp__share-modal--hidden pswp__single-tap">
+                <div class="pswp__share-tooltip"></div>
+            </div>
+
+            <button class="pswp__button pswp__button--arrow--left" title="Previous (arrow left)">
+            </button>
+
+            <button class="pswp__button pswp__button--arrow--right" title="Next (arrow right)">
+            </button>
+
+            <div class="pswp__caption">
+                <div class="pswp__caption__center"></div>
+            </div>
+
+        </div>
+
+    </div>
+
+</div><script 
+                src="https://cdn.jsdelivr.net/npm/photoswipe@4.1.3/dist/photoswipe.min.js"integrity="sha256-ePwmChbbvXbsO02lbM3HoHbSHTHFAeChekF1xKJdleo="crossorigin="anonymous"
+                defer
+                >
+            </script><script 
+                src="https://cdn.jsdelivr.net/npm/photoswipe@4.1.3/dist/photoswipe-ui-default.min.js"integrity="sha256-UKkzOn/w1mBxRmLLGrSeyB4e1xbrp4xylgAWb3M42pU="crossorigin="anonymous"
+                defer
+                >
+            </script><link 
+                rel="stylesheet" 
+                href="https://cdn.jsdelivr.net/npm/photoswipe@4.1.3/dist/default-skin/default-skin.min.css"crossorigin="anonymous"
+            ><link 
+                rel="stylesheet" 
+                href="https://cdn.jsdelivr.net/npm/photoswipe@4.1.3/dist/photoswipe.min.css"crossorigin="anonymous"
+            >
+
+            </main>
+        </div>
+        <script 
+                src="https://cdn.jsdelivr.net/npm/node-vibrant@3.1.6/dist/vibrant.min.js"integrity="sha256-awcR2jno4kI5X0zL8ex0vi2z&#43;KMkF24hUW8WePSA9HM="crossorigin="anonymous"
+                
+                >
+            </script><script type="text/javascript" src="/ts/main.js" defer></script>
+<script>
+    (function () {
+        const customFont = document.createElement('link');
+        customFont.href = "https://fonts.googleapis.com/css2?family=Lato:wght@300;400;700&display=swap";
+
+        customFont.type = "text/css";
+        customFont.rel = "stylesheet";
+
+        document.head.appendChild(customFont);
+    }());
+</script>
+
+    </body>
+</html>

@@ -6,20 +6,28 @@
         <description>Recent content in Tags on 演示站点</description>
         <generator>Hugo -- gohugo.io</generator>
         <language>zh-cn</language>
-        <lastBuildDate>Fri, 06 Jan 2023 10:03:32 +0800</lastBuildDate><atom:link href="https://ilixiang.github.io/tags/index.xml" rel="self" type="application/rss+xml" /><item>
-        <title>Concurrency</title>
-        <link>https://ilixiang.github.io/tags/concurrency/</link>
-        <pubDate>Fri, 06 Jan 2023 10:03:32 +0800</pubDate>
+        <lastBuildDate>Mon, 23 Jan 2023 09:46:32 +0800</lastBuildDate><atom:link href="https://ilixiang.github.io/tags/index.xml" rel="self" type="application/rss+xml" /><item>
+        <title>Java</title>
+        <link>https://ilixiang.github.io/tags/java/</link>
+        <pubDate>Mon, 23 Jan 2023 09:46:32 +0800</pubDate>
         
-        <guid>https://ilixiang.github.io/tags/concurrency/</guid>
+        <guid>https://ilixiang.github.io/tags/java/</guid>
         <description></description>
         </item>
         <item>
-        <title>Java</title>
-        <link>https://ilixiang.github.io/tags/java/</link>
-        <pubDate>Fri, 06 Jan 2023 10:03:32 +0800</pubDate>
+        <title>Spring Cloud</title>
+        <link>https://ilixiang.github.io/tags/spring-cloud/</link>
+        <pubDate>Mon, 23 Jan 2023 09:46:32 +0800</pubDate>
         
-        <guid>https://ilixiang.github.io/tags/java/</guid>
+        <guid>https://ilixiang.github.io/tags/spring-cloud/</guid>
+        <description></description>
+        </item>
+        <item>
+        <title>Concurrency</title>
+        <link>https://ilixiang.github.io/tags/concurrency/</link>
+        <pubDate>Mon, 09 Jan 2023 10:03:32 +0800</pubDate>
+        
+        <guid>https://ilixiang.github.io/tags/concurrency/</guid>
         <description></description>
         </item>
         <item>

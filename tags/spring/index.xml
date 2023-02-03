@@ -8,10 +8,10 @@
         <language>zh-cn</language>
         <lastBuildDate>Fri, 23 Dec 2022 10:03:32 +0800</lastBuildDate><atom:link href="https://ilixiang.github.io/tags/spring/index.xml" rel="self" type="application/rss+xml" /><item>
         <title>Spring - AOP</title>
-        <link>https://ilixiang.github.io/posts/java/spring/aop/</link>
+        <link>https://ilixiang.github.io/p/java/spring/aop/</link>
         <pubDate>Fri, 23 Dec 2022 10:03:32 +0800</pubDate>
         
-        <guid>https://ilixiang.github.io/posts/java/spring/aop/</guid>
+        <guid>https://ilixiang.github.io/p/java/spring/aop/</guid>
         <description>&lt;h2 id=&#34;基本使用&#34;&gt;基本使用&lt;/h2&gt;
 &lt;p&gt;在Spring中，AOP用于增强某些Bean中指定的方法。&lt;/p&gt;
 &lt;ol&gt;
@@ -202,10 +202,10 @@
 &lt;code&gt;AnnotationAwareAspectJAutoProxyCreator&lt;/code&gt;。而这个类是&lt;code&gt;BeanPostProcessor&lt;/code&gt;的实现，即它能够作为生命
 周期中的“钩子”，嵌入到所有Bean的创建过程中。&lt;/p&gt;
 &lt;h3 id=&#34;动态代理&#34;&gt;动态代理&lt;/h3&gt;
-&lt;p&gt;&lt;img src=&#34;https://ilixiang.github.io/posts/java/spring/aop/proxy_pattern.png&#34;
+&lt;p&gt;&lt;img src=&#34;https://ilixiang.github.io/p/java/spring/aop/proxy_pattern.png&#34;
 	width=&#34;1835&#34;
 	height=&#34;1024&#34;
-	srcset=&#34;https://ilixiang.github.io/posts/java/spring/aop/proxy_pattern_hu03337419790a98f8c79c567a4fac49cf_54437_480x0_resize_box_3.png 480w, https://ilixiang.github.io/posts/java/spring/aop/proxy_pattern_hu03337419790a98f8c79c567a4fac49cf_54437_1024x0_resize_box_3.png 1024w&#34;
+	srcset=&#34;https://ilixiang.github.io/p/java/spring/aop/proxy_pattern_hu03337419790a98f8c79c567a4fac49cf_54437_480x0_resize_box_3.png 480w, https://ilixiang.github.io/p/java/spring/aop/proxy_pattern_hu03337419790a98f8c79c567a4fac49cf_54437_1024x0_resize_box_3.png 1024w&#34;
 	loading=&#34;lazy&#34;
 	
 		alt=&#34;代理模式&#34;

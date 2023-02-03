@@ -8,10 +8,10 @@
         <language>zh-cn</language>
         <lastBuildDate>Sun, 04 Dec 2022 09:52:32 +0800</lastBuildDate><atom:link href="https://ilixiang.github.io/tags/lock/index.xml" rel="self" type="application/rss+xml" /><item>
         <title>InnoDB - 锁</title>
-        <link>https://ilixiang.github.io/posts/mysql/lock/</link>
+        <link>https://ilixiang.github.io/p/mysql/lock/</link>
         <pubDate>Sun, 04 Dec 2022 09:52:32 +0800</pubDate>
         
-        <guid>https://ilixiang.github.io/posts/mysql/lock/</guid>
+        <guid>https://ilixiang.github.io/p/mysql/lock/</guid>
         <description>&lt;h2 id=&#34;前置&#34;&gt;前置&lt;/h2&gt;
 &lt;h3 id=&#34;环境&#34;&gt;环境&lt;/h3&gt;
 &lt;p&gt;首先，使用的&lt;strong&gt;MySQL版本&lt;/strong&gt;为&lt;code&gt;8.0.18&lt;/code&gt;，事务的隔离级别为&lt;code&gt;Repeatable Read&lt;/code&gt;。&lt;/p&gt;

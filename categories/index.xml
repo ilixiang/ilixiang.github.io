@@ -5,7 +5,40 @@
         <link>https://ilixiang.github.io/categories/</link>
         <description>Recent content in Categories on 演示站点</description>
         <generator>Hugo -- gohugo.io</generator>
-        <language>zh-cn</language><atom:link href="https://ilixiang.github.io/categories/index.xml" rel="self" type="application/rss+xml" /><item>
+        <language>zh-cn</language>
+        <lastBuildDate>Mon, 23 Jan 2023 09:46:32 +0800</lastBuildDate><atom:link href="https://ilixiang.github.io/categories/index.xml" rel="self" type="application/rss+xml" /><item>
+        <title>Spring Cloud</title>
+        <link>https://ilixiang.github.io/categories/spring-cloud/</link>
+        <pubDate>Mon, 23 Jan 2023 09:46:32 +0800</pubDate>
+        
+        <guid>https://ilixiang.github.io/categories/spring-cloud/</guid>
+        <description></description>
+        </item>
+        <item>
+        <title>Java</title>
+        <link>https://ilixiang.github.io/categories/java/</link>
+        <pubDate>Mon, 09 Jan 2023 10:03:32 +0800</pubDate>
+        
+        <guid>https://ilixiang.github.io/categories/java/</guid>
+        <description></description>
+        </item>
+        <item>
+        <title>Spring</title>
+        <link>https://ilixiang.github.io/categories/spring/</link>
+        <pubDate>Fri, 23 Dec 2022 10:03:32 +0800</pubDate>
+        
+        <guid>https://ilixiang.github.io/categories/spring/</guid>
+        <description></description>
+        </item>
+        <item>
+        <title>MySQL</title>
+        <link>https://ilixiang.github.io/categories/mysql/</link>
+        <pubDate>Sun, 04 Dec 2022 09:52:32 +0800</pubDate>
+        
+        <guid>https://ilixiang.github.io/categories/mysql/</guid>
+        <description></description>
+        </item>
+        <item>
         <title>Test</title>
         <link>https://ilixiang.github.io/categories/test/</link>
         <pubDate>Mon, 01 Jan 0001 00:00:00 +0000</pubDate>
