@@ -1,0 +1,691 @@
+<!DOCTYPE html>
+<html lang="zh-cn" dir="ltr">
+    <head><meta charset='utf-8'>
+<meta name='viewport' content='width=device-width, initial-scale=1'><meta name='description' content='基本概念 在Raft算法中，存在几个基本概念 Leader. 接受来自客户端的操作请求并将之同步给Follower，Raft算法确保任意时刻集群中最多 只有1个'>
+<title>Raft算法</title>
+
+<link rel='canonical' href='https://ilixiang.github.io/p/algorithm/raft/'>
+
+<link rel="stylesheet" href="/scss/style.min.8191399262444ab68b72a18c97392f5349be20a1615d77445be51e974c144cff.css"><meta property='og:title' content='Raft算法'>
+<meta property='og:description' content='基本概念 在Raft算法中，存在几个基本概念 Leader. 接受来自客户端的操作请求并将之同步给Follower，Raft算法确保任意时刻集群中最多 只有1个'>
+<meta property='og:url' content='https://ilixiang.github.io/p/algorithm/raft/'>
+<meta property='og:site_name' content='演示站点'>
+<meta property='og:type' content='article'><meta property='article:section' content='Post' /><meta property='article:tag' content='Algorithm' /><meta property='article:tag' content='Raft' /><meta property='article:published_time' content='2023-02-07T13:55:32&#43;08:00'/><meta property='article:modified_time' content='2023-02-07T13:55:32&#43;08:00'/>
+<meta name="twitter:title" content="Raft算法">
+<meta name="twitter:description" content="基本概念 在Raft算法中，存在几个基本概念 Leader. 接受来自客户端的操作请求并将之同步给Follower，Raft算法确保任意时刻集群中最多 只有1个">
+    </head>
+    <body class="
+    article-page
+    ">
+    <script>
+        (function() {
+            const colorSchemeKey = 'StackColorScheme';
+            if(!localStorage.getItem(colorSchemeKey)){
+                localStorage.setItem(colorSchemeKey, "auto");
+            }
+        })();
+    </script><script>
+    (function() {
+        const colorSchemeKey = 'StackColorScheme';
+        const colorSchemeItem = localStorage.getItem(colorSchemeKey);
+        const supportDarkMode = window.matchMedia('(prefers-color-scheme: dark)').matches === true;
+
+        if (colorSchemeItem == 'dark' || colorSchemeItem === 'auto' && supportDarkMode) {
+            
+
+            document.documentElement.dataset.scheme = 'dark';
+        } else {
+            document.documentElement.dataset.scheme = 'light';
+        }
+    })();
+</script>
+<div class="container main-container flex on-phone--column extended"><aside class="sidebar left-sidebar sticky ">
+    <button class="hamburger hamburger--spin" type="button" id="toggle-menu" aria-label="切换菜单">
+        <span class="hamburger-box">
+            <span class="hamburger-inner"></span>
+        </span>
+    </button>
+
+    <header>
+        
+            
+            <figure class="site-avatar">
+                <a href="/">
+                
+                    
+                    
+                    
+                        
+                        <img src="/img/anonymity_hu85d1e87a125260852c84e9dca32f0c6e_18316_300x0_resize_box_3.png" width="300"
+                            height="300" class="site-logo" loading="lazy" alt="Avatar">
+                    
+                
+                </a>
+                
+                    <span class="emoji">😋</span>
+                
+            </figure>
+            
+        
+        
+        <div class="site-meta">
+            <h1 class="site-name"><a href="/">演示站点</a></h1>
+            <h2 class="site-description">Be cool</h2>
+        </div>
+    </header><ol class="menu" id="main-menu">
+        
+        
+        
+        <li >
+            <a href='/' >
+                
+                
+                
+                    <svg xmlns="http://www.w3.org/2000/svg" class="icon icon-tabler icon-tabler-home" width="24" height="24" viewBox="0 0 24 24" stroke-width="2" stroke="currentColor" fill="none" stroke-linecap="round" stroke-linejoin="round">
+  <path stroke="none" d="M0 0h24v24H0z"/>
+  <polyline points="5 12 3 12 12 3 21 12 19 12" />
+  <path d="M5 12v7a2 2 0 0 0 2 2h10a2 2 0 0 0 2 -2v-7" />
+  <path d="M9 21v-6a2 2 0 0 1 2 -2h2a2 2 0 0 1 2 2v6" />
+</svg>
+
+
+
+                
+                <span>主页</span>
+            </a>
+        </li>
+        
+        
+        <li >
+            <a href='/about/' >
+                
+                
+                
+                    <svg xmlns="http://www.w3.org/2000/svg" class="icon icon-tabler icon-tabler-user" width="24" height="24" viewBox="0 0 24 24" stroke-width="2" stroke="currentColor" fill="none" stroke-linecap="round" stroke-linejoin="round">
+  <path stroke="none" d="M0 0h24v24H0z"/>
+  <circle cx="12" cy="7" r="4" />
+  <path d="M6 21v-2a4 4 0 0 1 4 -4h4a4 4 0 0 1 4 4v2" />
+</svg>
+
+
+
+                
+                <span>关于</span>
+            </a>
+        </li>
+        
+        
+        <li >
+            <a href='/archives/' >
+                
+                
+                
+                    <svg xmlns="http://www.w3.org/2000/svg" class="icon icon-tabler icon-tabler-archive" width="24" height="24" viewBox="0 0 24 24" stroke-width="2" stroke="currentColor" fill="none" stroke-linecap="round" stroke-linejoin="round">
+  <path stroke="none" d="M0 0h24v24H0z"/>
+  <rect x="3" y="4" width="18" height="4" rx="2" />
+  <path d="M5 8v10a2 2 0 0 0 2 2h10a2 2 0 0 0 2 -2v-10" />
+  <line x1="10" y1="12" x2="14" y2="12" />
+</svg>
+
+
+
+                
+                <span>归档</span>
+            </a>
+        </li>
+        
+
+        <div class="menu-bottom-section">
+            
+            
+                <li id="dark-mode-toggle">
+                    <svg xmlns="http://www.w3.org/2000/svg" class="icon icon-tabler icon-tabler-toggle-left" width="24" height="24" viewBox="0 0 24 24" stroke-width="2" stroke="currentColor" fill="none" stroke-linecap="round" stroke-linejoin="round">
+  <path stroke="none" d="M0 0h24v24H0z"/>
+  <circle cx="8" cy="12" r="2" />
+  <rect x="2" y="6" width="20" height="12" rx="6" />
+</svg>
+
+
+
+                    <svg xmlns="http://www.w3.org/2000/svg" class="icon icon-tabler icon-tabler-toggle-right" width="24" height="24" viewBox="0 0 24 24" stroke-width="2" stroke="currentColor" fill="none" stroke-linecap="round" stroke-linejoin="round">
+  <path stroke="none" d="M0 0h24v24H0z"/>
+  <circle cx="16" cy="12" r="2" />
+  <rect x="2" y="6" width="20" height="12" rx="6" />
+</svg>
+
+
+
+                    <span>暗色模式</span>
+                </li>
+            
+        </div>
+    </ol>
+</aside>
+
+    <aside class="sidebar right-sidebar sticky">
+        
+            
+                
+    <section class="widget archives">
+        <div class="widget-icon">
+            <svg xmlns="http://www.w3.org/2000/svg" class="icon icon-tabler icon-tabler-hash" width="24" height="24" viewBox="0 0 24 24" stroke-width="2" stroke="currentColor" fill="none" stroke-linecap="round" stroke-linejoin="round">
+  <path stroke="none" d="M0 0h24v24H0z"/>
+  <line x1="5" y1="9" x2="19" y2="9" />
+  <line x1="5" y1="15" x2="19" y2="15" />
+  <line x1="11" y1="4" x2="7" y2="20" />
+  <line x1="17" y1="4" x2="13" y2="20" />
+</svg>
+
+
+
+        </div>
+        <h2 class="widget-title section-title">目录</h2>
+        
+        <div class="widget--toc">
+            <nav id="TableOfContents">
+  <ol>
+    <li><a href="#基本概念">基本概念</a></li>
+    <li><a href="#选举">选举</a>
+      <ol>
+        <li><a href="#开始的条件">开始的条件</a></li>
+        <li><a href="#结束的条件">结束的条件</a></li>
+      </ol>
+    </li>
+    <li><a href="#复制">复制</a></li>
+    <li><a href="#安全性">安全性</a>
+      <ol>
+        <li><a href="#选举的限制">选举的限制</a></li>
+        <li><a href="#未提交日志的处理">未提交日志的处理</a></li>
+      </ol>
+    </li>
+    <li><a href="#参考">参考</a></li>
+  </ol>
+</nav>
+        </div>
+    </section>
+
+            
+        
+    </aside>
+
+
+            <main class="main full-width">
+    <article class="main-article">
+    <header class="article-header">
+
+    <div class="article-details">
+    
+    <header class="article-category">
+        
+            <a href="/categories/algorithm/" >
+                Algorithm
+            </a>
+        
+    </header>
+    
+
+    <div class="article-title-wrapper">
+        <h2 class="article-title">
+            <a href="/p/algorithm/raft/">Raft算法</a>
+        </h2>
+    
+        
+    </div>
+
+    
+    
+    
+    
+    <footer class="article-time">
+        
+            <div>
+                <svg xmlns="http://www.w3.org/2000/svg" class="icon icon-tabler icon-tabler-calendar-time" width="56" height="56" viewBox="0 0 24 24" stroke-width="2" stroke="currentColor" fill="none" stroke-linecap="round" stroke-linejoin="round">
+  <path stroke="none" d="M0 0h24v24H0z"/>
+  <path d="M11.795 21h-6.795a2 2 0 0 1 -2 -2v-12a2 2 0 0 1 2 -2h12a2 2 0 0 1 2 2v4" />
+  <circle cx="18" cy="18" r="4" />
+  <path d="M15 3v4" />
+  <path d="M7 3v4" />
+  <path d="M3 11h16" />
+  <path d="M18 16.496v1.504l1 1" />
+</svg>
+                <time class="article-time--published">Feb 07, 2023</time>
+            </div>
+        
+
+        
+            <div>
+                <svg xmlns="http://www.w3.org/2000/svg" class="icon icon-tabler icon-tabler-clock" width="24" height="24" viewBox="0 0 24 24" stroke-width="2" stroke="currentColor" fill="none" stroke-linecap="round" stroke-linejoin="round">
+  <path stroke="none" d="M0 0h24v24H0z"/>
+  <circle cx="12" cy="12" r="9" />
+  <polyline points="12 7 12 12 15 15" />
+</svg>
+
+
+
+                <time class="article-time--reading">
+                    阅读时长: 7 分钟
+                </time>
+            </div>
+        
+    </footer>
+    
+
+    
+</div>
+
+</header>
+
+    <section class="article-content">
+    
+    
+    <h2 id="基本概念">基本概念</h2>
+<p>在Raft算法中，存在几个基本概念</p>
+<ul>
+<li><code>Leader</code>. 接受来自客户端的操作请求并将之同步给Follower，Raft算法确保任意时刻集群中最多
+只有1个Leader</li>
+<li><code>Candidate</code>. 向其他节点发送选票请求，并希望自己成为Leader</li>
+<li><code>Follower</code>. 接受来自Leader的同步操作并维护自身状态，是集群单点故障容错的保证</li>
+</ul>
+<p>上面的3个概念是集群中服务器的3种状态。也就是说，任意时刻集群中的任何节点都必须处于这3种
+状态之一，集群中节点的状态转化如下图所示。</p>
+<p><img src="/p/algorithm/raft/raft-state.svg"
+	
+	
+	
+	loading="lazy"
+	
+		alt="Raft节点状态转换"
+	
+	
+></p>
+<ul>
+<li><code>Election</code>. 即<strong>选举</strong></li>
+<li><code>Term</code>. 可以翻译作<strong>任期</strong>，任何一个任期的起点都是由一次选举的开始，而下一次选举的开始就是
+上一个任期的结束，集群经历的时间都可以被分割为任期。任期在Raft算法中表现为一个递增的整型
+数字，在每次选举发生时改变，它作为整个集群的逻辑时钟使用，即节点中保存的任期数值越大，那么它所
+拥有的状态一定越新。因此，节点保存的任期值有2个作用，其一是作为选举时能否被选为Leader的参考依据，
+其二是作为能否为客户端的请求提供可靠结果的依据。</li>
+</ul>
+<p><img src="/p/algorithm/raft/raft-term.svg"
+	
+	
+	
+	loading="lazy"
+	
+		alt="Raft Term"
+	
+	
+></p>
+<ul>
+<li><code>Election timeout</code>. Follower所进行的内部倒计时，会被来自Leader的心跳重置，当倒计时结束则
+表示当前Follower无法和Leader正常通信，此时Follower会将自己变更为Candidate并发起一次选举。</li>
+</ul>
+<h2 id="选举">选举</h2>
+<h3 id="开始的条件">开始的条件</h3>
+<p>Raft算法中选举发生的条件是某个Follower发现自己在预设的时间之内没有收到来自Leader的数据
+（心跳或者同步日志）。这个条件通常会随着以下3种情况发生：</p>
+<ol>
+<li>集群刚刚启动，此时所有的节点都是Follower</li>
+<li>集群中当前Leader挂了</li>
+<li>由于网络分区，集群中的某个或某些Follower无法与Leader通信</li>
+</ol>
+<p>发生选举的大致情况如下图所示</p>
+<p><img src="/p/algorithm/raft/raft-election-triggered.svg"
+	
+	
+	
+	loading="lazy"
+	
+		alt="Raft Election Trigger"
+	
+	
+></p>
+<p>根据图中的内容，大致可以了解选举发生前后的变化，整体的过程为：</p>
+<ol>
+<li>Follower未收到来自Leader的数据发生导致超时</li>
+<li>Follower将自己的状态该为Candidate并将任期值自增</li>
+<li>Follower向集群中所有的节点发出选票请求，即让其他节点同意自己成为Leader</li>
+</ol>
+<p>这个过程中需要注意的地方是：</p>
+<ol>
+<li>Raft算法的心跳是由Leader下发至Follower，而不是由Follower上报</li>
+<li>不同的Follower它们的超时时间并不相同，一般在<code>150ms-300ms</code>，这样能够有效（不完全）避免
+由于多个Follower同时发起选举而导致的分票无法选出Leader的情况</li>
+<li>Candidate发出的为选票请求，而Follower则需要回复“同意”或者“不同意”（这与其他一致性算法
+有所不同，并不是发送自己选举的节点）</li>
+</ol>
+<h3 id="结束的条件">结束的条件</h3>
+<p>在Raft算法中<strong>本次选举</strong>结束的条件有3个：</p>
+<ol>
+<li>整个集群中的大多数（半数以上）节点都同意当前Candidate成为Leader</li>
+<li>当前Candidate收到来自Leader的数据（心跳或同步日志），且数据中任期值大于或等于节点的
+任期，这表明其他Candidate成为了Leader</li>
+<li>一段时间内前面2种情况都没发生而产生超时，这说明可能由于其他Follower成为了Candidate导致
+分票而无法决定Leader</li>
+</ol>
+<p>第3种情况如下图所示，图中所示的节点状态均为本轮选举投票结束之后的状态</p>
+<p><img src="/p/algorithm/raft/raft-split-votes.svg"
+	
+	
+	
+	loading="lazy"
+	
+		alt="Raft分票"
+	
+	
+></p>
+<p>前面提到过，由于Follower的心跳超时时间并不相同，因此能有效避免由于分票导致无法选出Leader的
+情况，但仍然可能产生同时多个节点成为Candidate导致的分票问题。此时，需要以下机制在保证能够
+选举出Leader：</p>
+<ol>
+<li>当Follower成为Candidate后重置自己的超时时间</li>
+<li>当Follower收到来自Candidate的选票请求后将自己的任期值与请求中的任期值同步并重置自己的超时时间</li>
+<li>集群中的Follower或Candidate的计时器超时后将任期值自增，并且成为新一轮选举的Candidate</li>
+<li>当Candidate收到来自其他Candidate的选票请求时，如果请求的任期值大于本节点的任期值，则可以投票</li>
+</ol>
+<p><img src="/p/algorithm/raft/raft-split-votes-measure.svg"
+	
+	
+	
+	loading="lazy"
+	
+		alt="Raft分票解决方案"
+	
+	
+></p>
+<p>在上述条件下，假设之前的节点中C最先超时，此时它的状态从Follower变为Candidate，并且将自身已从B
+的选举请求中同步的任期值再次自增，成为了新一轮选举的Candidate，并得到了所有其他节点的选票成
+为Leader。</p>
+<p>因此，通过上述补充机制，就能在一轮选举无法选出Leader时，重新进行一轮新的选举，而由于所有的
+超时时间都是一定范围内随机的，因此最终一定能选出Leader。</p>
+<h2 id="复制">复制</h2>
+<p>Raft算法中，服务器处理客户端操作请求的方式如下图所示。</p>
+<p><img src="/p/algorithm/raft/raft-replication.svg"
+	
+	
+	
+	loading="lazy"
+	
+		alt="Raft日志复制"
+	
+	
+></p>
+<p>由于需要保证Leader出现故障后来自客户端的操作不会丢失，因此需要将操作同步给Follower，而这个
+过程则被称为日志复制（Log Replication）。日志复制的最终目的是保证所有在Leader中的操作
+都按照顺序同步到Follower中，因此当Follower崩溃时，Leader会无限地进行重试。此外，Leader不会
+在收到客户端的操作后，立刻根据操作内容更新自身状态，而更新前后的分界线被成为<strong>提交</strong>
+（Commit），而提交的条件则是集群中半数以上（包括Leader)的节点都同步了该操作（下一节会聊为什么）。
+因此，在收到来自半数节点的同步响应后，Leader会应用该操作并向Follower发出“提交许可”，然后回复
+客户端“操作已提交”。</p>
+<p>在整个集群中，日志的组织方式如下图所示。</p>
+<p><img src="/p/algorithm/raft/raft-log-mgmt.svg"
+	
+	
+	
+	loading="lazy"
+	
+		alt="Raft日志结构"
+	
+	
+></p>
+<p>根据图中的描述，日志的组织结构基本如下：</p>
+<ol>
+<li>日志中的日志项除了包含操作请求之外，还需要加入任期值</li>
+<li>日志的排列方式类似于一个数组，可以通过索引的方式定位日志项</li>
+</ol>
+<h2 id="安全性">安全性</h2>
+<p>通过前面2个小节的内容描述了Raft算法中的选举和复制作为独立机制的情况下的运行方式，但当两者产生
+交集的时候，上述的机制还不足以保证算法的安全性。此小节的内容以讲述论文原文中的案例为主，聊聊
+发生安全问题的原因，从而理解为什么新增机制。</p>
+<p>下图展示了如果出现日志产生不一致的可能后，会出现什么样的结果。</p>
+<p><img src="/p/algorithm/raft/raft-inconsistient-log.svg"
+	
+	
+	
+	loading="lazy"
+	
+		alt="Raft日志不一致"
+	
+	
+></p>
+<p>上图中，日志的不一致性集中在2个方面：</p>
+<ol>
+<li>缺少了已提交的日志内容</li>
+<li>保留的未提交的日志内容</li>
+</ol>
+<h3 id="选举的限制">选举的限制</h3>
+<p>提交日志的缺失的发生与选举有关，当选举出的Leader没有最新的日志内容时，那么它后续的同步也必然
+不会有这部分日志。因此，针对已提交日志的缺失，一般而言解决思路有2个：</p>
+<ol>
+<li>在选举出Leader后，Leader向其他Follower同步已提交的日志</li>
+<li>在选举时，只选举拥有最新日志的Follower成为Leader</li>
+</ol>
+<p>而Raft算法选择的解决方案是第2个。之前的小节中，我们了解到选举的机制会由最先发生选举超时的节点
+成为Candidate开始，因此，任何的节点都有可能成为Leader。为了防止这种情况发生，Raft增加了2个机制：</p>
+<ol>
+<li>在Candidate发送选票请求时，附带自身日志的最大索引</li>
+<li>Follower在投票时，如果在对方任期值大于自身任期值的前提下，需要比较双方的日志最大索引，如果对方
+的索引小于自身的索引，那么不将选票投给该Candidate</li>
+</ol>
+<p>上述2个机制的引入，结合<strong>超过半数以上的节点同步了日志才能提交</strong>的规定，则能确保只有同步了最新
+日志的节点才有可能成为Follower，否则它一定无法获得半数以上的票。</p>
+<h3 id="未提交日志的处理">未提交日志的处理</h3>
+<p>不提交任何之前任期中未提交的日志 保守策略</p>
+<p><img src="/p/algorithm/raft/raft-uncommitted-log.svg"
+	
+	
+	
+	loading="lazy"
+	
+		alt="Raft提交未提交日志"
+	
+	
+></p>
+<ol>
+<li><code>S1</code>作为Leader，并将最新的日志同步给<code>S2</code></li>
+<li><code>S1</code>发生故障，并且<code>S5</code>被选举未新的Leader</li>
+<li><code>S5</code>收来来自客户端的操作请求，并在此时发生故障，也就是<code>(b)</code>中的情况</li>
+</ol>
+<p>接下来，如果允许当前Leader提交过往任期中的日志的话，此时的走向为<code>(c)</code>和<code>(d)</code>，则可能产生以下情况：</p>
+<ol>
+<li><code>S1</code>在选举中成为Leader，并将之前任期的日志<code>S1[2]</code>的日志复制给了<code>S3</code>，并提交</li>
+<li><code>S1</code>故障，<code>S5</code>再次成为Leader（得到<code>S2</code>、<code>S3</code>和<code>S4</code>的选票）</li>
+<li>由于允许复制之前任期的日志，因此<code>S5</code>会复制自己的<code>S5[2]</code>，那么就会覆盖掉在<code>S1</code>、<code>S2</code>和<code>S3</code>中已
+经<strong>被提交的日志</strong></li>
+</ol>
+<p>因此，提交过往任期的日志是不被允许的。而Raft算法的解决方案是只允许提交<strong>当前任期</strong>的日志，但这之前
+的过往任期的日志则可以被间接提交。这样所的结果就是<code>(e)</code>，也就是说当<code>S1</code>成为了Leader之后，如果它
+任期中的日志<code>S1[3]</code>没有提交成功，那么<code>S1[2]</code>也就是未提交状态。这么做的变化在于：</p>
+<ol>
+<li>如果当前任期没有日志提交成功，那么之前任期的日志也不会提交，被覆盖的是未提交的日志</li>
+<li>如果当前任期的日志提交成功，那么下一任的Leader一定会在被提交了本次任期日志的节点中出现，已提交的
+日志不会被覆盖</li>
+</ol>
+<p>体现在<code>(e)</code>中的表现就是即使<code>S1</code>立刻故障，那么<code>S5</code>也没有成为Leader的资格，也就不可能覆盖已提交的日志。</p>
+<h2 id="参考">参考</h2>
+<ol>
+<li><a class="link" href="https://raft.github.io/raft.pdf"  target="_blank" rel="noopener"
+    >Raft论文原文</a></li>
+<li><a class="link" href="http://thesecretlivesofdata.com/raft/"  target="_blank" rel="noopener"
+    >Raft可视化过程</a>。</li>
+</ol>
+
+</section>
+
+
+    <footer class="article-footer">
+    
+    <section class="article-tags">
+        
+            <a href="/tags/algorithm/">Algorithm</a>
+        
+            <a href="/tags/raft/">Raft</a>
+        
+    </section>
+
+
+    
+    <section class="article-copyright">
+        <svg xmlns="http://www.w3.org/2000/svg" class="icon icon-tabler icon-tabler-copyright" width="24" height="24" viewBox="0 0 24 24" stroke-width="2" stroke="currentColor" fill="none" stroke-linecap="round" stroke-linejoin="round">
+  <path stroke="none" d="M0 0h24v24H0z"/>
+  <circle cx="12" cy="12" r="9" />
+  <path d="M14.5 9a3.5 4 0 1 0 0 6" />
+</svg>
+
+
+
+        <span>Licensed under CC BY-NC-SA 4.0</span>
+    </section>
+    </footer>
+
+
+    
+        <link 
+                rel="stylesheet" 
+                href="https://cdn.jsdelivr.net/npm/katex@0.15.6/dist/katex.min.css"integrity="sha256-J&#43;iAE0sgH8QSz9hpcDxXIftnj65JEZgNhGcgReTTK9s="crossorigin="anonymous"
+            ><script 
+                src="https://cdn.jsdelivr.net/npm/katex@0.15.6/dist/katex.min.js"integrity="sha256-InsNdER1b2xUewP&#43;pKCUJpkhiqwHgqiPXDlIk7GzBu4="crossorigin="anonymous"
+                defer
+                >
+            </script><script 
+                src="https://cdn.jsdelivr.net/npm/katex@0.15.6/dist/contrib/auto-render.min.js"integrity="sha256-y39Mpg7V3D4lhBX4x6O0bUqTV4pSrfgwEfGKfxkOdgI="crossorigin="anonymous"
+                defer
+                >
+            </script><script>
+    window.addEventListener("DOMContentLoaded", () => {
+        renderMathInElement(document.querySelector(`.article-content`), {
+            delimiters: [
+                { left: "$$", right: "$$", display: true },
+                { left: "$", right: "$", display: false },
+                { left: "\\(", right: "\\)", display: false },
+                { left: "\\[", right: "\\]", display: true }
+            ]
+        });})
+</script>
+    
+</article>
+
+    
+
+    
+
+     
+    
+        
+    
+
+    <footer class="site-footer">
+    <section class="copyright">
+        &copy; 
+        
+            2022 - 
+        
+        2023 演示站点
+    </section>
+    
+    <section class="powerby">
+        Built with <a href="https://gohugo.io/" target="_blank" rel="noopener">Hugo</a> <br />
+        主题 <b><a href="https://github.com/CaiJimmy/hugo-theme-stack" target="_blank" rel="noopener" data-version="3.16.0">Stack</a></b> 由 <a href="https://jimmycai.com" target="_blank" rel="noopener">Jimmy</a> 设计
+    </section>
+</footer>
+
+
+    
+<div class="pswp" tabindex="-1" role="dialog" aria-hidden="true">
+
+    
+    <div class="pswp__bg"></div>
+
+    
+    <div class="pswp__scroll-wrap">
+
+        
+        <div class="pswp__container">
+            <div class="pswp__item"></div>
+            <div class="pswp__item"></div>
+            <div class="pswp__item"></div>
+        </div>
+
+        
+        <div class="pswp__ui pswp__ui--hidden">
+
+            <div class="pswp__top-bar">
+
+                
+
+                <div class="pswp__counter"></div>
+
+                <button class="pswp__button pswp__button--close" title="Close (Esc)"></button>
+
+                <button class="pswp__button pswp__button--share" title="Share"></button>
+
+                <button class="pswp__button pswp__button--fs" title="Toggle fullscreen"></button>
+
+                <button class="pswp__button pswp__button--zoom" title="Zoom in/out"></button>
+
+                
+                
+                <div class="pswp__preloader">
+                    <div class="pswp__preloader__icn">
+                        <div class="pswp__preloader__cut">
+                            <div class="pswp__preloader__donut"></div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+
+            <div class="pswp__share-modal pswp__share-modal--hidden pswp__single-tap">
+                <div class="pswp__share-tooltip"></div>
+            </div>
+
+            <button class="pswp__button pswp__button--arrow--left" title="Previous (arrow left)">
+            </button>
+
+            <button class="pswp__button pswp__button--arrow--right" title="Next (arrow right)">
+            </button>
+
+            <div class="pswp__caption">
+                <div class="pswp__caption__center"></div>
+            </div>
+
+        </div>
+
+    </div>
+
+</div><script 
+                src="https://cdn.jsdelivr.net/npm/photoswipe@4.1.3/dist/photoswipe.min.js"integrity="sha256-ePwmChbbvXbsO02lbM3HoHbSHTHFAeChekF1xKJdleo="crossorigin="anonymous"
+                defer
+                >
+            </script><script 
+                src="https://cdn.jsdelivr.net/npm/photoswipe@4.1.3/dist/photoswipe-ui-default.min.js"integrity="sha256-UKkzOn/w1mBxRmLLGrSeyB4e1xbrp4xylgAWb3M42pU="crossorigin="anonymous"
+                defer
+                >
+            </script><link 
+                rel="stylesheet" 
+                href="https://cdn.jsdelivr.net/npm/photoswipe@4.1.3/dist/default-skin/default-skin.min.css"crossorigin="anonymous"
+            ><link 
+                rel="stylesheet" 
+                href="https://cdn.jsdelivr.net/npm/photoswipe@4.1.3/dist/photoswipe.min.css"crossorigin="anonymous"
+            >
+
+            </main>
+        </div>
+        <script 
+                src="https://cdn.jsdelivr.net/npm/node-vibrant@3.1.6/dist/vibrant.min.js"integrity="sha256-awcR2jno4kI5X0zL8ex0vi2z&#43;KMkF24hUW8WePSA9HM="crossorigin="anonymous"
+                
+                >
+            </script><script type="text/javascript" src="/ts/main.js" defer></script>
+<script>
+    (function () {
+        const customFont = document.createElement('link');
+        customFont.href = "https://fonts.googleapis.com/css2?family=Lato:wght@300;400;700&display=swap";
+
+        customFont.type = "text/css";
+        customFont.rel = "stylesheet";
+
+        document.head.appendChild(customFont);
+    }());
+</script>
+
+    </body>
+</html>

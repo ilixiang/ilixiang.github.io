@@ -1,0 +1,250 @@
+<?xml version="1.0" encoding="utf-8" standalone="yes"?>
+<rss version="2.0" xmlns:atom="http://www.w3.org/2005/Atom">
+    <channel>
+        <title>Raft on 演示站点</title>
+        <link>https://ilixiang.github.io/tags/raft/</link>
+        <description>Recent content in Raft on 演示站点</description>
+        <generator>Hugo -- gohugo.io</generator>
+        <language>zh-cn</language>
+        <lastBuildDate>Tue, 07 Feb 2023 13:55:32 +0800</lastBuildDate><atom:link href="https://ilixiang.github.io/tags/raft/index.xml" rel="self" type="application/rss+xml" /><item>
+        <title>Raft算法</title>
+        <link>https://ilixiang.github.io/p/algorithm/raft/</link>
+        <pubDate>Tue, 07 Feb 2023 13:55:32 +0800</pubDate>
+        
+        <guid>https://ilixiang.github.io/p/algorithm/raft/</guid>
+        <description>&lt;h2 id=&#34;基本概念&#34;&gt;基本概念&lt;/h2&gt;
+&lt;p&gt;在Raft算法中，存在几个基本概念&lt;/p&gt;
+&lt;ul&gt;
+&lt;li&gt;&lt;code&gt;Leader&lt;/code&gt;. 接受来自客户端的操作请求并将之同步给Follower，Raft算法确保任意时刻集群中最多
+只有1个Leader&lt;/li&gt;
+&lt;li&gt;&lt;code&gt;Candidate&lt;/code&gt;. 向其他节点发送选票请求，并希望自己成为Leader&lt;/li&gt;
+&lt;li&gt;&lt;code&gt;Follower&lt;/code&gt;. 接受来自Leader的同步操作并维护自身状态，是集群单点故障容错的保证&lt;/li&gt;
+&lt;/ul&gt;
+&lt;p&gt;上面的3个概念是集群中服务器的3种状态。也就是说，任意时刻集群中的任何节点都必须处于这3种
+状态之一，集群中节点的状态转化如下图所示。&lt;/p&gt;
+&lt;p&gt;&lt;img src=&#34;https://ilixiang.github.io/p/algorithm/raft/raft-state.svg&#34;
+	
+	
+	
+	loading=&#34;lazy&#34;
+	
+		alt=&#34;Raft节点状态转换&#34;
+	
+	
+&gt;&lt;/p&gt;
+&lt;ul&gt;
+&lt;li&gt;&lt;code&gt;Election&lt;/code&gt;. 即&lt;strong&gt;选举&lt;/strong&gt;&lt;/li&gt;
+&lt;li&gt;&lt;code&gt;Term&lt;/code&gt;. 可以翻译作&lt;strong&gt;任期&lt;/strong&gt;，任何一个任期的起点都是由一次选举的开始，而下一次选举的开始就是
+上一个任期的结束，集群经历的时间都可以被分割为任期。任期在Raft算法中表现为一个递增的整型
+数字，在每次选举发生时改变，它作为整个集群的逻辑时钟使用，即节点中保存的任期数值越大，那么它所
+拥有的状态一定越新。因此，节点保存的任期值有2个作用，其一是作为选举时能否被选为Leader的参考依据，
+其二是作为能否为客户端的请求提供可靠结果的依据。&lt;/li&gt;
+&lt;/ul&gt;
+&lt;p&gt;&lt;img src=&#34;https://ilixiang.github.io/p/algorithm/raft/raft-term.svg&#34;
+	
+	
+	
+	loading=&#34;lazy&#34;
+	
+		alt=&#34;Raft Term&#34;
+	
+	
+&gt;&lt;/p&gt;
+&lt;ul&gt;
+&lt;li&gt;&lt;code&gt;Election timeout&lt;/code&gt;. Follower所进行的内部倒计时，会被来自Leader的心跳重置，当倒计时结束则
+表示当前Follower无法和Leader正常通信，此时Follower会将自己变更为Candidate并发起一次选举。&lt;/li&gt;
+&lt;/ul&gt;
+&lt;h2 id=&#34;选举&#34;&gt;选举&lt;/h2&gt;
+&lt;h3 id=&#34;开始的条件&#34;&gt;开始的条件&lt;/h3&gt;
+&lt;p&gt;Raft算法中选举发生的条件是某个Follower发现自己在预设的时间之内没有收到来自Leader的数据
+（心跳或者同步日志）。这个条件通常会随着以下3种情况发生：&lt;/p&gt;
+&lt;ol&gt;
+&lt;li&gt;集群刚刚启动，此时所有的节点都是Follower&lt;/li&gt;
+&lt;li&gt;集群中当前Leader挂了&lt;/li&gt;
+&lt;li&gt;由于网络分区，集群中的某个或某些Follower无法与Leader通信&lt;/li&gt;
+&lt;/ol&gt;
+&lt;p&gt;发生选举的大致情况如下图所示&lt;/p&gt;
+&lt;p&gt;&lt;img src=&#34;https://ilixiang.github.io/p/algorithm/raft/raft-election-triggered.svg&#34;
+	
+	
+	
+	loading=&#34;lazy&#34;
+	
+		alt=&#34;Raft Election Trigger&#34;
+	
+	
+&gt;&lt;/p&gt;
+&lt;p&gt;根据图中的内容，大致可以了解选举发生前后的变化，整体的过程为：&lt;/p&gt;
+&lt;ol&gt;
+&lt;li&gt;Follower未收到来自Leader的数据发生导致超时&lt;/li&gt;
+&lt;li&gt;Follower将自己的状态该为Candidate并将任期值自增&lt;/li&gt;
+&lt;li&gt;Follower向集群中所有的节点发出选票请求，即让其他节点同意自己成为Leader&lt;/li&gt;
+&lt;/ol&gt;
+&lt;p&gt;这个过程中需要注意的地方是：&lt;/p&gt;
+&lt;ol&gt;
+&lt;li&gt;Raft算法的心跳是由Leader下发至Follower，而不是由Follower上报&lt;/li&gt;
+&lt;li&gt;不同的Follower它们的超时时间并不相同，一般在&lt;code&gt;150ms-300ms&lt;/code&gt;，这样能够有效（不完全）避免
+由于多个Follower同时发起选举而导致的分票无法选出Leader的情况&lt;/li&gt;
+&lt;li&gt;Candidate发出的为选票请求，而Follower则需要回复“同意”或者“不同意”（这与其他一致性算法
+有所不同，并不是发送自己选举的节点）&lt;/li&gt;
+&lt;/ol&gt;
+&lt;h3 id=&#34;结束的条件&#34;&gt;结束的条件&lt;/h3&gt;
+&lt;p&gt;在Raft算法中&lt;strong&gt;本次选举&lt;/strong&gt;结束的条件有3个：&lt;/p&gt;
+&lt;ol&gt;
+&lt;li&gt;整个集群中的大多数（半数以上）节点都同意当前Candidate成为Leader&lt;/li&gt;
+&lt;li&gt;当前Candidate收到来自Leader的数据（心跳或同步日志），且数据中任期值大于或等于节点的
+任期，这表明其他Candidate成为了Leader&lt;/li&gt;
+&lt;li&gt;一段时间内前面2种情况都没发生而产生超时，这说明可能由于其他Follower成为了Candidate导致
+分票而无法决定Leader&lt;/li&gt;
+&lt;/ol&gt;
+&lt;p&gt;第3种情况如下图所示，图中所示的节点状态均为本轮选举投票结束之后的状态&lt;/p&gt;
+&lt;p&gt;&lt;img src=&#34;https://ilixiang.github.io/p/algorithm/raft/raft-split-votes.svg&#34;
+	
+	
+	
+	loading=&#34;lazy&#34;
+	
+		alt=&#34;Raft分票&#34;
+	
+	
+&gt;&lt;/p&gt;
+&lt;p&gt;前面提到过，由于Follower的心跳超时时间并不相同，因此能有效避免由于分票导致无法选出Leader的
+情况，但仍然可能产生同时多个节点成为Candidate导致的分票问题。此时，需要以下机制在保证能够
+选举出Leader：&lt;/p&gt;
+&lt;ol&gt;
+&lt;li&gt;当Follower成为Candidate后重置自己的超时时间&lt;/li&gt;
+&lt;li&gt;当Follower收到来自Candidate的选票请求后将自己的任期值与请求中的任期值同步并重置自己的超时时间&lt;/li&gt;
+&lt;li&gt;集群中的Follower或Candidate的计时器超时后将任期值自增，并且成为新一轮选举的Candidate&lt;/li&gt;
+&lt;li&gt;当Candidate收到来自其他Candidate的选票请求时，如果请求的任期值大于本节点的任期值，则可以投票&lt;/li&gt;
+&lt;/ol&gt;
+&lt;p&gt;&lt;img src=&#34;https://ilixiang.github.io/p/algorithm/raft/raft-split-votes-measure.svg&#34;
+	
+	
+	
+	loading=&#34;lazy&#34;
+	
+		alt=&#34;Raft分票解决方案&#34;
+	
+	
+&gt;&lt;/p&gt;
+&lt;p&gt;在上述条件下，假设之前的节点中C最先超时，此时它的状态从Follower变为Candidate，并且将自身已从B
+的选举请求中同步的任期值再次自增，成为了新一轮选举的Candidate，并得到了所有其他节点的选票成
+为Leader。&lt;/p&gt;
+&lt;p&gt;因此，通过上述补充机制，就能在一轮选举无法选出Leader时，重新进行一轮新的选举，而由于所有的
+超时时间都是一定范围内随机的，因此最终一定能选出Leader。&lt;/p&gt;
+&lt;h2 id=&#34;复制&#34;&gt;复制&lt;/h2&gt;
+&lt;p&gt;Raft算法中，服务器处理客户端操作请求的方式如下图所示。&lt;/p&gt;
+&lt;p&gt;&lt;img src=&#34;https://ilixiang.github.io/p/algorithm/raft/raft-replication.svg&#34;
+	
+	
+	
+	loading=&#34;lazy&#34;
+	
+		alt=&#34;Raft日志复制&#34;
+	
+	
+&gt;&lt;/p&gt;
+&lt;p&gt;由于需要保证Leader出现故障后来自客户端的操作不会丢失，因此需要将操作同步给Follower，而这个
+过程则被称为日志复制（Log Replication）。日志复制的最终目的是保证所有在Leader中的操作
+都按照顺序同步到Follower中，因此当Follower崩溃时，Leader会无限地进行重试。此外，Leader不会
+在收到客户端的操作后，立刻根据操作内容更新自身状态，而更新前后的分界线被成为&lt;strong&gt;提交&lt;/strong&gt;
+（Commit），而提交的条件则是集群中半数以上（包括Leader)的节点都同步了该操作（下一节会聊为什么）。
+因此，在收到来自半数节点的同步响应后，Leader会应用该操作并向Follower发出“提交许可”，然后回复
+客户端“操作已提交”。&lt;/p&gt;
+&lt;p&gt;在整个集群中，日志的组织方式如下图所示。&lt;/p&gt;
+&lt;p&gt;&lt;img src=&#34;https://ilixiang.github.io/p/algorithm/raft/raft-log-mgmt.svg&#34;
+	
+	
+	
+	loading=&#34;lazy&#34;
+	
+		alt=&#34;Raft日志结构&#34;
+	
+	
+&gt;&lt;/p&gt;
+&lt;p&gt;根据图中的描述，日志的组织结构基本如下：&lt;/p&gt;
+&lt;ol&gt;
+&lt;li&gt;日志中的日志项除了包含操作请求之外，还需要加入任期值&lt;/li&gt;
+&lt;li&gt;日志的排列方式类似于一个数组，可以通过索引的方式定位日志项&lt;/li&gt;
+&lt;/ol&gt;
+&lt;h2 id=&#34;安全性&#34;&gt;安全性&lt;/h2&gt;
+&lt;p&gt;通过前面2个小节的内容描述了Raft算法中的选举和复制作为独立机制的情况下的运行方式，但当两者产生
+交集的时候，上述的机制还不足以保证算法的安全性。此小节的内容以讲述论文原文中的案例为主，聊聊
+发生安全问题的原因，从而理解为什么新增机制。&lt;/p&gt;
+&lt;p&gt;下图展示了如果出现日志产生不一致的可能后，会出现什么样的结果。&lt;/p&gt;
+&lt;p&gt;&lt;img src=&#34;https://ilixiang.github.io/p/algorithm/raft/raft-inconsistient-log.svg&#34;
+	
+	
+	
+	loading=&#34;lazy&#34;
+	
+		alt=&#34;Raft日志不一致&#34;
+	
+	
+&gt;&lt;/p&gt;
+&lt;p&gt;上图中，日志的不一致性集中在2个方面：&lt;/p&gt;
+&lt;ol&gt;
+&lt;li&gt;缺少了已提交的日志内容&lt;/li&gt;
+&lt;li&gt;保留的未提交的日志内容&lt;/li&gt;
+&lt;/ol&gt;
+&lt;h3 id=&#34;选举的限制&#34;&gt;选举的限制&lt;/h3&gt;
+&lt;p&gt;提交日志的缺失的发生与选举有关，当选举出的Leader没有最新的日志内容时，那么它后续的同步也必然
+不会有这部分日志。因此，针对已提交日志的缺失，一般而言解决思路有2个：&lt;/p&gt;
+&lt;ol&gt;
+&lt;li&gt;在选举出Leader后，Leader向其他Follower同步已提交的日志&lt;/li&gt;
+&lt;li&gt;在选举时，只选举拥有最新日志的Follower成为Leader&lt;/li&gt;
+&lt;/ol&gt;
+&lt;p&gt;而Raft算法选择的解决方案是第2个。之前的小节中，我们了解到选举的机制会由最先发生选举超时的节点
+成为Candidate开始，因此，任何的节点都有可能成为Leader。为了防止这种情况发生，Raft增加了2个机制：&lt;/p&gt;
+&lt;ol&gt;
+&lt;li&gt;在Candidate发送选票请求时，附带自身日志的最大索引&lt;/li&gt;
+&lt;li&gt;Follower在投票时，如果在对方任期值大于自身任期值的前提下，需要比较双方的日志最大索引，如果对方
+的索引小于自身的索引，那么不将选票投给该Candidate&lt;/li&gt;
+&lt;/ol&gt;
+&lt;p&gt;上述2个机制的引入，结合&lt;strong&gt;超过半数以上的节点同步了日志才能提交&lt;/strong&gt;的规定，则能确保只有同步了最新
+日志的节点才有可能成为Follower，否则它一定无法获得半数以上的票。&lt;/p&gt;
+&lt;h3 id=&#34;未提交日志的处理&#34;&gt;未提交日志的处理&lt;/h3&gt;
+&lt;p&gt;不提交任何之前任期中未提交的日志 保守策略&lt;/p&gt;
+&lt;p&gt;&lt;img src=&#34;https://ilixiang.github.io/p/algorithm/raft/raft-uncommitted-log.svg&#34;
+	
+	
+	
+	loading=&#34;lazy&#34;
+	
+		alt=&#34;Raft提交未提交日志&#34;
+	
+	
+&gt;&lt;/p&gt;
+&lt;ol&gt;
+&lt;li&gt;&lt;code&gt;S1&lt;/code&gt;作为Leader，并将最新的日志同步给&lt;code&gt;S2&lt;/code&gt;&lt;/li&gt;
+&lt;li&gt;&lt;code&gt;S1&lt;/code&gt;发生故障，并且&lt;code&gt;S5&lt;/code&gt;被选举未新的Leader&lt;/li&gt;
+&lt;li&gt;&lt;code&gt;S5&lt;/code&gt;收来来自客户端的操作请求，并在此时发生故障，也就是&lt;code&gt;(b)&lt;/code&gt;中的情况&lt;/li&gt;
+&lt;/ol&gt;
+&lt;p&gt;接下来，如果允许当前Leader提交过往任期中的日志的话，此时的走向为&lt;code&gt;(c)&lt;/code&gt;和&lt;code&gt;(d)&lt;/code&gt;，则可能产生以下情况：&lt;/p&gt;
+&lt;ol&gt;
+&lt;li&gt;&lt;code&gt;S1&lt;/code&gt;在选举中成为Leader，并将之前任期的日志&lt;code&gt;S1[2]&lt;/code&gt;的日志复制给了&lt;code&gt;S3&lt;/code&gt;，并提交&lt;/li&gt;
+&lt;li&gt;&lt;code&gt;S1&lt;/code&gt;故障，&lt;code&gt;S5&lt;/code&gt;再次成为Leader（得到&lt;code&gt;S2&lt;/code&gt;、&lt;code&gt;S3&lt;/code&gt;和&lt;code&gt;S4&lt;/code&gt;的选票）&lt;/li&gt;
+&lt;li&gt;由于允许复制之前任期的日志，因此&lt;code&gt;S5&lt;/code&gt;会复制自己的&lt;code&gt;S5[2]&lt;/code&gt;，那么就会覆盖掉在&lt;code&gt;S1&lt;/code&gt;、&lt;code&gt;S2&lt;/code&gt;和&lt;code&gt;S3&lt;/code&gt;中已
+经&lt;strong&gt;被提交的日志&lt;/strong&gt;&lt;/li&gt;
+&lt;/ol&gt;
+&lt;p&gt;因此，提交过往任期的日志是不被允许的。而Raft算法的解决方案是只允许提交&lt;strong&gt;当前任期&lt;/strong&gt;的日志，但这之前
+的过往任期的日志则可以被间接提交。这样所的结果就是&lt;code&gt;(e)&lt;/code&gt;，也就是说当&lt;code&gt;S1&lt;/code&gt;成为了Leader之后，如果它
+任期中的日志&lt;code&gt;S1[3]&lt;/code&gt;没有提交成功，那么&lt;code&gt;S1[2]&lt;/code&gt;也就是未提交状态。这么做的变化在于：&lt;/p&gt;
+&lt;ol&gt;
+&lt;li&gt;如果当前任期没有日志提交成功，那么之前任期的日志也不会提交，被覆盖的是未提交的日志&lt;/li&gt;
+&lt;li&gt;如果当前任期的日志提交成功，那么下一任的Leader一定会在被提交了本次任期日志的节点中出现，已提交的
+日志不会被覆盖&lt;/li&gt;
+&lt;/ol&gt;
+&lt;p&gt;体现在&lt;code&gt;(e)&lt;/code&gt;中的表现就是即使&lt;code&gt;S1&lt;/code&gt;立刻故障，那么&lt;code&gt;S5&lt;/code&gt;也没有成为Leader的资格，也就不可能覆盖已提交的日志。&lt;/p&gt;
+&lt;h2 id=&#34;参考&#34;&gt;参考&lt;/h2&gt;
+&lt;ol&gt;
+&lt;li&gt;&lt;a class=&#34;link&#34; href=&#34;https://raft.github.io/raft.pdf&#34;  target=&#34;_blank&#34; rel=&#34;noopener&#34;
+    &gt;Raft论文原文&lt;/a&gt;&lt;/li&gt;
+&lt;li&gt;&lt;a class=&#34;link&#34; href=&#34;http://thesecretlivesofdata.com/raft/&#34;  target=&#34;_blank&#34; rel=&#34;noopener&#34;
+    &gt;Raft可视化过程&lt;/a&gt;。&lt;/li&gt;
+&lt;/ol&gt;
+</description>
+        </item>
+        
+    </channel>
+</rss>

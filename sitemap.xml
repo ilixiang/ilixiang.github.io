@@ -3,15 +3,30 @@
   xmlns:xhtml="http://www.w3.org/1999/xhtml">
   <url>
     <loc>https://ilixiang.github.io/</loc>
-    <lastmod>2023-01-23T09:46:32+08:00</lastmod>
+    <lastmod>2023-02-07T13:55:32+08:00</lastmod>
+  </url><url>
+    <loc>https://ilixiang.github.io/tags/algorithm/</loc>
+    <lastmod>2023-02-07T13:55:32+08:00</lastmod>
+  </url><url>
+    <loc>https://ilixiang.github.io/categories/algorithm/</loc>
+    <lastmod>2023-02-07T13:55:32+08:00</lastmod>
   </url><url>
     <loc>https://ilixiang.github.io/categories/</loc>
-    <lastmod>2023-01-23T09:46:32+08:00</lastmod>
-  </url><url>
-    <loc>https://ilixiang.github.io/tags/java/</loc>
-    <lastmod>2023-01-23T09:46:32+08:00</lastmod>
+    <lastmod>2023-02-07T13:55:32+08:00</lastmod>
   </url><url>
     <loc>https://ilixiang.github.io/post/</loc>
+    <lastmod>2023-02-07T13:55:32+08:00</lastmod>
+  </url><url>
+    <loc>https://ilixiang.github.io/tags/raft/</loc>
+    <lastmod>2023-02-07T13:55:32+08:00</lastmod>
+  </url><url>
+    <loc>https://ilixiang.github.io/p/algorithm/raft/</loc>
+    <lastmod>2023-02-07T13:55:32+08:00</lastmod>
+  </url><url>
+    <loc>https://ilixiang.github.io/tags/</loc>
+    <lastmod>2023-02-07T13:55:32+08:00</lastmod>
+  </url><url>
+    <loc>https://ilixiang.github.io/tags/java/</loc>
     <lastmod>2023-01-23T09:46:32+08:00</lastmod>
   </url><url>
     <loc>https://ilixiang.github.io/tags/spring-cloud/</loc>
@@ -21,9 +36,6 @@
     <lastmod>2023-01-23T09:46:32+08:00</lastmod>
   </url><url>
     <loc>https://ilixiang.github.io/p/java/spring/cloud/note/</loc>
-    <lastmod>2023-01-23T09:46:32+08:00</lastmod>
-  </url><url>
-    <loc>https://ilixiang.github.io/tags/</loc>
     <lastmod>2023-01-23T09:46:32+08:00</lastmod>
   </url><url>
     <loc>https://ilixiang.github.io/tags/concurrency/</loc>
